@@ -1,0 +1,21 @@
+/* base-table-header.component.scss */
+.base-table-header {
+  display: flex;
+  flex-direction: column;   /* mặc định mobile: dọc */
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+
+  h2 {
+    margin-bottom: 0.5rem; /* khoảng cách với button trên mobile */
+  }
+
+  @media (min-width: 768px) {
+    flex-direction: row;   /* desktop: ngang */
+    align-items: center;
+
+    h2 {
+      margin-bottom: 0;   /* bỏ margin trên desktop */
+    }
+  }
+}

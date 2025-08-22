@@ -1,0 +1,68 @@
+<div class="base-table-header my-3">
+  <h2>{{ title }}</h2>
+  <button *ngIf="showAddButton" class="p-button p-component p-button-sm" (click)="addItem()">
+    {{ addButtonText }}
+  </button>
+</div>
+<p-table #dt [value]="data" [paginator]="true" [rows]="10" [loading]="loading" [rowsPerPageOptions]="[5, 10, 20, 50]"
+  [showCurrentPageReport]="true" currentPageReportTemplate="Tổng: {totalRecords} bản ghi">
+  <!-- Header -->
+  <ng-template pTemplate="header">
+    <tr>
+      <th>STT</th>
+      <th *ngFor="let col of columns" [hidden]="col.IsHide">{{ col.Header }}</th>
+      <th>Chức năng</th>
+    </tr>
+
+    <!-- Filter -->
+    <tr>
+      <th></th>
+      <th *ngFor="let col of columns" [hidden]="col.IsHide">
+        <ng-container *ngIf="getFilterTemplate(col.Field) as tpl; else defaultFilter">
+          <!-- Custom filter từ cha -->
+          <p-columnFilter [field]="col.Field" matchMode="equals" [showMenu]="false">
+            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+              <ng-container *ngTemplateOutlet="tpl; context: { value: value, filter: filter }"></ng-container>
+            </ng-template>
+          </p-columnFilter>
+        </ng-container>
+    
+        <ng-template #defaultFilter>
+          <ng-container *ngIf="col.IsSearch">
+            <!-- Nếu text -->
+            <p-columnFilter *ngIf="!col.TypeSearch || col.TypeSearch === 'text'" [field]="col.Field"
+              placeholder="Tìm {{ col.Header }}" [showMenu]="false">
+            </p-columnFilter>
+    
+            <!-- Nếu date -->
+            <p-columnFilter *ngIf="col.TypeSearch === 'date'" [field]="col.Field" matchMode="dateIs" [showMenu]="false" type="date">
+            </p-columnFilter>
+    
+            <!-- Nếu select -->
+            <p-columnFilter *ngIf="col.TypeSearch === 'select'" [field]="col.Field" matchMode="equals" [showMenu]="false">
+              <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                <p-select [ngModel]="value" (ngModelChange)="filter($event)" [options]="col.Options || []" optionLabel="label"
+                  optionValue="value" [showClear]="true" [appendTo]="'body'">
+                </p-select>
+              </ng-template>
+            </p-columnFilter>
+          </ng-container>
+        </ng-template>
+      </th>
+      <th></th>
+    </tr>
+  </ng-template>
+
+  <!-- Body -->
+  <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
+    <tr>
+      <td>{{ rowIndex + 1 }}</td>
+      <td *ngFor="let col of columns" [hidden]="col.IsHide">{{ row[col.Field] }}</td>
+      <td>
+        <p-button icon="pi pi-pencil" styleClass="p-button-sm p-button-rounded p-button-warn mr-2" (onClick)="editItem(row)"></p-button>
+        <p-button icon="pi pi-eye" styleClass="p-button-sm p-button-rounded p-button-info mr-2" (onClick)="viewItem(row)"></p-button>
+        <p-button icon="pi pi-trash" styleClass="p-button-sm p-button-rounded p-button-danger" (onClick)="deleteItem(row)"></p-button>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

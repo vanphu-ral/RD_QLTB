@@ -1,0 +1,28 @@
+import { Routes } from '@angular/router';
+import { AppComponent } from './app';
+import { HomeComponent } from './shared/pages/Home/component/home.component';
+import { AppLayout } from './shared/layout/app.layout';
+import { DashboardComponent } from './shared/pages/Dashboard/List/dashboard.component';
+import { DepartmentListComponent } from './shared/pages/Categories/Department/List/department-list.component';
+
+export const routes: Routes = [
+    {
+        path: '',
+        component: AppLayout,
+        children: [
+            { path: '', component: HomeComponent }
+        ]
+    },
+    {
+        path: 'dashboard/edit/abd',
+        component: AppLayout,
+        children: [
+            { path: '', component: DashboardComponent }
+        ]
+    },
+    {
+        path: 'departments',
+        component: AppLayout,
+        loadChildren: () => import('./shared/pages/Categories/Department/department.routes').then(m => m.default)
+    }
+];

@@ -1,0 +1,32 @@
+:host {
+  display: block;
+  transition: width 0.3s;
+}
+
+:host.collapsed {
+  width: 60px !important; // Cần override chiều rộng mặc định
+}
+
+.p-menu {
+  border: none !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.p-menuitem {
+  .p-menuitem-content {
+    background-color: transparent !important;
+  }
+  .p-menuitem-link {
+    border-radius: var(--border-radius);
+    padding: 1rem !important;
+    color: var(--text-color-secondary) !important;
+    .p-menuitem-text {
+      font-weight: 500;
+    }
+  }
+  &.p-menuitem-active > .p-menuitem-content .p-menuitem-link {
+    background-color: var(--surface-hover);
+  }
+}

@@ -1,5 +1,7 @@
 package rd.project.qltb.service;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -44,6 +46,8 @@ public class FactoryService {
     public Integer create(final FactoryDTO factoryDTO) {
         final Factory factory = new Factory();
         mapToEntity(factoryDTO, factory);
+        factory.setCreatedAt(OffsetDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+        factory.setUpdatedAt(OffsetDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         return factoryRepository.save(factory).getId();
     }
 
@@ -51,6 +55,7 @@ public class FactoryService {
         final Factory factory = factoryRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(factoryDTO, factory);
+        factory.setUpdatedAt(OffsetDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         factoryRepository.save(factory);
     }
 
@@ -63,8 +68,6 @@ public class FactoryService {
         factoryDTO.setCode(factory.getCode());
         factoryDTO.setName(factory.getName());
         factoryDTO.setDescription(factory.getDescription());
-        factoryDTO.setCreatedAt(factory.getCreatedAt());
-        factoryDTO.setUpdatedAt(factory.getUpdatedAt());
         factoryDTO.setCreatedBy(factory.getCreatedBy());
         return factoryDTO;
     }
@@ -73,8 +76,6 @@ public class FactoryService {
         factory.setCode(factoryDTO.getCode());
         factory.setName(factoryDTO.getName());
         factory.setDescription(factoryDTO.getDescription());
-        factory.setCreatedAt(factoryDTO.getCreatedAt());
-        factory.setUpdatedAt(factoryDTO.getUpdatedAt());
         factory.setCreatedBy(factoryDTO.getCreatedBy());
         return factory;
     }

@@ -24,12 +24,6 @@ public class FactoryDTO {
     @Size(max = 500)
     private String description;
 
-    @NotNull
-    private OffsetDateTime createdAt;
-
-    @NotNull
-    private OffsetDateTime updatedAt;
-
     @Size(max = 255)
     private String createdBy;
 

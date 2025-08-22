@@ -1,0 +1,48 @@
+<div class="layout-topbar">
+  <div class="layout-topbar-logo-container">
+    <button class="layout-menu-button layout-topbar-action" (click)="layoutService.onMenuToggle()">
+      <i class="pi pi-bars"></i>
+    </button>
+    <a class="layout-topbar-logo" routerLink="/">
+      <span>Quản Lý Thiết Bị</span>
+    </a>
+  </div>
+
+  <div class="layout-topbar-actions">
+    <div class="layout-config-menu">
+      <button type="button" class="layout-topbar-action" (click)="toggleDarkMode()">
+        <i
+          [ngClass]="{ 'pi ': true, 'pi-moon': layoutService.isDarkTheme(), 'pi-sun': !layoutService.isDarkTheme() }"></i>
+      </button>
+    </div>
+
+    <div class="layout-topbar-menu hidden lg:block">
+      <div class="layout-topbar-menu-content">
+        <a class="layout-topbar-action" routerLink="/qr-code">
+          <i class="fa-solid fa-qrcode"></i>
+          <span>QR Code</span>
+        </a>
+        <a class="layout-topbar-action" routerLink="/Import">
+          <i class="fa-solid fa-file-import"></i>
+          <span>Import</span>
+        </a>
+        <a class="layout-topbar-action" routerLink="/PlanSummary">
+          <i class="fa-solid fa-file-arrow-down"></i>
+          <span>Plan Summary</span>
+        </a>
+        <a class="layout-topbar-action" routerLink="/PlanApprove">
+          <i class="fa-solid fa-person-circle-check"></i>
+          <span>Plan Approve</span>
+        </a>
+        <button type="button" class="layout-topbar-action">
+          <i class="fas fa-expand-arrows-alt"></i>
+          <span>Full screen</span>
+        </button>
+        <div class="flex align-items-center">
+          <p-avatar type="button" icon="pi pi-user" shape="circle" pRipple (click)="menu.toggle($event)"></p-avatar>
+          <p-menu #menu [model]="userMenuItems" [popup]="true"></p-menu>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
