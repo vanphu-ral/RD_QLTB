@@ -47,8 +47,6 @@ public class Plan {
     @Column(nullable = false)
     private OffsetDateTime updatedAt;
 
-    @Column
-    private String createdBy1;
 
     @Column
     private String status;

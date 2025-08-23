@@ -85,7 +85,6 @@ public class PlanService {
         planDTO.setCreatedBy(plan.getCreatedBy());
         planDTO.setCreatedAt(plan.getCreatedAt());
         planDTO.setUpdatedAt(plan.getUpdatedAt());
-        planDTO.setCreatedBy1(plan.getCreatedBy1());
         planDTO.setStatus(plan.getStatus());
         planDTO.setPlanType(plan.getPlanType() == null ? null : plan.getPlanType().getId());
         planDTO.setDeviceGroup(plan.getDeviceGroup() == null ? null : plan.getDeviceGroup().getId());
@@ -103,7 +102,6 @@ public class PlanService {
         plan.setCreatedBy(planDTO.getCreatedBy());
         plan.setCreatedAt(planDTO.getCreatedAt());
         plan.setUpdatedAt(planDTO.getUpdatedAt());
-        plan.setCreatedBy1(planDTO.getCreatedBy1());
         plan.setStatus(planDTO.getStatus());
         final PlanType planType = planDTO.getPlanType() == null ? null : planTypeRepository.findById(planDTO.getPlanType())
                 .orElseThrow(() -> new NotFoundException("planType not found"));
