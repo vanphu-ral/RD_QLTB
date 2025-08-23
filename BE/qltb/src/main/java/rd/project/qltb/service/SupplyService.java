@@ -71,7 +71,7 @@ public class SupplyService {
         supplyDTO.setQuantity(supply.getQuantity());
         supplyDTO.setPrice(supply.getPrice());
         supplyDTO.setDescription(supply.getDescription());
-        supplyDTO.setSapCode(supply.getSapCode());
+        supplyDTO.setSource(supply.getSource());
         supplyDTO.setCreatedAt(supply.getCreatedAt());
         supplyDTO.setUpdatedAt(supply.getUpdatedAt());
         supplyDTO.setCreatedBy(supply.getCreatedBy());
@@ -85,7 +85,7 @@ public class SupplyService {
         supply.setQuantity(supplyDTO.getQuantity());
         supply.setPrice(supplyDTO.getPrice());
         supply.setDescription(supplyDTO.getDescription());
-        supply.setSapCode(supplyDTO.getSapCode());
+        supply.setSource(supplyDTO.getSource());
         supply.setCreatedAt(supplyDTO.getCreatedAt());
         supply.setUpdatedAt(supplyDTO.getUpdatedAt());
         supply.setCreatedBy(supplyDTO.getCreatedBy());

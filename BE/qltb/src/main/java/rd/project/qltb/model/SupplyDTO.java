@@ -30,7 +30,7 @@ public class SupplyDTO {
     private String description;
 
     @Size(max = 255)
-    private String sapCode;
+    private String source;
 
     @NotNull
     private OffsetDateTime createdAt;

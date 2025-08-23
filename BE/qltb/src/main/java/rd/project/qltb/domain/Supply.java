@@ -36,7 +36,7 @@ public class Supply {
     private String description;
 
     @Column
-    private String sapCode;
+    private String source;
 
     @Column(nullable = false)
     private OffsetDateTime createdAt;
