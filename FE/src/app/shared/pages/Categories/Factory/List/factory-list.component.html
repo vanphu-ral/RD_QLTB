@@ -1,0 +1,9 @@
+<!-- factory-list.component.html -->
+<app-base-table 
+  [apiService]="factoryService"
+  [columns]="columns"
+  [title]="'Danh sách xưởng sản xuất'"
+  [showAddButton]="true">
+  <ng-template appColumnTemplate="createdAt" let-value>{{ 'đá' }}</ng-template>
+  <ng-template appColumnTemplate="updatedAt" let-value>{{ value | date: 'dd/MM/yy' }}</ng-template>
+</app-base-table>

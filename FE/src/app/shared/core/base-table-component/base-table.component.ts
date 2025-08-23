@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ContentChildren, QueryList, TemplateRef, AfterContentInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ContentChildren, QueryList, TemplateRef, AfterContentInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { Table } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
@@ -8,6 +8,8 @@ import { BaseApiService } from '../../service/base-api.service';
 import { SharedModule } from '../../../share.module';
 import { SelectButtonModule } from 'primeng/selectbutton'; // p-select alternative
 import { ActivatedRoute, Router } from '@angular/router';
+import { Column } from '../../models/Core/column.model';
+import { CustomColumnDirective } from '../../directive/app.custom-column.directive';
 
 @Component({
   selector: 'app-base-table',
@@ -18,26 +20,20 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class BaseTableComponent<T> implements OnInit, AfterContentInit {
   @Input() apiService!: BaseApiService<T>;
-  @Input() columns: {
-    Field: string;
-    Header: string;
-    IsSearch?: boolean;
-    IsHide?: boolean;
-    TypeSearch?: 'text' | 'date' | 'select';
-    Options?: { label: string; value: any }[];
-  }[] = [];
+  @Input() columns: Column[] = []
   @Input() onAddClick?: () => void;  // callback override từ component cha
   @Input() title?: string;
   @Input() showAddButton = false;
   @Input() addButtonText = 'Thêm mới';
   @ContentChildren(CustomFilterDirective) customFilters!: QueryList<CustomFilterDirective>;
+  @ContentChildren(CustomColumnDirective) columnTemplates!: QueryList<CustomColumnDirective>;
   private filterTpls = new Map<string, TemplateRef<any>>();
   @ViewChild('dt') dt!: Table;
 
   data: any[] = [];
   loading = false;
 
-  constructor(private router: Router, private route: ActivatedRoute) {}
+  constructor(private router: Router, private route: ActivatedRoute, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.columns = this.columns.map(c => ({
@@ -45,18 +41,10 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
       IsSearch: c.IsSearch ?? false,
       IsHide: c.IsHide ?? false,
     }));
-
-    // Demo data
-    this.data = [
-      { id: 1, code: 'PB001', name: 'Phòng Kế Toán', status: 'active' },
-      { id: 2, code: 'PB002', name: 'Phòng Nhân Sự', status: 'inactive' },
-      { id: 3, code: 'PB003', name: 'Phòng Kỹ Thuật', status: 'active' },
-      { id: 4, code: 'PB004', name: 'Phòng Kinh Doanh', status: 'inactive' },
-      { id: 5, code: 'PB005', name: 'Phòng IT', status: 'active' }
-    ];
-    // this.loadData();
+    this.loadData();
   }
 
+  // function support template
   ngAfterContentInit(): void {
     const rebuild = () => {
       this.filterTpls.clear();
@@ -70,11 +58,31 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
     return this.filterTpls.get(field) ?? null;
   }
 
+  getColumnTemplate(field: string): TemplateRef<any> | null {
+    const template = this.columnTemplates.find(t => t.field === field);
+    return template ? template.template : null;
+  }
+
+
+  getColumnStyle(col: { style?: string }): { [key: string]: string } | null {
+    if (!col.style) return null;
+    const styleObj: { [key: string]: string } = {};
+    col.style.split(';').forEach(pair => {
+      const [key, value] = pair.split(':').map(s => s.trim());
+      if (key && value) {
+        styleObj[key] = value;
+      }
+    });
+    return Object.keys(styleObj).length ? styleObj : null;
+  }
+
+  // prepare data
   loadData(): void {
     this.loading = true;
     this.apiService.getAll().subscribe({
       next: (res) => {
         this.data = res;
+        this.cdr.detectChanges();
         this.loading = false;
       },
       error: () => {
@@ -83,12 +91,12 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
     });
   }
 
+
+  // function
   addItem() {
     if (this.onAddClick) {
-      // Nếu cha truyền hàm thì gọi hàm cha
       this.onAddClick();
     } else {
-      // Nếu không truyền thì navigate mặc định tới router hiện tại + /add
       this.router.navigate(['add'], { relativeTo: this.route });
     }
   }

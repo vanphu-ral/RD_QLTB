@@ -4,14 +4,14 @@
     {{ addButtonText }}
   </button>
 </div>
-<p-table #dt [value]="data" [paginator]="true" [rows]="10" [loading]="loading" [rowsPerPageOptions]="[5, 10, 20, 50]"
+<p-table #dt [value]="data" [scrollable]="true" [paginator]="true" [rows]="10" [loading]="loading" [rowsPerPageOptions]="[5, 10, 20, 50]"
   [showCurrentPageReport]="true" currentPageReportTemplate="Tổng: {totalRecords} bản ghi">
   <!-- Header -->
   <ng-template pTemplate="header">
     <tr>
       <th>STT</th>
-      <th *ngFor="let col of columns" [hidden]="col.IsHide">{{ col.Header }}</th>
-      <th>Chức năng</th>
+      <th *ngFor="let col of columns" [hidden]="col.IsHide" [ngStyle]="col.style">{{ col.Header }}</th>
+      <th alignFrozen="right" pFrozenColumn [frozen]="true" style="min-width: 150px;">Chức năng</th>
     </tr>
 
     <!-- Filter -->
@@ -49,7 +49,7 @@
           </ng-container>
         </ng-template>
       </th>
-      <th></th>
+      <th alignFrozen="right" pFrozenColumn [frozen]="true"></th>
     </tr>
   </ng-template>
 
@@ -57,8 +57,13 @@
   <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
     <tr>
       <td>{{ rowIndex + 1 }}</td>
-      <td *ngFor="let col of columns" [hidden]="col.IsHide">{{ row[col.Field] }}</td>
-      <td>
+      <td *ngFor="let col of columns" [hidden]="col.IsHide" [ngStyle]="col.style">
+        <ng-container *ngIf="getColumnTemplate(col.Field) as tpl; else defaultValue">
+          <ng-container *ngTemplateOutlet="tpl; context: { $implicit: row[col.Field] }"></ng-container>
+        </ng-container>
+        <ng-template #defaultValue>{{ row[col.Field] }}</ng-template>
+      </td>
+      <td alignFrozen="right" pFrozenColumn [frozen]="true">
         <p-button icon="pi pi-pencil" styleClass="p-button-sm p-button-rounded p-button-warn mr-2" (onClick)="editItem(row)"></p-button>
         <p-button icon="pi pi-eye" styleClass="p-button-sm p-button-rounded p-button-info mr-2" (onClick)="viewItem(row)"></p-button>
         <p-button icon="pi pi-trash" styleClass="p-button-sm p-button-rounded p-button-danger" (onClick)="deleteItem(row)"></p-button>

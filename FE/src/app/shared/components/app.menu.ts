@@ -49,7 +49,7 @@ export class AppMenu {
                         icon: 'pi pi-fw pi-tags',
                         items: [
                             { label: 'Danh mục phòng ban', icon: 'pi pi-fw pi-building', routerLink: ['/departments'] },
-                            { label: 'Danh mục xưởng sản xuất', icon: 'fa-solid fa-industry' },
+                            { label: 'Danh mục xưởng sản xuất', icon: 'fa-solid fa-industry', routerLink: ['/factories'] },
                             { label: 'Danh mục ngành sản xuất', icon: 'fa-solid fa-code-branch' },
                             { label: 'Danh mục tổ sản xuất', icon: 'fa-solid fa-object-ungroup' },
                             { label: 'Danh mục dây chuyền sản xuất', icon: 'fa-solid fa-grip-lines', routerLink: ['/Line'] },

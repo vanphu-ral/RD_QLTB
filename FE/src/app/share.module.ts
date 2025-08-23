@@ -12,7 +12,6 @@ import { MenuModule } from 'primeng/menu';
 import { RippleModule } from 'primeng/ripple';
 import { DrawerModule } from 'primeng/drawer';
 import { CascadeSelectModule } from 'primeng/cascadeselect';
-import { CustomFilterDirective } from './shared/directive/app.custom-filter.directive';
 import { Select } from 'primeng/select';
 
 @NgModule({
@@ -29,8 +28,7 @@ import { Select } from 'primeng/select';
     RippleModule,
     DrawerModule,
     CascadeSelectModule,
-    CustomFilterDirective,
-    Select 
+    Select
   ],
   exports: [
     CommonModule,
@@ -45,7 +43,6 @@ import { Select } from 'primeng/select';
     RippleModule,
     DrawerModule,
     CascadeSelectModule,
-    CustomFilterDirective,
     Select
   ]
 })
