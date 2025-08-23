@@ -46,7 +46,7 @@ public class PlanDTO {
     private String status;
 
     @NotNull
-    private Integer planType;
+    private Long planType;
 
     @NotNull
     private Integer deviceGroup;
