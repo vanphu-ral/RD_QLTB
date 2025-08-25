@@ -6,7 +6,7 @@
 
   <p class="lead" jhiTranslate="home.subtitle">Đây là trang chủ của bạn</p>
 
-  <div>
+  <!-- <div>
     @if (account() !== null) {
       <div class="alert alert-success">
         @if (account()) {
@@ -23,5 +23,15 @@
         </div>
       </div>
     }
+  </div> -->
+  <div *ngIf="userInfo">
+    <h2>Thông tin người dùng</h2>
+    <p>Username: {{ userInfo.username }}</p>
+    <p>Full Name: {{ userInfo.fullName }}</p>
+    <p>Email: {{ userInfo.email }}</p>
+    <button (click)="logout()">Đăng xuất</button>
+  </div>
+  <div *ngIf="!userInfo">Đang tải...
+    <button (click)="login()">Đăng xuất</button>
   </div>
 </div>

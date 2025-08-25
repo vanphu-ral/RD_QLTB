@@ -4,6 +4,7 @@ import { HomeComponent } from './shared/pages/Home/component/home.component';
 import { AppLayout } from './shared/layout/app.layout';
 import { DashboardComponent } from './shared/pages/Dashboard/List/dashboard.component';
 import { DepartmentListComponent } from './shared/pages/Categories/Department/List/department-list.component';
+import { CallbackComponent } from './shared/core/auth/callback.component';
 
 export const routes: Routes = [
     {
@@ -13,6 +14,7 @@ export const routes: Routes = [
             { path: '', component: HomeComponent }
         ]
     },
+    { path: 'callback', component: CallbackComponent },
     {
         path: 'dashboard/edit/abd',
         component: AppLayout,

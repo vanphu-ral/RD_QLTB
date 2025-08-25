@@ -1,21 +1,22 @@
-import { inject, Injectable } from '@angular/core';
-import { Location } from '@angular/common';
-
-import { AuthServerProvider } from '../account/auth-session.service';
-import { Logout } from './logout.model';
+import { Injectable } from '@angular/core';
+import { AuthServerProvider, Logout } from '../auth-server.provider';
+import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 export class LoginService {
-  private location = inject(Location);
-  private authServerProvider = inject(AuthServerProvider);
+    constructor(
+        private authServerProvider: AuthServerProvider,
+        private router: Router
+    ) {}
 
-  login(): void {
-    location.href = `${location.origin}${this.location.prepareExternalUrl('oauth2/authorization/oidc')}`;
-  }
+    login(): void {
+        // window.location.href = `${window.location.origin}/oauth2/authorization/keycloak`;
+        window.location.href = 'http://localhost:8081/oauth2/authorization/keycloak';
+    }
 
-  logout(): void {
-    this.authServerProvider.logout().subscribe((logout: Logout) => {
-      window.location.href = logout.logoutUrl;
-    });
-  }
+    logout(): void {
+        this.authServerProvider.logout().subscribe((logout: Logout) => {
+            window.location.href = logout.logoutUrl;
+        });
+    }
 }
