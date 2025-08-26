@@ -1,11 +1,14 @@
-import { Component, EventEmitter, Output, Input } from '@angular/core';
+import { Component, EventEmitter, Output, Input, signal, ChangeDetectorRef, effect } from '@angular/core';
 import { SharedModule } from '../../../share.module';
 import { Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { LayoutService } from '../../service/layout.service';
 import { MenuModule } from 'primeng/menu';
 import { CommonModule } from '@angular/common';
-
+import { AccountService } from '../../core/auth/account/account.service';
+import { Account } from '../../core/auth/account/account.model';
+import { LoginService } from '../../core/auth/login/login.service';
+import * as _ from 'lodash';
 @Component({
   selector: 'app-header',
   standalone: true,
@@ -14,20 +17,36 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./header.component.scss']
 })
 export class AppHeaderComponent {
-  @Input() pageTitle: string = 'Dashboard - QLTB';
+  @Input() pageTitle = 'Dashboard - QLTB';
   @Output() toggleDrawer = new EventEmitter<void>();
+  userMenuItems: MenuItem[] = [];
 
-  userMenuItems: MenuItem[] | undefined;
+  constructor(
+    private router: Router,
+    public layoutService: LayoutService,
+    private accountService: AccountService,
+    private loginService: LoginService,
+    private cdr: ChangeDetectorRef
+  ) {
+    effect(() => {
+      const account = this.accountService.trackAccount()();
+      this.updateUserMenuItems(account);
+    });
+  }
 
-  constructor(private router: Router, public layoutService: LayoutService) { }
-
-  ngOnInit() {
-    console.log('Header component initialized');
-    
-    this.userMenuItems = [
-      { label: 'Thông tin cá nhân', icon: 'pi pi-user' },
-      { label: 'Đăng xuất', icon: 'pi pi-sign-out' }
-    ];
+  updateUserMenuItems(account: Account | null) {
+    if (!account) {
+      this.userMenuItems = [
+        { label: 'Đăng nhập', icon: 'pi pi-user-plus', command: () => this.loginService.login() }
+      ];
+    } else {
+      this.userMenuItems = [
+        { label: account.email, icon: 'pi pi-user' },
+        { label: 'Thông tin cá nhân', icon: 'pi pi-user' },
+        { label: 'Đăng xuất', icon: 'pi pi-sign-out', command: () => this.loginService.logout() }
+      ];
+    }
+    this.cdr.detectChanges(); // update view
   }
 
   onToggleDrawer() {
@@ -36,5 +55,9 @@ export class AppHeaderComponent {
 
   toggleDarkMode() {
     this.layoutService.layoutConfig.update((state) => ({ ...state, darkTheme: !state.darkTheme }));
+  }
+
+  logout() {
+    this.loginService.logout();
   }
 }

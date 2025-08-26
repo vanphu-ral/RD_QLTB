@@ -11,6 +11,7 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
+                System.out.printf("abs");
                 registry.addMapping("/**") // Áp dụng cho tất cả các endpoint
                         .allowedOrigins("*") // Cho phép mọi origin
                         .allowedMethods("*") // Cho phép mọi HTTP method: GET, POST, PUT, DELETE,...

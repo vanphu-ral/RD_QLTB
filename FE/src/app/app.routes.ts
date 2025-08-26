@@ -23,12 +23,12 @@ export const routes: Routes = [
         ]
     },
     {
-        path: 'departments',
+        path: 'Departments',
         component: AppLayout,
         loadChildren: () => import('./shared/pages/Categories/Department/department.routes').then(m => m.default)
     },
     {
-        path: 'factories',
+        path: 'Factories',
         component: AppLayout,
         loadChildren: () => import('./shared/pages/Categories/Factory/factory.routes').then(m => m.default)
     }

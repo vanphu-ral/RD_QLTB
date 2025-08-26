@@ -13,6 +13,11 @@ import { RippleModule } from 'primeng/ripple';
 import { DrawerModule } from 'primeng/drawer';
 import { CascadeSelectModule } from 'primeng/cascadeselect';
 import { Select } from 'primeng/select';
+import { CustomColumnDirective } from './shared/directive/app.custom-column.directive';
+import { FloatLabel } from 'primeng/floatlabel';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { ConfirmDialog } from 'primeng/confirmdialog';
 
 @NgModule({
   imports: [
@@ -28,7 +33,12 @@ import { Select } from 'primeng/select';
     RippleModule,
     DrawerModule,
     CascadeSelectModule,
-    Select
+    Select,
+    CustomColumnDirective,
+    FloatLabel,
+    ToastModule,
+    ConfirmPopupModule,
+    ConfirmDialog
   ],
   exports: [
     CommonModule,
@@ -43,7 +53,12 @@ import { Select } from 'primeng/select';
     RippleModule,
     DrawerModule,
     CascadeSelectModule,
-    Select
+    Select,
+    CustomColumnDirective,
+    FloatLabel,
+    ToastModule,
+    ConfirmPopupModule,
+    ConfirmDialog
   ]
 })
 export class SharedModule {}

@@ -11,6 +11,6 @@ export class AuthServerProvider {
     constructor(private http: HttpClient) {}
 
     logout(): Observable<Logout> {
-        return this.http.post<Logout>('http://localhost:8081/api/logout', {});
-    }
+    return this.http.get<Logout>('http://localhost:8081/api/auth/logout', { withCredentials: true });
+  }
 }

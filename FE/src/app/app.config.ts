@@ -6,6 +6,9 @@ import { providePrimeNG } from 'primeng/config';
 import Lara from '@primeng/themes/lara';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { APP_INITIALIZER } from '@angular/core';
+import { AccountService } from './shared/core/auth/account/account.service';
+import { LoginService } from './shared/core/auth/login/login.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -42,6 +45,17 @@ export const appConfig: ApplicationConfig = {
         dateFormat: 'dd/mm/yy',
         firstDayOfWeek: 1,
       }
-    })
+    }),
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (loginService: LoginService) => {
+        return () => {
+          // Nếu app vừa load sau Keycloak redirect
+          loginService.handlePostLogin();
+        };
+      },
+      deps: [LoginService],
+      multi: true
+    }
   ]
 };

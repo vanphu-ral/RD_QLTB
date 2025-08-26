@@ -27,4 +27,7 @@ public class FactoryDTO {
     @Size(max = 255)
     private String createdBy;
 
+    private OffsetDateTime createdAt;
+    private OffsetDateTime updatedAt;
+
 }

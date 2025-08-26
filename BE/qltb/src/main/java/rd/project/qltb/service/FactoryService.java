@@ -69,6 +69,8 @@ public class FactoryService {
         factoryDTO.setName(factory.getName());
         factoryDTO.setDescription(factory.getDescription());
         factoryDTO.setCreatedBy(factory.getCreatedBy());
+        factoryDTO.setCreatedAt(factory.getCreatedAt());
+        factoryDTO.setUpdatedAt(factory.getUpdatedAt());
         return factoryDTO;
     }
 

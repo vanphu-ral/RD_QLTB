@@ -1,5 +1,6 @@
 package rd.project.qltb.rest;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -24,8 +26,15 @@ public class AuthenticationRessource {
     }
 
     @GetMapping("/logout")
-    public void logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        request.getSession().invalidate();
-        response.sendRedirect("http://192.168.68.90:8080/realms/QLSX/protocol/openid-connect/logout?redirect_uri=" + URLEncoder.encode("http://localhost:4200", "UTF-8"));
+    public Map<String, String> logout(HttpServletRequest request) throws ServletException {
+        request.logout(); // Xoá session Spring Security
+
+        // Logout URL Keycloak
+        String logoutUrl = "http://localhost:8080/auth/realms/QLSX/protocol/openid-connect/logout"
+                + "?redirect_uri=http://localhost:4200";
+
+        Map<String, String> res = new HashMap<>();
+        res.put("logoutUrl", logoutUrl);
+        return res;
     }
 }

@@ -64,10 +64,20 @@
         <ng-template #defaultValue>{{ row[col.Field] }}</ng-template>
       </td>
       <td alignFrozen="right" pFrozenColumn [frozen]="true">
-        <p-button icon="pi pi-pencil" styleClass="p-button-sm p-button-rounded p-button-warn mr-2" (onClick)="editItem(row)"></p-button>
-        <p-button icon="pi pi-eye" styleClass="p-button-sm p-button-rounded p-button-info mr-2" (onClick)="viewItem(row)"></p-button>
-        <p-button icon="pi pi-trash" styleClass="p-button-sm p-button-rounded p-button-danger" (onClick)="deleteItem(row)"></p-button>
+        <p-button icon="pi pi-pencil" styleClass="p-button-sm p-button-rounded p-button-warn m-1" (onClick)="editItem(row)"></p-button>
+        <p-button icon="pi pi-eye" styleClass="p-button-sm p-button-rounded p-button-info m-1" (onClick)="viewItem(row)"></p-button>
+        <p-button icon="pi pi-trash" styleClass="p-button-sm p-button-rounded p-button-danger m-1" (onClick)="deleteItem(row, $event)"></p-button>
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td [attr.colspan]="columns.length + 2" class="text-center">
+        <p>Không có dữ liệu</p>
       </td>
     </tr>
   </ng-template>
 </p-table>
+<p-toast />
+<p-confirmdialog />

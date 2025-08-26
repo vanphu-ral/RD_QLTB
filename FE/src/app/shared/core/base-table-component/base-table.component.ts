@@ -10,18 +10,20 @@ import { SelectButtonModule } from 'primeng/selectbutton'; // p-select alternati
 import { ActivatedRoute, Router } from '@angular/router';
 import { Column } from '../../models/Core/column.model';
 import { CustomColumnDirective } from '../../directive/app.custom-column.directive';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-base-table',
   standalone: true,
   imports: [SharedModule, TableModule, ButtonModule, FormsModule, SelectButtonModule],
+  providers: [ConfirmationService, MessageService],
   templateUrl: './base-table.component.html',
   styleUrls: ['./base-table.component.scss'],
 })
-export class BaseTableComponent<T> implements OnInit, AfterContentInit {
+export class BaseTableComponent<T extends { createdAt?: Date; updatedAt?: Date }> implements OnInit, AfterContentInit {
   @Input() apiService!: BaseApiService<T>;
   @Input() columns: Column[] = []
-  @Input() onAddClick?: () => void;  // callback override từ component cha
+  @Input() onAddClick?: () => void;
   @Input() title?: string;
   @Input() showAddButton = false;
   @Input() addButtonText = 'Thêm mới';
@@ -33,7 +35,7 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
   data: any[] = [];
   loading = false;
 
-  constructor(private router: Router, private route: ActivatedRoute, private cdr: ChangeDetectorRef) {}
+  constructor(private router: Router, private route: ActivatedRoute, private cdr: ChangeDetectorRef, private confirmationService: ConfirmationService, private messageService: MessageService) { }
 
   ngOnInit(): void {
     this.columns = this.columns.map(c => ({
@@ -82,8 +84,8 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
     this.apiService.getAll().subscribe({
       next: (res) => {
         this.data = res;
-        this.cdr.detectChanges();
         this.loading = false;
+        this.cdr.detectChanges();
       },
       error: () => {
         this.loading = false;
@@ -109,10 +111,38 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
     this.router.navigate([row.id, 'view'], { relativeTo: this.route });
   }
 
-  deleteItem(item: T & { id: number | string }) {
+  deleteItem(item: T & { id: number | string }, event: Event) {
     if (this.apiService) {
-      this.apiService.delete(item.id).subscribe(() => {
-        this.data = this.data.filter(d => d !== item);
+      this.confirmationService.confirm({
+        target: event.currentTarget as EventTarget,
+        message: 'Bạn có muốn xóa bản ghi này?',
+        icon: 'pi pi-info-circle',
+        rejectButtonProps: {
+          label: 'Hủy',
+          severity: 'secondary',
+          outlined: true
+        },
+        acceptButtonProps: {
+          label: 'Xóa',
+          severity: 'danger'
+        },
+        accept: () => {
+          this.apiService.delete(item.id).subscribe({
+            next: () => {
+              this.messageService.add({ severity: 'info', summary: 'Đã xác nhận', detail: 'Xóa thành công!', life: 3000 });
+            },
+            error: (error) => {
+              this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Xóa thất bại!', life: 3000 });
+              console.error('Lỗi khi xóa:', error);
+            },
+            complete: () => {
+              this.loadData();
+            }
+          });
+        },
+        reject: () => {
+          this.messageService.add({ severity: 'error', summary: 'Từ chối', detail: 'Từ chối xóa bản ghi', life: 3000 });
+        }
       });
     } else {
       this.data = this.data.filter(d => d !== item);

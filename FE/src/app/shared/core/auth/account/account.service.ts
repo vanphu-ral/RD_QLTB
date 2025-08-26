@@ -15,21 +15,27 @@ export class AccountService {
   private http = inject(HttpClient);
   private appConfig = inject(ApplicationConfigService);
 
-  /** 📌 Load account từ server */
+  /** Load account từ server */
   identity(force = false): Observable<Account | null> {
     if (!this.accountCache$ || force) {
-      this.accountCache$ = this.http.get<Account>(this.appConfig.getEndpointFor('api/account')).pipe(
-        tap(account => {
-          this.accountSignal.set(account);
-          this.authenticationState.next(account);
-        }),
-        shareReplay()
+      this.accountCache$ = this.http.get<Account>(
+        this.appConfig.getEndpointFor('api/auth/user'),
+        { withCredentials: true }
+      ).pipe(
+        tap(account => this.setAccount(account)),
+        shareReplay(1)
       );
     }
     return this.accountCache$.pipe(catchError(() => of(null)));
   }
 
-  /** 📌 Trả về signal account */
+
+  /** Lưu account vào signal */
+  setAccount(account: Account | null): void {
+    this.accountSignal.set(account);
+    this.authenticationState.next(account);
+  }
+
   trackAccount(): Signal<Account | null> {
     return this.accountSignal.asReadonly();
   }
@@ -37,6 +43,10 @@ export class AccountService {
   /** 📌 Trả về account observable */
   getAuthenticationState(): Observable<Account | null> {
     return this.authenticationState.asObservable();
+  }
+
+  getUser(): Account | null {
+    return this.accountSignal();
   }
 
   /** 📌 Kiểm tra đã login chưa */
@@ -54,13 +64,5 @@ export class AccountService {
       return authorities.some(auth => userAuthorities.includes(auth));
     }
     return userAuthorities.includes(authorities);
-  }
-
-  /** 📌 Logout */
-  logout(): void {
-    this.accountCache$ = null;
-    this.accountSignal.set(null);
-    this.authenticationState.next(null);
-    this.http.post(this.appConfig.getEndpointFor('api/logout'), {}).subscribe();
   }
 }

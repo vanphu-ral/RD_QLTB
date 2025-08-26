@@ -1,0 +1,34 @@
+<div>
+  <h2>{{ isAddMode ? 'Thêm mới xưởng' : (isViewMode ? 'Xem chi tiết xưởng' : 'Sửa xưởng') }}</h2>
+
+  <form *ngIf="model">
+    <div class="row my-2">
+      <div class="col-6">
+        <p-floatlabel variant="on">
+          <input pInputText id="code" name="code" [(ngModel)]="model.code" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
+          <label for="code">Mã xưởng</label>
+        </p-floatlabel>
+      </div>
+      <div class="col-6">
+        <p-floatlabel variant="on">
+          <input pInputText id="name" name="name" [(ngModel)]="model.name" [invalid]="!model.name" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
+          <label for="name">Tên xưởng</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <p-floatlabel variant="on">
+          <input pInputText id="des" name="description" [(ngModel)]="model.description" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
+          <label for="description">Mô tả</label>
+        </p-floatlabel>
+      </div>
+    </div>
+    <div class="d-flex justify-content-end mt-3">
+      <p-button label="Quay lại" severity="info" (click)="onBack()" icon="pi pi-arrow-left" class="me-2"></p-button>
+      <p-button *ngIf="!isViewMode" label="Lưu" icon="pi pi-save" severity="success" [disabled]="!model.name" class="w-full max-w-[17.35rem]" (click)="save()"
+            styleClass="w-full mx-auto" />
+    </div>
+  </form>
+</div>

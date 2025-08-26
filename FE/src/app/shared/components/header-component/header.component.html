@@ -38,7 +38,7 @@
           <i class="fas fa-expand-arrows-alt"></i>
           <span>Full screen</span>
         </button>
-        <div class="flex align-items-center">
+        <div class="flex align-items-center" style="cursor: pointer;">
           <p-avatar type="button" icon="pi pi-user" shape="circle" pRipple (click)="menu.toggle($event)"></p-avatar>
           <p-menu #menu [model]="userMenuItems" [popup]="true"></p-menu>
         </div>
