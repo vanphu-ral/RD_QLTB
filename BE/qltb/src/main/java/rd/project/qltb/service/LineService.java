@@ -7,7 +7,9 @@ import rd.project.qltb.domain.Device;
 import rd.project.qltb.domain.Form;
 import rd.project.qltb.domain.Line;
 import rd.project.qltb.domain.Team;
+import rd.project.qltb.model.FactoryDTO;
 import rd.project.qltb.model.LineDTO;
+import rd.project.qltb.model.TeamDTO;
 import rd.project.qltb.repos.DeviceRepository;
 import rd.project.qltb.repos.FormRepository;
 import rd.project.qltb.repos.LineRepository;
@@ -70,7 +72,15 @@ public class LineService {
         lineDTO.setCreatedAt(line.getCreatedAt());
         lineDTO.setUpdatedAt(line.getUpdatedAt());
         lineDTO.setCreatedBy(line.getCreatedBy());
-        lineDTO.setTeam(line.getTeam() == null ? null : line.getTeam().getId());
+
+        if (line.getTeam() != null) {
+            TeamDTO teamDTO = new TeamDTO();
+            teamDTO.setId(line.getTeam().getId());
+            teamDTO.setName(line.getTeam().getName());
+            lineDTO.setTeam(teamDTO);
+        } else {
+            lineDTO.setTeam(null);
+        }
         return lineDTO;
     }
 
@@ -81,8 +91,12 @@ public class LineService {
         line.setCreatedAt(lineDTO.getCreatedAt());
         line.setUpdatedAt(lineDTO.getUpdatedAt());
         line.setCreatedBy(lineDTO.getCreatedBy());
-        final Team team = lineDTO.getTeam() == null ? null : teamRepository.findById(lineDTO.getTeam())
+
+        final Team team = lineDTO.getTeam() == null
+                ? null
+                : teamRepository.findById(lineDTO.getTeam().getId())
                 .orElseThrow(() -> new NotFoundException("team not found"));
+
         line.setTeam(team);
         return line;
     }

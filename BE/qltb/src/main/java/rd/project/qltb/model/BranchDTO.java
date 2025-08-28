@@ -34,6 +34,6 @@ public class BranchDTO {
     private String createdBy;
 
     @NotNull
-    private Integer factory;
+    private FactoryDTO  factory;
 
 }

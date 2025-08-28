@@ -1,10 +1,9 @@
-export interface Department {
-    id: number;
+export class Department {
+    id?: number;
     name?: string;
     code?: string;
     description?: string;
-    factoryId?: number;
-    isActive?: boolean;
+    createdBy?: string;
     createdAt?: Date;
     updatedAt?: Date;
 }

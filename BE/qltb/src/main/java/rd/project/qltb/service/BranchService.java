@@ -11,6 +11,7 @@ import rd.project.qltb.domain.Form;
 import rd.project.qltb.domain.PlanTarget;
 import rd.project.qltb.domain.Team;
 import rd.project.qltb.model.BranchDTO;
+import rd.project.qltb.model.FactoryDTO;
 import rd.project.qltb.repos.BranchRepository;
 import rd.project.qltb.repos.DayOffRepository;
 import rd.project.qltb.repos.DeviceRepository;
@@ -84,7 +85,14 @@ public class BranchService {
         branchDTO.setCreatedAt(branch.getCreatedAt());
         branchDTO.setUpdatedAt(branch.getUpdatedAt());
         branchDTO.setCreatedBy(branch.getCreatedBy());
-        branchDTO.setFactory(branch.getFactory() == null ? null : branch.getFactory().getId());
+        if (branch.getFactory() != null) {
+            FactoryDTO factoryDTO = new FactoryDTO();
+            factoryDTO.setId(branch.getFactory().getId());
+            factoryDTO.setName(branch.getFactory().getName());
+            branchDTO.setFactory(factoryDTO);
+        } else {
+            branchDTO.setFactory(null);
+        }
         return branchDTO;
     }
 
@@ -95,7 +103,8 @@ public class BranchService {
         branch.setCreatedAt(branchDTO.getCreatedAt());
         branch.setUpdatedAt(branchDTO.getUpdatedAt());
         branch.setCreatedBy(branchDTO.getCreatedBy());
-        final Factory factory = branchDTO.getFactory() == null ? null : factoryRepository.findById(branchDTO.getFactory())
+        final Factory factory = branchDTO.getFactory() == null ? null
+                : factoryRepository.findById(branchDTO.getFactory().getId())
                 .orElseThrow(() -> new NotFoundException("factory not found"));
         branch.setFactory(factory);
         return branch;

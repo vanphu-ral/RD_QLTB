@@ -1,4 +1,4 @@
-export interface Factory {
+export class Factory {
     id?: number;
     name?: string;
     code?: string;

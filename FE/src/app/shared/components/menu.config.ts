@@ -30,9 +30,9 @@ export const MENU_ITEMS: MenuItem[] = [
                 items: [
                     { label: 'Danh mục phòng ban', icon: 'pi pi-fw pi-building', routerLink: ['/Departments'] },
                     { label: 'Danh mục xưởng sản xuất', icon: 'fa-solid fa-industry', routerLink: ['/Factories'] },
-                    { label: 'Danh mục ngành sản xuất', icon: 'fa-solid fa-code-branch' },
-                    { label: 'Danh mục tổ sản xuất', icon: 'fa-solid fa-object-ungroup' },
-                    { label: 'Danh mục dây chuyền sản xuất', icon: 'fa-solid fa-grip-lines', routerLink: ['/Line'] },
+                    { label: 'Danh mục ngành sản xuất', icon: 'fa-solid fa-code-branch', routerLink: ['/Branches'] },
+                    { label: 'Danh mục tổ sản xuất', icon: 'fa-solid fa-object-ungroup', routerLink: ['/Teams'] },
+                    { label: 'Danh mục dây chuyền sản xuất', icon: 'fa-solid fa-grip-lines', routerLink: ['/Lines'] },
                     { label: 'Danh mục ca sản xuất', icon: 'fa-solid fa-clock', routerLink: ['/Shift'] },
                     { label: 'Danh mục chức vụ', icon: 'fa-solid fa-crosshairs', routerLink: ['/Position'] }
                 ]

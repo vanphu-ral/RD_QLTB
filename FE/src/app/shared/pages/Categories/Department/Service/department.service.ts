@@ -7,6 +7,6 @@ import { Department } from '../../../../models/Catogories/department.model';
 @Injectable({ providedIn: 'root' })
 export class DepartmentService extends BaseApiService<Department> {
   constructor(http: HttpClient) {
-    super(http, '/api/departments'); 
+    super(http, 'api/departments'); 
   }
 }

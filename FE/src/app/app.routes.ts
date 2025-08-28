@@ -31,5 +31,20 @@ export const routes: Routes = [
         path: 'Factories',
         component: AppLayout,
         loadChildren: () => import('./shared/pages/Categories/Factory/factory.routes').then(m => m.default)
+    },
+    {
+        path: 'Branches',
+        component: AppLayout,
+        loadChildren: () => import('./shared/pages/Categories/Branch/branch.routes').then(m => m.default)
+    },
+    {
+        path: 'Teams',
+        component: AppLayout,
+        loadChildren: () => import('./shared/pages/Categories/Team/team.routes').then(m => m.default)
+    },
+    {
+        path: 'Lines',
+        component: AppLayout,
+        loadChildren: () => import('./shared/pages/Categories/Line/line.routes').then(m => m.default)
     }
 ];

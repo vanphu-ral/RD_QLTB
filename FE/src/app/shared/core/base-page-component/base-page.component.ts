@@ -41,7 +41,13 @@ export abstract class BasePageComponent<T> implements OnInit {
     }
   }
   
-  protected abstract initNewModel(): void;
+ protected initNewModel(): void {
+    try {
+      this.model = new (Object as any).getPrototypeOf(this).constructor.name() as T;
+    } catch {
+      this.model = {} as T;
+    }
+  }
   public abstract save(): void;
 
   public onBack(): void {

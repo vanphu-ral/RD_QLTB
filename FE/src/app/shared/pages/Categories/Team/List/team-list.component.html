@@ -1,0 +1,13 @@
+<!-- branch-list.component.html -->
+<app-base-table 
+  [apiService]="teamService"
+  [columns]="columns"
+  [title]="'Danh sách phòng ban'"
+  [showAddButton]="true">
+  <ng-template appColumnTemplate="createdAt" let-rowData>
+    {{ rowData | date: 'dd/MM/yyyy' }}
+  </ng-template>
+  <ng-template appColumnTemplate="updatedAt" let-rowData>
+    {{ rowData | date: 'dd/MM/yyyy' }}
+  </ng-template>
+</app-base-table>

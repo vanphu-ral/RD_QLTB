@@ -34,6 +34,6 @@ public class TeamDTO {
     private String createdBy;
 
     @NotNull
-    private Integer branch;
+    private BranchDTO branch;
 
 }

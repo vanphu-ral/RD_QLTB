@@ -34,6 +34,6 @@ public class LineDTO {
     private String createdBy;
 
     @NotNull
-    private Integer team;
+    private TeamDTO team;
 
 }

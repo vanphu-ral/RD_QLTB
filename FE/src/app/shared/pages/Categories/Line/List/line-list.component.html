@@ -1,0 +1,13 @@
+<!-- line-list.component.html -->
+<app-base-table 
+  [apiService]="lineService"
+  [columns]="columns"
+  [title]="'Danh sách dây chuyền'"
+  [showAddButton]="true">
+  <ng-template appColumnTemplate="createdAt" let-rowData>
+    {{ rowData | date: 'dd/MM/yyyy' }}
+  </ng-template>
+  <ng-template appColumnTemplate="updatedAt" let-rowData>
+    {{ rowData | date: 'dd/MM/yyyy' }}
+  </ng-template>
+</app-base-table>

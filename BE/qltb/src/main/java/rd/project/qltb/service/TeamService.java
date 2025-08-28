@@ -8,6 +8,7 @@ import rd.project.qltb.domain.DayOff;
 import rd.project.qltb.domain.Form;
 import rd.project.qltb.domain.Line;
 import rd.project.qltb.domain.Team;
+import rd.project.qltb.model.BranchDTO;
 import rd.project.qltb.model.TeamDTO;
 import rd.project.qltb.repos.BranchRepository;
 import rd.project.qltb.repos.DayOffRepository;
@@ -75,7 +76,14 @@ public class TeamService {
         teamDTO.setCreatedAt(team.getCreatedAt());
         teamDTO.setUpdatedAt(team.getUpdatedAt());
         teamDTO.setCreatedBy(team.getCreatedBy());
-        teamDTO.setBranch(team.getBranch() == null ? null : team.getBranch().getId());
+        if (team.getBranch() != null) {
+            BranchDTO branchDTO = new BranchDTO();
+            branchDTO.setId(team.getBranch().getId());
+            branchDTO.setName(team.getBranch().getName());
+            teamDTO.setBranch(branchDTO);
+        } else {
+            teamDTO.setBranch(null);
+        }
         return teamDTO;
     }
 
@@ -86,7 +94,7 @@ public class TeamService {
         team.setCreatedAt(teamDTO.getCreatedAt());
         team.setUpdatedAt(teamDTO.getUpdatedAt());
         team.setCreatedBy(teamDTO.getCreatedBy());
-        final Branch branch = teamDTO.getBranch() == null ? null : branchRepository.findById(teamDTO.getBranch())
+        final Branch branch = teamDTO.getBranch() == null ? null : branchRepository.findById(teamDTO.getBranch().getId())
                 .orElseThrow(() -> new NotFoundException("branch not found"));
         team.setBranch(branch);
         return team;

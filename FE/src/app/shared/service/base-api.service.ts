@@ -5,14 +5,17 @@ import { Observable } from 'rxjs';
 export type CreateEntity<T> = Omit<T, 'id'> & { id?: number | string };
 
 export abstract class BaseApiService<T> {
-  constructor(protected http: HttpClient, protected baseUrl: string) {}
+  private readonly fullBaseUrl: string;
+  constructor(protected http: HttpClient, protected baseUrl: string) {
+    this.fullBaseUrl = `http://localhost:8081/${this.baseUrl}`;
+  } 
 
   getAll(): Observable<T[]> {
-    return this.http.get<T[]>(`${this.baseUrl}`, { withCredentials: true });
+    return this.http.get<T[]>(`${this.fullBaseUrl}`, { withCredentials: true });
   }
 
   getById(id: number | string): Observable<T> {
-    return this.http.get<T>(`${this.baseUrl}/${id}`, { withCredentials: true });
+    return this.http.get<T>(`${this.fullBaseUrl}/${id}`, { withCredentials: true });
   }
 
   create(entity: CreateEntity<T>): Observable<T> {
@@ -23,7 +26,7 @@ export abstract class BaseApiService<T> {
       createdAt: now,
       updatedAt: now,
     };
-    return this.http.post<T>(this.baseUrl, newEntity, { withCredentials: true });
+    return this.http.post<T>(this.fullBaseUrl, newEntity, { withCredentials: true });
   }
 
   update(id: number | string, data: T): Observable<T> {
@@ -33,10 +36,10 @@ export abstract class BaseApiService<T> {
       ...data,
       updatedAt: now,
     };
-    return this.http.put<T>(`${this.baseUrl}/${id}`, updatedEntity, { withCredentials: true });
+    return this.http.put<T>(`${this.fullBaseUrl}/${id}`, updatedEntity, { withCredentials: true });
   }
 
   delete(id: number | string): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${id}`, { withCredentials: true });
+    return this.http.delete<void>(`${this.fullBaseUrl}/${id}`, { withCredentials: true });
   }
 }

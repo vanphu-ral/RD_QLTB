@@ -7,16 +7,17 @@ import { DepartmentService } from '../Service/department.service';
 
 @Injectable({ providedIn: 'root' })
 export class DepartmentResolve {
+  constructor(
+    private service: DepartmentService,
+    private router: Router
+  ) { }
   resolve(route: ActivatedRouteSnapshot): Observable<Department | null> {
     const id = route.params['id'];
-    const router = inject(Router);
-    const service = inject(DepartmentService);
-
     if (id) {
-      return service.getById(id).pipe(
+      return this.service.getById(id).pipe(
         tap(department => {
           if (!department) {
-            router.navigate(['404']); 
+            this.router.navigate(['404']);
           }
         })
       );

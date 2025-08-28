@@ -18,6 +18,8 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { ConfirmDialog } from 'primeng/confirmdialog';
+import { EditorModule } from 'primeng/editor';
+import { FieldsetModule } from 'primeng/fieldset';
 
 @NgModule({
   imports: [
@@ -38,7 +40,9 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
     FloatLabel,
     ToastModule,
     ConfirmPopupModule,
-    ConfirmDialog
+    ConfirmDialog,
+    EditorModule,
+    FieldsetModule 
   ],
   exports: [
     CommonModule,
@@ -58,7 +62,9 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
     FloatLabel,
     ToastModule,
     ConfirmPopupModule,
-    ConfirmDialog
+    ConfirmDialog,
+    EditorModule,
+    FieldsetModule
   ]
 })
 export class SharedModule {}

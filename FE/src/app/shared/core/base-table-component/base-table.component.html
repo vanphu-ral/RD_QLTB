@@ -1,8 +1,9 @@
 <div class="base-table-header my-3">
   <h2>{{ title }}</h2>
-  <button *ngIf="showAddButton" class="p-button p-component p-button-sm" (click)="addItem()">
+  <!-- <button *ngIf="showAddButton" class="p-button p-component p-button-sm" (click)="addItem()">
     {{ addButtonText }}
-  </button>
+  </button> -->
+  <p-button *ngIf="showAddButton" [label]="addButtonText" class="p-button-sm" (click)="addItem()" />
 </div>
 <p-table #dt [value]="data" [scrollable]="true" [paginator]="true" [rows]="10" [loading]="loading" [rowsPerPageOptions]="[5, 10, 20, 50]"
   [showCurrentPageReport]="true" currentPageReportTemplate="Tổng: {totalRecords} bản ghi">
@@ -61,7 +62,9 @@
         <ng-container *ngIf="getColumnTemplate(col.Field) as tpl; else defaultValue">
           <ng-container *ngTemplateOutlet="tpl; context: { $implicit: row[col.Field] }"></ng-container>
         </ng-container>
-        <ng-template #defaultValue>{{ row[col.Field] }}</ng-template>
+        <ng-template #defaultValue>
+          {{ getValueByPath(row, col.Field) }}
+        </ng-template>
       </td>
       <td alignFrozen="right" pFrozenColumn [frozen]="true">
         <p-button icon="pi pi-pencil" styleClass="p-button-sm p-button-rounded p-button-warn m-1" (onClick)="editItem(row)"></p-button>

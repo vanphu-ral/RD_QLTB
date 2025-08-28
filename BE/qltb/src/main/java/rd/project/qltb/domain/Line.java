@@ -38,7 +38,7 @@ public class Line {
     @Column
     private String createdBy;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "team_id", nullable = false)
     private Team team;
 

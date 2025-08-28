@@ -27,13 +27,6 @@ export class FactoryDetailComponent extends BasePageComponent<Factory> {
     super(route, apiService, navigationService);
   }
 
-  protected override initNewModel(): void {
-    this.model = {
-      code: '',
-      name: '',
-      description: '',
-    };
-  }
 
   public override save(): void {
     if (this.model) {

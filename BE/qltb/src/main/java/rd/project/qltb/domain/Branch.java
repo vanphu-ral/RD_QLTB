@@ -38,7 +38,7 @@ public class Branch {
     @Column
     private String createdBy;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "factory_id", nullable = false)
     private Factory factory;
 

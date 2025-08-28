@@ -65,7 +65,6 @@ export class BaseTableComponent<T extends { createdAt?: Date; updatedAt?: Date }
     return template ? template.template : null;
   }
 
-
   getColumnStyle(col: { style?: string }): { [key: string]: string } | null {
     if (!col.style) return null;
     const styleObj: { [key: string]: string } = {};
@@ -76,6 +75,11 @@ export class BaseTableComponent<T extends { createdAt?: Date; updatedAt?: Date }
       }
     });
     return Object.keys(styleObj).length ? styleObj : null;
+  }
+
+  getValueByPath(obj: any, path: string): any {
+    if (!obj || !path) return null;
+    return path.split('.').reduce((acc, part) => acc && acc[part], obj);
   }
 
   // prepare data
@@ -89,6 +93,7 @@ export class BaseTableComponent<T extends { createdAt?: Date; updatedAt?: Date }
       },
       error: () => {
         this.loading = false;
+        this.cdr.detectChanges();
       }
     });
   }

@@ -7,6 +7,6 @@ import { Factory } from '../../../../models/Catogories/factory.model';
 @Injectable({ providedIn: 'root' })
 export class FactoryService extends BaseApiService<Factory> {
   constructor(http: HttpClient) {
-    super(http, 'http://localhost:8081/api/factories'); 
+    super(http, 'api/factories'); 
   }
 }
