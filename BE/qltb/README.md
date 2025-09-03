@@ -33,7 +33,7 @@ If required, a Docker image can be created with the Spring Boot plugin. Add `SPR
 environment variable when running the container.
 
 ```
-mvnw spring-boot:build-image -Dspring-boot.build-image.imageName=rd.project/qltb
+mvnw spring-boot:build-image -Dspring-boot.build-image.imageName=io.qltb/qltb
 ```
 
 ## Further readings

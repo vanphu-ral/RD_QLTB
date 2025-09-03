@@ -1,0 +1,63 @@
+package io.qltb.qltb.rest;
+
+import io.qltb.qltb.model.DeviceGroupDTO;
+import io.qltb.qltb.service.DeviceGroupService;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
+import java.util.List;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+
+@RestController
+@RequestMapping(value = "/api/deviceGroups", produces = MediaType.APPLICATION_JSON_VALUE)
+public class DeviceGroupResource {
+
+    private final DeviceGroupService deviceGroupService;
+
+    public DeviceGroupResource(final DeviceGroupService deviceGroupService) {
+        this.deviceGroupService = deviceGroupService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<DeviceGroupDTO>> getAllDeviceGroups() {
+        return ResponseEntity.ok(deviceGroupService.findAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DeviceGroupDTO> getDeviceGroup(@PathVariable(name = "id") final Long id) {
+        return ResponseEntity.ok(deviceGroupService.get(id));
+    }
+
+    @PostMapping
+    @ApiResponse(responseCode = "201")
+    public ResponseEntity<Long> createDeviceGroup(
+            @RequestBody @Valid final DeviceGroupDTO deviceGroupDTO) {
+        final Long createdId = deviceGroupService.create(deviceGroupDTO);
+        return new ResponseEntity<>(createdId, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Long> updateDeviceGroup(@PathVariable(name = "id") final Long id,
+            @RequestBody @Valid final DeviceGroupDTO deviceGroupDTO) {
+        deviceGroupService.update(id, deviceGroupDTO);
+        return ResponseEntity.ok(id);
+    }
+
+    @DeleteMapping("/{id}")
+    @ApiResponse(responseCode = "204")
+    public ResponseEntity<Void> deleteDeviceGroup(@PathVariable(name = "id") final Long id) {
+        deviceGroupService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+}

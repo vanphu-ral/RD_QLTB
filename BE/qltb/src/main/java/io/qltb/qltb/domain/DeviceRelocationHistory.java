@@ -1,0 +1,75 @@
+package io.qltb.qltb.domain;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.Setter;
+
+
+@Entity
+@Getter
+@Setter
+public class DeviceRelocationHistory {
+
+    @Id
+    @Column(nullable = false, updatable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column
+    private Long oldFactoryId;
+
+    @Column
+    private Long newFactoryId;
+
+    @Column
+    private Long oldBranchId;
+
+    @Column
+    private Long newBranchId;
+
+    @Column
+    private Long oldTeamId;
+
+    @Column
+    private Long newTeamId;
+
+    @Column
+    private Long oldLineId;
+
+    @Column
+    private Long newLineId;
+
+    @Column(columnDefinition = "longtext")
+    private String reason;
+
+    @Column(nullable = false)
+    private LocalDateTime movedAt;
+
+    @Column
+    private String movedBy;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+
+    @Column
+    private String createdBy;
+
+    @Column
+    private String updatedBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "device_id", nullable = false)
+    private Device device;
+
+}

@@ -20,7 +20,7 @@ export const MENU_ITEMS: MenuItem[] = [
                 items: [
                     { label: 'Danh mục nhóm thiết bị', icon: 'fa-solid fa-layer-group', routerLink: ['/DeviceGroups'] },
                     { label: 'Danh mục thiết bị', icon: 'fa-solid fa-tablet', routerLink: ['/Devices'] },
-                    { label: 'Danh mục nhóm vật tư', icon: 'fa-solid fa-layer-group', routerLink: ['/SupplieGroups'] },
+                    { label: 'Danh mục nhóm vật tư', icon: 'fa-solid fa-layer-group', routerLink: ['/SupplyGroups'] },
                     { label: 'Danh mục vật tư, phụ tùng', icon: 'fa-solid fa-wrench', routerLink: ['/Supplies'] },
                 ]
             },
