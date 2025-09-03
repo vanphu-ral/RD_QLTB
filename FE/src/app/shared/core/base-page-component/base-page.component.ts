@@ -1,9 +1,10 @@
-import { Directive, OnInit } from '@angular/core';
+import { Directive, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BaseApiService } from '../../service/base-api.service';
 import { Observable } from 'rxjs';
 import * as _ from 'lodash';
 import { NavigationService } from '../../service/navigation.service';
+import { AccountService } from '../auth/account/account.service';
 
 @Directive()
 export abstract class BasePageComponent<T> implements OnInit {
@@ -25,8 +26,16 @@ export abstract class BasePageComponent<T> implements OnInit {
     return this.mode === 'view';
   }
 
-  constructor(protected route: ActivatedRoute, protected apiService: BaseApiService<T>, protected navigationService: NavigationService) {}
+  listStatus: any[] = [
+    { label: 'Kích hoạt', value: 1 },
+    { label: 'Vô hiệu hóa', value: 0 }
+  ];
 
+  protected route = inject(ActivatedRoute);
+  protected navigationService = inject(NavigationService);
+  protected accountService = inject(AccountService);
+
+  constructor(protected apiService: BaseApiService<T>) {}
   
   ngOnInit(): void {
     this.mode = this.route.snapshot.data['mode'] as 'add' | 'view' | 'edit';
@@ -34,10 +43,14 @@ export abstract class BasePageComponent<T> implements OnInit {
 
     if (this.route.snapshot.data['data']) {
       this.model = this.route.snapshot.data['data'];
+      if(this.isEditMode) {
+        _.set(this.model as any, 'updatedBy', this.accountService.getUser()?.email ?? 'unknown');
+      }
     }
 
     if (this.isAddMode) {
       this.initNewModel();
+      _.set(this.model as any, 'status', 1);
     }
   }
   

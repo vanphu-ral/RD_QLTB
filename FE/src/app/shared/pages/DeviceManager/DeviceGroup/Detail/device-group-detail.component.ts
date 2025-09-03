@@ -1,55 +1,38 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SharedModule } from '../../../../../share.module';
 import { CommonModule } from '@angular/common';
 import { BasePageComponent } from '../../../../core/base-page-component/base-page.component';
-import { BranchService } from '../Service/branch.service';
+import { DeviceGroupService } from '../Service/device-group.service';
 import { Util } from '../../../../core/utils/utils-function';
 import { AccountService } from '../../../../core/auth/account/account.service';
 import { NavigationService } from '../../../../service/navigation.service';
-import { FactoryService } from '../../Factory/Service/factory.service';
-import { Branch } from '../../../../models/Catogories/branch.model';
-import _ from 'lodash';
+import { DeviceGroup } from '../../../../models/DeviceManager/device-group.model';
 
 @Component({
-  selector: 'app-branch-detail',
+  selector: 'app-device-group-detail',
   standalone: true,
   imports: [SharedModule, CommonModule],
-  templateUrl: './branch-detail.component.html',
-  styleUrls: ['./branch-detail.component.scss']
+  templateUrl: './device-group-detail.component.html',
+  styleUrls: ['./device-group-detail.component.scss']
 })
-export class BranchDetailComponent extends BasePageComponent<Branch> {
+export class DeviceGroupDetailComponent extends BasePageComponent<DeviceGroup> {
 
   listFactories: any[] = [];
 
   constructor(
-    protected override apiService: BranchService,
-    private factoryApi: FactoryService,
-    public cdr: ChangeDetectorRef
+    protected override apiService: DeviceGroupService,
   ) {
     super(apiService);
   }
 
-  override ngOnInit(): void {
-    super.ngOnInit();
-    this.factoryApi.getAll().subscribe((factories) => {
-      this.listFactories = factories;
-      if (this.model?.factory) {
-        this.model.factory = this.model.factory.id;
-        this.cdr.detectChanges();
-      }
-    });
-  }
 
   public override save(): void {
     if (this.model) {
       const account = this.accountService.getUser();
       const email = account?.email ? account.email : 'unknown';
-      const branchToSave = {
-        ...this.model,
-        factory: { id: this.model.factory }
-      };
-      this.model = Util.prepareModel(branchToSave, email);
+
+      this.model = Util.prepareModel(this.model, email);
 
       if (this.isAddMode) {
         this.apiService.create(this.model).subscribe({

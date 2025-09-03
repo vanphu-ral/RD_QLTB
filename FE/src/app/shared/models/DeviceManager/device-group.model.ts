@@ -1,4 +1,4 @@
-export class Factory {
+export class DeviceGroup {
     id?: number;
     name?: string;
     code?: string;

@@ -20,19 +20,12 @@ import { FactoryService } from '../../Factory/Service/factory.service';
 export class DepartmentDetailComponent extends BasePageComponent<Department> {
 
   listFactories: any[] = [];
-  listStatus: any[] = [
-    { label: 'Kích hoạt', value: true },
-    { label: 'Vô hiệu hóa', value: false }
-  ];
 
   constructor(
-    protected override route: ActivatedRoute,
-    protected override apiService: DepartmentService, 
-    private factoryApi: FactoryService,
-    private accountService: AccountService,
-    protected override navigationService: NavigationService 
+    protected override apiService: DepartmentService,
+    private factoryApi: FactoryService
   ) {
-    super(route, apiService, navigationService);
+    super(apiService);
   }
 
   override ngOnInit(): void {

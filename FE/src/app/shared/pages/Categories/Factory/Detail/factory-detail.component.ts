@@ -18,13 +18,9 @@ import { NavigationService } from '../../../../service/navigation.service';
 })
 export class FactoryDetailComponent extends BasePageComponent<Factory> {
   constructor(
-    protected override route: ActivatedRoute,
     protected override apiService: FactoryService, 
-    private router: Router,
-    private accountService: AccountService,
-    protected override navigationService: NavigationService 
   ) {
-    super(route, apiService, navigationService);
+    super(apiService);
   }
 
 

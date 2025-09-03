@@ -5,6 +5,8 @@ export class Team {
     branch?: any;
     description?: string;
     createdBy?: string;
+    updatedBy?: string;
     createdAt?: Date;
     updatedAt?: Date;
+    status?: number;
 }

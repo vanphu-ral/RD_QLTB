@@ -18,10 +18,10 @@ export const MENU_ITEMS: MenuItem[] = [
                 label: 'Quản lý thiết bị',
                 icon: 'pi pi-fw pi-cog',
                 items: [
-                    { label: 'Danh mục nhóm thiết bị', icon: 'fa-solid fa-layer-group', routerLink: ['/DeviceGroup'] },
-                    { label: 'Danh mục thiết bị', icon: 'fa-solid fa-tablet', routerLink: ['/Device'] },
-                    { label: 'Danh mục nhóm vật tư', icon: 'fa-solid fa-layer-group', routerLink: ['/SupplieGroup'] },
-                    { label: 'Danh mục vật tư, phụ tùng', icon: 'fa-solid fa-supple', routerLink: ['/Supplie'] },
+                    { label: 'Danh mục nhóm thiết bị', icon: 'fa-solid fa-layer-group', routerLink: ['/DeviceGroups'] },
+                    { label: 'Danh mục thiết bị', icon: 'fa-solid fa-tablet', routerLink: ['/Devices'] },
+                    { label: 'Danh mục nhóm vật tư', icon: 'fa-solid fa-layer-group', routerLink: ['/SupplieGroups'] },
+                    { label: 'Danh mục vật tư, phụ tùng', icon: 'fa-solid fa-wrench', routerLink: ['/Supplies'] },
                 ]
             },
             {

@@ -25,14 +25,11 @@ export class LineDetailComponent extends BasePageComponent<Line> {
   listTeams: any[] = [];
 
   constructor(
-    protected override route: ActivatedRoute,
     protected override apiService: LineService,
     private teamApi: TeamService,
-    private accountService: AccountService,
-    protected override navigationService: NavigationService,
     public cdr: ChangeDetectorRef
   ) {
-    super(route, apiService, navigationService);
+    super(apiService);
   }
 
   override ngOnInit(): void {

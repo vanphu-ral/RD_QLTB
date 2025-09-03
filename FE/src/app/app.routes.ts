@@ -22,6 +22,7 @@ export const routes: Routes = [
             { path: '', component: DashboardComponent }
         ]
     },
+    // Categories
     {
         path: 'Departments',
         component: AppLayout,
@@ -46,5 +47,11 @@ export const routes: Routes = [
         path: 'Lines',
         component: AppLayout,
         loadChildren: () => import('./shared/pages/Categories/Line/line.routes').then(m => m.default)
+    },
+    // Device Manager
+    {
+        path: 'DeviceGroups',
+        component: AppLayout,
+        loadChildren: () => import('./shared/pages/DeviceManager/DeviceGroup/device-group.routes').then(m => m.default)
     }
 ];

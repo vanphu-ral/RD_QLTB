@@ -23,14 +23,11 @@ export class TeamDetailComponent extends BasePageComponent<Team> {
   listBranches: any[] = [];
 
   constructor(
-    protected override route: ActivatedRoute,
     protected override apiService: TeamService,
     private branchApi: BranchService,
-    private accountService: AccountService,
-    protected override navigationService: NavigationService,
     public cdr: ChangeDetectorRef
   ) {
-    super(route, apiService, navigationService);
+    super(apiService);
   }
 
   override ngOnInit(): void {

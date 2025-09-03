@@ -5,6 +5,8 @@ export class Branch {
     factory?: any;
     description?: string;
     createdBy?: string;
+    updatedBy?: string;
     createdAt?: Date;
     updatedAt?: Date;
+    status?: number;
 }

@@ -4,6 +4,8 @@ export class Department {
     code?: string;
     description?: string;
     createdBy?: string;
+    updatedBy?: string;
     createdAt?: Date;
     updatedAt?: Date;
+    status?: number;
 }
