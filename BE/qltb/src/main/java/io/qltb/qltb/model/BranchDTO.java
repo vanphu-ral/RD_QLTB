@@ -1,5 +1,6 @@
 package io.qltb.qltb.model;
 
+import io.qltb.qltb.domain.Factory;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -40,6 +41,6 @@ public class BranchDTO {
     private Integer status;
 
     @NotNull
-    private Long factory;
+    private Factory factory;
 
 }

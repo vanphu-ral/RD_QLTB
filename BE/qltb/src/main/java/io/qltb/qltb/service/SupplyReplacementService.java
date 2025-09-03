@@ -75,8 +75,8 @@ public class SupplyReplacementService {
         supplyReplacementDTO.setUpdatedAt(supplyReplacement.getUpdatedAt());
         supplyReplacementDTO.setUpdatedBy(supplyReplacement.getUpdatedBy());
         supplyReplacementDTO.setCreatedBy(supplyReplacement.getCreatedBy());
-        supplyReplacementDTO.setPlanResult(supplyReplacement.getPlanResult() == null ? null : supplyReplacement.getPlanResult().getId());
-        supplyReplacementDTO.setSupply(supplyReplacement.getSupply() == null ? null : supplyReplacement.getSupply().getId());
+        supplyReplacementDTO.setPlanResult(supplyReplacement.getPlanResult() == null ? null : supplyReplacement.getPlanResult());
+        supplyReplacementDTO.setSupply(supplyReplacement.getSupply() == null ? null : supplyReplacement.getSupply());
         return supplyReplacementDTO;
     }
 
@@ -90,10 +90,10 @@ public class SupplyReplacementService {
         supplyReplacement.setUpdatedAt(supplyReplacementDTO.getUpdatedAt());
         supplyReplacement.setUpdatedBy(supplyReplacementDTO.getUpdatedBy());
         supplyReplacement.setCreatedBy(supplyReplacementDTO.getCreatedBy());
-        final PlanResult planResult = supplyReplacementDTO.getPlanResult() == null ? null : planResultRepository.findById(supplyReplacementDTO.getPlanResult())
+        final PlanResult planResult = supplyReplacementDTO.getPlanResult() == null ? null : planResultRepository.findById(supplyReplacementDTO.getPlanResult().getId())
                 .orElseThrow(() -> new NotFoundException("planResult not found"));
         supplyReplacement.setPlanResult(planResult);
-        final Supply supply = supplyReplacementDTO.getSupply() == null ? null : supplyRepository.findById(supplyReplacementDTO.getSupply())
+        final Supply supply = supplyReplacementDTO.getSupply() == null ? null : supplyRepository.findById(supplyReplacementDTO.getSupply().getId())
                 .orElseThrow(() -> new NotFoundException("supply not found"));
         supplyReplacement.setSupply(supply);
         return supplyReplacement;

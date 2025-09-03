@@ -77,7 +77,7 @@ public class PlanService {
         planDTO.setUpdatedAt(plan.getUpdatedAt());
         planDTO.setUpdatedBy(plan.getUpdatedBy());
         planDTO.setStatus(plan.getStatus());
-        planDTO.setPlanType(plan.getPlanType() == null ? null : plan.getPlanType().getId());
+        planDTO.setPlanType(plan.getPlanType() == null ? null : plan.getPlanType());
         return planDTO;
     }
 
@@ -93,7 +93,7 @@ public class PlanService {
         plan.setUpdatedAt(planDTO.getUpdatedAt());
         plan.setUpdatedBy(planDTO.getUpdatedBy());
         plan.setStatus(planDTO.getStatus());
-        final PlanType planType = planDTO.getPlanType() == null ? null : planTypeRepository.findById(planDTO.getPlanType())
+        final PlanType planType = planDTO.getPlanType() == null ? null : planTypeRepository.findById(planDTO.getPlanType().getId())
                 .orElseThrow(() -> new NotFoundException("planType not found"));
         plan.setPlanType(planType);
         return plan;

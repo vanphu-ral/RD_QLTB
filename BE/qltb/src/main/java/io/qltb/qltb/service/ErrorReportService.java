@@ -82,7 +82,7 @@ public class ErrorReportService {
         errorReportDTO.setCreatedBy(errorReport.getCreatedBy());
         errorReportDTO.setUpdatedBy(errorReport.getUpdatedBy());
         errorReportDTO.setStatus(errorReport.getStatus());
-        errorReportDTO.setPlanResult(errorReport.getPlanResult() == null ? null : errorReport.getPlanResult().getId());
+        errorReportDTO.setPlanResult(errorReport.getPlanResult() == null ? null : errorReport.getPlanResult());
         return errorReportDTO;
     }
 
@@ -103,7 +103,7 @@ public class ErrorReportService {
         errorReport.setCreatedBy(errorReportDTO.getCreatedBy());
         errorReport.setUpdatedBy(errorReportDTO.getUpdatedBy());
         errorReport.setStatus(errorReportDTO.getStatus());
-        final PlanResult planResult = errorReportDTO.getPlanResult() == null ? null : planResultRepository.findById(errorReportDTO.getPlanResult())
+        final PlanResult planResult = errorReportDTO.getPlanResult() == null ? null : planResultRepository.findById(errorReportDTO.getPlanResult().getId())
                 .orElseThrow(() -> new NotFoundException("planResult not found"));
         errorReport.setPlanResult(planResult);
         return errorReport;

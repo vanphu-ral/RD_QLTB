@@ -88,10 +88,10 @@ public class FormService {
         formDTO.setCreatedBy(form.getCreatedBy());
         formDTO.setUpdatedBy(form.getUpdatedBy());
         formDTO.setStatus(form.getStatus());
-        formDTO.setFactory(form.getFactory() == null ? null : form.getFactory().getId());
-        formDTO.setBranch(form.getBranch() == null ? null : form.getBranch().getId());
-        formDTO.setTeam(form.getTeam() == null ? null : form.getTeam().getId());
-        formDTO.setLine(form.getLine() == null ? null : form.getLine().getId());
+        formDTO.setFactory(form.getFactory() == null ? null : form.getFactory());
+        formDTO.setBranch(form.getBranch() == null ? null : form.getBranch());
+        formDTO.setTeam(form.getTeam() == null ? null : form.getTeam());
+        formDTO.setLine(form.getLine() == null ? null : form.getLine());
         return formDTO;
     }
 
@@ -108,16 +108,16 @@ public class FormService {
         form.setCreatedBy(formDTO.getCreatedBy());
         form.setUpdatedBy(formDTO.getUpdatedBy());
         form.setStatus(formDTO.getStatus());
-        final Factory factory = formDTO.getFactory() == null ? null : factoryRepository.findById(formDTO.getFactory())
+        final Factory factory = formDTO.getFactory() == null ? null : factoryRepository.findById(formDTO.getFactory().getId())
                 .orElseThrow(() -> new NotFoundException("factory not found"));
         form.setFactory(factory);
-        final Branch branch = formDTO.getBranch() == null ? null : branchRepository.findById(formDTO.getBranch())
+        final Branch branch = formDTO.getBranch() == null ? null : branchRepository.findById(formDTO.getBranch().getId())
                 .orElseThrow(() -> new NotFoundException("branch not found"));
         form.setBranch(branch);
-        final Team team = formDTO.getTeam() == null ? null : teamRepository.findById(formDTO.getTeam())
+        final Team team = formDTO.getTeam() == null ? null : teamRepository.findById(formDTO.getTeam().getId())
                 .orElseThrow(() -> new NotFoundException("team not found"));
         form.setTeam(team);
-        final Line line = formDTO.getLine() == null ? null : lineRepository.findById(formDTO.getLine())
+        final Line line = formDTO.getLine() == null ? null : lineRepository.findById(formDTO.getLine().getId())
                 .orElseThrow(() -> new NotFoundException("line not found"));
         form.setLine(line);
         return form;

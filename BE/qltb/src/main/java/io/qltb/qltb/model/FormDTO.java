@@ -1,5 +1,9 @@
 package io.qltb.qltb.model;
 
+import io.qltb.qltb.domain.Branch;
+import io.qltb.qltb.domain.Factory;
+import io.qltb.qltb.domain.Line;
+import io.qltb.qltb.domain.Team;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -47,12 +51,12 @@ public class FormDTO {
 
     private Integer status;
 
-    private Long factory;
+    private Factory factory;
 
-    private Long branch;
+    private Branch branch;
 
-    private Long team;
+    private Team team;
 
-    private Long line;
+    private Line line;
 
 }

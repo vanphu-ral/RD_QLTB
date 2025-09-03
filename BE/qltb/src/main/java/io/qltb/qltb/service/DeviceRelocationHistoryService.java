@@ -78,7 +78,7 @@ public class DeviceRelocationHistoryService {
         deviceRelocationHistoryDTO.setUpdatedAt(deviceRelocationHistory.getUpdatedAt());
         deviceRelocationHistoryDTO.setCreatedBy(deviceRelocationHistory.getCreatedBy());
         deviceRelocationHistoryDTO.setUpdatedBy(deviceRelocationHistory.getUpdatedBy());
-        deviceRelocationHistoryDTO.setDevice(deviceRelocationHistory.getDevice() == null ? null : deviceRelocationHistory.getDevice().getId());
+        deviceRelocationHistoryDTO.setDevice(deviceRelocationHistory.getDevice() == null ? null : deviceRelocationHistory.getDevice());
         return deviceRelocationHistoryDTO;
     }
 
@@ -100,7 +100,7 @@ public class DeviceRelocationHistoryService {
         deviceRelocationHistory.setUpdatedAt(deviceRelocationHistoryDTO.getUpdatedAt());
         deviceRelocationHistory.setCreatedBy(deviceRelocationHistoryDTO.getCreatedBy());
         deviceRelocationHistory.setUpdatedBy(deviceRelocationHistoryDTO.getUpdatedBy());
-        final Device device = deviceRelocationHistoryDTO.getDevice() == null ? null : deviceRepository.findById(deviceRelocationHistoryDTO.getDevice())
+        final Device device = deviceRelocationHistoryDTO.getDevice() == null ? null : deviceRepository.findById(deviceRelocationHistoryDTO.getDevice().getId())
                 .orElseThrow(() -> new NotFoundException("device not found"));
         deviceRelocationHistory.setDevice(device);
         return deviceRelocationHistory;

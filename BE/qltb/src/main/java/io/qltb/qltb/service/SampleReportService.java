@@ -76,7 +76,7 @@ public class SampleReportService {
         sampleReportDTO.setCreatedBy(sampleReport.getCreatedBy());
         sampleReportDTO.setUpdatedBy(sampleReport.getUpdatedBy());
         sampleReportDTO.setStatus(sampleReport.getStatus());
-        sampleReportDTO.setDeviceGroup(sampleReport.getDeviceGroup() == null ? null : sampleReport.getDeviceGroup().getId());
+        sampleReportDTO.setDeviceGroup(sampleReport.getDeviceGroup() == null ? null : sampleReport.getDeviceGroup());
         return sampleReportDTO;
     }
 
@@ -91,7 +91,7 @@ public class SampleReportService {
         sampleReport.setCreatedBy(sampleReportDTO.getCreatedBy());
         sampleReport.setUpdatedBy(sampleReportDTO.getUpdatedBy());
         sampleReport.setStatus(sampleReportDTO.getStatus());
-        final DeviceGroup deviceGroup = sampleReportDTO.getDeviceGroup() == null ? null : deviceGroupRepository.findById(sampleReportDTO.getDeviceGroup())
+        final DeviceGroup deviceGroup = sampleReportDTO.getDeviceGroup() == null ? null : deviceGroupRepository.findById(sampleReportDTO.getDeviceGroup().getId())
                 .orElseThrow(() -> new NotFoundException("deviceGroup not found"));
         sampleReport.setDeviceGroup(deviceGroup);
         return sampleReport;

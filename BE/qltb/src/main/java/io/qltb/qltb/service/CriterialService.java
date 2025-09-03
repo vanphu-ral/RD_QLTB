@@ -76,7 +76,7 @@ public class CriterialService {
         criterialDTO.setCreatedBy(criterial.getCreatedBy());
         criterialDTO.setUpdatedBy(criterial.getUpdatedBy());
         criterialDTO.setStatus(criterial.getStatus());
-        criterialDTO.setSampleReport(criterial.getSampleReport() == null ? null : criterial.getSampleReport().getId());
+        criterialDTO.setSampleReport(criterial.getSampleReport() == null ? null : criterial.getSampleReport());
         return criterialDTO;
     }
 
@@ -91,7 +91,7 @@ public class CriterialService {
         criterial.setCreatedBy(criterialDTO.getCreatedBy());
         criterial.setUpdatedBy(criterialDTO.getUpdatedBy());
         criterial.setStatus(criterialDTO.getStatus());
-        final SampleReport sampleReport = criterialDTO.getSampleReport() == null ? null : sampleReportRepository.findById(criterialDTO.getSampleReport())
+        final SampleReport sampleReport = criterialDTO.getSampleReport() == null ? null : sampleReportRepository.findById(criterialDTO.getSampleReport().getId())
                 .orElseThrow(() -> new NotFoundException("sampleReport not found"));
         criterial.setSampleReport(sampleReport);
         return criterial;

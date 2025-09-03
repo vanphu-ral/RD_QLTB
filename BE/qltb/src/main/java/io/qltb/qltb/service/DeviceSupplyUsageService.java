@@ -74,8 +74,8 @@ public class DeviceSupplyUsageService {
         deviceSupplyUsageDTO.setCreatedBy(deviceSupplyUsage.getCreatedBy());
         deviceSupplyUsageDTO.setUpdatedBy(deviceSupplyUsage.getUpdatedBy());
         deviceSupplyUsageDTO.setStatus(deviceSupplyUsage.getStatus());
-        deviceSupplyUsageDTO.setDevice(deviceSupplyUsage.getDevice() == null ? null : deviceSupplyUsage.getDevice().getId());
-        deviceSupplyUsageDTO.setSupply(deviceSupplyUsage.getSupply() == null ? null : deviceSupplyUsage.getSupply().getId());
+        deviceSupplyUsageDTO.setDevice(deviceSupplyUsage.getDevice() == null ? null : deviceSupplyUsage.getDevice());
+        deviceSupplyUsageDTO.setSupply(deviceSupplyUsage.getSupply() == null ? null : deviceSupplyUsage.getSupply());
         return deviceSupplyUsageDTO;
     }
 
@@ -89,10 +89,10 @@ public class DeviceSupplyUsageService {
         deviceSupplyUsage.setCreatedBy(deviceSupplyUsageDTO.getCreatedBy());
         deviceSupplyUsage.setUpdatedBy(deviceSupplyUsageDTO.getUpdatedBy());
         deviceSupplyUsage.setStatus(deviceSupplyUsageDTO.getStatus());
-        final Device device = deviceSupplyUsageDTO.getDevice() == null ? null : deviceRepository.findById(deviceSupplyUsageDTO.getDevice())
+        final Device device = deviceSupplyUsageDTO.getDevice() == null ? null : deviceRepository.findById(deviceSupplyUsageDTO.getDevice().getId())
                 .orElseThrow(() -> new NotFoundException("device not found"));
         deviceSupplyUsage.setDevice(device);
-        final Supply supply = deviceSupplyUsageDTO.getSupply() == null ? null : supplyRepository.findById(deviceSupplyUsageDTO.getSupply())
+        final Supply supply = deviceSupplyUsageDTO.getSupply() == null ? null : supplyRepository.findById(deviceSupplyUsageDTO.getSupply().getId())
                 .orElseThrow(() -> new NotFoundException("supply not found"));
         deviceSupplyUsage.setSupply(supply);
         return deviceSupplyUsage;

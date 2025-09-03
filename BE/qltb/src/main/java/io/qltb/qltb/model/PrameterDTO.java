@@ -1,5 +1,7 @@
 package io.qltb.qltb.model;
 
+import io.qltb.qltb.domain.Device;
+import io.qltb.qltb.domain.PrameterGroup;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -45,8 +47,8 @@ public class PrameterDTO {
 
     private Integer status;
 
-    private Long parameterGroup;
+    private PrameterGroup parameterGroup;
 
-    private Long device;
+    private Device device;
 
 }

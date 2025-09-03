@@ -69,7 +69,7 @@ public class UserService {
         userDTO.setCreatedBy(user.getCreatedBy());
         userDTO.setUpdatedBy(user.getUpdatedBy());
         userDTO.setStatus(user.getStatus());
-        userDTO.setDeparment(user.getDeparment() == null ? null : user.getDeparment().getId());
+        userDTO.setDeparment(user.getDeparment() == null ? null : user.getDeparment());
         return userDTO;
     }
 
@@ -83,7 +83,7 @@ public class UserService {
         user.setCreatedBy(userDTO.getCreatedBy());
         user.setUpdatedBy(userDTO.getUpdatedBy());
         user.setStatus(userDTO.getStatus());
-        final Department deparment = userDTO.getDeparment() == null ? null : departmentRepository.findById(userDTO.getDeparment())
+        final Department deparment = userDTO.getDeparment() == null ? null : departmentRepository.findById(userDTO.getDeparment().getId())
                 .orElseThrow(() -> new NotFoundException("deparment not found"));
         user.setDeparment(deparment);
         return user;

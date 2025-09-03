@@ -1,5 +1,8 @@
 package io.qltb.qltb.model;
 
+import io.qltb.qltb.domain.Device;
+import io.qltb.qltb.domain.DeviceGroup;
+import io.qltb.qltb.domain.Plan;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -34,12 +37,12 @@ public class PlanDetailDTO {
     private String status;
 
     @NotNull
-    private Long plan;
+    private Plan plan;
 
     @NotNull
-    private Long device;
+    private Device device;
 
     @NotNull
-    private Long deviceGroup;
+    private DeviceGroup deviceGroup;
 
 }

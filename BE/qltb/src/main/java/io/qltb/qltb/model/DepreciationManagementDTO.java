@@ -1,5 +1,6 @@
 package io.qltb.qltb.model;
 
+import io.qltb.qltb.domain.Device;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -39,6 +40,6 @@ public class DepreciationManagementDTO {
 
     private Integer status;
 
-    private Long device;
+    private Device device;
 
 }

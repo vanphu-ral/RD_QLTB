@@ -84,9 +84,9 @@ public class PlanDetailService {
         planDetailDTO.setUpdatedBy(planDetail.getUpdatedBy());
         planDetailDTO.setUser(planDetail.getUser());
         planDetailDTO.setStatus(planDetail.getStatus());
-        planDetailDTO.setPlan(planDetail.getPlan() == null ? null : planDetail.getPlan().getId());
-        planDetailDTO.setDevice(planDetail.getDevice() == null ? null : planDetail.getDevice().getId());
-        planDetailDTO.setDeviceGroup(planDetail.getDeviceGroup() == null ? null : planDetail.getDeviceGroup().getId());
+        planDetailDTO.setPlan(planDetail.getPlan() == null ? null : planDetail.getPlan());
+        planDetailDTO.setDevice(planDetail.getDevice() == null ? null : planDetail.getDevice());
+        planDetailDTO.setDeviceGroup(planDetail.getDeviceGroup() == null ? null : planDetail.getDeviceGroup());
         return planDetailDTO;
     }
 
@@ -98,13 +98,13 @@ public class PlanDetailService {
         planDetail.setUpdatedBy(planDetailDTO.getUpdatedBy());
         planDetail.setUser(planDetailDTO.getUser());
         planDetail.setStatus(planDetailDTO.getStatus());
-        final Plan plan = planDetailDTO.getPlan() == null ? null : planRepository.findById(planDetailDTO.getPlan())
+        final Plan plan = planDetailDTO.getPlan() == null ? null : planRepository.findById(planDetailDTO.getPlan().getId())
                 .orElseThrow(() -> new NotFoundException("plan not found"));
         planDetail.setPlan(plan);
-        final Device device = planDetailDTO.getDevice() == null ? null : deviceRepository.findById(planDetailDTO.getDevice())
+        final Device device = planDetailDTO.getDevice() == null ? null : deviceRepository.findById(planDetailDTO.getDevice().getId())
                 .orElseThrow(() -> new NotFoundException("device not found"));
         planDetail.setDevice(device);
-        final DeviceGroup deviceGroup = planDetailDTO.getDeviceGroup() == null ? null : deviceGroupRepository.findById(planDetailDTO.getDeviceGroup())
+        final DeviceGroup deviceGroup = planDetailDTO.getDeviceGroup() == null ? null : deviceGroupRepository.findById(planDetailDTO.getDeviceGroup().getId())
                 .orElseThrow(() -> new NotFoundException("deviceGroup not found"));
         planDetail.setDeviceGroup(deviceGroup);
         return planDetail;

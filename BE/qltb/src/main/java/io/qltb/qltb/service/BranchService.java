@@ -73,7 +73,7 @@ public class BranchService {
         branchDTO.setCreatedBy(branch.getCreatedBy());
         branchDTO.setUpdatedBy(branch.getUpdatedBy());
         branchDTO.setStatus(branch.getStatus());
-        branchDTO.setFactory(branch.getFactory() == null ? null : branch.getFactory().getId());
+        branchDTO.setFactory(branch.getFactory() == null ? null : branch.getFactory());
         return branchDTO;
     }
 
@@ -86,7 +86,7 @@ public class BranchService {
         branch.setCreatedBy(branchDTO.getCreatedBy());
         branch.setUpdatedBy(branchDTO.getUpdatedBy());
         branch.setStatus(branchDTO.getStatus());
-        final Factory factory = branchDTO.getFactory() == null ? null : factoryRepository.findById(branchDTO.getFactory())
+        final Factory factory = branchDTO.getFactory() == null ? null : factoryRepository.findById(branchDTO.getFactory().getId())
                 .orElseThrow(() -> new NotFoundException("factory not found"));
         branch.setFactory(factory);
         return branch;

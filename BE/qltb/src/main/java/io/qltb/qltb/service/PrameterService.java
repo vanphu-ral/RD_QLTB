@@ -78,8 +78,8 @@ public class PrameterService {
         prameterDTO.setCreatedBy(prameter.getCreatedBy());
         prameterDTO.setUpdatedBy(prameter.getUpdatedBy());
         prameterDTO.setStatus(prameter.getStatus());
-        prameterDTO.setParameterGroup(prameter.getParameterGroup() == null ? null : prameter.getParameterGroup().getId());
-        prameterDTO.setDevice(prameter.getDevice() == null ? null : prameter.getDevice().getId());
+        prameterDTO.setParameterGroup(prameter.getParameterGroup() == null ? null : prameter.getParameterGroup());
+        prameterDTO.setDevice(prameter.getDevice() == null ? null : prameter.getDevice());
         return prameterDTO;
     }
 
@@ -96,10 +96,10 @@ public class PrameterService {
         prameter.setCreatedBy(prameterDTO.getCreatedBy());
         prameter.setUpdatedBy(prameterDTO.getUpdatedBy());
         prameter.setStatus(prameterDTO.getStatus());
-        final PrameterGroup parameterGroup = prameterDTO.getParameterGroup() == null ? null : prameterGroupRepository.findById(prameterDTO.getParameterGroup())
+        final PrameterGroup parameterGroup = prameterDTO.getParameterGroup() == null ? null : prameterGroupRepository.findById(prameterDTO.getParameterGroup().getId())
                 .orElseThrow(() -> new NotFoundException("parameterGroup not found"));
         prameter.setParameterGroup(parameterGroup);
-        final Device device = prameterDTO.getDevice() == null ? null : deviceRepository.findById(prameterDTO.getDevice())
+        final Device device = prameterDTO.getDevice() == null ? null : deviceRepository.findById(prameterDTO.getDevice().getId())
                 .orElseThrow(() -> new NotFoundException("device not found"));
         prameter.setDevice(device);
         return prameter;

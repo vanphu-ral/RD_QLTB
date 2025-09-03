@@ -73,7 +73,7 @@ public class PlanTargetService {
         planTargetDTO.setCreatedBy(planTarget.getCreatedBy());
         planTargetDTO.setUpdatedBy(planTarget.getUpdatedBy());
         planTargetDTO.setStatus(planTarget.getStatus());
-        planTargetDTO.setBranch(planTarget.getBranch() == null ? null : planTarget.getBranch().getId());
+        planTargetDTO.setBranch(planTarget.getBranch() == null ? null : planTarget.getBranch());
         return planTargetDTO;
     }
 
@@ -86,7 +86,7 @@ public class PlanTargetService {
         planTarget.setCreatedBy(planTargetDTO.getCreatedBy());
         planTarget.setUpdatedBy(planTargetDTO.getUpdatedBy());
         planTarget.setStatus(planTargetDTO.getStatus());
-        final Branch branch = planTargetDTO.getBranch() == null ? null : branchRepository.findById(planTargetDTO.getBranch())
+        final Branch branch = planTargetDTO.getBranch() == null ? null : branchRepository.findById(planTargetDTO.getBranch().getId())
                 .orElseThrow(() -> new NotFoundException("branch not found"));
         planTarget.setBranch(branch);
         return planTarget;

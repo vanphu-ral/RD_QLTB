@@ -1,5 +1,6 @@
 package io.qltb.qltb.model;
 
+import io.qltb.qltb.domain.PlanType;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -45,6 +46,6 @@ public class PlanDTO {
     private String status;
 
     @NotNull
-    private Integer planType;
+    private PlanType planType;
 
 }

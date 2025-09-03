@@ -1,5 +1,6 @@
 package io.qltb.qltb.model;
 
+import io.qltb.qltb.domain.Device;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -50,6 +51,6 @@ public class DeviceRelocationHistoryDTO {
     private String updatedBy;
 
     @NotNull
-    private Long device;
+    private Device device;
 
 }

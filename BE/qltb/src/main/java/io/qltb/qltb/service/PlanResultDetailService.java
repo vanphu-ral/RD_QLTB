@@ -75,7 +75,7 @@ public class PlanResultDetailService {
         planResultDetailDTO.setCreatedBy(planResultDetail.getCreatedBy());
         planResultDetailDTO.setUpdatedBy(planResultDetail.getUpdatedBy());
         planResultDetailDTO.setStatus(planResultDetail.getStatus());
-        planResultDetailDTO.setPlanResult(planResultDetail.getPlanResult() == null ? null : planResultDetail.getPlanResult().getId());
+        planResultDetailDTO.setPlanResult(planResultDetail.getPlanResult() == null ? null : planResultDetail.getPlanResult());
         return planResultDetailDTO;
     }
 
@@ -95,7 +95,7 @@ public class PlanResultDetailService {
         planResultDetail.setCreatedBy(planResultDetailDTO.getCreatedBy());
         planResultDetail.setUpdatedBy(planResultDetailDTO.getUpdatedBy());
         planResultDetail.setStatus(planResultDetailDTO.getStatus());
-        final PlanResult planResult = planResultDetailDTO.getPlanResult() == null ? null : planResultRepository.findById(planResultDetailDTO.getPlanResult())
+        final PlanResult planResult = planResultDetailDTO.getPlanResult() == null ? null : planResultRepository.findById(planResultDetailDTO.getPlanResult().getId())
                 .orElseThrow(() -> new NotFoundException("planResult not found"));
         planResultDetail.setPlanResult(planResult);
         return planResultDetail;

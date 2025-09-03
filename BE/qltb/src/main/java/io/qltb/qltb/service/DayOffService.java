@@ -77,8 +77,8 @@ public class DayOffService {
         dayOffDTO.setCreatedBy(dayOff.getCreatedBy());
         dayOffDTO.setUpdatedBy(dayOff.getUpdatedBy());
         dayOffDTO.setStatus(dayOff.getStatus());
-        dayOffDTO.setBranch(dayOff.getBranch() == null ? null : dayOff.getBranch().getId());
-        dayOffDTO.setTeam(dayOff.getTeam() == null ? null : dayOff.getTeam().getId());
+        dayOffDTO.setBranch(dayOff.getBranch() == null ? null : dayOff.getBranch());
+        dayOffDTO.setTeam(dayOff.getTeam() == null ? null : dayOff.getTeam());
         return dayOffDTO;
     }
 
@@ -95,10 +95,10 @@ public class DayOffService {
         dayOff.setCreatedBy(dayOffDTO.getCreatedBy());
         dayOff.setUpdatedBy(dayOffDTO.getUpdatedBy());
         dayOff.setStatus(dayOffDTO.getStatus());
-        final Branch branch = dayOffDTO.getBranch() == null ? null : branchRepository.findById(dayOffDTO.getBranch())
+        final Branch branch = dayOffDTO.getBranch() == null ? null : branchRepository.findById(dayOffDTO.getBranch().getId())
                 .orElseThrow(() -> new NotFoundException("branch not found"));
         dayOff.setBranch(branch);
-        final Team team = dayOffDTO.getTeam() == null ? null : teamRepository.findById(dayOffDTO.getTeam())
+        final Team team = dayOffDTO.getTeam() == null ? null : teamRepository.findById(dayOffDTO.getTeam().getId())
                 .orElseThrow(() -> new NotFoundException("team not found"));
         dayOff.setTeam(team);
         return dayOff;

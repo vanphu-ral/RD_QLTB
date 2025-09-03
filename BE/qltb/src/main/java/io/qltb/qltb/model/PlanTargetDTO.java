@@ -1,5 +1,6 @@
 package io.qltb.qltb.model;
 
+import io.qltb.qltb.domain.Branch;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -36,6 +37,6 @@ public class PlanTargetDTO {
 
     private Integer status;
 
-    private Long branch;
+    private Branch branch;
 
 }

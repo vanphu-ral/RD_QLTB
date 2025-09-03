@@ -73,7 +73,7 @@ public class LineService {
         lineDTO.setCreatedBy(line.getCreatedBy());
         lineDTO.setUpdatedBy(line.getUpdatedBy());
         lineDTO.setStatus(line.getStatus());
-        lineDTO.setTeam(line.getTeam() == null ? null : line.getTeam().getId());
+        lineDTO.setTeam(line.getTeam() == null ? null : line.getTeam());
         return lineDTO;
     }
 
@@ -86,7 +86,7 @@ public class LineService {
         line.setCreatedBy(lineDTO.getCreatedBy());
         line.setUpdatedBy(lineDTO.getUpdatedBy());
         line.setStatus(lineDTO.getStatus());
-        final Team team = lineDTO.getTeam() == null ? null : teamRepository.findById(lineDTO.getTeam())
+        final Team team = lineDTO.getTeam() == null ? null : teamRepository.findById(lineDTO.getTeam().getId())
                 .orElseThrow(() -> new NotFoundException("team not found"));
         line.setTeam(team);
         return line;

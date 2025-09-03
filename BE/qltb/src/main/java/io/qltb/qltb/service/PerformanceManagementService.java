@@ -70,7 +70,7 @@ public class PerformanceManagementService {
         performanceManagementDTO.setCreatedBy(performanceManagement.getCreatedBy());
         performanceManagementDTO.setUpdatedBy(performanceManagement.getUpdatedBy());
         performanceManagementDTO.setStatus(performanceManagement.getStatus());
-        performanceManagementDTO.setDevice(performanceManagement.getDevice() == null ? null : performanceManagement.getDevice().getId());
+        performanceManagementDTO.setDevice(performanceManagement.getDevice() == null ? null : performanceManagement.getDevice());
         return performanceManagementDTO;
     }
 
@@ -85,7 +85,7 @@ public class PerformanceManagementService {
         performanceManagement.setCreatedBy(performanceManagementDTO.getCreatedBy());
         performanceManagement.setUpdatedBy(performanceManagementDTO.getUpdatedBy());
         performanceManagement.setStatus(performanceManagementDTO.getStatus());
-        final Device device = performanceManagementDTO.getDevice() == null ? null : deviceRepository.findById(performanceManagementDTO.getDevice())
+        final Device device = performanceManagementDTO.getDevice() == null ? null : deviceRepository.findById(performanceManagementDTO.getDevice().getId())
                 .orElseThrow(() -> new NotFoundException("device not found"));
         performanceManagement.setDevice(device);
         return performanceManagement;

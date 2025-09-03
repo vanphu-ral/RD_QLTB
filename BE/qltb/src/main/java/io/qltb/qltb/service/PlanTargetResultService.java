@@ -68,7 +68,7 @@ public class PlanTargetResultService {
         planTargetResultDTO.setCreatedBy(planTargetResult.getCreatedBy());
         planTargetResultDTO.setUpdatedBy(planTargetResult.getUpdatedBy());
         planTargetResultDTO.setStatus(planTargetResult.getStatus());
-        planTargetResultDTO.setPlanTargetDevice(planTargetResult.getPlanTargetDevice() == null ? null : planTargetResult.getPlanTargetDevice().getId());
+        planTargetResultDTO.setPlanTargetDevice(planTargetResult.getPlanTargetDevice() == null ? null : planTargetResult.getPlanTargetDevice());
         return planTargetResultDTO;
     }
 
@@ -81,7 +81,7 @@ public class PlanTargetResultService {
         planTargetResult.setCreatedBy(planTargetResultDTO.getCreatedBy());
         planTargetResult.setUpdatedBy(planTargetResultDTO.getUpdatedBy());
         planTargetResult.setStatus(planTargetResultDTO.getStatus());
-        final PlanTarget planTargetDevice = planTargetResultDTO.getPlanTargetDevice() == null ? null : planTargetRepository.findById(planTargetResultDTO.getPlanTargetDevice())
+        final PlanTarget planTargetDevice = planTargetResultDTO.getPlanTargetDevice() == null ? null : planTargetRepository.findById(planTargetResultDTO.getPlanTargetDevice().getId())
                 .orElseThrow(() -> new NotFoundException("planTargetDevice not found"));
         planTargetResult.setPlanTargetDevice(planTargetDevice);
         return planTargetResult;

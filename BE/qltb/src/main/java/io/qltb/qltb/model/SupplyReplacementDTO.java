@@ -1,5 +1,7 @@
 package io.qltb.qltb.model;
 
+import io.qltb.qltb.domain.PlanResult;
+import io.qltb.qltb.domain.Supply;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -37,9 +39,9 @@ public class SupplyReplacementDTO {
     private String createdBy;
 
     @NotNull
-    private Long planResult;
+    private PlanResult planResult;
 
     @NotNull
-    private Long supply;
+    private Supply supply;
 
 }

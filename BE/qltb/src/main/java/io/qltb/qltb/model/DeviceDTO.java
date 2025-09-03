@@ -1,6 +1,8 @@
 package io.qltb.qltb.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.qltb.qltb.domain.DeviceGroup;
+import io.qltb.qltb.domain.Line;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
@@ -10,6 +12,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
+
+
+import javax.swing.*;
 
 
 @Getter
@@ -78,9 +83,9 @@ public class DeviceDTO {
     private String updatedBy;
 
     @NotNull
-    private Long group;
+    private DeviceGroup group;
 
     @NotNull
-    private Long line;
+    private Line line;
 
 }

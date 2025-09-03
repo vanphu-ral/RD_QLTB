@@ -70,7 +70,7 @@ public class DepreciationManagementService {
         depreciationManagementDTO.setCreatedBy(depreciationManagement.getCreatedBy());
         depreciationManagementDTO.setUpdatedBy(depreciationManagement.getUpdatedBy());
         depreciationManagementDTO.setStatus(depreciationManagement.getStatus());
-        depreciationManagementDTO.setDevice(depreciationManagement.getDevice() == null ? null : depreciationManagement.getDevice().getId());
+        depreciationManagementDTO.setDevice(depreciationManagement.getDevice() == null ? null : depreciationManagement.getDevice());
         return depreciationManagementDTO;
     }
 
@@ -85,7 +85,7 @@ public class DepreciationManagementService {
         depreciationManagement.setCreatedBy(depreciationManagementDTO.getCreatedBy());
         depreciationManagement.setUpdatedBy(depreciationManagementDTO.getUpdatedBy());
         depreciationManagement.setStatus(depreciationManagementDTO.getStatus());
-        final Device device = depreciationManagementDTO.getDevice() == null ? null : deviceRepository.findById(depreciationManagementDTO.getDevice())
+        final Device device = depreciationManagementDTO.getDevice() == null ? null : deviceRepository.findById(depreciationManagementDTO.getDevice().getId())
                 .orElseThrow(() -> new NotFoundException("device not found"));
         depreciationManagement.setDevice(device);
         return depreciationManagement;

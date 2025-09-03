@@ -90,8 +90,8 @@ public class DeviceService {
         deviceDTO.setUpdatedAt(device.getUpdatedAt());
         deviceDTO.setCreatedBy(device.getCreatedBy());
         deviceDTO.setUpdatedBy(device.getUpdatedBy());
-        deviceDTO.setGroup(device.getGroup() == null ? null : device.getGroup().getId());
-        deviceDTO.setLine(device.getLine() == null ? null : device.getLine().getId());
+        deviceDTO.setGroup(device.getGroup() == null ? null : device.getGroup());
+        deviceDTO.setLine(device.getLine() == null ? null : device.getLine());
         return deviceDTO;
     }
 
@@ -115,10 +115,10 @@ public class DeviceService {
         device.setUpdatedAt(deviceDTO.getUpdatedAt());
         device.setCreatedBy(deviceDTO.getCreatedBy());
         device.setUpdatedBy(deviceDTO.getUpdatedBy());
-        final DeviceGroup group = deviceDTO.getGroup() == null ? null : deviceGroupRepository.findById(deviceDTO.getGroup())
+        final DeviceGroup group = deviceDTO.getGroup() == null ? null : deviceGroupRepository.findById(deviceDTO.getGroup().getId())
                 .orElseThrow(() -> new NotFoundException("group not found"));
         device.setGroup(group);
-        final Line line = deviceDTO.getLine() == null ? null : lineRepository.findById(deviceDTO.getLine())
+        final Line line = deviceDTO.getLine() == null ? null : lineRepository.findById(deviceDTO.getLine().getId())
                 .orElseThrow(() -> new NotFoundException("line not found"));
         device.setLine(line);
         return device;

@@ -69,7 +69,7 @@ public class DeviceHistoryService {
         deviceHistoryDTO.setUpdatedAt(deviceHistory.getUpdatedAt());
         deviceHistoryDTO.setCreatedBy(deviceHistory.getCreatedBy());
         deviceHistoryDTO.setUpdateBy(deviceHistory.getUpdateBy());
-        deviceHistoryDTO.setDevice(deviceHistory.getDevice() == null ? null : deviceHistory.getDevice().getId());
+        deviceHistoryDTO.setDevice(deviceHistory.getDevice() == null ? null : deviceHistory.getDevice());
         return deviceHistoryDTO;
     }
 
@@ -83,7 +83,7 @@ public class DeviceHistoryService {
         deviceHistory.setUpdatedAt(deviceHistoryDTO.getUpdatedAt());
         deviceHistory.setCreatedBy(deviceHistoryDTO.getCreatedBy());
         deviceHistory.setUpdateBy(deviceHistoryDTO.getUpdateBy());
-        final Device device = deviceHistoryDTO.getDevice() == null ? null : deviceRepository.findById(deviceHistoryDTO.getDevice())
+        final Device device = deviceHistoryDTO.getDevice() == null ? null : deviceRepository.findById(deviceHistoryDTO.getDevice().getId())
                 .orElseThrow(() -> new NotFoundException("device not found"));
         deviceHistory.setDevice(device);
         return deviceHistory;

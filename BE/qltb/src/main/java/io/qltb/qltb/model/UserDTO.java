@@ -1,5 +1,6 @@
 package io.qltb.qltb.model;
 
+import io.qltb.qltb.domain.Department;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -39,6 +40,6 @@ public class UserDTO {
 
     private Integer status;
 
-    private Long deparment;
+    private Department deparment;
 
 }

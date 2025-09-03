@@ -65,7 +65,7 @@ public class SupplyDetailService {
         supplyDetailDTO.setImportDate(supplyDetail.getImportDate());
         supplyDetailDTO.setSupplier(supplyDetail.getSupplier());
         supplyDetailDTO.setStatus(supplyDetail.getStatus());
-        supplyDetailDTO.setSupply(supplyDetail.getSupply() == null ? null : supplyDetail.getSupply().getId());
+        supplyDetailDTO.setSupply(supplyDetail.getSupply() == null ? null : supplyDetail.getSupply());
         return supplyDetailDTO;
     }
 
@@ -75,7 +75,7 @@ public class SupplyDetailService {
         supplyDetail.setImportDate(supplyDetailDTO.getImportDate());
         supplyDetail.setSupplier(supplyDetailDTO.getSupplier());
         supplyDetail.setStatus(supplyDetailDTO.getStatus());
-        final Supply supply = supplyDetailDTO.getSupply() == null ? null : supplyRepository.findById(supplyDetailDTO.getSupply())
+        final Supply supply = supplyDetailDTO.getSupply() == null ? null : supplyRepository.findById(supplyDetailDTO.getSupply().getId())
                 .orElseThrow(() -> new NotFoundException("supply not found"));
         supplyDetail.setSupply(supply);
         return supplyDetail;

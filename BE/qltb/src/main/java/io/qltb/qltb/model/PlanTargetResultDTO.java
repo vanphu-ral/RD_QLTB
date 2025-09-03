@@ -1,5 +1,6 @@
 package io.qltb.qltb.model;
 
+import io.qltb.qltb.domain.PlanTarget;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -33,6 +34,6 @@ public class PlanTargetResultDTO {
 
     private Integer status;
 
-    private Long planTargetDevice;
+    private PlanTarget planTargetDevice;
 
 }

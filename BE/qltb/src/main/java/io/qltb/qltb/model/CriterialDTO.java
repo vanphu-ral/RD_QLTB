@@ -1,5 +1,6 @@
 package io.qltb.qltb.model;
 
+import io.qltb.qltb.domain.SampleReport;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -43,6 +44,6 @@ public class CriterialDTO {
     private Integer status;
 
     @NotNull
-    private Long sampleReport;
+    private SampleReport sampleReport;
 
 }
