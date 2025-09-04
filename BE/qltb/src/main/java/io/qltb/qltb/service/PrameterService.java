@@ -65,16 +65,6 @@ public class PrameterService {
     }
 
     private PrameterDTO mapToDTO(final Prameter prameter, final PrameterDTO prameterDTO) {
-        prameter.getParameterGroup().setParameterGroupPrameters(null);
-        prameter.getDevice().setGroup(null);
-        prameter.getDevice().setLine(null);
-        prameter.getDevice().setDevicePlanDetails(null);
-        prameter.getDevice().setDeviceDeviceHistories(null);
-        prameter.getDevice().setDeviceDeviceSupplyUsages(null);
-        prameter.getDevice().setDeviceDeviceRelocationHistories(null);
-        prameter.getDevice().setDevicePrameters(null);
-        prameter.getDevice().setDevicePerformanceManagements(null);
-        prameter.getDevice().setDeviceDepreciationManagements(null);
         prameterDTO.setId(prameter.getId());
         prameterDTO.setCode(prameter.getCode());
         prameterDTO.setName(prameter.getName());
@@ -88,10 +78,58 @@ public class PrameterService {
         prameterDTO.setCreatedBy(prameter.getCreatedBy());
         prameterDTO.setUpdatedBy(prameter.getUpdatedBy());
         prameterDTO.setStatus(prameter.getStatus());
-        prameterDTO.setParameterGroup(prameter.getParameterGroup() == null ? null : prameter.getParameterGroup());
-        prameterDTO.setDevice(prameter.getDevice() == null ? null : prameter.getDevice());
+
+        // Clone ParameterGroup
+        if (prameter.getParameterGroup() != null) {
+            PrameterGroup groupCopy = new PrameterGroup();
+            groupCopy.setId(prameter.getParameterGroup().getId());
+            groupCopy.setCode(prameter.getParameterGroup().getCode());
+            groupCopy.setName(prameter.getParameterGroup().getName());
+            groupCopy.setStatus(prameter.getParameterGroup().getStatus());
+            groupCopy.setCreatedAt(prameter.getParameterGroup().getCreatedAt());
+            groupCopy.setUpdatedAt(prameter.getParameterGroup().getUpdatedAt());
+            groupCopy.setCreatedBy(prameter.getParameterGroup().getCreatedBy());
+            groupCopy.setUpdatedBy(prameter.getParameterGroup().getUpdatedBy());
+
+            // Loại bỏ quan hệ con
+            groupCopy.setParameterGroupPrameters(null);
+
+            prameterDTO.setParameterGroup(groupCopy);
+        } else {
+            prameterDTO.setParameterGroup(null);
+        }
+
+        // Clone Device
+        if (prameter.getDevice() != null) {
+            Device deviceCopy = new Device();
+            deviceCopy.setId(prameter.getDevice().getId());
+            deviceCopy.setCode(prameter.getDevice().getCode());
+            deviceCopy.setName(prameter.getDevice().getName());
+            deviceCopy.setStatus(prameter.getDevice().getStatus());
+            deviceCopy.setCreatedAt(prameter.getDevice().getCreatedAt());
+            deviceCopy.setUpdatedAt(prameter.getDevice().getUpdatedAt());
+            deviceCopy.setCreatedBy(prameter.getDevice().getCreatedBy());
+            deviceCopy.setUpdatedBy(prameter.getDevice().getUpdatedBy());
+
+            // Loại bỏ các quan hệ con
+            deviceCopy.setGroup(null);
+            deviceCopy.setLine(null);
+            deviceCopy.setDevicePlanDetails(null);
+            deviceCopy.setDeviceDeviceHistories(null);
+            deviceCopy.setDeviceDeviceSupplyUsages(null);
+            deviceCopy.setDeviceDeviceRelocationHistories(null);
+            deviceCopy.setDevicePrameters(null);
+            deviceCopy.setDevicePerformanceManagements(null);
+            deviceCopy.setDeviceDepreciationManagements(null);
+
+            prameterDTO.setDevice(deviceCopy);
+        } else {
+            prameterDTO.setDevice(null);
+        }
+
         return prameterDTO;
     }
+
 
     private Prameter mapToEntity(final PrameterDTO prameterDTO, final Prameter prameter) {
         prameter.setCode(prameterDTO.getCode());

@@ -65,10 +65,6 @@ public class CriterialService {
     }
 
     private CriterialDTO mapToDTO(final Criterial criterial, final CriterialDTO criterialDTO) {
-        criterial.getSampleReport().setDeviceGroup(null);
-        criterial.getSampleReport().setSampleReportCriterials(null);
-        criterial.getSampleReport().setSampleReportKeyMappings(null);
-        criterial.getSampleReport().setSampleReportKeyMappingDeviceSampleReports(null);
         criterialDTO.setId(criterial.getId());
         criterialDTO.setCode(criterial.getCode());
         criterialDTO.setName(criterial.getName());
@@ -80,9 +76,32 @@ public class CriterialService {
         criterialDTO.setCreatedBy(criterial.getCreatedBy());
         criterialDTO.setUpdatedBy(criterial.getUpdatedBy());
         criterialDTO.setStatus(criterial.getStatus());
-        criterialDTO.setSampleReport(criterial.getSampleReport() == null ? null : criterial.getSampleReport());
+
+        if (criterial.getSampleReport() != null) {
+            SampleReport sampleReportCopy = new SampleReport();
+            sampleReportCopy.setId(criterial.getSampleReport().getId());
+            sampleReportCopy.setCode(criterial.getSampleReport().getCode());
+            sampleReportCopy.setName(criterial.getSampleReport().getName());
+            sampleReportCopy.setStatus(criterial.getSampleReport().getStatus());
+            sampleReportCopy.setCreatedAt(criterial.getSampleReport().getCreatedAt());
+            sampleReportCopy.setUpdatedAt(criterial.getSampleReport().getUpdatedAt());
+            sampleReportCopy.setCreatedBy(criterial.getSampleReport().getCreatedBy());
+            sampleReportCopy.setUpdatedBy(criterial.getSampleReport().getUpdatedBy());
+
+            // Xóa các quan hệ con để tránh vòng lặp hoặc dữ liệu thừa
+            sampleReportCopy.setDeviceGroup(null);
+            sampleReportCopy.setSampleReportCriterials(null);
+            sampleReportCopy.setSampleReportKeyMappings(null);
+            sampleReportCopy.setSampleReportKeyMappingDeviceSampleReports(null);
+
+            criterialDTO.setSampleReport(sampleReportCopy);
+        } else {
+            criterialDTO.setSampleReport(null);
+        }
+
         return criterialDTO;
     }
+
 
     private Criterial mapToEntity(final CriterialDTO criterialDTO, final Criterial criterial) {
         criterial.setCode(criterialDTO.getCode());

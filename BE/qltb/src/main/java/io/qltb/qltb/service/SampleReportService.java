@@ -65,11 +65,7 @@ public class SampleReportService {
     }
 
     private SampleReportDTO mapToDTO(final SampleReport sampleReport,
-            final SampleReportDTO sampleReportDTO) {
-        sampleReport.getDeviceGroup().setGroupDevices(null);
-        sampleReport.getDeviceGroup().setDeviceGroupSampleReports(null);
-        sampleReport.getDeviceGroup().setDeviceGroupPlanDetails(null);
-        sampleReport.getDeviceGroup().setDeviceGroupKeyMappingDeviceSampleReports(null);
+                                     final SampleReportDTO sampleReportDTO) {
         sampleReportDTO.setId(sampleReport.getId());
         sampleReportDTO.setCode(sampleReport.getCode());
         sampleReportDTO.setName(sampleReport.getName());
@@ -80,9 +76,32 @@ public class SampleReportService {
         sampleReportDTO.setCreatedBy(sampleReport.getCreatedBy());
         sampleReportDTO.setUpdatedBy(sampleReport.getUpdatedBy());
         sampleReportDTO.setStatus(sampleReport.getStatus());
-        sampleReportDTO.setDeviceGroup(sampleReport.getDeviceGroup() == null ? null : sampleReport.getDeviceGroup());
+
+        if (sampleReport.getDeviceGroup() != null) {
+            DeviceGroup groupCopy = new DeviceGroup();
+            groupCopy.setId(sampleReport.getDeviceGroup().getId());
+            groupCopy.setCode(sampleReport.getDeviceGroup().getCode());
+            groupCopy.setName(sampleReport.getDeviceGroup().getName());
+            groupCopy.setStatus(sampleReport.getDeviceGroup().getStatus());
+            groupCopy.setCreatedAt(sampleReport.getDeviceGroup().getCreatedAt());
+            groupCopy.setUpdatedAt(sampleReport.getDeviceGroup().getUpdatedAt());
+            groupCopy.setCreatedBy(sampleReport.getDeviceGroup().getCreatedBy());
+            groupCopy.setUpdatedBy(sampleReport.getDeviceGroup().getUpdatedBy());
+
+            // Loại bỏ các quan hệ con để tránh vòng lặp hoặc dữ liệu thừa
+            groupCopy.setGroupDevices(null);
+            groupCopy.setDeviceGroupSampleReports(null);
+            groupCopy.setDeviceGroupPlanDetails(null);
+            groupCopy.setDeviceGroupKeyMappingDeviceSampleReports(null);
+
+            sampleReportDTO.setDeviceGroup(groupCopy);
+        } else {
+            sampleReportDTO.setDeviceGroup(null);
+        }
+
         return sampleReportDTO;
     }
+
 
     private SampleReport mapToEntity(final SampleReportDTO sampleReportDTO,
             final SampleReport sampleReport) {

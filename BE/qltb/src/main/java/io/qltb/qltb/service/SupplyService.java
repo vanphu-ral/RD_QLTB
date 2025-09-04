@@ -65,23 +65,43 @@ public class SupplyService {
     }
 
     private SupplyDTO mapToDTO(final Supply supply, final SupplyDTO supplyDTO) {
-        supply.getGroup().setGroupSupplies(null);
         supplyDTO.setId(supply.getId());
         supplyDTO.setCode(supply.getCode());
         supplyDTO.setName(supply.getName());
         supplyDTO.setQuantity(supply.getQuantity());
         supplyDTO.setPrice(supply.getPrice());
         supplyDTO.setDescription(supply.getDescription());
-//        supplyDTO.setSapCode(supply.getSapCode());
+        // supplyDTO.setSapCode(supply.getSapCode()); // Nếu cần dùng, mở lại dòng này
         supplyDTO.setSource(supply.getSource());
         supplyDTO.setCreatedAt(supply.getCreatedAt());
         supplyDTO.setUpdatedAt(supply.getUpdatedAt());
         supplyDTO.setCreatedBy(supply.getCreatedBy());
         supplyDTO.setUpdatedBy(supply.getUpdatedBy());
         supplyDTO.setStatus(supply.getStatus());
-        supplyDTO.setGroup(supply.getGroup() == null ? null : supply.getGroup());
+
+        if (supply.getGroup() != null) {
+            SupplyGroup groupCopy = new SupplyGroup();
+            groupCopy.setId(supply.getGroup().getId());
+            groupCopy.setCode(supply.getGroup().getCode());
+            groupCopy.setName(supply.getGroup().getName());
+            groupCopy.setDescription(supply.getGroup().getDescription());
+            groupCopy.setStatus(supply.getGroup().getStatus());
+            groupCopy.setCreatedAt(supply.getGroup().getCreatedAt());
+            groupCopy.setUpdatedAt(supply.getGroup().getUpdatedAt());
+            groupCopy.setCreatedBy(supply.getGroup().getCreatedBy());
+            groupCopy.setUpdatedBy(supply.getGroup().getUpdatedBy());
+
+            // Loại bỏ quan hệ con
+            groupCopy.setGroupSupplies(null);
+
+            supplyDTO.setGroup(groupCopy);
+        } else {
+            supplyDTO.setGroup(null);
+        }
+
         return supplyDTO;
     }
+
 
     private Supply mapToEntity(final SupplyDTO supplyDTO, final Supply supply) {
         supply.setCode(supplyDTO.getCode());

@@ -75,19 +75,6 @@ public class FormService {
     }
 
     private FormDTO mapToDTO(final Form form, final FormDTO formDTO) {
-        form.getFactory().setFactoryBranches(null);
-        form.getLine().setTeam(null);
-        form.getLine().setLineDevices(null);
-        form.getLine().setLineForms(null);
-        form.getBranch().setFactory(null);
-        form.getBranch().setBranchDayOffs(null);
-        form.getBranch().setBranchTeams(null);
-        form.getBranch().setBranchForms(null);
-        form.getBranch().setBranchPlanTargets(null);
-        form.getTeam().setBranch(null);
-        form.getTeam().setTeamLines(null);
-        form.getTeam().setTeamDayOffs(null);
-        form.getTeam().setTeamForms(null);
         formDTO.setId(form.getId());
         formDTO.setCode(form.getCode());
         formDTO.setName(form.getName());
@@ -101,12 +88,94 @@ public class FormService {
         formDTO.setCreatedBy(form.getCreatedBy());
         formDTO.setUpdatedBy(form.getUpdatedBy());
         formDTO.setStatus(form.getStatus());
-        formDTO.setFactory(form.getFactory() == null ? null : form.getFactory());
-        formDTO.setBranch(form.getBranch() == null ? null : form.getBranch());
-        formDTO.setTeam(form.getTeam() == null ? null : form.getTeam());
-        formDTO.setLine(form.getLine() == null ? null : form.getLine());
+
+        // Copy Factory
+        if (form.getFactory() != null) {
+            Factory factoryCopy = new Factory();
+            factoryCopy.setId(form.getFactory().getId());
+            factoryCopy.setCode(form.getFactory().getCode());
+            factoryCopy.setName(form.getFactory().getName());
+            factoryCopy.setStatus(form.getFactory().getStatus());
+            factoryCopy.setCreatedAt(form.getFactory().getCreatedAt());
+            factoryCopy.setUpdatedAt(form.getFactory().getUpdatedAt());
+            factoryCopy.setCreatedBy(form.getFactory().getCreatedBy());
+            factoryCopy.setUpdatedBy(form.getFactory().getUpdatedBy());
+
+            factoryCopy.setFactoryBranches(null);
+            formDTO.setFactory(factoryCopy);
+        } else {
+            formDTO.setFactory(null);
+        }
+
+        // Copy Branch
+        if (form.getBranch() != null) {
+            Branch branchCopy = new Branch();
+            branchCopy.setId(form.getBranch().getId());
+            branchCopy.setCode(form.getBranch().getCode());
+            branchCopy.setName(form.getBranch().getName());
+            branchCopy.setStatus(form.getBranch().getStatus());
+            branchCopy.setCreatedAt(form.getBranch().getCreatedAt());
+            branchCopy.setUpdatedAt(form.getBranch().getUpdatedAt());
+            branchCopy.setCreatedBy(form.getBranch().getCreatedBy());
+            branchCopy.setUpdatedBy(form.getBranch().getUpdatedBy());
+
+            branchCopy.setFactory(null);
+            branchCopy.setBranchDayOffs(null);
+            branchCopy.setBranchTeams(null);
+            branchCopy.setBranchForms(null);
+            branchCopy.setBranchPlanTargets(null);
+
+            formDTO.setBranch(branchCopy);
+        } else {
+            formDTO.setBranch(null);
+        }
+
+        // Copy Team
+        if (form.getTeam() != null) {
+            Team teamCopy = new Team();
+            teamCopy.setId(form.getTeam().getId());
+            teamCopy.setCode(form.getTeam().getCode());
+            teamCopy.setName(form.getTeam().getName());
+            teamCopy.setStatus(form.getTeam().getStatus());
+            teamCopy.setCreatedAt(form.getTeam().getCreatedAt());
+            teamCopy.setUpdatedAt(form.getTeam().getUpdatedAt());
+            teamCopy.setCreatedBy(form.getTeam().getCreatedBy());
+            teamCopy.setUpdatedBy(form.getTeam().getUpdatedBy());
+
+            teamCopy.setBranch(null);
+            teamCopy.setTeamLines(null);
+            teamCopy.setTeamDayOffs(null);
+            teamCopy.setTeamForms(null);
+
+            formDTO.setTeam(teamCopy);
+        } else {
+            formDTO.setTeam(null);
+        }
+
+        // Copy Line
+        if (form.getLine() != null) {
+            Line lineCopy = new Line();
+            lineCopy.setId(form.getLine().getId());
+            lineCopy.setCode(form.getLine().getCode());
+            lineCopy.setName(form.getLine().getName());
+            lineCopy.setStatus(form.getLine().getStatus());
+            lineCopy.setCreatedAt(form.getLine().getCreatedAt());
+            lineCopy.setUpdatedAt(form.getLine().getUpdatedAt());
+            lineCopy.setCreatedBy(form.getLine().getCreatedBy());
+            lineCopy.setUpdatedBy(form.getLine().getUpdatedBy());
+
+            lineCopy.setTeam(null);
+            lineCopy.setLineDevices(null);
+            lineCopy.setLineForms(null);
+
+            formDTO.setLine(lineCopy);
+        } else {
+            formDTO.setLine(null);
+        }
+
         return formDTO;
     }
+
 
     private Form mapToEntity(final FormDTO formDTO, final Form form) {
         form.setCode(formDTO.getCode());

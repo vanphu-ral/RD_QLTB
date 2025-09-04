@@ -59,7 +59,6 @@ public class UserService {
     }
 
     private UserDTO mapToDTO(final User user, final UserDTO userDTO) {
-        user.getDeparment().setDeparmentUsers(null);
         userDTO.setId(user.getId());
         userDTO.setCode(user.getCode());
         userDTO.setName(user.getName());
@@ -70,9 +69,30 @@ public class UserService {
         userDTO.setCreatedBy(user.getCreatedBy());
         userDTO.setUpdatedBy(user.getUpdatedBy());
         userDTO.setStatus(user.getStatus());
-        userDTO.setDeparment(user.getDeparment() == null ? null : user.getDeparment());
+
+        if (user.getDeparment() != null) {
+            Department deparmentCopy = new Department();
+            deparmentCopy.setId(user.getDeparment().getId());
+            deparmentCopy.setCode(user.getDeparment().getCode());
+            deparmentCopy.setName(user.getDeparment().getName());
+            deparmentCopy.setDescription(user.getDeparment().getDescription());
+            deparmentCopy.setStatus(user.getDeparment().getStatus());
+            deparmentCopy.setCreatedAt(user.getDeparment().getCreatedAt());
+            deparmentCopy.setUpdatedAt(user.getDeparment().getUpdatedAt());
+            deparmentCopy.setCreatedBy(user.getDeparment().getCreatedBy());
+            deparmentCopy.setUpdatedBy(user.getDeparment().getUpdatedBy());
+
+            // Loại bỏ quan hệ con
+            deparmentCopy.setDeparmentUsers(null);
+
+            userDTO.setDeparment(deparmentCopy);
+        } else {
+            userDTO.setDeparment(null);
+        }
+
         return userDTO;
     }
+
 
     private User mapToEntity(final UserDTO userDTO, final User user) {
         user.setCode(userDTO.getCode());

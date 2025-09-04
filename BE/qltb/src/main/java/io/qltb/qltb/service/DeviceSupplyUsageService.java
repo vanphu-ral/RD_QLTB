@@ -64,20 +64,7 @@ public class DeviceSupplyUsageService {
     }
 
     private DeviceSupplyUsageDTO mapToDTO(final DeviceSupplyUsage deviceSupplyUsage,
-            final DeviceSupplyUsageDTO deviceSupplyUsageDTO) {
-        deviceSupplyUsage.getDevice().setGroup(null);
-        deviceSupplyUsage.getDevice().setLine(null);
-        deviceSupplyUsage.getDevice().setDevicePlanDetails(null);
-        deviceSupplyUsage.getDevice().setDeviceDeviceHistories(null);
-        deviceSupplyUsage.getDevice().setDeviceDeviceSupplyUsages(null);
-        deviceSupplyUsage.getDevice().setDeviceDeviceRelocationHistories(null);
-        deviceSupplyUsage.getDevice().setDevicePrameters(null);
-        deviceSupplyUsage.getDevice().setDevicePerformanceManagements(null);
-        deviceSupplyUsage.getDevice().setDeviceDepreciationManagements(null);
-        deviceSupplyUsage.getSupply().setSupplyDeviceSupplyUsages(null);
-        deviceSupplyUsage.getSupply().setGroup(null);
-        deviceSupplyUsage.getSupply().setSupplySupplyReplacements(null);
-        deviceSupplyUsage.getSupply().setSupplySupplyDetails(null);
+                                          final DeviceSupplyUsageDTO deviceSupplyUsageDTO) {
         deviceSupplyUsageDTO.setId(deviceSupplyUsage.getId());
         deviceSupplyUsageDTO.setUsageDate(deviceSupplyUsage.getUsageDate());
         deviceSupplyUsageDTO.setSerial(deviceSupplyUsage.getSerial());
@@ -87,10 +74,61 @@ public class DeviceSupplyUsageService {
         deviceSupplyUsageDTO.setCreatedBy(deviceSupplyUsage.getCreatedBy());
         deviceSupplyUsageDTO.setUpdatedBy(deviceSupplyUsage.getUpdatedBy());
         deviceSupplyUsageDTO.setStatus(deviceSupplyUsage.getStatus());
-        deviceSupplyUsageDTO.setDevice(deviceSupplyUsage.getDevice() == null ? null : deviceSupplyUsage.getDevice());
-        deviceSupplyUsageDTO.setSupply(deviceSupplyUsage.getSupply() == null ? null : deviceSupplyUsage.getSupply());
+
+        // Sao chép Device
+        if (deviceSupplyUsage.getDevice() != null) {
+            Device deviceCopy = new Device();
+            deviceCopy.setId(deviceSupplyUsage.getDevice().getId());
+            deviceCopy.setCode(deviceSupplyUsage.getDevice().getCode());
+            deviceCopy.setName(deviceSupplyUsage.getDevice().getName());
+            deviceCopy.setStatus(deviceSupplyUsage.getDevice().getStatus());
+            deviceCopy.setCreatedAt(deviceSupplyUsage.getDevice().getCreatedAt());
+            deviceCopy.setUpdatedAt(deviceSupplyUsage.getDevice().getUpdatedAt());
+            deviceCopy.setCreatedBy(deviceSupplyUsage.getDevice().getCreatedBy());
+            deviceCopy.setUpdatedBy(deviceSupplyUsage.getDevice().getUpdatedBy());
+
+            // Xóa các quan hệ con
+            deviceCopy.setGroup(null);
+            deviceCopy.setLine(null);
+            deviceCopy.setDevicePlanDetails(null);
+            deviceCopy.setDeviceDeviceHistories(null);
+            deviceCopy.setDeviceDeviceSupplyUsages(null);
+            deviceCopy.setDeviceDeviceRelocationHistories(null);
+            deviceCopy.setDevicePrameters(null);
+            deviceCopy.setDevicePerformanceManagements(null);
+            deviceCopy.setDeviceDepreciationManagements(null);
+
+            deviceSupplyUsageDTO.setDevice(deviceCopy);
+        } else {
+            deviceSupplyUsageDTO.setDevice(null);
+        }
+
+        // Sao chép Supply
+        if (deviceSupplyUsage.getSupply() != null) {
+            Supply supplyCopy = new Supply();
+            supplyCopy.setId(deviceSupplyUsage.getSupply().getId());
+            supplyCopy.setCode(deviceSupplyUsage.getSupply().getCode());
+            supplyCopy.setName(deviceSupplyUsage.getSupply().getName());
+            supplyCopy.setStatus(deviceSupplyUsage.getSupply().getStatus());
+            supplyCopy.setCreatedAt(deviceSupplyUsage.getSupply().getCreatedAt());
+            supplyCopy.setUpdatedAt(deviceSupplyUsage.getSupply().getUpdatedAt());
+            supplyCopy.setCreatedBy(deviceSupplyUsage.getSupply().getCreatedBy());
+            supplyCopy.setUpdatedBy(deviceSupplyUsage.getSupply().getUpdatedBy());
+
+            // Xóa các quan hệ con
+            supplyCopy.setSupplyDeviceSupplyUsages(null);
+            supplyCopy.setGroup(null);
+            supplyCopy.setSupplySupplyReplacements(null);
+            supplyCopy.setSupplySupplyDetails(null);
+
+            deviceSupplyUsageDTO.setSupply(supplyCopy);
+        } else {
+            deviceSupplyUsageDTO.setSupply(null);
+        }
+
         return deviceSupplyUsageDTO;
     }
+
 
     private DeviceSupplyUsage mapToEntity(final DeviceSupplyUsageDTO deviceSupplyUsageDTO,
             final DeviceSupplyUsage deviceSupplyUsage) {

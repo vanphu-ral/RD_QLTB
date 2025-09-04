@@ -69,17 +69,55 @@ public class KeyMappingDeviceSampleReportService {
     private KeyMappingDeviceSampleReportDTO mapToDTO(
             final KeyMappingDeviceSampleReport keyMappingDeviceSampleReport,
             final KeyMappingDeviceSampleReportDTO keyMappingDeviceSampleReportDTO) {
-        keyMappingDeviceSampleReport.getSampleReport().setDeviceGroup(null);
-        keyMappingDeviceSampleReport.getSampleReport().setSampleReportCriterials(null);
-        keyMappingDeviceSampleReport.getSampleReport().setSampleReportKeyMappings(null);
-        keyMappingDeviceSampleReport.getSampleReport().setSampleReportKeyMappingDeviceSampleReports(null);
-        keyMappingDeviceSampleReport.getDeviceGroup().setGroupDevices(null);
-        keyMappingDeviceSampleReport.getDeviceGroup().setDeviceGroupSampleReports(null);
-        keyMappingDeviceSampleReport.getDeviceGroup().setDeviceGroupPlanDetails(null);
-        keyMappingDeviceSampleReport.getDeviceGroup().setDeviceGroupKeyMappingDeviceSampleReports(null);
+
         keyMappingDeviceSampleReportDTO.setId(keyMappingDeviceSampleReport.getId());
-        keyMappingDeviceSampleReportDTO.setSampleReport(keyMappingDeviceSampleReport.getSampleReport() == null ? null : keyMappingDeviceSampleReport.getSampleReport());
-        keyMappingDeviceSampleReportDTO.setDeviceGroup(keyMappingDeviceSampleReport.getDeviceGroup() == null ? null : keyMappingDeviceSampleReport.getDeviceGroup());
+
+        // Sao chép SampleReport
+        if (keyMappingDeviceSampleReport.getSampleReport() != null) {
+            SampleReport sampleReportCopy = new SampleReport();
+            sampleReportCopy.setId(keyMappingDeviceSampleReport.getSampleReport().getId());
+            sampleReportCopy.setCode(keyMappingDeviceSampleReport.getSampleReport().getCode());
+            sampleReportCopy.setName(keyMappingDeviceSampleReport.getSampleReport().getName());
+            sampleReportCopy.setStatus(keyMappingDeviceSampleReport.getSampleReport().getStatus());
+            sampleReportCopy.setCreatedAt(keyMappingDeviceSampleReport.getSampleReport().getCreatedAt());
+            sampleReportCopy.setUpdatedAt(keyMappingDeviceSampleReport.getSampleReport().getUpdatedAt());
+            sampleReportCopy.setCreatedBy(keyMappingDeviceSampleReport.getSampleReport().getCreatedBy());
+            sampleReportCopy.setUpdatedBy(keyMappingDeviceSampleReport.getSampleReport().getUpdatedBy());
+
+            // Xóa các quan hệ con
+            sampleReportCopy.setDeviceGroup(null);
+            sampleReportCopy.setSampleReportCriterials(null);
+            sampleReportCopy.setSampleReportKeyMappings(null);
+            sampleReportCopy.setSampleReportKeyMappingDeviceSampleReports(null);
+
+            keyMappingDeviceSampleReportDTO.setSampleReport(sampleReportCopy);
+        } else {
+            keyMappingDeviceSampleReportDTO.setSampleReport(null);
+        }
+
+        // Sao chép DeviceGroup
+        if (keyMappingDeviceSampleReport.getDeviceGroup() != null) {
+            DeviceGroup deviceGroupCopy = new DeviceGroup();
+            deviceGroupCopy.setId(keyMappingDeviceSampleReport.getDeviceGroup().getId());
+            deviceGroupCopy.setCode(keyMappingDeviceSampleReport.getDeviceGroup().getCode());
+            deviceGroupCopy.setName(keyMappingDeviceSampleReport.getDeviceGroup().getName());
+            deviceGroupCopy.setStatus(keyMappingDeviceSampleReport.getDeviceGroup().getStatus());
+            deviceGroupCopy.setCreatedAt(keyMappingDeviceSampleReport.getDeviceGroup().getCreatedAt());
+            deviceGroupCopy.setUpdatedAt(keyMappingDeviceSampleReport.getDeviceGroup().getUpdatedAt());
+            deviceGroupCopy.setCreatedBy(keyMappingDeviceSampleReport.getDeviceGroup().getCreatedBy());
+            deviceGroupCopy.setUpdatedBy(keyMappingDeviceSampleReport.getDeviceGroup().getUpdatedBy());
+
+            // Xóa các quan hệ con
+            deviceGroupCopy.setGroupDevices(null);
+            deviceGroupCopy.setDeviceGroupSampleReports(null);
+            deviceGroupCopy.setDeviceGroupPlanDetails(null);
+            deviceGroupCopy.setDeviceGroupKeyMappingDeviceSampleReports(null);
+
+            keyMappingDeviceSampleReportDTO.setDeviceGroup(deviceGroupCopy);
+        } else {
+            keyMappingDeviceSampleReportDTO.setDeviceGroup(null);
+        }
+
         return keyMappingDeviceSampleReportDTO;
     }
 

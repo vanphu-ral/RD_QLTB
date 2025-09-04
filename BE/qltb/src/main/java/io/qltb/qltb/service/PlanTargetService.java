@@ -64,11 +64,6 @@ public class PlanTargetService {
     }
 
     private PlanTargetDTO mapToDTO(final PlanTarget planTarget, final PlanTargetDTO planTargetDTO) {
-        planTarget.getBranch().setFactory(null);
-        planTarget.getBranch().setBranchDayOffs(null);
-        planTarget.getBranch().setBranchTeams(null);
-        planTarget.getBranch().setBranchForms(null);
-        planTarget.getBranch().setBranchPlanTargets(null);
         planTargetDTO.setId(planTarget.getId());
         planTargetDTO.setTargetDescription(planTarget.getTargetDescription());
         planTargetDTO.setTargetValue(planTarget.getTargetValue());
@@ -78,9 +73,33 @@ public class PlanTargetService {
         planTargetDTO.setCreatedBy(planTarget.getCreatedBy());
         planTargetDTO.setUpdatedBy(planTarget.getUpdatedBy());
         planTargetDTO.setStatus(planTarget.getStatus());
-        planTargetDTO.setBranch(planTarget.getBranch() == null ? null : planTarget.getBranch());
+
+        if (planTarget.getBranch() != null) {
+            Branch branchCopy = new Branch();
+            branchCopy.setId(planTarget.getBranch().getId());
+            branchCopy.setCode(planTarget.getBranch().getCode());
+            branchCopy.setName(planTarget.getBranch().getName());
+            branchCopy.setStatus(planTarget.getBranch().getStatus());
+            branchCopy.setCreatedAt(planTarget.getBranch().getCreatedAt());
+            branchCopy.setUpdatedAt(planTarget.getBranch().getUpdatedAt());
+            branchCopy.setCreatedBy(planTarget.getBranch().getCreatedBy());
+            branchCopy.setUpdatedBy(planTarget.getBranch().getUpdatedBy());
+
+            // Loại bỏ các quan hệ con để tránh vòng lặp hoặc dữ liệu thừa
+            branchCopy.setFactory(null);
+            branchCopy.setBranchDayOffs(null);
+            branchCopy.setBranchTeams(null);
+            branchCopy.setBranchForms(null);
+            branchCopy.setBranchPlanTargets(null);
+
+            planTargetDTO.setBranch(branchCopy);
+        } else {
+            planTargetDTO.setBranch(null);
+        }
+
         return planTargetDTO;
     }
+
 
     private PlanTarget mapToEntity(final PlanTargetDTO planTargetDTO, final PlanTarget planTarget) {
         planTarget.setTargetDescription(planTargetDTO.getTargetDescription());

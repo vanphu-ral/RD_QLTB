@@ -60,16 +60,7 @@ public class PerformanceManagementService {
     }
 
     private PerformanceManagementDTO mapToDTO(final PerformanceManagement performanceManagement,
-            final PerformanceManagementDTO performanceManagementDTO) {
-        performanceManagement.getDevice().setGroup(null);
-        performanceManagement.getDevice().setLine(null);
-        performanceManagement.getDevice().setDevicePlanDetails(null);
-        performanceManagement.getDevice().setDeviceDeviceHistories(null);
-        performanceManagement.getDevice().setDeviceDeviceSupplyUsages(null);
-        performanceManagement.getDevice().setDeviceDeviceRelocationHistories(null);
-        performanceManagement.getDevice().setDevicePrameters(null);
-        performanceManagement.getDevice().setDevicePerformanceManagements(null);
-        performanceManagement.getDevice().setDeviceDepreciationManagements(null);
+                                              final PerformanceManagementDTO performanceManagementDTO) {
         performanceManagementDTO.setId(performanceManagement.getId());
         performanceManagementDTO.setCode(performanceManagement.getCode());
         performanceManagementDTO.setName(performanceManagement.getName());
@@ -79,9 +70,37 @@ public class PerformanceManagementService {
         performanceManagementDTO.setCreatedBy(performanceManagement.getCreatedBy());
         performanceManagementDTO.setUpdatedBy(performanceManagement.getUpdatedBy());
         performanceManagementDTO.setStatus(performanceManagement.getStatus());
-        performanceManagementDTO.setDevice(performanceManagement.getDevice() == null ? null : performanceManagement.getDevice());
+
+        if (performanceManagement.getDevice() != null) {
+            Device deviceCopy = new Device();
+            deviceCopy.setId(performanceManagement.getDevice().getId());
+            deviceCopy.setCode(performanceManagement.getDevice().getCode());
+            deviceCopy.setName(performanceManagement.getDevice().getName());
+            deviceCopy.setStatus(performanceManagement.getDevice().getStatus());
+            deviceCopy.setCreatedAt(performanceManagement.getDevice().getCreatedAt());
+            deviceCopy.setUpdatedAt(performanceManagement.getDevice().getUpdatedAt());
+            deviceCopy.setCreatedBy(performanceManagement.getDevice().getCreatedBy());
+            deviceCopy.setUpdatedBy(performanceManagement.getDevice().getUpdatedBy());
+
+            // Xóa các quan hệ con để tránh vòng lặp hoặc dữ liệu thừa
+            deviceCopy.setGroup(null);
+            deviceCopy.setLine(null);
+            deviceCopy.setDevicePlanDetails(null);
+            deviceCopy.setDeviceDeviceHistories(null);
+            deviceCopy.setDeviceDeviceSupplyUsages(null);
+            deviceCopy.setDeviceDeviceRelocationHistories(null);
+            deviceCopy.setDevicePrameters(null);
+            deviceCopy.setDevicePerformanceManagements(null);
+            deviceCopy.setDeviceDepreciationManagements(null);
+
+            performanceManagementDTO.setDevice(deviceCopy);
+        } else {
+            performanceManagementDTO.setDevice(null);
+        }
+
         return performanceManagementDTO;
     }
+
 
     private PerformanceManagement mapToEntity(
             final PerformanceManagementDTO performanceManagementDTO,

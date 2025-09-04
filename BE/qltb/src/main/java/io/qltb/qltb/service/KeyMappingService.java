@@ -65,17 +65,58 @@ public class KeyMappingService {
     }
 
     private KeyMappingDTO mapToDTO(final KeyMapping keyMapping, final KeyMappingDTO keyMappingDTO) {
-        keyMapping.getSampleReport().setDeviceGroup(null);
-        keyMapping.getSampleReport().setSampleReportCriterials(null);
-        keyMapping.getSampleReport().setSampleReportKeyMappings(null);
-        keyMapping.getSampleReport().setSampleReportKeyMappingDeviceSampleReports(null);
-        keyMapping.getCriterial().setSampleReport(null);
-        keyMapping.getCriterial().setCriterialKeyMappings(null);
         keyMappingDTO.setId(keyMapping.getId());
-        keyMappingDTO.setSampleReport(keyMapping.getSampleReport() == null ? null : keyMapping.getSampleReport());
-        keyMappingDTO.setCriterial(keyMapping.getCriterial() == null ? null : keyMapping.getCriterial());
+
+        // Sao chép SampleReport
+        if (keyMapping.getSampleReport() != null) {
+            SampleReport sampleReportCopy = new SampleReport();
+            sampleReportCopy.setId(keyMapping.getSampleReport().getId());
+            sampleReportCopy.setCode(keyMapping.getSampleReport().getCode());
+            sampleReportCopy.setName(keyMapping.getSampleReport().getName());
+            sampleReportCopy.setStatus(keyMapping.getSampleReport().getStatus());
+            sampleReportCopy.setCreatedAt(keyMapping.getSampleReport().getCreatedAt());
+            sampleReportCopy.setUpdatedAt(keyMapping.getSampleReport().getUpdatedAt());
+            sampleReportCopy.setCreatedBy(keyMapping.getSampleReport().getCreatedBy());
+            sampleReportCopy.setUpdatedBy(keyMapping.getSampleReport().getUpdatedBy());
+
+            // Xóa các quan hệ con
+            sampleReportCopy.setDeviceGroup(null);
+            sampleReportCopy.setSampleReportCriterials(null);
+            sampleReportCopy.setSampleReportKeyMappings(null);
+            sampleReportCopy.setSampleReportKeyMappingDeviceSampleReports(null);
+
+            keyMappingDTO.setSampleReport(sampleReportCopy);
+        } else {
+            keyMappingDTO.setSampleReport(null);
+        }
+
+        // Sao chép Criterial
+        if (keyMapping.getCriterial() != null) {
+            Criterial criterialCopy = new Criterial();
+            criterialCopy.setId(keyMapping.getCriterial().getId());
+            criterialCopy.setCode(keyMapping.getCriterial().getCode());
+            criterialCopy.setName(keyMapping.getCriterial().getName());
+            criterialCopy.setDetail(keyMapping.getCriterial().getDetail());
+            criterialCopy.setDescription(keyMapping.getCriterial().getDescription());
+            criterialCopy.setFrequency(keyMapping.getCriterial().getFrequency());
+            criterialCopy.setCreatedAt(keyMapping.getCriterial().getCreatedAt());
+            criterialCopy.setUpdatedAt(keyMapping.getCriterial().getUpdatedAt());
+            criterialCopy.setCreatedBy(keyMapping.getCriterial().getCreatedBy());
+            criterialCopy.setUpdatedBy(keyMapping.getCriterial().getUpdatedBy());
+            criterialCopy.setStatus(keyMapping.getCriterial().getStatus());
+
+            // Xóa các quan hệ con
+            criterialCopy.setSampleReport(null);
+            criterialCopy.setCriterialKeyMappings(null);
+
+            keyMappingDTO.setCriterial(criterialCopy);
+        } else {
+            keyMappingDTO.setCriterial(null);
+        }
+
         return keyMappingDTO;
     }
+
 
     private KeyMapping mapToEntity(final KeyMappingDTO keyMappingDTO, final KeyMapping keyMapping) {
         final SampleReport sampleReport = keyMappingDTO.getSampleReport() == null ? null : sampleReportRepository.findById(keyMappingDTO.getSampleReport().getId())

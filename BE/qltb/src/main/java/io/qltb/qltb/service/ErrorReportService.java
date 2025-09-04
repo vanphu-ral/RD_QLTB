@@ -65,12 +65,7 @@ public class ErrorReportService {
     }
 
     private ErrorReportDTO mapToDTO(final ErrorReport errorReport,
-            final ErrorReportDTO errorReportDTO) {
-        errorReport.getPlanResult().setPlanResultDetail(null);
-        errorReport.getPlanResult().setPlanResultSupplyReplacements(null);
-        errorReport.getPlanResult().setPlanResultErrorReports(null);
-        errorReport.getPlanResult().setPlanResultAcceptances(null);
-        errorReport.getPlanResult().setPlanResultPlanResultDetails(null);
+                                    final ErrorReportDTO errorReportDTO) {
         errorReportDTO.setId(errorReport.getId());
         errorReportDTO.setCode(errorReport.getCode());
         errorReportDTO.setSeverity(errorReport.getSeverity());
@@ -87,9 +82,32 @@ public class ErrorReportService {
         errorReportDTO.setCreatedBy(errorReport.getCreatedBy());
         errorReportDTO.setUpdatedBy(errorReport.getUpdatedBy());
         errorReportDTO.setStatus(errorReport.getStatus());
-        errorReportDTO.setPlanResult(errorReport.getPlanResult() == null ? null : errorReport.getPlanResult());
+
+        if (errorReport.getPlanResult() != null) {
+            PlanResult planResultCopy = new PlanResult();
+            planResultCopy.setId(errorReport.getPlanResult().getId());
+            planResultCopy.setCode(errorReport.getPlanResult().getCode());
+            planResultCopy.setStatus(errorReport.getPlanResult().getStatus());
+            planResultCopy.setCreatedAt(errorReport.getPlanResult().getCreatedAt());
+            planResultCopy.setUpdatedAt(errorReport.getPlanResult().getUpdatedAt());
+            planResultCopy.setCreatedBy(errorReport.getPlanResult().getCreatedBy());
+            planResultCopy.setUpdatedBy(errorReport.getPlanResult().getUpdatedBy());
+
+            // Xóa các quan hệ con để tránh vòng lặp hoặc dữ liệu thừa
+            planResultCopy.setPlanResultDetail(null);
+            planResultCopy.setPlanResultSupplyReplacements(null);
+            planResultCopy.setPlanResultErrorReports(null);
+            planResultCopy.setPlanResultAcceptances(null);
+            planResultCopy.setPlanResultPlanResultDetails(null);
+
+            errorReportDTO.setPlanResult(planResultCopy);
+        } else {
+            errorReportDTO.setPlanResult(null);
+        }
+
         return errorReportDTO;
     }
+
 
     private ErrorReport mapToEntity(final ErrorReportDTO errorReportDTO,
             final ErrorReport errorReport) {

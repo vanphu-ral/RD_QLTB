@@ -14,6 +14,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -29,7 +30,7 @@ public class TeamService {
         this.branchRepository = branchRepository;
         this.publisher = publisher;
     }
-
+@Transactional
     public List<TeamDTO> findAll() {
         final List<Team> teams = teamRepository.findAll(Sort.by("id"));
         return teams.stream()
@@ -64,11 +65,6 @@ public class TeamService {
     }
 
     private TeamDTO mapToDTO(final Team team, final TeamDTO teamDTO) {
-        team.getBranch().setFactory(null);
-        team.getBranch().setBranchDayOffs(null);
-        team.getBranch().setBranchTeams(null);
-        team.getBranch().setBranchForms(null);
-        team.getBranch().setBranchPlanTargets(null);
         teamDTO.setId(team.getId());
         teamDTO.setCode(team.getCode());
         teamDTO.setName(team.getName());
@@ -78,7 +74,31 @@ public class TeamService {
         teamDTO.setCreatedBy(team.getCreatedBy());
         teamDTO.setUpdatedBy(team.getUpdatedBy());
         teamDTO.setStatus(team.getStatus());
-        teamDTO.setBranch(team.getBranch() == null ? null : team.getBranch());
+
+        if (team.getBranch() != null) {
+            Branch branchCopy = new Branch();
+            branchCopy.setId(team.getBranch().getId());
+            branchCopy.setCode(team.getBranch().getCode());
+            branchCopy.setName(team.getBranch().getName());
+            branchCopy.setDescription(team.getBranch().getDescription());
+            branchCopy.setStatus(team.getBranch().getStatus());
+            branchCopy.setCreatedAt(team.getBranch().getCreatedAt());
+            branchCopy.setUpdatedAt(team.getBranch().getUpdatedAt());
+            branchCopy.setCreatedBy(team.getBranch().getCreatedBy());
+            branchCopy.setUpdatedBy(team.getBranch().getUpdatedBy());
+
+            // Không gán factory và các quan hệ con
+            branchCopy.setFactory(null);
+            branchCopy.setBranchDayOffs(null);
+            branchCopy.setBranchTeams(null);
+            branchCopy.setBranchForms(null);
+            branchCopy.setBranchPlanTargets(null);
+
+            teamDTO.setBranch(branchCopy);
+        } else {
+            teamDTO.setBranch(null);
+        }
+
         return teamDTO;
     }
 

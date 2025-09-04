@@ -59,9 +59,7 @@ public class PlanTargetResultService {
     }
 
     private PlanTargetResultDTO mapToDTO(final PlanTargetResult planTargetResult,
-            final PlanTargetResultDTO planTargetResultDTO) {
-        planTargetResult.getPlanTargetDevice().setPlanTargetDevicePlanTargetResults(null);
-        planTargetResult.getPlanTargetDevice().setBranch(null);
+                                         final PlanTargetResultDTO planTargetResultDTO) {
         planTargetResultDTO.setId(planTargetResult.getId());
         planTargetResultDTO.setResult(planTargetResult.getResult());
         planTargetResultDTO.setNote(planTargetResult.getNote());
@@ -70,9 +68,31 @@ public class PlanTargetResultService {
         planTargetResultDTO.setCreatedBy(planTargetResult.getCreatedBy());
         planTargetResultDTO.setUpdatedBy(planTargetResult.getUpdatedBy());
         planTargetResultDTO.setStatus(planTargetResult.getStatus());
-        planTargetResultDTO.setPlanTargetDevice(planTargetResult.getPlanTargetDevice() == null ? null : planTargetResult.getPlanTargetDevice());
+
+        if (planTargetResult.getPlanTargetDevice() != null) {
+            PlanTarget deviceCopy = new PlanTarget();
+            deviceCopy.setId(planTargetResult.getPlanTargetDevice().getId());
+            deviceCopy.setTargetDescription(planTargetResult.getPlanTargetDevice().getTargetDescription());
+            deviceCopy.setTargetValue(planTargetResult.getPlanTargetDevice().getTargetValue());
+            deviceCopy.setCritical(planTargetResult.getPlanTargetDevice().getCritical());
+            deviceCopy.setStatus(planTargetResult.getPlanTargetDevice().getStatus());
+            deviceCopy.setCreatedAt(planTargetResult.getPlanTargetDevice().getCreatedAt());
+            deviceCopy.setUpdatedAt(planTargetResult.getPlanTargetDevice().getUpdatedAt());
+            deviceCopy.setCreatedBy(planTargetResult.getPlanTargetDevice().getCreatedBy());
+            deviceCopy.setUpdatedBy(planTargetResult.getPlanTargetDevice().getUpdatedBy());
+
+            // Loại bỏ các quan hệ con để tránh vòng lặp hoặc dữ liệu thừa
+            deviceCopy.setPlanTargetDevicePlanTargetResults(null);
+            deviceCopy.setBranch(null);
+
+            planTargetResultDTO.setPlanTargetDevice(deviceCopy);
+        } else {
+            planTargetResultDTO.setPlanTargetDevice(null);
+        }
+
         return planTargetResultDTO;
     }
+
 
     private PlanTargetResult mapToEntity(final PlanTargetResultDTO planTargetResultDTO,
             final PlanTargetResult planTargetResult) {

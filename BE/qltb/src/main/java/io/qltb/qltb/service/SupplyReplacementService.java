@@ -65,16 +65,7 @@ public class SupplyReplacementService {
     }
 
     private SupplyReplacementDTO mapToDTO(final SupplyReplacement supplyReplacement,
-            final SupplyReplacementDTO supplyReplacementDTO) {
-        supplyReplacement.getSupply().setSupplyDeviceSupplyUsages(null);
-        supplyReplacement.getSupply().setGroup(null);
-        supplyReplacement.getSupply().setSupplySupplyReplacements(null);
-        supplyReplacement.getSupply().setSupplySupplyDetails(null);
-        supplyReplacement.getPlanResult().setPlanResultDetail(null);
-        supplyReplacement.getPlanResult().setPlanResultSupplyReplacements(null);
-        supplyReplacement.getPlanResult().setPlanResultErrorReports(null);
-        supplyReplacement.getPlanResult().setPlanResultAcceptances(null);
-        supplyReplacement.getPlanResult().setPlanResultPlanResultDetails(null);
+                                          final SupplyReplacementDTO supplyReplacementDTO) {
         supplyReplacementDTO.setId(supplyReplacement.getId());
         supplyReplacementDTO.setQuantity(supplyReplacement.getQuantity());
         supplyReplacementDTO.setCode(supplyReplacement.getCode());
@@ -84,10 +75,56 @@ public class SupplyReplacementService {
         supplyReplacementDTO.setUpdatedAt(supplyReplacement.getUpdatedAt());
         supplyReplacementDTO.setUpdatedBy(supplyReplacement.getUpdatedBy());
         supplyReplacementDTO.setCreatedBy(supplyReplacement.getCreatedBy());
-        supplyReplacementDTO.setPlanResult(supplyReplacement.getPlanResult() == null ? null : supplyReplacement.getPlanResult());
-        supplyReplacementDTO.setSupply(supplyReplacement.getSupply() == null ? null : supplyReplacement.getSupply());
+
+        // Clone Supply
+        if (supplyReplacement.getSupply() != null) {
+            Supply supplyCopy = new Supply();
+            supplyCopy.setId(supplyReplacement.getSupply().getId());
+            supplyCopy.setCode(supplyReplacement.getSupply().getCode());
+            supplyCopy.setName(supplyReplacement.getSupply().getName());
+            supplyCopy.setStatus(supplyReplacement.getSupply().getStatus());
+            supplyCopy.setCreatedAt(supplyReplacement.getSupply().getCreatedAt());
+            supplyCopy.setUpdatedAt(supplyReplacement.getSupply().getUpdatedAt());
+            supplyCopy.setCreatedBy(supplyReplacement.getSupply().getCreatedBy());
+            supplyCopy.setUpdatedBy(supplyReplacement.getSupply().getUpdatedBy());
+
+            // Loại bỏ các quan hệ con
+            supplyCopy.setSupplyDeviceSupplyUsages(null);
+            supplyCopy.setGroup(null);
+            supplyCopy.setSupplySupplyReplacements(null);
+            supplyCopy.setSupplySupplyDetails(null);
+
+            supplyReplacementDTO.setSupply(supplyCopy);
+        } else {
+            supplyReplacementDTO.setSupply(null);
+        }
+
+        // Clone PlanResult
+        if (supplyReplacement.getPlanResult() != null) {
+            PlanResult resultCopy = new PlanResult();
+            resultCopy.setId(supplyReplacement.getPlanResult().getId());
+            resultCopy.setCode(supplyReplacement.getPlanResult().getCode());
+            resultCopy.setStatus(supplyReplacement.getPlanResult().getStatus());
+            resultCopy.setCreatedAt(supplyReplacement.getPlanResult().getCreatedAt());
+            resultCopy.setUpdatedAt(supplyReplacement.getPlanResult().getUpdatedAt());
+            resultCopy.setCreatedBy(supplyReplacement.getPlanResult().getCreatedBy());
+            resultCopy.setUpdatedBy(supplyReplacement.getPlanResult().getUpdatedBy());
+
+            // Loại bỏ các quan hệ con
+            resultCopy.setPlanResultDetail(null);
+            resultCopy.setPlanResultSupplyReplacements(null);
+            resultCopy.setPlanResultErrorReports(null);
+            resultCopy.setPlanResultAcceptances(null);
+            resultCopy.setPlanResultPlanResultDetails(null);
+
+            supplyReplacementDTO.setPlanResult(resultCopy);
+        } else {
+            supplyReplacementDTO.setPlanResult(null);
+        }
+
         return supplyReplacementDTO;
     }
+
 
     private SupplyReplacement mapToEntity(final SupplyReplacementDTO supplyReplacementDTO,
             final SupplyReplacement supplyReplacement) {

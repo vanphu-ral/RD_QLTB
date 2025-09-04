@@ -65,7 +65,6 @@ public class PlanService {
     }
 
     private PlanDTO mapToDTO(final Plan plan, final PlanDTO planDTO) {
-        plan.getPlanType().setPlanTypePlans(null);
         planDTO.setId(plan.getId());
         planDTO.setName(plan.getName());
         planDTO.setFactoryId(plan.getFactoryId());
@@ -78,9 +77,29 @@ public class PlanService {
         planDTO.setUpdatedAt(plan.getUpdatedAt());
         planDTO.setUpdatedBy(plan.getUpdatedBy());
         planDTO.setStatus(plan.getStatus());
-        planDTO.setPlanType(plan.getPlanType() == null ? null : plan.getPlanType());
+
+        if (plan.getPlanType() != null) {
+            PlanType planTypeCopy = new PlanType();
+            planTypeCopy.setId(plan.getPlanType().getId());
+            planTypeCopy.setCode(plan.getPlanType().getCode());
+            planTypeCopy.setName(plan.getPlanType().getName());
+            planTypeCopy.setStatus(plan.getPlanType().getStatus());
+            planTypeCopy.setCreatedAt(plan.getPlanType().getCreatedAt());
+            planTypeCopy.setUpdatedAt(plan.getPlanType().getUpdatedAt());
+            planTypeCopy.setCreatedBy(plan.getPlanType().getCreatedBy());
+            planTypeCopy.setUpdatedBy(plan.getPlanType().getUpdatedBy());
+
+            // Xóa quan hệ con
+            planTypeCopy.setPlanTypePlans(null);
+
+            planDTO.setPlanType(planTypeCopy);
+        } else {
+            planDTO.setPlanType(null);
+        }
+
         return planDTO;
     }
+
 
     private Plan mapToEntity(final PlanDTO planDTO, final Plan plan) {
         plan.setName(planDTO.getName());

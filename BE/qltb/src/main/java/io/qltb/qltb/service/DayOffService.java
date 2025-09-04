@@ -64,15 +64,6 @@ public class DayOffService {
     }
 
     private DayOffDTO mapToDTO(final DayOff dayOff, final DayOffDTO dayOffDTO) {
-        dayOff.getBranch().setFactory(null);
-        dayOff.getBranch().setBranchDayOffs(null);
-        dayOff.getBranch().setBranchTeams(null);
-        dayOff.getBranch().setBranchForms(null);
-        dayOff.getBranch().setBranchPlanTargets(null);
-        dayOff.getTeam().setBranch(null);
-        dayOff.getTeam().setTeamLines(null);
-        dayOff.getTeam().setTeamDayOffs(null);
-        dayOff.getTeam().setTeamForms(null);
         dayOffDTO.setId(dayOff.getId());
         dayOffDTO.setCode(dayOff.getCode());
         dayOffDTO.setName(dayOff.getName());
@@ -86,10 +77,55 @@ public class DayOffService {
         dayOffDTO.setCreatedBy(dayOff.getCreatedBy());
         dayOffDTO.setUpdatedBy(dayOff.getUpdatedBy());
         dayOffDTO.setStatus(dayOff.getStatus());
-        dayOffDTO.setBranch(dayOff.getBranch() == null ? null : dayOff.getBranch());
-        dayOffDTO.setTeam(dayOff.getTeam() == null ? null : dayOff.getTeam());
+
+        if (dayOff.getBranch() != null) {
+            Branch branchCopy = new Branch();
+            branchCopy.setId(dayOff.getBranch().getId());
+            branchCopy.setCode(dayOff.getBranch().getCode());
+            branchCopy.setName(dayOff.getBranch().getName());
+            branchCopy.setStatus(dayOff.getBranch().getStatus());
+            branchCopy.setCreatedAt(dayOff.getBranch().getCreatedAt());
+            branchCopy.setUpdatedAt(dayOff.getBranch().getUpdatedAt());
+            branchCopy.setCreatedBy(dayOff.getBranch().getCreatedBy());
+            branchCopy.setUpdatedBy(dayOff.getBranch().getUpdatedBy());
+
+            // Xóa các quan hệ con
+            branchCopy.setFactory(null);
+            branchCopy.setBranchDayOffs(null);
+            branchCopy.setBranchTeams(null);
+            branchCopy.setBranchForms(null);
+            branchCopy.setBranchPlanTargets(null);
+
+            dayOffDTO.setBranch(branchCopy);
+        } else {
+            dayOffDTO.setBranch(null);
+        }
+
+        if (dayOff.getTeam() != null) {
+            Team teamCopy = new Team();
+            teamCopy.setId(dayOff.getTeam().getId());
+            teamCopy.setCode(dayOff.getTeam().getCode());
+            teamCopy.setName(dayOff.getTeam().getName());
+            teamCopy.setStatus(dayOff.getTeam().getStatus());
+            teamCopy.setCreatedAt(dayOff.getTeam().getCreatedAt());
+            teamCopy.setUpdatedAt(dayOff.getTeam().getUpdatedAt());
+            teamCopy.setCreatedBy(dayOff.getTeam().getCreatedBy());
+            teamCopy.setUpdatedBy(dayOff.getTeam().getUpdatedBy());
+
+            // Xóa các quan hệ con
+            teamCopy.setBranch(null);
+            teamCopy.setTeamLines(null);
+            teamCopy.setTeamDayOffs(null);
+            teamCopy.setTeamForms(null);
+
+            dayOffDTO.setTeam(teamCopy);
+        } else {
+            dayOffDTO.setTeam(null);
+        }
+
         return dayOffDTO;
     }
+
 
     private DayOff mapToEntity(final DayOffDTO dayOffDTO, final DayOff dayOff) {
         dayOff.setCode(dayOffDTO.getCode());

@@ -59,19 +59,38 @@ public class SupplyDetailService {
     }
 
     private SupplyDetailDTO mapToDTO(final SupplyDetail supplyDetail,
-            final SupplyDetailDTO supplyDetailDTO) {
-        supplyDetail.getSupply().setSupplyDeviceSupplyUsages(null);
-        supplyDetail.getSupply().setGroup(null);
-        supplyDetail.getSupply().setSupplySupplyReplacements(null);
-        supplyDetail.getSupply().setSupplySupplyDetails(null);
+                                     final SupplyDetailDTO supplyDetailDTO) {
         supplyDetailDTO.setId(supplyDetail.getId());
         supplyDetailDTO.setSerial(supplyDetail.getSerial());
         supplyDetailDTO.setImportDate(supplyDetail.getImportDate());
         supplyDetailDTO.setSupplier(supplyDetail.getSupplier());
         supplyDetailDTO.setStatus(supplyDetail.getStatus());
-        supplyDetailDTO.setSupply(supplyDetail.getSupply() == null ? null : supplyDetail.getSupply());
+
+        if (supplyDetail.getSupply() != null) {
+            Supply supplyCopy = new Supply();
+            supplyCopy.setId(supplyDetail.getSupply().getId());
+            supplyCopy.setCode(supplyDetail.getSupply().getCode());
+            supplyCopy.setName(supplyDetail.getSupply().getName());
+            supplyCopy.setStatus(supplyDetail.getSupply().getStatus());
+            supplyCopy.setCreatedAt(supplyDetail.getSupply().getCreatedAt());
+            supplyCopy.setUpdatedAt(supplyDetail.getSupply().getUpdatedAt());
+            supplyCopy.setCreatedBy(supplyDetail.getSupply().getCreatedBy());
+            supplyCopy.setUpdatedBy(supplyDetail.getSupply().getUpdatedBy());
+
+            // Loại bỏ các quan hệ con để tránh vòng lặp hoặc dữ liệu thừa
+            supplyCopy.setSupplyDeviceSupplyUsages(null);
+            supplyCopy.setGroup(null);
+            supplyCopy.setSupplySupplyReplacements(null);
+            supplyCopy.setSupplySupplyDetails(null);
+
+            supplyDetailDTO.setSupply(supplyCopy);
+        } else {
+            supplyDetailDTO.setSupply(null);
+        }
+
         return supplyDetailDTO;
     }
+
 
     private SupplyDetail mapToEntity(final SupplyDetailDTO supplyDetailDTO,
             final SupplyDetail supplyDetail) {

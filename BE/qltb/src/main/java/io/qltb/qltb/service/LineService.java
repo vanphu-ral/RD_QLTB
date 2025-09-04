@@ -64,10 +64,6 @@ public class LineService {
     }
 
     private LineDTO mapToDTO(final Line line, final LineDTO lineDTO) {
-        line.getTeam().setBranch(null);
-        line.getTeam().setTeamLines(null);
-        line.getTeam().setTeamDayOffs(null);
-        line.getTeam().setTeamForms(null);
         lineDTO.setId(line.getId());
         lineDTO.setCode(line.getCode());
         lineDTO.setName(line.getName());
@@ -77,9 +73,32 @@ public class LineService {
         lineDTO.setCreatedBy(line.getCreatedBy());
         lineDTO.setUpdatedBy(line.getUpdatedBy());
         lineDTO.setStatus(line.getStatus());
-        lineDTO.setTeam(line.getTeam() == null ? null : line.getTeam());
+
+        if (line.getTeam() != null) {
+            Team teamCopy = new Team();
+            teamCopy.setId(line.getTeam().getId());
+            teamCopy.setCode(line.getTeam().getCode());
+            teamCopy.setName(line.getTeam().getName());
+            teamCopy.setStatus(line.getTeam().getStatus());
+            teamCopy.setCreatedAt(line.getTeam().getCreatedAt());
+            teamCopy.setUpdatedAt(line.getTeam().getUpdatedAt());
+            teamCopy.setCreatedBy(line.getTeam().getCreatedBy());
+            teamCopy.setUpdatedBy(line.getTeam().getUpdatedBy());
+
+            // Xóa các quan hệ con
+            teamCopy.setBranch(null);
+            teamCopy.setTeamLines(null);
+            teamCopy.setTeamDayOffs(null);
+            teamCopy.setTeamForms(null);
+
+            lineDTO.setTeam(teamCopy);
+        } else {
+            lineDTO.setTeam(null);
+        }
+
         return lineDTO;
     }
+
 
     private Line mapToEntity(final LineDTO lineDTO, final Line line) {
         line.setCode(lineDTO.getCode());

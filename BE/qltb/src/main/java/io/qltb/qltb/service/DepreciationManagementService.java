@@ -60,16 +60,7 @@ public class DepreciationManagementService {
     }
 
     private DepreciationManagementDTO mapToDTO(final DepreciationManagement depreciationManagement,
-            final DepreciationManagementDTO depreciationManagementDTO) {
-        depreciationManagement.getDevice().setGroup(null);
-        depreciationManagement.getDevice().setLine(null);
-        depreciationManagement.getDevice().setDevicePlanDetails(null);
-        depreciationManagement.getDevice().setDeviceDeviceHistories(null);
-        depreciationManagement.getDevice().setDeviceDeviceSupplyUsages(null);
-        depreciationManagement.getDevice().setDeviceDeviceRelocationHistories(null);
-        depreciationManagement.getDevice().setDevicePrameters(null);
-        depreciationManagement.getDevice().setDevicePerformanceManagements(null);
-        depreciationManagement.getDevice().setDeviceDepreciationManagements(null);
+                                               final DepreciationManagementDTO depreciationManagementDTO) {
         depreciationManagementDTO.setId(depreciationManagement.getId());
         depreciationManagementDTO.setCode(depreciationManagement.getCode());
         depreciationManagementDTO.setName(depreciationManagement.getName());
@@ -79,9 +70,37 @@ public class DepreciationManagementService {
         depreciationManagementDTO.setCreatedBy(depreciationManagement.getCreatedBy());
         depreciationManagementDTO.setUpdatedBy(depreciationManagement.getUpdatedBy());
         depreciationManagementDTO.setStatus(depreciationManagement.getStatus());
-        depreciationManagementDTO.setDevice(depreciationManagement.getDevice() == null ? null : depreciationManagement.getDevice());
+
+        if (depreciationManagement.getDevice() != null) {
+            Device deviceCopy = new Device();
+            deviceCopy.setId(depreciationManagement.getDevice().getId());
+            deviceCopy.setCode(depreciationManagement.getDevice().getCode());
+            deviceCopy.setName(depreciationManagement.getDevice().getName());
+            deviceCopy.setStatus(depreciationManagement.getDevice().getStatus());
+            deviceCopy.setCreatedAt(depreciationManagement.getDevice().getCreatedAt());
+            deviceCopy.setUpdatedAt(depreciationManagement.getDevice().getUpdatedAt());
+            deviceCopy.setCreatedBy(depreciationManagement.getDevice().getCreatedBy());
+            deviceCopy.setUpdatedBy(depreciationManagement.getDevice().getUpdatedBy());
+
+            // Xóa các quan hệ con để tránh vòng lặp hoặc dữ liệu thừa
+            deviceCopy.setGroup(null);
+            deviceCopy.setLine(null);
+            deviceCopy.setDevicePlanDetails(null);
+            deviceCopy.setDeviceDeviceHistories(null);
+            deviceCopy.setDeviceDeviceSupplyUsages(null);
+            deviceCopy.setDeviceDeviceRelocationHistories(null);
+            deviceCopy.setDevicePrameters(null);
+            deviceCopy.setDevicePerformanceManagements(null);
+            deviceCopy.setDeviceDepreciationManagements(null);
+
+            depreciationManagementDTO.setDevice(deviceCopy);
+        } else {
+            depreciationManagementDTO.setDevice(null);
+        }
+
         return depreciationManagementDTO;
     }
+
 
     private DepreciationManagement mapToEntity(
             final DepreciationManagementDTO depreciationManagementDTO,

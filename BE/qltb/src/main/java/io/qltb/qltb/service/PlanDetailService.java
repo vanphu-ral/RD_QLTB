@@ -76,19 +76,6 @@ public class PlanDetailService {
     }
 
     private PlanDetailDTO mapToDTO(final PlanDetail planDetail, final PlanDetailDTO planDetailDTO) {
-        planDetail.getDevice().setGroup(null);
-        planDetail.getDevice().setLine(null);
-        planDetail.getDevice().setDevicePlanDetails(null);
-        planDetail.getDevice().setDeviceDeviceHistories(null);
-        planDetail.getDevice().setDeviceDeviceSupplyUsages(null);
-        planDetail.getDevice().setDeviceDeviceRelocationHistories(null);
-        planDetail.getDevice().setDevicePrameters(null);
-        planDetail.getDevice().setDevicePerformanceManagements(null);
-        planDetail.getDevice().setDeviceDepreciationManagements(null);
-        planDetail.getDeviceGroup().setGroupDevices(null);
-        planDetail.getDeviceGroup().setDeviceGroupSampleReports(null);
-        planDetail.getDeviceGroup().setDeviceGroupPlanDetails(null);
-        planDetail.getDeviceGroup().setDeviceGroupKeyMappingDeviceSampleReports(null);
         planDetailDTO.setId(planDetail.getId());
         planDetailDTO.setSampleReporId(planDetail.getSampleReporId());
         planDetailDTO.setCreatedAt(planDetail.getCreatedAt());
@@ -98,10 +85,61 @@ public class PlanDetailService {
         planDetailDTO.setUser(planDetail.getUser());
         planDetailDTO.setStatus(planDetail.getStatus());
         planDetailDTO.setPlan(planDetail.getPlan() == null ? null : planDetail.getPlan());
-        planDetailDTO.setDevice(planDetail.getDevice() == null ? null : planDetail.getDevice());
-        planDetailDTO.setDeviceGroup(planDetail.getDeviceGroup() == null ? null : planDetail.getDeviceGroup());
+
+        // Sao chép Device
+        if (planDetail.getDevice() != null) {
+            Device deviceCopy = new Device();
+            deviceCopy.setId(planDetail.getDevice().getId());
+            deviceCopy.setCode(planDetail.getDevice().getCode());
+            deviceCopy.setName(planDetail.getDevice().getName());
+            deviceCopy.setStatus(planDetail.getDevice().getStatus());
+            deviceCopy.setCreatedAt(planDetail.getDevice().getCreatedAt());
+            deviceCopy.setUpdatedAt(planDetail.getDevice().getUpdatedAt());
+            deviceCopy.setCreatedBy(planDetail.getDevice().getCreatedBy());
+            deviceCopy.setUpdatedBy(planDetail.getDevice().getUpdatedBy());
+
+            // Xóa các quan hệ con
+            deviceCopy.setGroup(null);
+            deviceCopy.setLine(null);
+            deviceCopy.setDevicePlanDetails(null);
+            deviceCopy.setDeviceDeviceHistories(null);
+            deviceCopy.setDeviceDeviceSupplyUsages(null);
+            deviceCopy.setDeviceDeviceRelocationHistories(null);
+            deviceCopy.setDevicePrameters(null);
+            deviceCopy.setDevicePerformanceManagements(null);
+            deviceCopy.setDeviceDepreciationManagements(null);
+
+            planDetailDTO.setDevice(deviceCopy);
+        } else {
+            planDetailDTO.setDevice(null);
+        }
+
+        // Sao chép DeviceGroup
+        if (planDetail.getDeviceGroup() != null) {
+            DeviceGroup groupCopy = new DeviceGroup();
+            groupCopy.setId(planDetail.getDeviceGroup().getId());
+            groupCopy.setCode(planDetail.getDeviceGroup().getCode());
+            groupCopy.setName(planDetail.getDeviceGroup().getName());
+            groupCopy.setStatus(planDetail.getDeviceGroup().getStatus());
+            groupCopy.setCreatedAt(planDetail.getDeviceGroup().getCreatedAt());
+            groupCopy.setUpdatedAt(planDetail.getDeviceGroup().getUpdatedAt());
+            groupCopy.setCreatedBy(planDetail.getDeviceGroup().getCreatedBy());
+            groupCopy.setUpdatedBy(planDetail.getDeviceGroup().getUpdatedBy());
+
+            // Xóa các quan hệ con
+            groupCopy.setGroupDevices(null);
+            groupCopy.setDeviceGroupSampleReports(null);
+            groupCopy.setDeviceGroupPlanDetails(null);
+            groupCopy.setDeviceGroupKeyMappingDeviceSampleReports(null);
+
+            planDetailDTO.setDeviceGroup(groupCopy);
+        } else {
+            planDetailDTO.setDeviceGroup(null);
+        }
+
         return planDetailDTO;
     }
+
 
     private PlanDetail mapToEntity(final PlanDetailDTO planDetailDTO, final PlanDetail planDetail) {
         planDetail.setSampleReporId(planDetailDTO.getSampleReporId());

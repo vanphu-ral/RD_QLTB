@@ -59,12 +59,7 @@ public class PlanResultDetailService {
     }
 
     private PlanResultDetailDTO mapToDTO(final PlanResultDetail planResultDetail,
-            final PlanResultDetailDTO planResultDetailDTO) {
-        planResultDetail.getPlanResult().setPlanResultDetail(null);
-        planResultDetail.getPlanResult().setPlanResultSupplyReplacements(null);
-        planResultDetail.getPlanResult().setPlanResultErrorReports(null);
-        planResultDetail.getPlanResult().setPlanResultAcceptances(null);
-        planResultDetail.getPlanResult().setPlanResultPlanResultDetails(null);
+                                         final PlanResultDetailDTO planResultDetailDTO) {
         planResultDetailDTO.setId(planResultDetail.getId());
         planResultDetailDTO.setCriticalCode(planResultDetail.getCriticalCode());
         planResultDetailDTO.setCriticalName(planResultDetail.getCriticalName());
@@ -80,9 +75,32 @@ public class PlanResultDetailService {
         planResultDetailDTO.setCreatedBy(planResultDetail.getCreatedBy());
         planResultDetailDTO.setUpdatedBy(planResultDetail.getUpdatedBy());
         planResultDetailDTO.setStatus(planResultDetail.getStatus());
-        planResultDetailDTO.setPlanResult(planResultDetail.getPlanResult() == null ? null : planResultDetail.getPlanResult());
+
+        if (planResultDetail.getPlanResult() != null) {
+            PlanResult planResultCopy = new PlanResult();
+            planResultCopy.setId(planResultDetail.getPlanResult().getId());
+            planResultCopy.setCode(planResultDetail.getPlanResult().getCode());
+            planResultCopy.setStatus(planResultDetail.getPlanResult().getStatus());
+            planResultCopy.setCreatedAt(planResultDetail.getPlanResult().getCreatedAt());
+            planResultCopy.setUpdatedAt(planResultDetail.getPlanResult().getUpdatedAt());
+            planResultCopy.setCreatedBy(planResultDetail.getPlanResult().getCreatedBy());
+            planResultCopy.setUpdatedBy(planResultDetail.getPlanResult().getUpdatedBy());
+
+            // Xóa các quan hệ con để tránh vòng lặp hoặc dữ liệu thừa
+            planResultCopy.setPlanResultDetail(null);
+            planResultCopy.setPlanResultSupplyReplacements(null);
+            planResultCopy.setPlanResultErrorReports(null);
+            planResultCopy.setPlanResultAcceptances(null);
+            planResultCopy.setPlanResultPlanResultDetails(null);
+
+            planResultDetailDTO.setPlanResult(planResultCopy);
+        } else {
+            planResultDetailDTO.setPlanResult(null);
+        }
+
         return planResultDetailDTO;
     }
+
 
     private PlanResultDetail mapToEntity(final PlanResultDetailDTO planResultDetailDTO,
             final PlanResultDetail planResultDetail) {

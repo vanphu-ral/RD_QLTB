@@ -65,13 +65,6 @@ public class AcceptanceService {
     }
 
     private AcceptanceDTO mapToDTO(final Acceptance acceptance, final AcceptanceDTO acceptanceDTO) {
-        acceptance.getPlanResult().setPlanResultDetail(null);
-        acceptance.getPlanResult().setPlanResultSupplyReplacements(null);
-        acceptance.getPlanResult().setPlanResultErrorReports(null);
-        acceptance.getPlanResult().setPlanResultAcceptances(null);
-        acceptance.getPlanResult().setPlanResultPlanResultDetails(null);
-        acceptance.getErrorReport().setPlanResult(null);
-        acceptance.getErrorReport().setErrorReportAcceptances(null);
         acceptanceDTO.setId(acceptance.getId());
         acceptanceDTO.setCode(acceptance.getCode());
         acceptanceDTO.setName(acceptance.getName());
@@ -83,10 +76,53 @@ public class AcceptanceService {
         acceptanceDTO.setCreatedBy(acceptance.getCreatedBy());
         acceptanceDTO.setUpdatedBy(acceptance.getUpdatedBy());
         acceptanceDTO.setStatus(acceptance.getStatus());
-        acceptanceDTO.setPlanResult(acceptance.getPlanResult() == null ? null : acceptance.getPlanResult());
-        acceptanceDTO.setErrorReport(acceptance.getErrorReport() == null ? null : acceptance.getErrorReport());
+
+        // Sao chép PlanResult
+        if (acceptance.getPlanResult() != null) {
+            PlanResult planResultCopy = new PlanResult();
+            planResultCopy.setId(acceptance.getPlanResult().getId());
+            planResultCopy.setCode(acceptance.getPlanResult().getCode());
+            planResultCopy.setStatus(acceptance.getPlanResult().getStatus());
+            planResultCopy.setCreatedAt(acceptance.getPlanResult().getCreatedAt());
+            planResultCopy.setUpdatedAt(acceptance.getPlanResult().getUpdatedAt());
+            planResultCopy.setCreatedBy(acceptance.getPlanResult().getCreatedBy());
+            planResultCopy.setUpdatedBy(acceptance.getPlanResult().getUpdatedBy());
+
+            // Xóa các quan hệ con
+            planResultCopy.setPlanResultDetail(null);
+            planResultCopy.setPlanResultSupplyReplacements(null);
+            planResultCopy.setPlanResultErrorReports(null);
+            planResultCopy.setPlanResultAcceptances(null);
+            planResultCopy.setPlanResultPlanResultDetails(null);
+
+            acceptanceDTO.setPlanResult(planResultCopy);
+        } else {
+            acceptanceDTO.setPlanResult(null);
+        }
+
+        // Sao chép ErrorReport
+        if (acceptance.getErrorReport() != null) {
+            ErrorReport errorReportCopy = new ErrorReport();
+            errorReportCopy.setId(acceptance.getErrorReport().getId());
+            errorReportCopy.setCode(acceptance.getErrorReport().getCode());
+            errorReportCopy.setStatus(acceptance.getErrorReport().getStatus());
+            errorReportCopy.setCreatedAt(acceptance.getErrorReport().getCreatedAt());
+            errorReportCopy.setUpdatedAt(acceptance.getErrorReport().getUpdatedAt());
+            errorReportCopy.setCreatedBy(acceptance.getErrorReport().getCreatedBy());
+            errorReportCopy.setUpdatedBy(acceptance.getErrorReport().getUpdatedBy());
+
+            // Xóa các quan hệ con
+            errorReportCopy.setPlanResult(null);
+            errorReportCopy.setErrorReportAcceptances(null);
+
+            acceptanceDTO.setErrorReport(errorReportCopy);
+        } else {
+            acceptanceDTO.setErrorReport(null);
+        }
+
         return acceptanceDTO;
     }
+
 
     private Acceptance mapToEntity(final AcceptanceDTO acceptanceDTO, final Acceptance acceptance) {
         acceptance.setCode(acceptanceDTO.getCode());

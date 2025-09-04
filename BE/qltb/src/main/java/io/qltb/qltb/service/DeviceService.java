@@ -70,13 +70,6 @@ public class DeviceService {
     }
 
     private DeviceDTO mapToDTO(final Device device, final DeviceDTO deviceDTO) {
-        device.getLine().setTeam(null);
-        device.getLine().setLineDevices(null);
-        device.getLine().setLineForms(null);
-        device.getGroup().setGroupDevices(null);
-        device.getGroup().setDeviceGroupSampleReports(null);
-        device.getGroup().setDeviceGroupPlanDetails(null);
-        device.getGroup().setDeviceGroupKeyMappingDeviceSampleReports(null);
         deviceDTO.setId(device.getId());
         deviceDTO.setBracnId(device.getBracnId());
         deviceDTO.setCode(device.getCode());
@@ -97,10 +90,53 @@ public class DeviceService {
         deviceDTO.setUpdatedAt(device.getUpdatedAt());
         deviceDTO.setCreatedBy(device.getCreatedBy());
         deviceDTO.setUpdatedBy(device.getUpdatedBy());
-        deviceDTO.setGroup(device.getGroup() == null ? null : device.getGroup());
-        deviceDTO.setLine(device.getLine() == null ? null : device.getLine());
+
+        if (device.getGroup() != null) {
+            DeviceGroup groupCopy = new DeviceGroup();
+            groupCopy.setId(device.getGroup().getId());
+            groupCopy.setCode(device.getGroup().getCode());
+            groupCopy.setName(device.getGroup().getName());
+            groupCopy.setStatus(device.getGroup().getStatus());
+            groupCopy.setCreatedAt(device.getGroup().getCreatedAt());
+            groupCopy.setUpdatedAt(device.getGroup().getUpdatedAt());
+            groupCopy.setCreatedBy(device.getGroup().getCreatedBy());
+            groupCopy.setUpdatedBy(device.getGroup().getUpdatedBy());
+
+            // Xóa các quan hệ con
+            groupCopy.setGroupDevices(null);
+            groupCopy.setDeviceGroupSampleReports(null);
+            groupCopy.setDeviceGroupPlanDetails(null);
+            groupCopy.setDeviceGroupKeyMappingDeviceSampleReports(null);
+
+            deviceDTO.setGroup(groupCopy);
+        } else {
+            deviceDTO.setGroup(null);
+        }
+
+        if (device.getLine() != null) {
+            Line lineCopy = new Line();
+            lineCopy.setId(device.getLine().getId());
+            lineCopy.setCode(device.getLine().getCode());
+            lineCopy.setName(device.getLine().getName());
+            lineCopy.setStatus(device.getLine().getStatus());
+            lineCopy.setCreatedAt(device.getLine().getCreatedAt());
+            lineCopy.setUpdatedAt(device.getLine().getUpdatedAt());
+            lineCopy.setCreatedBy(device.getLine().getCreatedBy());
+            lineCopy.setUpdatedBy(device.getLine().getUpdatedBy());
+
+            // Xóa các quan hệ con
+            lineCopy.setTeam(null);
+            lineCopy.setLineDevices(null);
+            lineCopy.setLineForms(null);
+
+            deviceDTO.setLine(lineCopy);
+        } else {
+            deviceDTO.setLine(null);
+        }
+
         return deviceDTO;
     }
+
 
     private Device mapToEntity(final DeviceDTO deviceDTO, final Device device) {
         device.setBracnId(deviceDTO.getBracnId());

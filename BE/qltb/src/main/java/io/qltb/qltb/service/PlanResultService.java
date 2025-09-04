@@ -65,10 +65,6 @@ public class PlanResultService {
     }
 
     private PlanResultDTO mapToDTO(final PlanResult planResult, final PlanResultDTO planResultDTO) {
-        planResult.getPlanResultDetail().setPlan(null);
-        planResult.getPlanResultDetail().setDevice(null);
-        planResult.getPlanResultDetail().setDeviceGroup(null);
-        planResult.getPlanResultDetail().setPlanResultDetailPlanResults(null);
         planResultDTO.setId(planResult.getId());
         planResultDTO.setCode(planResult.getCode());
         planResultDTO.setNote(planResult.getNote());
@@ -78,9 +74,32 @@ public class PlanResultService {
         planResultDTO.setUpdatedBy(planResult.getUpdatedBy());
         planResultDTO.setStatus(planResult.getStatus());
         planResultDTO.setStatusRepair(planResult.getStatusRepair());
-        planResultDTO.setPlanResultDetail(planResult.getPlanResultDetail() == null ? null : planResult.getPlanResultDetail());
+
+        if (planResult.getPlanResultDetail() != null) {
+            PlanDetail detailCopy = new PlanDetail();
+            detailCopy.setId(planResult.getPlanResultDetail().getId());
+            detailCopy.setSampleReporId(planResult.getPlanResultDetail().getSampleReporId());
+            detailCopy.setCreatedAt(planResult.getPlanResultDetail().getCreatedAt());
+            detailCopy.setUpdatedAt(planResult.getPlanResultDetail().getUpdatedAt());
+            detailCopy.setCreatedBy(planResult.getPlanResultDetail().getCreatedBy());
+            detailCopy.setUpdatedBy(planResult.getPlanResultDetail().getUpdatedBy());
+            detailCopy.setStatus(planResult.getPlanResultDetail().getStatus());
+            detailCopy.setUser(planResult.getPlanResultDetail().getUser());
+
+            // Xóa các quan hệ con
+            detailCopy.setPlan(null);
+            detailCopy.setDevice(null);
+            detailCopy.setDeviceGroup(null);
+            detailCopy.setPlanResultDetailPlanResults(null);
+
+            planResultDTO.setPlanResultDetail(detailCopy);
+        } else {
+            planResultDTO.setPlanResultDetail(null);
+        }
+
         return planResultDTO;
     }
+
 
     private PlanResult mapToEntity(final PlanResultDTO planResultDTO, final PlanResult planResult) {
         planResult.setCode(planResultDTO.getCode());

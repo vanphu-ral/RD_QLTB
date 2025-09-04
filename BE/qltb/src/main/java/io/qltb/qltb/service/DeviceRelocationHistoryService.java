@@ -62,15 +62,7 @@ public class DeviceRelocationHistoryService {
     private DeviceRelocationHistoryDTO mapToDTO(
             final DeviceRelocationHistory deviceRelocationHistory,
             final DeviceRelocationHistoryDTO deviceRelocationHistoryDTO) {
-        deviceRelocationHistory.getDevice().setGroup(null);
-        deviceRelocationHistory.getDevice().setLine(null);
-        deviceRelocationHistory.getDevice().setDevicePlanDetails(null);
-        deviceRelocationHistory.getDevice().setDeviceDeviceHistories(null);
-        deviceRelocationHistory.getDevice().setDeviceDeviceSupplyUsages(null);
-        deviceRelocationHistory.getDevice().setDeviceDeviceRelocationHistories(null);
-        deviceRelocationHistory.getDevice().setDevicePrameters(null);
-        deviceRelocationHistory.getDevice().setDevicePerformanceManagements(null);
-        deviceRelocationHistory.getDevice().setDeviceDepreciationManagements(null);
+
         deviceRelocationHistoryDTO.setId(deviceRelocationHistory.getId());
         deviceRelocationHistoryDTO.setOldFactoryId(deviceRelocationHistory.getOldFactoryId());
         deviceRelocationHistoryDTO.setNewFactoryId(deviceRelocationHistory.getNewFactoryId());
@@ -87,9 +79,37 @@ public class DeviceRelocationHistoryService {
         deviceRelocationHistoryDTO.setUpdatedAt(deviceRelocationHistory.getUpdatedAt());
         deviceRelocationHistoryDTO.setCreatedBy(deviceRelocationHistory.getCreatedBy());
         deviceRelocationHistoryDTO.setUpdatedBy(deviceRelocationHistory.getUpdatedBy());
-        deviceRelocationHistoryDTO.setDevice(deviceRelocationHistory.getDevice() == null ? null : deviceRelocationHistory.getDevice());
+
+        if (deviceRelocationHistory.getDevice() != null) {
+            Device deviceCopy = new Device();
+            deviceCopy.setId(deviceRelocationHistory.getDevice().getId());
+            deviceCopy.setCode(deviceRelocationHistory.getDevice().getCode());
+            deviceCopy.setName(deviceRelocationHistory.getDevice().getName());
+            deviceCopy.setStatus(deviceRelocationHistory.getDevice().getStatus());
+            deviceCopy.setCreatedAt(deviceRelocationHistory.getDevice().getCreatedAt());
+            deviceCopy.setUpdatedAt(deviceRelocationHistory.getDevice().getUpdatedAt());
+            deviceCopy.setCreatedBy(deviceRelocationHistory.getDevice().getCreatedBy());
+            deviceCopy.setUpdatedBy(deviceRelocationHistory.getDevice().getUpdatedBy());
+
+            // Xóa các quan hệ con để tránh vòng lặp hoặc dữ liệu thừa
+            deviceCopy.setGroup(null);
+            deviceCopy.setLine(null);
+            deviceCopy.setDevicePlanDetails(null);
+            deviceCopy.setDeviceDeviceHistories(null);
+            deviceCopy.setDeviceDeviceSupplyUsages(null);
+            deviceCopy.setDeviceDeviceRelocationHistories(null);
+            deviceCopy.setDevicePrameters(null);
+            deviceCopy.setDevicePerformanceManagements(null);
+            deviceCopy.setDeviceDepreciationManagements(null);
+
+            deviceRelocationHistoryDTO.setDevice(deviceCopy);
+        } else {
+            deviceRelocationHistoryDTO.setDevice(null);
+        }
+
         return deviceRelocationHistoryDTO;
     }
+
 
     private DeviceRelocationHistory mapToEntity(
             final DeviceRelocationHistoryDTO deviceRelocationHistoryDTO,
