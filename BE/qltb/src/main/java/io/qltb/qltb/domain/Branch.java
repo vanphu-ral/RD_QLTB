@@ -50,7 +50,7 @@ public class Branch {
     @Column
     private Integer status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "factory_id", nullable = false)
     private Factory factory;
 

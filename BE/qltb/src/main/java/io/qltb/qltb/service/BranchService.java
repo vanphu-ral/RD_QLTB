@@ -14,6 +14,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -29,7 +30,7 @@ public class BranchService {
         this.factoryRepository = factoryRepository;
         this.publisher = publisher;
     }
-
+    @Transactional
     public List<BranchDTO> findAll() {
         final List<Branch> branches = branchRepository.findAll(Sort.by("id"));
         return branches.stream()
@@ -64,6 +65,7 @@ public class BranchService {
     }
 
     private BranchDTO mapToDTO(final Branch branch, final BranchDTO branchDTO) {
+        branch.getFactory().setFactoryBranches(null);
         branchDTO.setId(branch.getId());
         branchDTO.setCode(branch.getCode());
         branchDTO.setName(branch.getName());
