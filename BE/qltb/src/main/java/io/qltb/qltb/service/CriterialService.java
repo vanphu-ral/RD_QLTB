@@ -65,6 +65,10 @@ public class CriterialService {
     }
 
     private CriterialDTO mapToDTO(final Criterial criterial, final CriterialDTO criterialDTO) {
+        criterial.getSampleReport().setDeviceGroup(null);
+        criterial.getSampleReport().setSampleReportCriterials(null);
+        criterial.getSampleReport().setSampleReportKeyMappings(null);
+        criterial.getSampleReport().setSampleReportKeyMappingDeviceSampleReports(null);
         criterialDTO.setId(criterial.getId());
         criterialDTO.setCode(criterial.getCode());
         criterialDTO.setName(criterial.getName());

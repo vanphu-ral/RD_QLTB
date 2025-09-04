@@ -64,6 +64,11 @@ public class PlanTargetService {
     }
 
     private PlanTargetDTO mapToDTO(final PlanTarget planTarget, final PlanTargetDTO planTargetDTO) {
+        planTarget.getBranch().setFactory(null);
+        planTarget.getBranch().setBranchDayOffs(null);
+        planTarget.getBranch().setBranchTeams(null);
+        planTarget.getBranch().setBranchForms(null);
+        planTarget.getBranch().setBranchPlanTargets(null);
         planTargetDTO.setId(planTarget.getId());
         planTargetDTO.setTargetDescription(planTarget.getTargetDescription());
         planTargetDTO.setTargetValue(planTarget.getTargetValue());

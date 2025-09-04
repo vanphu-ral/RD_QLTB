@@ -65,17 +65,23 @@ public class KeyMappingService {
     }
 
     private KeyMappingDTO mapToDTO(final KeyMapping keyMapping, final KeyMappingDTO keyMappingDTO) {
+        keyMapping.getSampleReport().setDeviceGroup(null);
+        keyMapping.getSampleReport().setSampleReportCriterials(null);
+        keyMapping.getSampleReport().setSampleReportKeyMappings(null);
+        keyMapping.getSampleReport().setSampleReportKeyMappingDeviceSampleReports(null);
+        keyMapping.getCriterial().setSampleReport(null);
+        keyMapping.getCriterial().setCriterialKeyMappings(null);
         keyMappingDTO.setId(keyMapping.getId());
-        keyMappingDTO.setSampleReport(keyMapping.getSampleReport() == null ? null : keyMapping.getSampleReport().getId());
-        keyMappingDTO.setCriterial(keyMapping.getCriterial() == null ? null : keyMapping.getCriterial().getId());
+        keyMappingDTO.setSampleReport(keyMapping.getSampleReport() == null ? null : keyMapping.getSampleReport());
+        keyMappingDTO.setCriterial(keyMapping.getCriterial() == null ? null : keyMapping.getCriterial());
         return keyMappingDTO;
     }
 
     private KeyMapping mapToEntity(final KeyMappingDTO keyMappingDTO, final KeyMapping keyMapping) {
-        final SampleReport sampleReport = keyMappingDTO.getSampleReport() == null ? null : sampleReportRepository.findById(keyMappingDTO.getSampleReport())
+        final SampleReport sampleReport = keyMappingDTO.getSampleReport() == null ? null : sampleReportRepository.findById(keyMappingDTO.getSampleReport().getId())
                 .orElseThrow(() -> new NotFoundException("sampleReport not found"));
         keyMapping.setSampleReport(sampleReport);
-        final Criterial criterial = keyMappingDTO.getCriterial() == null ? null : criterialRepository.findById(keyMappingDTO.getCriterial())
+        final Criterial criterial = keyMappingDTO.getCriterial() == null ? null : criterialRepository.findById(keyMappingDTO.getCriterial().getId())
                 .orElseThrow(() -> new NotFoundException("criterial not found"));
         keyMapping.setCriterial(criterial);
         return keyMapping;
@@ -97,7 +103,7 @@ public class KeyMappingService {
         final ReferencedException referencedException = new ReferencedException();
         final KeyMapping criterialKeyMapping = keyMappingRepository.findFirstByCriterialId(event.getId());
         if (criterialKeyMapping != null) {
-            referencedException.setKey("criterial.keyMapping.criterial.referenced");
+            referencedException.setKey("keyMapping.keyMapping.keyMapping.referenced");
             referencedException.addParam(criterialKeyMapping.getId());
             throw referencedException;
         }

@@ -66,6 +66,10 @@ public class SampleReportService {
 
     private SampleReportDTO mapToDTO(final SampleReport sampleReport,
             final SampleReportDTO sampleReportDTO) {
+        sampleReport.getDeviceGroup().setGroupDevices(null);
+        sampleReport.getDeviceGroup().setDeviceGroupSampleReports(null);
+        sampleReport.getDeviceGroup().setDeviceGroupPlanDetails(null);
+        sampleReport.getDeviceGroup().setDeviceGroupKeyMappingDeviceSampleReports(null);
         sampleReportDTO.setId(sampleReport.getId());
         sampleReportDTO.setCode(sampleReport.getCode());
         sampleReportDTO.setName(sampleReport.getName());

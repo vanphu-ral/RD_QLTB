@@ -65,6 +65,16 @@ public class PrameterService {
     }
 
     private PrameterDTO mapToDTO(final Prameter prameter, final PrameterDTO prameterDTO) {
+        prameter.getParameterGroup().setParameterGroupPrameters(null);
+        prameter.getDevice().setGroup(null);
+        prameter.getDevice().setLine(null);
+        prameter.getDevice().setDevicePlanDetails(null);
+        prameter.getDevice().setDeviceDeviceHistories(null);
+        prameter.getDevice().setDeviceDeviceSupplyUsages(null);
+        prameter.getDevice().setDeviceDeviceRelocationHistories(null);
+        prameter.getDevice().setDevicePrameters(null);
+        prameter.getDevice().setDevicePerformanceManagements(null);
+        prameter.getDevice().setDeviceDepreciationManagements(null);
         prameterDTO.setId(prameter.getId());
         prameterDTO.setCode(prameter.getCode());
         prameterDTO.setName(prameter.getName());

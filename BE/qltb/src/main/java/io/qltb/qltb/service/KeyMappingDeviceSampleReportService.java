@@ -69,19 +69,27 @@ public class KeyMappingDeviceSampleReportService {
     private KeyMappingDeviceSampleReportDTO mapToDTO(
             final KeyMappingDeviceSampleReport keyMappingDeviceSampleReport,
             final KeyMappingDeviceSampleReportDTO keyMappingDeviceSampleReportDTO) {
+        keyMappingDeviceSampleReport.getSampleReport().setDeviceGroup(null);
+        keyMappingDeviceSampleReport.getSampleReport().setSampleReportCriterials(null);
+        keyMappingDeviceSampleReport.getSampleReport().setSampleReportKeyMappings(null);
+        keyMappingDeviceSampleReport.getSampleReport().setSampleReportKeyMappingDeviceSampleReports(null);
+        keyMappingDeviceSampleReport.getDeviceGroup().setGroupDevices(null);
+        keyMappingDeviceSampleReport.getDeviceGroup().setDeviceGroupSampleReports(null);
+        keyMappingDeviceSampleReport.getDeviceGroup().setDeviceGroupPlanDetails(null);
+        keyMappingDeviceSampleReport.getDeviceGroup().setDeviceGroupKeyMappingDeviceSampleReports(null);
         keyMappingDeviceSampleReportDTO.setId(keyMappingDeviceSampleReport.getId());
-        keyMappingDeviceSampleReportDTO.setSampleReport(keyMappingDeviceSampleReport.getSampleReport() == null ? null : keyMappingDeviceSampleReport.getSampleReport().getId());
-        keyMappingDeviceSampleReportDTO.setDeviceGroup(keyMappingDeviceSampleReport.getDeviceGroup() == null ? null : keyMappingDeviceSampleReport.getDeviceGroup().getId());
+        keyMappingDeviceSampleReportDTO.setSampleReport(keyMappingDeviceSampleReport.getSampleReport() == null ? null : keyMappingDeviceSampleReport.getSampleReport());
+        keyMappingDeviceSampleReportDTO.setDeviceGroup(keyMappingDeviceSampleReport.getDeviceGroup() == null ? null : keyMappingDeviceSampleReport.getDeviceGroup());
         return keyMappingDeviceSampleReportDTO;
     }
 
     private KeyMappingDeviceSampleReport mapToEntity(
             final KeyMappingDeviceSampleReportDTO keyMappingDeviceSampleReportDTO,
             final KeyMappingDeviceSampleReport keyMappingDeviceSampleReport) {
-        final SampleReport sampleReport = keyMappingDeviceSampleReportDTO.getSampleReport() == null ? null : sampleReportRepository.findById(keyMappingDeviceSampleReportDTO.getSampleReport())
+        final SampleReport sampleReport = keyMappingDeviceSampleReportDTO.getSampleReport() == null ? null : sampleReportRepository.findById(keyMappingDeviceSampleReportDTO.getSampleReport().getId())
                 .orElseThrow(() -> new NotFoundException("sampleReport not found"));
         keyMappingDeviceSampleReport.setSampleReport(sampleReport);
-        final DeviceGroup deviceGroup = keyMappingDeviceSampleReportDTO.getDeviceGroup() == null ? null : deviceGroupRepository.findById(keyMappingDeviceSampleReportDTO.getDeviceGroup())
+        final DeviceGroup deviceGroup = keyMappingDeviceSampleReportDTO.getDeviceGroup() == null ? null : deviceGroupRepository.findById(keyMappingDeviceSampleReportDTO.getDeviceGroup().getId())
                 .orElseThrow(() -> new NotFoundException("deviceGroup not found"));
         keyMappingDeviceSampleReport.setDeviceGroup(deviceGroup);
         return keyMappingDeviceSampleReport;

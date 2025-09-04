@@ -62,6 +62,15 @@ public class DeviceRelocationHistoryService {
     private DeviceRelocationHistoryDTO mapToDTO(
             final DeviceRelocationHistory deviceRelocationHistory,
             final DeviceRelocationHistoryDTO deviceRelocationHistoryDTO) {
+        deviceRelocationHistory.getDevice().setGroup(null);
+        deviceRelocationHistory.getDevice().setLine(null);
+        deviceRelocationHistory.getDevice().setDevicePlanDetails(null);
+        deviceRelocationHistory.getDevice().setDeviceDeviceHistories(null);
+        deviceRelocationHistory.getDevice().setDeviceDeviceSupplyUsages(null);
+        deviceRelocationHistory.getDevice().setDeviceDeviceRelocationHistories(null);
+        deviceRelocationHistory.getDevice().setDevicePrameters(null);
+        deviceRelocationHistory.getDevice().setDevicePerformanceManagements(null);
+        deviceRelocationHistory.getDevice().setDeviceDepreciationManagements(null);
         deviceRelocationHistoryDTO.setId(deviceRelocationHistory.getId());
         deviceRelocationHistoryDTO.setOldFactoryId(deviceRelocationHistory.getOldFactoryId());
         deviceRelocationHistoryDTO.setNewFactoryId(deviceRelocationHistory.getNewFactoryId());

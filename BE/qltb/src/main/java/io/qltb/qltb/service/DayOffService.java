@@ -64,6 +64,15 @@ public class DayOffService {
     }
 
     private DayOffDTO mapToDTO(final DayOff dayOff, final DayOffDTO dayOffDTO) {
+        dayOff.getBranch().setFactory(null);
+        dayOff.getBranch().setBranchDayOffs(null);
+        dayOff.getBranch().setBranchTeams(null);
+        dayOff.getBranch().setBranchForms(null);
+        dayOff.getBranch().setBranchPlanTargets(null);
+        dayOff.getTeam().setBranch(null);
+        dayOff.getTeam().setTeamLines(null);
+        dayOff.getTeam().setTeamDayOffs(null);
+        dayOff.getTeam().setTeamForms(null);
         dayOffDTO.setId(dayOff.getId());
         dayOffDTO.setCode(dayOff.getCode());
         dayOffDTO.setName(dayOff.getName());

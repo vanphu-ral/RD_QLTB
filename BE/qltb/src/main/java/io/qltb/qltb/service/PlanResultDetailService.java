@@ -60,6 +60,11 @@ public class PlanResultDetailService {
 
     private PlanResultDetailDTO mapToDTO(final PlanResultDetail planResultDetail,
             final PlanResultDetailDTO planResultDetailDTO) {
+        planResultDetail.getPlanResult().setPlanResultDetail(null);
+        planResultDetail.getPlanResult().setPlanResultSupplyReplacements(null);
+        planResultDetail.getPlanResult().setPlanResultErrorReports(null);
+        planResultDetail.getPlanResult().setPlanResultAcceptances(null);
+        planResultDetail.getPlanResult().setPlanResultPlanResultDetails(null);
         planResultDetailDTO.setId(planResultDetail.getId());
         planResultDetailDTO.setCriticalCode(planResultDetail.getCriticalCode());
         planResultDetailDTO.setCriticalName(planResultDetail.getCriticalName());

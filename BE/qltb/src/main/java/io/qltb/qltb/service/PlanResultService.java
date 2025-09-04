@@ -65,6 +65,10 @@ public class PlanResultService {
     }
 
     private PlanResultDTO mapToDTO(final PlanResult planResult, final PlanResultDTO planResultDTO) {
+        planResult.getPlanResultDetail().setPlan(null);
+        planResult.getPlanResultDetail().setDevice(null);
+        planResult.getPlanResultDetail().setDeviceGroup(null);
+        planResult.getPlanResultDetail().setPlanResultDetailPlanResults(null);
         planResultDTO.setId(planResult.getId());
         planResultDTO.setCode(planResult.getCode());
         planResultDTO.setNote(planResult.getNote());

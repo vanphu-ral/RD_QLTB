@@ -64,6 +64,10 @@ public class LineService {
     }
 
     private LineDTO mapToDTO(final Line line, final LineDTO lineDTO) {
+        line.getTeam().setBranch(null);
+        line.getTeam().setTeamLines(null);
+        line.getTeam().setTeamDayOffs(null);
+        line.getTeam().setTeamForms(null);
         lineDTO.setId(line.getId());
         lineDTO.setCode(line.getCode());
         lineDTO.setName(line.getName());

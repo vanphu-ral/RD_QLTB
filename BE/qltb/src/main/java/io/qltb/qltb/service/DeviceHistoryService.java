@@ -60,6 +60,15 @@ public class DeviceHistoryService {
 
     private DeviceHistoryDTO mapToDTO(final DeviceHistory deviceHistory,
             final DeviceHistoryDTO deviceHistoryDTO) {
+        deviceHistory.getDevice().setGroup(null);
+        deviceHistory.getDevice().setLine(null);
+        deviceHistory.getDevice().setDevicePlanDetails(null);
+        deviceHistory.getDevice().setDeviceDeviceHistories(null);
+        deviceHistory.getDevice().setDeviceDeviceSupplyUsages(null);
+        deviceHistory.getDevice().setDeviceDeviceRelocationHistories(null);
+        deviceHistory.getDevice().setDevicePrameters(null);
+        deviceHistory.getDevice().setDevicePerformanceManagements(null);
+        deviceHistory.getDevice().setDeviceDepreciationManagements(null);
         deviceHistoryDTO.setId(deviceHistory.getId());
         deviceHistoryDTO.setEventType(deviceHistory.getEventType());
         deviceHistoryDTO.setDescription(deviceHistory.getDescription());

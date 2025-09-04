@@ -1,5 +1,7 @@
 package io.qltb.qltb.model;
 
+import io.qltb.qltb.domain.DeviceGroup;
+import io.qltb.qltb.domain.SampleReport;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +11,7 @@ import lombok.Setter;
 public class KeyMappingDeviceSampleReportDTO {
 
     private Long id;
-    private Long sampleReport;
-    private Long deviceGroup;
+    private SampleReport sampleReport;
+    private DeviceGroup deviceGroup;
 
 }

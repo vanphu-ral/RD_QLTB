@@ -66,6 +66,11 @@ public class ErrorReportService {
 
     private ErrorReportDTO mapToDTO(final ErrorReport errorReport,
             final ErrorReportDTO errorReportDTO) {
+        errorReport.getPlanResult().setPlanResultDetail(null);
+        errorReport.getPlanResult().setPlanResultSupplyReplacements(null);
+        errorReport.getPlanResult().setPlanResultErrorReports(null);
+        errorReport.getPlanResult().setPlanResultAcceptances(null);
+        errorReport.getPlanResult().setPlanResultPlanResultDetails(null);
         errorReportDTO.setId(errorReport.getId());
         errorReportDTO.setCode(errorReport.getCode());
         errorReportDTO.setSeverity(errorReport.getSeverity());

@@ -60,6 +60,10 @@ public class SupplyDetailService {
 
     private SupplyDetailDTO mapToDTO(final SupplyDetail supplyDetail,
             final SupplyDetailDTO supplyDetailDTO) {
+        supplyDetail.getSupply().setSupplyDeviceSupplyUsages(null);
+        supplyDetail.getSupply().setGroup(null);
+        supplyDetail.getSupply().setSupplySupplyReplacements(null);
+        supplyDetail.getSupply().setSupplySupplyDetails(null);
         supplyDetailDTO.setId(supplyDetail.getId());
         supplyDetailDTO.setSerial(supplyDetail.getSerial());
         supplyDetailDTO.setImportDate(supplyDetail.getImportDate());

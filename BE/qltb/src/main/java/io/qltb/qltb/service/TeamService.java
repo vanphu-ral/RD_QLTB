@@ -64,6 +64,11 @@ public class TeamService {
     }
 
     private TeamDTO mapToDTO(final Team team, final TeamDTO teamDTO) {
+        team.getBranch().setFactory(null);
+        team.getBranch().setBranchDayOffs(null);
+        team.getBranch().setBranchTeams(null);
+        team.getBranch().setBranchForms(null);
+        team.getBranch().setBranchPlanTargets(null);
         teamDTO.setId(team.getId());
         teamDTO.setCode(team.getCode());
         teamDTO.setName(team.getName());

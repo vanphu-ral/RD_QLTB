@@ -75,6 +75,19 @@ public class FormService {
     }
 
     private FormDTO mapToDTO(final Form form, final FormDTO formDTO) {
+        form.getFactory().setFactoryBranches(null);
+        form.getLine().setTeam(null);
+        form.getLine().setLineDevices(null);
+        form.getLine().setLineForms(null);
+        form.getBranch().setFactory(null);
+        form.getBranch().setBranchDayOffs(null);
+        form.getBranch().setBranchTeams(null);
+        form.getBranch().setBranchForms(null);
+        form.getBranch().setBranchPlanTargets(null);
+        form.getTeam().setBranch(null);
+        form.getTeam().setTeamLines(null);
+        form.getTeam().setTeamDayOffs(null);
+        form.getTeam().setTeamForms(null);
         formDTO.setId(form.getId());
         formDTO.setCode(form.getCode());
         formDTO.setName(form.getName());

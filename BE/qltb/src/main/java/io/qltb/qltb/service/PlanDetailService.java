@@ -76,6 +76,19 @@ public class PlanDetailService {
     }
 
     private PlanDetailDTO mapToDTO(final PlanDetail planDetail, final PlanDetailDTO planDetailDTO) {
+        planDetail.getDevice().setGroup(null);
+        planDetail.getDevice().setLine(null);
+        planDetail.getDevice().setDevicePlanDetails(null);
+        planDetail.getDevice().setDeviceDeviceHistories(null);
+        planDetail.getDevice().setDeviceDeviceSupplyUsages(null);
+        planDetail.getDevice().setDeviceDeviceRelocationHistories(null);
+        planDetail.getDevice().setDevicePrameters(null);
+        planDetail.getDevice().setDevicePerformanceManagements(null);
+        planDetail.getDevice().setDeviceDepreciationManagements(null);
+        planDetail.getDeviceGroup().setGroupDevices(null);
+        planDetail.getDeviceGroup().setDeviceGroupSampleReports(null);
+        planDetail.getDeviceGroup().setDeviceGroupPlanDetails(null);
+        planDetail.getDeviceGroup().setDeviceGroupKeyMappingDeviceSampleReports(null);
         planDetailDTO.setId(planDetail.getId());
         planDetailDTO.setSampleReporId(planDetail.getSampleReporId());
         planDetailDTO.setCreatedAt(planDetail.getCreatedAt());

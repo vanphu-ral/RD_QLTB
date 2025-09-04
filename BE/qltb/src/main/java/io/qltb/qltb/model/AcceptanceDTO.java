@@ -1,5 +1,7 @@
 package io.qltb.qltb.model;
 
+import io.qltb.qltb.domain.ErrorReport;
+import io.qltb.qltb.domain.PlanResult;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -41,8 +43,8 @@ public class AcceptanceDTO {
 
     private Integer status;
 
-    private Long planResult;
+    private PlanResult planResult;
 
-    private Long errorReport;
+    private ErrorReport errorReport;
 
 }

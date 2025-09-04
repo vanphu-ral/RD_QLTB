@@ -61,6 +61,15 @@ public class DepreciationManagementService {
 
     private DepreciationManagementDTO mapToDTO(final DepreciationManagement depreciationManagement,
             final DepreciationManagementDTO depreciationManagementDTO) {
+        depreciationManagement.getDevice().setGroup(null);
+        depreciationManagement.getDevice().setLine(null);
+        depreciationManagement.getDevice().setDevicePlanDetails(null);
+        depreciationManagement.getDevice().setDeviceDeviceHistories(null);
+        depreciationManagement.getDevice().setDeviceDeviceSupplyUsages(null);
+        depreciationManagement.getDevice().setDeviceDeviceRelocationHistories(null);
+        depreciationManagement.getDevice().setDevicePrameters(null);
+        depreciationManagement.getDevice().setDevicePerformanceManagements(null);
+        depreciationManagement.getDevice().setDeviceDepreciationManagements(null);
         depreciationManagementDTO.setId(depreciationManagement.getId());
         depreciationManagementDTO.setCode(depreciationManagement.getCode());
         depreciationManagementDTO.setName(depreciationManagement.getName());

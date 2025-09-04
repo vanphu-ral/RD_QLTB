@@ -66,6 +66,15 @@ public class SupplyReplacementService {
 
     private SupplyReplacementDTO mapToDTO(final SupplyReplacement supplyReplacement,
             final SupplyReplacementDTO supplyReplacementDTO) {
+        supplyReplacement.getSupply().setSupplyDeviceSupplyUsages(null);
+        supplyReplacement.getSupply().setGroup(null);
+        supplyReplacement.getSupply().setSupplySupplyReplacements(null);
+        supplyReplacement.getSupply().setSupplySupplyDetails(null);
+        supplyReplacement.getPlanResult().setPlanResultDetail(null);
+        supplyReplacement.getPlanResult().setPlanResultSupplyReplacements(null);
+        supplyReplacement.getPlanResult().setPlanResultErrorReports(null);
+        supplyReplacement.getPlanResult().setPlanResultAcceptances(null);
+        supplyReplacement.getPlanResult().setPlanResultPlanResultDetails(null);
         supplyReplacementDTO.setId(supplyReplacement.getId());
         supplyReplacementDTO.setQuantity(supplyReplacement.getQuantity());
         supplyReplacementDTO.setCode(supplyReplacement.getCode());

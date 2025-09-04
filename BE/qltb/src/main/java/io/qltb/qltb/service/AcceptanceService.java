@@ -65,6 +65,13 @@ public class AcceptanceService {
     }
 
     private AcceptanceDTO mapToDTO(final Acceptance acceptance, final AcceptanceDTO acceptanceDTO) {
+        acceptance.getPlanResult().setPlanResultDetail(null);
+        acceptance.getPlanResult().setPlanResultSupplyReplacements(null);
+        acceptance.getPlanResult().setPlanResultErrorReports(null);
+        acceptance.getPlanResult().setPlanResultAcceptances(null);
+        acceptance.getPlanResult().setPlanResultPlanResultDetails(null);
+        acceptance.getErrorReport().setPlanResult(null);
+        acceptance.getErrorReport().setErrorReportAcceptances(null);
         acceptanceDTO.setId(acceptance.getId());
         acceptanceDTO.setCode(acceptance.getCode());
         acceptanceDTO.setName(acceptance.getName());
@@ -76,8 +83,8 @@ public class AcceptanceService {
         acceptanceDTO.setCreatedBy(acceptance.getCreatedBy());
         acceptanceDTO.setUpdatedBy(acceptance.getUpdatedBy());
         acceptanceDTO.setStatus(acceptance.getStatus());
-        acceptanceDTO.setPlanResult(acceptance.getPlanResult() == null ? null : acceptance.getPlanResult().getId());
-        acceptanceDTO.setErrorReport(acceptance.getErrorReport() == null ? null : acceptance.getErrorReport().getId());
+        acceptanceDTO.setPlanResult(acceptance.getPlanResult() == null ? null : acceptance.getPlanResult());
+        acceptanceDTO.setErrorReport(acceptance.getErrorReport() == null ? null : acceptance.getErrorReport());
         return acceptanceDTO;
     }
 
@@ -92,10 +99,10 @@ public class AcceptanceService {
         acceptance.setCreatedBy(acceptanceDTO.getCreatedBy());
         acceptance.setUpdatedBy(acceptanceDTO.getUpdatedBy());
         acceptance.setStatus(acceptanceDTO.getStatus());
-        final PlanResult planResult = acceptanceDTO.getPlanResult() == null ? null : planResultRepository.findById(acceptanceDTO.getPlanResult())
+        final PlanResult planResult = acceptanceDTO.getPlanResult() == null ? null : planResultRepository.findById(acceptanceDTO.getPlanResult().getId())
                 .orElseThrow(() -> new NotFoundException("planResult not found"));
         acceptance.setPlanResult(planResult);
-        final ErrorReport errorReport = acceptanceDTO.getErrorReport() == null ? null : errorReportRepository.findById(acceptanceDTO.getErrorReport())
+        final ErrorReport errorReport = acceptanceDTO.getErrorReport() == null ? null : errorReportRepository.findById(acceptanceDTO.getErrorReport().getId())
                 .orElseThrow(() -> new NotFoundException("errorReport not found"));
         acceptance.setErrorReport(errorReport);
         return acceptance;

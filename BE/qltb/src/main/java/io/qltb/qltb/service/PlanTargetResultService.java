@@ -60,6 +60,8 @@ public class PlanTargetResultService {
 
     private PlanTargetResultDTO mapToDTO(final PlanTargetResult planTargetResult,
             final PlanTargetResultDTO planTargetResultDTO) {
+        planTargetResult.getPlanTargetDevice().setPlanTargetDevicePlanTargetResults(null);
+        planTargetResult.getPlanTargetDevice().setBranch(null);
         planTargetResultDTO.setId(planTargetResult.getId());
         planTargetResultDTO.setResult(planTargetResult.getResult());
         planTargetResultDTO.setNote(planTargetResult.getNote());

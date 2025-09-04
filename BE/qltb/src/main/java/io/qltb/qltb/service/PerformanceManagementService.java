@@ -61,6 +61,15 @@ public class PerformanceManagementService {
 
     private PerformanceManagementDTO mapToDTO(final PerformanceManagement performanceManagement,
             final PerformanceManagementDTO performanceManagementDTO) {
+        performanceManagement.getDevice().setGroup(null);
+        performanceManagement.getDevice().setLine(null);
+        performanceManagement.getDevice().setDevicePlanDetails(null);
+        performanceManagement.getDevice().setDeviceDeviceHistories(null);
+        performanceManagement.getDevice().setDeviceDeviceSupplyUsages(null);
+        performanceManagement.getDevice().setDeviceDeviceRelocationHistories(null);
+        performanceManagement.getDevice().setDevicePrameters(null);
+        performanceManagement.getDevice().setDevicePerformanceManagements(null);
+        performanceManagement.getDevice().setDeviceDepreciationManagements(null);
         performanceManagementDTO.setId(performanceManagement.getId());
         performanceManagementDTO.setCode(performanceManagement.getCode());
         performanceManagementDTO.setName(performanceManagement.getName());

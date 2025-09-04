@@ -65,6 +65,7 @@ public class PlanService {
     }
 
     private PlanDTO mapToDTO(final Plan plan, final PlanDTO planDTO) {
+        plan.getPlanType().setPlanTypePlans(null);
         planDTO.setId(plan.getId());
         planDTO.setName(plan.getName());
         planDTO.setFactoryId(plan.getFactoryId());

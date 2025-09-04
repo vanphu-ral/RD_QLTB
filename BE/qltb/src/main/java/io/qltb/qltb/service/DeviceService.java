@@ -70,6 +70,13 @@ public class DeviceService {
     }
 
     private DeviceDTO mapToDTO(final Device device, final DeviceDTO deviceDTO) {
+        device.getLine().setTeam(null);
+        device.getLine().setLineDevices(null);
+        device.getLine().setLineForms(null);
+        device.getGroup().setGroupDevices(null);
+        device.getGroup().setDeviceGroupSampleReports(null);
+        device.getGroup().setDeviceGroupPlanDetails(null);
+        device.getGroup().setDeviceGroupKeyMappingDeviceSampleReports(null);
         deviceDTO.setId(device.getId());
         deviceDTO.setBracnId(device.getBracnId());
         deviceDTO.setCode(device.getCode());

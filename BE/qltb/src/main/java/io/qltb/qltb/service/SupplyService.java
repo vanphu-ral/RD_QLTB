@@ -65,6 +65,7 @@ public class SupplyService {
     }
 
     private SupplyDTO mapToDTO(final Supply supply, final SupplyDTO supplyDTO) {
+        supply.getGroup().setGroupSupplies(null);
         supplyDTO.setId(supply.getId());
         supplyDTO.setCode(supply.getCode());
         supplyDTO.setName(supply.getName());
@@ -78,7 +79,7 @@ public class SupplyService {
         supplyDTO.setCreatedBy(supply.getCreatedBy());
         supplyDTO.setUpdatedBy(supply.getUpdatedBy());
         supplyDTO.setStatus(supply.getStatus());
-        supplyDTO.setGroup(supply.getGroup() == null ? null : supply.getGroup().getId());
+        supplyDTO.setGroup(supply.getGroup() == null ? null : supply.getGroup());
         return supplyDTO;
     }
 
@@ -95,7 +96,7 @@ public class SupplyService {
         supply.setCreatedBy(supplyDTO.getCreatedBy());
         supply.setUpdatedBy(supplyDTO.getUpdatedBy());
         supply.setStatus(supplyDTO.getStatus());
-        final SupplyGroup group = supplyDTO.getGroup() == null ? null : supplyGroupRepository.findById(supplyDTO.getGroup())
+        final SupplyGroup group = supplyDTO.getGroup() == null ? null : supplyGroupRepository.findById(supplyDTO.getGroup().getId())
                 .orElseThrow(() -> new NotFoundException("group not found"));
         supply.setGroup(group);
         return supply;

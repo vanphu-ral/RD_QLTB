@@ -65,6 +65,19 @@ public class DeviceSupplyUsageService {
 
     private DeviceSupplyUsageDTO mapToDTO(final DeviceSupplyUsage deviceSupplyUsage,
             final DeviceSupplyUsageDTO deviceSupplyUsageDTO) {
+        deviceSupplyUsage.getDevice().setGroup(null);
+        deviceSupplyUsage.getDevice().setLine(null);
+        deviceSupplyUsage.getDevice().setDevicePlanDetails(null);
+        deviceSupplyUsage.getDevice().setDeviceDeviceHistories(null);
+        deviceSupplyUsage.getDevice().setDeviceDeviceSupplyUsages(null);
+        deviceSupplyUsage.getDevice().setDeviceDeviceRelocationHistories(null);
+        deviceSupplyUsage.getDevice().setDevicePrameters(null);
+        deviceSupplyUsage.getDevice().setDevicePerformanceManagements(null);
+        deviceSupplyUsage.getDevice().setDeviceDepreciationManagements(null);
+        deviceSupplyUsage.getSupply().setSupplyDeviceSupplyUsages(null);
+        deviceSupplyUsage.getSupply().setGroup(null);
+        deviceSupplyUsage.getSupply().setSupplySupplyReplacements(null);
+        deviceSupplyUsage.getSupply().setSupplySupplyDetails(null);
         deviceSupplyUsageDTO.setId(deviceSupplyUsage.getId());
         deviceSupplyUsageDTO.setUsageDate(deviceSupplyUsage.getUsageDate());
         deviceSupplyUsageDTO.setSerial(deviceSupplyUsage.getSerial());
