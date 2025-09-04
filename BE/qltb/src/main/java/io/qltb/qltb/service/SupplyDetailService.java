@@ -8,9 +8,13 @@ import io.qltb.qltb.repos.SupplyDetailRepository;
 import io.qltb.qltb.repos.SupplyRepository;
 import io.qltb.qltb.util.NotFoundException;
 import io.qltb.qltb.util.ReferencedException;
+
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
@@ -44,7 +48,30 @@ public class SupplyDetailService {
         mapToEntity(supplyDetailDTO, supplyDetail);
         return supplyDetailRepository.save(supplyDetail).getId();
     }
+    public ResponseEntity<?> creates(final List<SupplyDetailDTO> supplyDetailDTOs) {
+        List<String> errors = new ArrayList<>();
 
+        for (SupplyDetailDTO dto : supplyDetailDTOs) {
+            try {
+                create(dto); // Giả sử đây là hàm xử lý lưu từng DTO
+            } catch (Exception e) {
+                // Ghi lại lỗi cụ thể cho từng DTO
+                String errorMsg = String.format("Lỗi khi xử lý SupplyDetailDTO với ID %s: %s",
+                        dto.getId(), e.getMessage());
+                errors.add(errorMsg);
+            }
+        }
+
+        if (errors.isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body("Tạo danh sách SupplyDetail thành công.");
+        } else {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(errors);
+        }
+    }
     public void update(final Long id, final SupplyDetailDTO supplyDetailDTO) {
         final SupplyDetail supplyDetail = supplyDetailRepository.findById(id)
                 .orElseThrow(NotFoundException::new);

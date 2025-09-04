@@ -46,7 +46,10 @@ public class SupplyDetailResource {
         final Long createdId = supplyDetailService.create(supplyDetailDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
-
+    @PostMapping("/creates")
+    public ResponseEntity<?> creates(@RequestBody List<SupplyDetailDTO> supplyDetailDTOs) {
+        return supplyDetailService.creates(supplyDetailDTOs);
+    }
     @PutMapping("/{id}")
     public ResponseEntity<Long> updateSupplyDetail(@PathVariable(name = "id") final Long id,
             @RequestBody @Valid final SupplyDetailDTO supplyDetailDTO) {
