@@ -2,7 +2,7 @@
 <app-base-table 
   [apiService]="apiService"
   [columns]="columns"
-  [title]="'Danh sách nhóm thiết bị'"
+  [title]="'Danh sách thiết bị'"
   [showAddButton]="true">
   <ng-template appColumnTemplate="createdAt" let-rowData>
     {{ rowData | date: 'dd/MM/yyyy' }}

@@ -25,7 +25,6 @@ export class BranchDetailComponent extends BasePageComponent<Branch> {
   constructor(
     protected override apiService: BranchService,
     private factoryApi: FactoryService,
-    public cdr: ChangeDetectorRef
   ) {
     super(apiService);
   }
@@ -34,39 +33,29 @@ export class BranchDetailComponent extends BasePageComponent<Branch> {
     super.ngOnInit();
     this.factoryApi.getAll().subscribe((factories) => {
       this.listFactories = factories;
-      if (this.model?.factory) {
-        this.model.factory = this.model.factory.id;
-        this.cdr.detectChanges();
-      }
+      this.cdr.detectChanges();
     });
   }
 
   public override save(): void {
     if (this.model) {
-      const account = this.accountService.getUser();
-      const email = account?.email ? account.email : 'unknown';
-      const branchToSave = {
-        ...this.model,
-        factory: { id: this.model.factory }
-      };
-      this.model = Util.prepareModel(branchToSave, email);
-
+      this.model = Util.prepareModel(this.model);
       if (this.isAddMode) {
         this.apiService.create(this.model).subscribe({
           next: () => {
-            Util.toastMessage('Thêm mới thành công', 'success');
+            Util.ConfirmMessage('Thêm mới thành công', 'success');
           },
           error: () => {
-            Util.toastMessage('Thêm mới thất bại', 'error');
+            Util.ConfirmMessage('Thêm mới thất bại', 'error');
           }
         }).add(() => this.navigationService.back());
       } else {
         this.apiService.update(this.model.id!, this.model).subscribe({
           next: () => {
-            Util.toastMessage('Cập nhật thành công', 'success');
+            Util.ConfirmMessage('Cập nhật thành công', 'success');
           },
           error: () => {
-            Util.toastMessage('Cập nhật thất bại', 'error');
+            Util.ConfirmMessage('Cập nhật thất bại', 'error');
           }
         }).add(() => this.navigationService.back());
       }

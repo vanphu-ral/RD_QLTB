@@ -1,8 +1,5 @@
-<app-base-table 
-  [apiService]="api"
-  [columns]="columns"
-  [title]="'Danh sách vật tư'"
-  [showAddButton]="true">
+<app-base-table [apiService]="api" [columns]="columns" [title]="'Danh sách vật tư'" [showAddButton]="true"
+  [actionTemplate]="customActions">
   <ng-template appColumnTemplate="createdAt" let-rowData>
     {{ rowData | date: 'dd/MM/yyyy' }}
   </ng-template>
@@ -10,3 +7,7 @@
     {{ rowData | date: 'dd/MM/yyyy' }}
   </ng-template>
 </app-base-table>
+
+<ng-template #customActions let-row>
+  <p-button icon="pi pi-bars" styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="openDialog(row)"></p-button>
+</ng-template>

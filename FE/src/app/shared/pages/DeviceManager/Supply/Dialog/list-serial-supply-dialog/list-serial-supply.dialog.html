@@ -1,0 +1,45 @@
+<div class="p-1">
+    <div class="d-flex justify-content-end mt-2 mb-4">
+        <p-button label="Thêm mã serial" icon="pi pi-plus" (onClick)="addNewRow()"></p-button>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>mã serial</th>
+                    <th>ngày nhập</th>
+                    <th>xuất xứ</th>
+                    <th>Thao tác</th>
+                    <th>Trạng thái</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let row of listSerials; let i = index">
+                    <td><input type="text" pInputText [(ngModel)]="row.serial"></td>
+                    <td> <p-datepicker [(ngModel)]="row.importDate" [iconDisplay]="'input'" [showIcon]="true"
+                            inputId="icondisplay" [dateFormat]="'yy-mm-dd'" [showTime]="true" appendTo="body" />
+                    </td>
+                    <td><input type="text" pInputText [(ngModel)]="row.supplier"></td>
+                    <td>
+                        <p-floatlabel variant="on">
+                            <p-select [(ngModel)]="row.status" [options]="listStatus" optionLabel="label" [fluid]="true"
+                                optionValue="value" [showClear]="true" [appendTo]="'body'"
+                                id="status" name="status">
+                            </p-select>
+                            <label for="status">Trạng thái</label>
+                        </p-floatlabel>
+                    </td>
+                    <td class="text-center">
+                        <p-button icon="pi pi-trash" severity="danger" (onClick)="deleteRow(i)"></p-button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <p-button label="Lưu" severity="success" (onClick)="submit()"></p-button>
+        <p-button label="Đóng" (onClick)="close()"></p-button>
+    </div>
+</div>

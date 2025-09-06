@@ -25,7 +25,6 @@ export class TeamDetailComponent extends BasePageComponent<Team> {
   constructor(
     protected override apiService: TeamService,
     private branchApi: BranchService,
-    public cdr: ChangeDetectorRef
   ) {
     super(apiService);
   }
@@ -34,39 +33,30 @@ export class TeamDetailComponent extends BasePageComponent<Team> {
     super.ngOnInit();
     this.branchApi.getAll().subscribe((branches) => {
       this.listBranches = branches;
-      if (this.model?.branch) {
-        this.model.branch = this.model.branch.id;
-        this.cdr.detectChanges();
-      }
+      this.cdr.detectChanges();
     });
   }
 
   public override save(): void {
     if (this.model) {
-      const account = this.accountService.getUser();
-      const email = account?.email ? account.email : 'unknown';
-      const branchToSave = {
-        ...this.model,
-        branch: { id: this.model.branch }
-      };
-      this.model = Util.prepareModel(branchToSave, email);
+      this.model = Util.prepareModel(this.model);
 
       if (this.isAddMode) {
         this.apiService.create(this.model).subscribe({
           next: () => {
-            Util.toastMessage('Thêm mới thành công', 'success');
+            Util.ConfirmMessage('Thêm mới thành công', 'success');
           },
           error: () => {
-            Util.toastMessage('Thêm mới thất bại', 'error');
+            Util.ConfirmMessage('Thêm mới thất bại', 'error');
           }
         }).add(() => this.navigationService.back());
       } else {
         this.apiService.update(this.model.id!, this.model).subscribe({
           next: () => {
-            Util.toastMessage('Cập nhật thành công', 'success');
+            Util.ConfirmMessage('Cập nhật thành công', 'success');
           },
           error: () => {
-            Util.toastMessage('Cập nhật thất bại', 'error');
+            Util.ConfirmMessage('Cập nhật thất bại', 'error');
           }
         }).add(() => this.navigationService.back());
       }

@@ -26,27 +26,24 @@ export class FactoryDetailComponent extends BasePageComponent<Factory> {
 
   public override save(): void {
     if (this.model) {
-      const account = this.accountService.getUser();
-      const email = account?.email ? account.email : 'unknown';
-
-      this.model = Util.prepareModel(this.model, email);
+      this.model = Util.prepareModel(this.model);
 
       if (this.isAddMode) {
         this.apiService.create(this.model).subscribe({
           next: () => {
-            Util.toastMessage('Thêm mới thành công', 'success');
+            Util.ConfirmMessage('Thêm mới thành công', 'success');
           },
           error: () => {
-            Util.toastMessage('Thêm mới thất bại', 'error');
+            Util.ConfirmMessage('Thêm mới thất bại', 'error');
           }
         }).add(() => this.navigationService.back());
       } else {
         this.apiService.update(this.model.id!, this.model).subscribe({
           next: () => {
-            Util.toastMessage('Cập nhật thành công', 'success');
+            Util.ConfirmMessage('Cập nhật thành công', 'success');
           },
           error: () => {
-            Util.toastMessage('Cập nhật thất bại', 'error');
+            Util.ConfirmMessage('Cập nhật thất bại', 'error');
           }
         }).add(() => this.navigationService.back());
       }

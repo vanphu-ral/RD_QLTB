@@ -11,6 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Column } from '../../models/Core/column.model';
 import { CustomColumnDirective } from '../../directive/app.custom-column.directive';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { Util } from '../utils/utils-function';
 
 @Component({
   selector: 'app-base-table',
@@ -26,7 +27,11 @@ export class BaseTableComponent<T extends { createdAt?: Date; updatedAt?: Date }
   @Input() onAddClick?: () => void;
   @Input() title?: string;
   @Input() showAddButton = false;
+  @Input() showEditButton = true;
+  @Input() showViewButton = true;
+  @Input() showDeleteButton = true;
   @Input() addButtonText = 'Thêm mới';
+  @Input() actionTemplate?: TemplateRef<any>;
   @ContentChildren(CustomFilterDirective) customFilters!: QueryList<CustomFilterDirective>;
   @ContentChildren(CustomColumnDirective) columnTemplates!: QueryList<CustomColumnDirective>;
   private filterTpls = new Map<string, TemplateRef<any>>();
@@ -137,8 +142,7 @@ export class BaseTableComponent<T extends { createdAt?: Date; updatedAt?: Date }
               this.messageService.add({ severity: 'info', summary: 'Đã xác nhận', detail: 'Xóa thành công!', life: 3000 });
             },
             error: (error) => {
-              this.messageService.add({ severity: 'error', summary: 'Lỗi', detail: 'Xóa thất bại!', life: 3000 });
-              console.error('Lỗi khi xóa:', error);
+              Util.handleApiError(error, this.messageService);
             },
             complete: () => {
               this.loadData();

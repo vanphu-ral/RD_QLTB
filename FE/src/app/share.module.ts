@@ -20,6 +20,10 @@ import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { EditorModule } from 'primeng/editor';
 import { FieldsetModule } from 'primeng/fieldset';
+import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
+import { MessageService } from 'primeng/api';
+import { Dialog } from 'primeng/dialog';
+import { DatePickerModule } from 'primeng/datepicker';
 
 @NgModule({
   imports: [
@@ -42,7 +46,10 @@ import { FieldsetModule } from 'primeng/fieldset';
     ConfirmPopupModule,
     ConfirmDialog,
     EditorModule,
-    FieldsetModule 
+    FieldsetModule,
+    DynamicDialogModule,
+    Dialog,
+    DatePickerModule
   ],
   exports: [
     CommonModule,
@@ -64,7 +71,11 @@ import { FieldsetModule } from 'primeng/fieldset';
     ConfirmPopupModule,
     ConfirmDialog,
     EditorModule,
-    FieldsetModule
-  ]
+    FieldsetModule,
+    DynamicDialogModule,
+    Dialog,
+    DatePickerModule
+  ],
+  providers: [DialogService, MessageService]
 })
 export class SharedModule {}

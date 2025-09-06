@@ -8,6 +8,7 @@ import { Util } from '../../../../core/utils/utils-function';
 import { AccountService } from '../../../../core/auth/account/account.service';
 import { NavigationService } from '../../../../service/navigation.service';
 import { DeviceGroup } from '../../../../models/DeviceManager/device-group.model';
+import { Device } from '../../../../models/DeviceManager/device.model';
 
 @Component({
   selector: 'app-device-group-detail',
@@ -29,27 +30,24 @@ export class DeviceGroupDetailComponent extends BasePageComponent<DeviceGroup> {
 
   public override save(): void {
     if (this.model) {
-      const account = this.accountService.getUser();
-      const email = account?.email ? account.email : 'unknown';
-
-      this.model = Util.prepareModel(this.model, email);
+      this.model = Util.prepareModel(this.model);
 
       if (this.isAddMode) {
         this.apiService.create(this.model).subscribe({
           next: () => {
-            Util.toastMessage('Thêm mới thành công', 'success');
+            Util.ConfirmMessage('Thêm mới thành công', 'success');
           },
           error: () => {
-            Util.toastMessage('Thêm mới thất bại', 'error');
+            Util.ConfirmMessage('Thêm mới thất bại', 'error');
           }
         }).add(() => this.navigationService.back());
       } else {
         this.apiService.update(this.model.id!, this.model).subscribe({
           next: () => {
-            Util.toastMessage('Cập nhật thành công', 'success');
+            Util.ConfirmMessage('Cập nhật thành công', 'success');
           },
           error: () => {
-            Util.toastMessage('Cập nhật thất bại', 'error');
+            Util.ConfirmMessage('Cập nhật thất bại', 'error');
           }
         }).add(() => this.navigationService.back());
       }

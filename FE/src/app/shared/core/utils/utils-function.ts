@@ -1,5 +1,6 @@
 import Swal from 'sweetalert2';
 import dayjs from 'dayjs';
+import * as _ from 'lodash';
 
 export class Util {
   /**
@@ -41,32 +42,25 @@ export class Util {
     return dayjs().format('DD/MM/YYYY HH:mm');
   }
 
+
   /**
    * Hoàn thiện model trước khi lưu
    * - Nếu chưa có code thì generate từ name
-   * - Gán createdBy = email đăng nhập (nếu thêm mới)
-   * - Gán createdAt / updatedAt = thời gian hiện tại
-   */
+ */
   static prepareModel<T extends {
     id?: any;
     code?: string;
     name?: string;
-    createdBy?: string;
-  }>(model: T, currentUserEmail: string): T {
+  }>(model: T): T {
     // Nếu không có code thì generate
     if (!model.code && model.name) {
       model.code = Util.generateCode(model.name);
     }
 
-    // Nếu là thêm mới (chưa có id) thì set createdBy
-    if (!model.id) {
-      model.createdBy = currentUserEmail;
-    }
-
     return model;
   }
 
-  static toastMessage(message: string, type: 'success' | 'error'): void {
+  static ConfirmMessage(message: string, type: 'success' | 'error'): void {
     Swal.fire({
       icon: type,
       title: type === 'success' ? 'Thành công' : 'Thất bại',
@@ -74,5 +68,63 @@ export class Util {
       confirmButtonText: 'OK'
     });
   }
+
+  static toastMessage(message: string, type: 'success' | 'error' | 'info'): void {
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: type,
+      title: message,
+      showConfirmButton: false,
+      timer: 3000
+    });
+  }
+
+  static isEmptyArray(arr: any[] | null | undefined): boolean {
+    return _.isEmpty(arr);
+  }
+
+  // Message lỗi
+  static handleApiError(error: any, messageService?: any): void {
+    let msg = 'Đã có lỗi xảy ra.';
+
+    if (error && error.status) {
+      switch (error.status) {
+        case 400:
+          msg = 'Yêu cầu không hợp lệ (Bad Request).';
+          break;
+        case 401:
+          msg = 'Bạn chưa được xác thực hoặc phiên đăng nhập đã hết hạn.';
+          break;
+        case 403:
+          msg = 'Bạn không có quyền thực hiện thao tác này.';
+          break;
+        case 404:
+          msg = 'Không tìm thấy dữ liệu.';
+          break;
+        case 409:
+          msg = 'Dữ liệu đang tồn tại ở nơi khác, không được phép xóa.';
+          break;
+        case 500:
+          msg = 'Lỗi hệ thống. Vui lòng thử lại sau.';
+          break;
+        default:
+          msg = `Lỗi không xác định (status ${error.status}).`;
+          break;
+      }
+    }
+
+    if (messageService) {
+      messageService.add({
+        severity: 'error',
+        summary: 'Lỗi',
+        detail: msg,
+        life: 3000
+      });
+    } else {
+      Util.ConfirmMessage(msg, 'error');
+    }
+  }
+
 
 }

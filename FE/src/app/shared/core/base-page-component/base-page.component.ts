@@ -1,4 +1,4 @@
-import { Directive, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Directive, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BaseApiService } from '../../service/base-api.service';
 import { Observable } from 'rxjs';
@@ -34,6 +34,7 @@ export abstract class BasePageComponent<T> implements OnInit {
   protected route = inject(ActivatedRoute);
   protected navigationService = inject(NavigationService);
   protected accountService = inject(AccountService);
+  protected cdr = inject(ChangeDetectorRef);
 
   constructor(protected apiService: BaseApiService<T>) {}
   
@@ -50,6 +51,7 @@ export abstract class BasePageComponent<T> implements OnInit {
 
     if (this.isAddMode) {
       this.initNewModel();
+      _.set(this.model as any, 'createdBy', this.accountService.getUser()?.email ?? 'unknown');
       _.set(this.model as any, 'status', 1);
     }
   }

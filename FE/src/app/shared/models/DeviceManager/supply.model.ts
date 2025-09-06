@@ -2,7 +2,7 @@ export class Supply {
     id?: number;
     code?: string;
     name?: string;
-    supplyGroup?: any;
+    group?: any;
     quantity?: number;
     price?: number;
     description?: string;

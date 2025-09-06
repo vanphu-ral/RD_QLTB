@@ -1,18 +1,18 @@
 <div>
-  <h2>{{ isAddMode ? 'Thêm mới dây chuyền sản xuất' : (isViewMode ? 'Xem chi tiết dây chuyền sản xuất' : 'Sửa dây chuyền sản xuất') }}</h2>
+  <h2>{{ isAddMode ? 'Thêm mới thiết bị' : (isViewMode ? 'Xem chi tiết thiết bị' : 'Sửa thiết bị') }}</h2>
 
   <form *ngIf="model">
     <div class="row my-3">
       <div class="col-6">
         <p-floatlabel variant="on">
           <input pInputText id="code" name="code" [(ngModel)]="model.code" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
-          <label for="code">Mã dây chuyền sản xuất</label>
+          <label for="code">Mã thiết bị</label>
         </p-floatlabel>
       </div>
       <div class="col-6">
         <p-floatlabel variant="on">
           <input pInputText id="name" name="name" [(ngModel)]="model.name" [invalid]="!model.name" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
-          <label for="name">Tên dây chuyền sản xuất</label>
+          <label for="name">Tên thiết bị</label>
         </p-floatlabel>
       </div>
     </div>
@@ -20,10 +20,30 @@
     <div class="row my-3">
       <div class="col-12">
         <p-floatlabel variant="on">
-          <p-select [(ngModel)]="model.team" [options]="listTeams" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
-            [showClear]="true" [appendTo]="'body'" id="team" name="team" [invalid]="!model.team" dataKey="id">
+          <p-select [(ngModel)]="model.group" [options]="listDeviceGroups" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
+            [showClear]="true" [appendTo]="'body'" id="group" name="group" [invalid]="!model.group" dataKey="id">
           </p-select>
-          <label for="team">Tên tổ</label>
+          <label for="group">Tên nhóm thiết bị</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <div class="row my-3">
+      <div class="col-6">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.branch" [options]="listBranches" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
+            [showClear]="true" [appendTo]="'body'" id="branch" name="branch" dataKey="id">
+          </p-select>
+          <label for="branch">Tên ngành sản xuất</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="col-6">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.line" [options]="listLines" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
+            [showClear]="true" [appendTo]="'body'" id="line" name="line" dataKey="id">
+          </p-select>
+          <label for="line">Tên dây truyền sản xuất</label>
         </p-floatlabel>
       </div>
     </div>

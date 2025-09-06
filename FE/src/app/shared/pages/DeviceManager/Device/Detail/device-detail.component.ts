@@ -3,35 +3,51 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SharedModule } from '../../../../../share.module';
 import { CommonModule } from '@angular/common';
 import { BasePageComponent } from '../../../../core/base-page-component/base-page.component';
-import { DepartmentService } from '../Service/department.service';
+import { DeviceService } from '../Service/device.service';
 import { Util } from '../../../../core/utils/utils-function';
 import { AccountService } from '../../../../core/auth/account/account.service';
 import { NavigationService } from '../../../../service/navigation.service';
-import { Department } from '../../../../models/Catogories/department.model';
-import { FactoryService } from '../../Factory/Service/factory.service';
+import { DeviceGroup } from '../../../../models/DeviceManager/device-group.model';
+import { Device } from '../../../../models/DeviceManager/device.model';
+import { DeviceGroupService } from '../../DeviceGroup/Service/device-group.service';
+import { BranchService } from '../../../Categories/Branch/Service/branch.service';
+import { LineService } from '../../../Categories/Line/Service/line.service';
 
 @Component({
-  selector: 'app-department-detail',
+  selector: 'app-device-detail',
   standalone: true,
   imports: [SharedModule, CommonModule],
-  templateUrl: './department-detail.component.html',
-  styleUrls: ['./department-detail.component.scss']
+  templateUrl: './device-detail.component.html',
+  styleUrls: ['./device-detail.component.scss']
 })
-export class DepartmentDetailComponent extends BasePageComponent<Department> {
+export class DeviceDetailComponent extends BasePageComponent<Device> {
 
-  listFactories: any[] = [];
+  listDeviceGroups: any[] = [];
+  listBranches: any[] = [];
+  listLines: any[] = [];
 
   constructor(
-    protected override apiService: DepartmentService,
-    private factoryApi: FactoryService
+    protected override apiService: DeviceService,
+    private deviceGroupService: DeviceGroupService,
+    private branchService: BranchService,
+    private lineService: LineService,
   ) {
     super(apiService);
   }
 
   override ngOnInit(): void {
     super.ngOnInit();
-    this.factoryApi.getAll().subscribe((factories) => {
-      this.listFactories = factories;
+    this.deviceGroupService.getAll().subscribe(groups => {
+      this.listDeviceGroups = groups;
+      this.cdr.detectChanges();
+    });
+    this.branchService.getAll().subscribe(branches => {
+      this.listBranches = branches;
+      this.cdr.detectChanges();
+    });
+    this.lineService.getAll().subscribe(lines => {
+      this.listLines = lines;
+      this.cdr.detectChanges();
     });
   }
 

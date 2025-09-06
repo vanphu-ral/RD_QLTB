@@ -25,6 +25,14 @@ export const MENU_ITEMS: MenuItem[] = [
                 ]
             },
             {
+                label: 'Quản lý biên bản',
+                icon: 'fa-solid fa-file-signature',
+                items: [
+                    { label: 'Biên bản nghiệm thu thiết bị', icon: 'fa-solid fa-file-invoice', routerLink: ['/MaintenanceRecords'] },
+                    { label: 'Biên bản sự cố nghiêm trọng', icon: 'fa-solid fa-file-excel', routerLink: ['/RepairRecords'] }
+                ]
+            },
+            {
                 label: 'Quản lý danh mục',
                 icon: 'pi pi-fw pi-tags',
                 items: [

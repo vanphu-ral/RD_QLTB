@@ -2,27 +2,27 @@ import { Component } from '@angular/core';
 import { BaseTableComponent } from '../../../../core/base-table-component/base-table.component';
 import { SharedModule } from '../../../../../share.module';
 import { FormsModule } from '@angular/forms';
-import { DeviceGroupService } from '../Service/device-group.service';
+import { DeviceService } from '../Service/device.service';
 import { Column } from '../../../../models/Core/column.model';
 
 @Component({
-  selector: 'device-group-list',
+  selector: 'device-list',
   standalone: true,
   imports: [SharedModule, BaseTableComponent, FormsModule],
-  templateUrl: './device-group-list.component.html',
-  styleUrls: ['./device-group-list.component.scss'],
+  templateUrl: './device-list.component.html',
+  styleUrls: ['./device-list.component.scss'],
 })
-export class DeviceGroupListComponent {
+export class DeviceListComponent {
   selectedStatus: string | null = null;
 
   columns: Column[] = [
     { Field: 'id', Header: 'ID', IsHide: true },
-    { Field: 'code', Header: 'Mã nhóm thiết bị', IsSearch: true, TypeSearch: 'text' },
-    { Field: 'name', Header: 'Tên nhóm thiết bị', IsSearch: true, TypeSearch: 'text' },
+    { Field: 'code', Header: 'Mã thiết bị', IsSearch: true, TypeSearch: 'text' },
+    { Field: 'name', Header: 'Tên thiết bị', IsSearch: true, TypeSearch: 'text' },
     { Field: 'createdBy', Header: 'Người tạo', IsSearch: true, TypeSearch: 'text' },
     { Field: 'createdAt', Header: 'Ngày tạo', IsSearch: true, TypeSearch: 'date' },
     { Field: 'updatedAt', Header: 'Ngày cập nhật', IsSearch: true, TypeSearch: 'date', style: { 'min-width': '150px' } },
   ];
 
-  constructor(public apiService: DeviceGroupService) {}
+  constructor(public apiService: DeviceService) {}
 }

@@ -3,16 +3,15 @@ import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { Observable, of, EMPTY } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Device } from '../../../../models/DeviceManager/device.model';
-import { DeviceGroupService } from '../Service/device-group.service';
-import { DeviceGroup } from '../../../../models/DeviceManager/device-group.model';
+import { DeviceService } from '../Service/device.service';
 
 @Injectable({ providedIn: 'root' })
-export class DeviceGroupResolve {
+export class DeviceResolve {
   constructor(
-    private service: DeviceGroupService,
+    private service: DeviceService,
     private router: Router
   ) { }
-  resolve(route: ActivatedRouteSnapshot): Observable<DeviceGroup | null> {
+  resolve(route: ActivatedRouteSnapshot): Observable<Device | null> {
     const id = route.params['id'];
     if (id) {
       return this.service.getById(id).pipe(

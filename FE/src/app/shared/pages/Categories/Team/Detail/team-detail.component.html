@@ -20,8 +20,8 @@
     <div class="row my-3">
       <div class="col-12">
         <p-floatlabel variant="on">
-          <p-select [(ngModel)]="model.branch" [options]="listBranches" optionLabel="name" [fluid]="true"
-            optionValue="id" [showClear]="true" [appendTo]="'body'" id="branch" name="branch" [invalid]="!model.branch">
+          <p-select [(ngModel)]="model.branch" [options]="listBranches" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
+            [showClear]="true" [appendTo]="'body'" id="branch" name="branch" [invalid]="!model.branch" dataKey="id">
           </p-select>
           <label for="branch">Tên ngành sản xuất</label>
         </p-floatlabel>
@@ -30,20 +30,20 @@
 
     <div class="row my-3">
       <div class="col-12">
-        <p-floatlabel variant="on">
-          <p-select [(ngModel)]="model.status" [options]="listStatus" optionLabel="label" [fluid]="true"
-            optionValue="value" [showClear]="true" [appendTo]="'body'" id="status" name="status" [invalid]="!model.status">
-          </p-select>
-          <label for="status">Trạng thái</label>
-        </p-floatlabel>
+        <p-fieldset legend="Mô tả" class="custom-fieldset">
+          <p-editor [(ngModel)]="model.description" name="description" [style]="{ height: '150px' }" [readonly]="isViewMode"></p-editor>
+        </p-fieldset>
       </div>
     </div>
 
     <div class="row my-3">
       <div class="col-12">
-        <p-fieldset legend="Mô tả" class="custom-fieldset">
-          <p-editor [(ngModel)]="model.description" name="description" [style]="{ height: '150px' }"></p-editor>
-        </p-fieldset>
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.status" [options]="listStatus" optionLabel="label" [fluid]="true" [disabled]="isViewMode"
+            optionValue="value" [showClear]="true" [appendTo]="'body'" id="status" name="status" [invalid]="!model.status">
+          </p-select>
+          <label for="status">Trạng thái</label>
+        </p-floatlabel>
       </div>
     </div>
     <div class="d-flex justify-content-end mt-3">

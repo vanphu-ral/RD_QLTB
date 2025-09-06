@@ -1,8 +1,5 @@
 <div class="base-table-header my-3">
   <h2>{{ title }}</h2>
-  <!-- <button *ngIf="showAddButton" class="p-button p-component p-button-sm" (click)="addItem()">
-    {{ addButtonText }}
-  </button> -->
   <p-button *ngIf="showAddButton" [label]="addButtonText" class="p-button-sm" (click)="addItem()" />
 </div>
 <p-table #dt [value]="data" [scrollable]="true" [paginator]="true" [rows]="10" [loading]="loading" [rowsPerPageOptions]="[5, 10, 20, 50]"
@@ -67,9 +64,14 @@
         </ng-template>
       </td>
       <td alignFrozen="right" pFrozenColumn [frozen]="true">
-        <p-button icon="pi pi-pencil" styleClass="p-button-sm p-button-rounded p-button-warn m-1" (onClick)="editItem(row)"></p-button>
-        <p-button icon="pi pi-eye" styleClass="p-button-sm p-button-rounded p-button-info m-1" (onClick)="viewItem(row)"></p-button>
-        <p-button icon="pi pi-trash" styleClass="p-button-sm p-button-rounded p-button-danger m-1" (onClick)="deleteItem(row, $event)"></p-button>
+        <!-- base button -->
+        <p-button *ngIf="showEditButton" icon="pi pi-pencil" styleClass="p-button-sm p-button-rounded p-button-warn m-1" (onClick)="editItem(row)"></p-button>
+        <p-button *ngIf="showViewButton" icon="pi pi-eye" styleClass="p-button-sm p-button-rounded p-button-info m-1" (onClick)="viewItem(row)"></p-button>
+        <p-button *ngIf="showDeleteButton" icon="pi pi-trash" styleClass="p-button-sm p-button-rounded p-button-danger m-1" (onClick)="deleteItem(row, $event)"></p-button>
+        <!-- button custom -->
+        <ng-container *ngIf="actionTemplate">
+          <ng-container *ngTemplateOutlet="actionTemplate; context: { $implicit: row }"></ng-container>
+        </ng-container>
       </td>
     </tr>
   </ng-template>

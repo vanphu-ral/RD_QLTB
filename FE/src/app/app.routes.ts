@@ -63,5 +63,10 @@ export const routes: Routes = [
         path: 'Supplies',
         component: AppLayout,
         loadChildren: () => import('./shared/pages/DeviceManager/Supply/supply-group.routes').then(m => m.default)
+    },
+    {
+        path: 'Devices',
+        component: AppLayout,
+        loadChildren: () => import('./shared/pages/DeviceManager/Device/device.routes').then(m => m.default)
     }
 ];

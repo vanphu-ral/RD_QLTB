@@ -27,7 +27,6 @@ export class LineDetailComponent extends BasePageComponent<Line> {
   constructor(
     protected override apiService: LineService,
     private teamApi: TeamService,
-    public cdr: ChangeDetectorRef
   ) {
     super(apiService);
   }
@@ -36,39 +35,29 @@ export class LineDetailComponent extends BasePageComponent<Line> {
     super.ngOnInit();
     this.teamApi.getAll().subscribe((teams) => {
       this.listTeams = teams;
-      if (this.model?.team) {
-        this.model.team = this.model.team.id;
-        this.cdr.detectChanges();
-      }
+      this.cdr.detectChanges();
     });
   }
 
   public override save(): void {
     if (this.model) {
-      const account = this.accountService.getUser();
-      const email = account?.email ? account.email : 'unknown';
-      const lineToSave = {
-        ...this.model,
-        team: { id: this.model.team }
-      };
-      this.model = Util.prepareModel(lineToSave, email);
-
       if (this.isAddMode) {
+        this.model = Util.prepareModel(this.model);
         this.apiService.create(this.model).subscribe({
           next: () => {
-            Util.toastMessage('Thêm mới thành công', 'success');
+            Util.ConfirmMessage('Thêm mới thành công', 'success');
           },
           error: () => {
-            Util.toastMessage('Thêm mới thất bại', 'error');
+            Util.ConfirmMessage('Thêm mới thất bại', 'error');
           }
         }).add(() => this.navigationService.back());
       } else {
         this.apiService.update(this.model.id!, this.model).subscribe({
           next: () => {
-            Util.toastMessage('Cập nhật thành công', 'success');
+            Util.ConfirmMessage('Cập nhật thành công', 'success');
           },
           error: () => {
-            Util.toastMessage('Cập nhật thất bại', 'error');
+            Util.ConfirmMessage('Cập nhật thất bại', 'error');
           }
         }).add(() => this.navigationService.back());
       }
