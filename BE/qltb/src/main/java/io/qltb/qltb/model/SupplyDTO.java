@@ -23,10 +23,7 @@ public class SupplyDTO {
     @Size(max = 150)
     private String name;
 
-    @NotNull
     private Integer quantity;
-
-    private Double price;
 
     @Size(max = 255)
     private String description;

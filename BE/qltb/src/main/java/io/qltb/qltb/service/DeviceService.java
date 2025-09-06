@@ -1,5 +1,6 @@
 package io.qltb.qltb.service;
 
+import io.qltb.qltb.domain.Branch;
 import io.qltb.qltb.domain.Device;
 import io.qltb.qltb.domain.DeviceGroup;
 import io.qltb.qltb.domain.Line;
@@ -7,6 +8,7 @@ import io.qltb.qltb.events.BeforeDeleteDevice;
 import io.qltb.qltb.events.BeforeDeleteDeviceGroup;
 import io.qltb.qltb.events.BeforeDeleteLine;
 import io.qltb.qltb.model.DeviceDTO;
+import io.qltb.qltb.repos.BranchRepository;
 import io.qltb.qltb.repos.DeviceGroupRepository;
 import io.qltb.qltb.repos.DeviceRepository;
 import io.qltb.qltb.repos.LineRepository;
@@ -25,14 +27,16 @@ public class DeviceService {
     private final DeviceRepository deviceRepository;
     private final DeviceGroupRepository deviceGroupRepository;
     private final LineRepository lineRepository;
+    private final BranchRepository branchRepository;
     private final ApplicationEventPublisher publisher;
 
     public DeviceService(final DeviceRepository deviceRepository,
-            final DeviceGroupRepository deviceGroupRepository, final LineRepository lineRepository,
+            final DeviceGroupRepository deviceGroupRepository, final LineRepository lineRepository, final  BranchRepository branchRepository,
             final ApplicationEventPublisher publisher) {
         this.deviceRepository = deviceRepository;
         this.deviceGroupRepository = deviceGroupRepository;
         this.lineRepository = lineRepository;
+        this.branchRepository = branchRepository;
         this.publisher = publisher;
     }
 
@@ -71,7 +75,6 @@ public class DeviceService {
 
     private DeviceDTO mapToDTO(final Device device, final DeviceDTO deviceDTO) {
         deviceDTO.setId(device.getId());
-        deviceDTO.setBracnId(device.getBracnId());
         deviceDTO.setCode(device.getCode());
         deviceDTO.setName(device.getName());
         deviceDTO.setNumMaterialUse(device.getNumMaterialUse());
@@ -86,10 +89,26 @@ public class DeviceService {
         deviceDTO.setQrcode(device.getQrcode());
         deviceDTO.setImg(device.getImg());
         deviceDTO.setUserManager(device.getUserManager());
+        deviceDTO.setDescription(device.getDescription());
         deviceDTO.setCreatedAt(device.getCreatedAt());
         deviceDTO.setUpdatedAt(device.getUpdatedAt());
         deviceDTO.setCreatedBy(device.getCreatedBy());
         deviceDTO.setUpdatedBy(device.getUpdatedBy());
+
+        if(device.getBranch() != null) {
+            Branch branchCopy = new Branch();
+            branchCopy.setId(device.getBranch().getId());
+            branchCopy.setCode(device.getBranch().getCode());
+            branchCopy.setName(device.getBranch().getName());
+            // Xóa các quan hệ con
+            branchCopy.setFactory(null);
+            branchCopy.setBranchDayOffs(null);
+            branchCopy.setBranchTeams(null);
+            branchCopy.setBranchForms(null);
+            branchCopy.setBranchPlanTargets(null);
+        } else {
+            deviceDTO.setBranch(null);
+        }
 
         if (device.getGroup() != null) {
             DeviceGroup groupCopy = new DeviceGroup();
@@ -139,7 +158,6 @@ public class DeviceService {
 
 
     private Device mapToEntity(final DeviceDTO deviceDTO, final Device device) {
-        device.setBracnId(deviceDTO.getBracnId());
         device.setCode(deviceDTO.getCode());
         device.setName(deviceDTO.getName());
         device.setNumMaterialUse(deviceDTO.getNumMaterialUse());
@@ -154,6 +172,7 @@ public class DeviceService {
         device.setQrcode(deviceDTO.getQrcode());
         device.setImg(deviceDTO.getImg());
         device.setUserManager(deviceDTO.getUserManager());
+        device.setDescription(deviceDTO.getDescription());
         device.setCreatedAt(deviceDTO.getCreatedAt());
         device.setUpdatedAt(deviceDTO.getUpdatedAt());
         device.setCreatedBy(deviceDTO.getCreatedBy());
@@ -161,6 +180,9 @@ public class DeviceService {
         final DeviceGroup group = deviceDTO.getGroup() == null ? null : deviceGroupRepository.findById(deviceDTO.getGroup().getId())
                 .orElseThrow(() -> new NotFoundException("group not found"));
         device.setGroup(group);
+        final Branch branch = deviceDTO.getBranch() == null ? null : branchRepository.findById(deviceDTO.getBranch().getId())
+                .orElseThrow(() -> new NotFoundException("branch not found"));
+        device.setBranch(branch);
         final Line line = deviceDTO.getLine() == null ? null : lineRepository.findById(deviceDTO.getLine().getId())
                 .orElseThrow(() -> new NotFoundException("line not found"));
         device.setLine(line);

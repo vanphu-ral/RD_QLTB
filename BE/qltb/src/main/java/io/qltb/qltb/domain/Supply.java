@@ -35,9 +35,6 @@ public class Supply {
     @Column(nullable = false)
     private Integer quantity;
 
-    @Column
-    private Double price;
-
     @Column(name = "\"description\"")
     private String description;
 

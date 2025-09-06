@@ -11,6 +11,8 @@ import io.qltb.qltb.util.ReferencedException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,12 @@ public class SupplyDetailService {
             final SupplyRepository supplyRepository) {
         this.supplyDetailRepository = supplyDetailRepository;
         this.supplyRepository = supplyRepository;
+    }
+
+    public List<SupplyDetailDTO> getBySupplyId(Long supplyId) {
+        return supplyDetailRepository.findBySupplyId(supplyId).stream()
+                .map(s -> mapToDTO(s, new SupplyDetailDTO()))
+                .collect(Collectors.toList());
     }
 
     public List<SupplyDetailDTO> findAll() {
@@ -48,30 +56,23 @@ public class SupplyDetailService {
         mapToEntity(supplyDetailDTO, supplyDetail);
         return supplyDetailRepository.save(supplyDetail).getId();
     }
-    public ResponseEntity<?> creates(final List<SupplyDetailDTO> supplyDetailDTOs) {
-        List<String> errors = new ArrayList<>();
 
+    public List<Long> creates(final List<SupplyDetailDTO> supplyDetailDTOs) {
+        List<Long> createdIds = new ArrayList<>();
         for (SupplyDetailDTO dto : supplyDetailDTOs) {
-            try {
-                create(dto); // Giả sử đây là hàm xử lý lưu từng DTO
-            } catch (Exception e) {
-                // Ghi lại lỗi cụ thể cho từng DTO
-                String errorMsg = String.format("Lỗi khi xử lý SupplyDetailDTO với ID %s: %s",
-                        dto.getId(), e.getMessage());
-                errors.add(errorMsg);
+            SupplyDetail entity;
+            if (dto.getId() != null) {
+                entity = supplyDetailRepository.findById(dto.getId()).orElse(new SupplyDetail());
+            } else {
+                entity = new SupplyDetail();
             }
+            mapToEntity(dto, entity);
+            SupplyDetail saved = supplyDetailRepository.save(entity);
+            createdIds.add(saved.getId());
         }
-
-        if (errors.isEmpty()) {
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body("Tạo danh sách SupplyDetail thành công.");
-        } else {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(errors);
-        }
+        return createdIds;
     }
+
     public void update(final Long id, final SupplyDetailDTO supplyDetailDTO) {
         final SupplyDetail supplyDetail = supplyDetailRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
@@ -90,6 +91,7 @@ public class SupplyDetailService {
         supplyDetailDTO.setId(supplyDetail.getId());
         supplyDetailDTO.setSerial(supplyDetail.getSerial());
         supplyDetailDTO.setImportDate(supplyDetail.getImportDate());
+        supplyDetailDTO.setPrice(supplyDetail.getPrice());
         supplyDetailDTO.setSupplier(supplyDetail.getSupplier());
         supplyDetailDTO.setStatus(supplyDetail.getStatus());
 
@@ -123,6 +125,7 @@ public class SupplyDetailService {
             final SupplyDetail supplyDetail) {
         supplyDetail.setSerial(supplyDetailDTO.getSerial());
         supplyDetail.setImportDate(supplyDetailDTO.getImportDate());
+        supplyDetail.setPrice(supplyDetailDTO.getPrice());
         supplyDetail.setSupplier(supplyDetailDTO.getSupplier());
         supplyDetail.setStatus(supplyDetailDTO.getStatus());
         final Supply supply = supplyDetailDTO.getSupply() == null ? null : supplyRepository.findById(supplyDetailDTO.getSupply().getId())

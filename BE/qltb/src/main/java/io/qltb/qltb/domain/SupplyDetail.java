@@ -30,6 +30,9 @@ public class SupplyDetail {
     private LocalDateTime importDate;
 
     @Column
+    private double price;
+
+    @Column
     private String supplier;
 
     @Column

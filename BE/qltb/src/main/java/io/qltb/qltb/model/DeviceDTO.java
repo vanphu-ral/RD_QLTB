@@ -1,6 +1,7 @@
 package io.qltb.qltb.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.qltb.qltb.domain.Branch;
 import io.qltb.qltb.domain.DeviceGroup;
 import io.qltb.qltb.domain.Line;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -23,8 +24,6 @@ public class DeviceDTO {
 
     private Long id;
 
-    @NotNull
-    private Long bracnId;
 
     @NotNull
     @Size(max = 50)
@@ -70,6 +69,9 @@ public class DeviceDTO {
     @Size(max = 255)
     private String userManager;
 
+    @Size(max = 255)
+    private String description;
+
     @NotNull
     private LocalDateTime createdAt;
 
@@ -85,7 +87,8 @@ public class DeviceDTO {
     @NotNull
     private DeviceGroup group;
 
-    @NotNull
+    private Branch branch;
+
     private Line line;
 
 }

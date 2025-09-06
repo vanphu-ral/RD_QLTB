@@ -19,6 +19,8 @@ public class SupplyDetailDTO {
 
     private LocalDateTime importDate;
 
+    private double price;
+
     @Size(max = 255)
     private String supplier;
 

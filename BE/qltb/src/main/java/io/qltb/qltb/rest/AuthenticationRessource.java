@@ -26,7 +26,7 @@ public class AuthenticationRessource {
         request.logout(); // Xoá session Spring Security
 
         // Logout URL Keycloak
-        String logoutUrl = "http://localhost:8080/auth/realms/QLSX/protocol/openid-connect/logout"
+        String logoutUrl = "http://192.168.68.90:8080/auth/realms/QLSX/protocol/openid-connect/logout"
                 + "?redirect_uri=http://localhost:4200";
 
         Map<String, String> res = new HashMap<>();

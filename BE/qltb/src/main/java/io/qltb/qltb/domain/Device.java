@@ -28,9 +28,6 @@ public class Device {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Long bracnId;
-
     @Column(nullable = false, unique = true, length = 50)
     private String code;
 
@@ -73,6 +70,9 @@ public class Device {
     @Column
     private String userManager;
 
+    @Column
+    private String description;
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
@@ -92,6 +92,10 @@ public class Device {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "line_id", nullable = false)
     private Line line;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "branch_id", nullable = false)
+    private Branch branch;
 
     @OneToMany(mappedBy = "device")
     private Set<PlanDetail> devicePlanDetails = new HashSet<>();

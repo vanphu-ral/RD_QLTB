@@ -69,7 +69,6 @@ public class SupplyService {
         supplyDTO.setCode(supply.getCode());
         supplyDTO.setName(supply.getName());
         supplyDTO.setQuantity(supply.getQuantity());
-        supplyDTO.setPrice(supply.getPrice());
         supplyDTO.setDescription(supply.getDescription());
         // supplyDTO.setSapCode(supply.getSapCode()); // Nếu cần dùng, mở lại dòng này
         supplyDTO.setSource(supply.getSource());
@@ -107,7 +106,6 @@ public class SupplyService {
         supply.setCode(supplyDTO.getCode());
         supply.setName(supplyDTO.getName());
         supply.setQuantity(supplyDTO.getQuantity());
-        supply.setPrice(supplyDTO.getPrice());
         supply.setDescription(supplyDTO.getDescription());
 //        supply.setSapCode(supplyDTO.getSapCode());
         supply.setSource(supplyDTO.getSource());

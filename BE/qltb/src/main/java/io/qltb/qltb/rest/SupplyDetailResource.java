@@ -28,6 +28,11 @@ public class SupplyDetailResource {
         this.supplyDetailService = supplyDetailService;
     }
 
+    @GetMapping("/bySupply/{supplyId}")
+    public ResponseEntity<List<SupplyDetailDTO>> getBySupply(@PathVariable Long supplyId) {
+        return ResponseEntity.ok(supplyDetailService.getBySupplyId(supplyId));
+    }
+
     @GetMapping
     public ResponseEntity<List<SupplyDetailDTO>> getAllSupplyDetails() {
         return ResponseEntity.ok(supplyDetailService.findAll());
@@ -46,10 +51,14 @@ public class SupplyDetailResource {
         final Long createdId = supplyDetailService.create(supplyDetailDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
+
     @PostMapping("/creates")
-    public ResponseEntity<?> creates(@RequestBody List<SupplyDetailDTO> supplyDetailDTOs) {
-        return supplyDetailService.creates(supplyDetailDTOs);
+    @ApiResponse(responseCode = "201")
+    public ResponseEntity<List<Long>> creates(@RequestBody @Valid List<SupplyDetailDTO> supplyDetailDTOs) {
+        List<Long> createdIds = supplyDetailService.creates(supplyDetailDTOs);
+        return new ResponseEntity<>(createdIds, HttpStatus.CREATED);
     }
+
     @PutMapping("/{id}")
     public ResponseEntity<Long> updateSupplyDetail(@PathVariable(name = "id") final Long id,
             @RequestBody @Valid final SupplyDetailDTO supplyDetailDTO) {
