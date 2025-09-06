@@ -30,10 +30,6 @@ export class SupplyDetailComponent extends BasePageComponent<Supply> {
     this.apiSupplyGroup.getAll().subscribe((res) => {
       console.log(res);
       this.listSupplyGroups = res;
-      if (this.model?.group) {
-        this.model.group = this.model.group;
-        this.cdr.detectChanges();
-      }
     })
   }
 
