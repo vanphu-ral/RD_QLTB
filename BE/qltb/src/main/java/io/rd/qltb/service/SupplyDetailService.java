@@ -8,6 +8,8 @@ import io.rd.qltb.repos.SupplyDetailRepository;
 import io.rd.qltb.repos.SupplyRepository;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
+
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
@@ -33,26 +35,42 @@ public class SupplyDetailService {
                 .toList();
     }
 
-    public SupplyDetailDTO get(final Integer id) {
+    public SupplyDetailDTO get(final Long id) {
         return supplyDetailRepository.findById(id)
                 .map(supplyDetail -> mapToDTO(supplyDetail, new SupplyDetailDTO()))
                 .orElseThrow(NotFoundException::new);
     }
 
-    public Integer create(final SupplyDetailDTO supplyDetailDTO) {
+    public Long create(final SupplyDetailDTO supplyDetailDTO) {
         final SupplyDetail supplyDetail = new SupplyDetail();
         mapToEntity(supplyDetailDTO, supplyDetail);
         return supplyDetailRepository.save(supplyDetail).getId();
     }
 
-    public void update(final Integer id, final SupplyDetailDTO supplyDetailDTO) {
+    public List<Long> creates(final List<SupplyDetailDTO> supplyDetailDTOs) {
+        List<Long> createdIds = new ArrayList<>();
+        for (SupplyDetailDTO dto : supplyDetailDTOs) {
+            SupplyDetail entity;
+            if (dto.getId() != null) {
+                entity = supplyDetailRepository.findById(dto.getId()).orElse(new SupplyDetail());
+            } else {
+                entity = new SupplyDetail();
+            }
+            mapToEntity(dto, entity);
+            SupplyDetail saved = supplyDetailRepository.save(entity);
+            createdIds.add(saved.getId());
+        }
+        return createdIds;
+    }
+
+    public void update(final Long id, final SupplyDetailDTO supplyDetailDTO) {
         final SupplyDetail supplyDetail = supplyDetailRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(supplyDetailDTO, supplyDetail);
         supplyDetailRepository.save(supplyDetail);
     }
 
-    public void delete(final Integer id) {
+    public void delete(final Long id) {
         final SupplyDetail supplyDetail = supplyDetailRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         supplyDetailRepository.delete(supplyDetail);
@@ -72,8 +90,6 @@ public class SupplyDetailService {
             supplyCopy.setId(supplyDetail.getSupply().getId());
             supplyCopy.setCode(supplyDetail.getSupply().getCode());
             supplyCopy.setName(supplyDetail.getSupply().getName());
-            supplyCopy.setQuantity(supplyDetail.getSupply().getQuantity());
-            supplyCopy.setPrice(supplyDetail.getSupply().getPrice());
             supplyCopy.setDescription(supplyDetail.getSupply().getDescription());
             supplyCopy.setSource(supplyDetail.getSupply().getSource());
             supplyCopy.setCreatedAt(supplyDetail.getSupply().getCreatedAt());

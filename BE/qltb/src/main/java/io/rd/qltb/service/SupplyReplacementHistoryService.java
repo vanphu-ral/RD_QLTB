@@ -79,8 +79,6 @@ public class SupplyReplacementHistoryService {
             oldSupplyCopy.setId(supplyReplacementHistory.getOldSupply().getId());
             oldSupplyCopy.setCode(supplyReplacementHistory.getOldSupply().getCode());
             oldSupplyCopy.setName(supplyReplacementHistory.getOldSupply().getName());
-            oldSupplyCopy.setQuantity(supplyReplacementHistory.getOldSupply().getQuantity());
-            oldSupplyCopy.setPrice(supplyReplacementHistory.getOldSupply().getPrice());
             oldSupplyCopy.setDescription(supplyReplacementHistory.getOldSupply().getDescription());
             oldSupplyCopy.setSource(supplyReplacementHistory.getOldSupply().getSource());
             oldSupplyCopy.setCreatedAt(supplyReplacementHistory.getOldSupply().getCreatedAt());
@@ -108,8 +106,6 @@ public class SupplyReplacementHistoryService {
             newSupplyCopy.setId(supplyReplacementHistory.getNewSupply().getId());
             newSupplyCopy.setCode(supplyReplacementHistory.getNewSupply().getCode());
             newSupplyCopy.setName(supplyReplacementHistory.getNewSupply().getName());
-            newSupplyCopy.setQuantity(supplyReplacementHistory.getNewSupply().getQuantity());
-            newSupplyCopy.setPrice(supplyReplacementHistory.getNewSupply().getPrice());
             newSupplyCopy.setDescription(supplyReplacementHistory.getNewSupply().getDescription());
             newSupplyCopy.setSource(supplyReplacementHistory.getNewSupply().getSource());
             newSupplyCopy.setCreatedAt(supplyReplacementHistory.getNewSupply().getCreatedAt());

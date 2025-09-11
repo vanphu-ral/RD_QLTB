@@ -24,7 +24,6 @@ export class SupplyListComponent {
     { Field: 'name', Header: 'Tên vật tư', IsSearch: true, TypeSearch: 'text' },
     { Field: 'quantity', Header: 'Số lượng', IsSearch: true, TypeSearch: 'text' },
     { Field: 'group.name', Header: 'Nhóm vật tư', IsSearch: true, TypeSearch: 'text' },
-    { Field: 'price', Header: 'Giá tiền', IsSearch: true, TypeSearch: 'text' },
     { Field: 'createdBy', Header: 'Người tạo', IsSearch: true, TypeSearch: 'text' },
     { Field: 'createdAt', Header: 'Ngày tạo', IsSearch: true, TypeSearch: 'date' },
     { Field: 'updatedAt', Header: 'Ngày cập nhật', IsSearch: true, TypeSearch: 'date', style: { 'min-width': '150px' } },

@@ -10,7 +10,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.time.OffsetDateTime;
+
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.Getter;
@@ -34,12 +35,6 @@ public class Supply {
     @Column(nullable = false, length = 150)
     private String name;
 
-    @Column(nullable = false)
-    private Integer quantity;
-
-    @Column
-    private Double price;
-
     @Column(name = "\"description\"")
     private String description;
 
@@ -47,10 +42,10 @@ public class Supply {
     private String source;
 
     @Column(nullable = false)
-    private OffsetDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @Column(nullable = false)
-    private OffsetDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
     @Column
     private String createdBy;

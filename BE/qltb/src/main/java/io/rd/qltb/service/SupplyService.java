@@ -68,8 +68,6 @@ public class SupplyService {
         dto.setId(supply.getId());
         dto.setCode(supply.getCode());
         dto.setName(supply.getName());
-        dto.setQuantity(supply.getQuantity());
-        dto.setPrice(supply.getPrice());
         dto.setDescription(supply.getDescription());
         dto.setSource(supply.getSource());
         dto.setCreatedAt(supply.getCreatedAt());
@@ -106,8 +104,6 @@ public class SupplyService {
     private Supply mapToEntity(final SupplyDTO supplyDTO, final Supply supply) {
         supply.setCode(supplyDTO.getCode());
         supply.setName(supplyDTO.getName());
-        supply.setQuantity(supplyDTO.getQuantity());
-        supply.setPrice(supplyDTO.getPrice());
         supply.setDescription(supplyDTO.getDescription());
         supply.setSource(supplyDTO.getSource());
         supply.setCreatedAt(supplyDTO.getCreatedAt());

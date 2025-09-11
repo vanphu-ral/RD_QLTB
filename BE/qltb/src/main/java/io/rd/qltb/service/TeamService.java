@@ -112,7 +112,7 @@ public class TeamService {
         team.setCreatedBy(teamDTO.getCreatedBy());
         team.setUpdatedBy(teamDTO.getUpdatedBy());
         team.setStatus(teamDTO.getStatus());
-        final Branch branch = teamDTO.getBranch() == null ? null : branchRepository.findById(teamDTO.getBranch())
+        final Branch branch = teamDTO.getBranch() == null ? null : branchRepository.findById(teamDTO.getBranch().getId())
                 .orElseThrow(() -> new NotFoundException("branch not found"));
         team.setBranch(branch);
         return team;

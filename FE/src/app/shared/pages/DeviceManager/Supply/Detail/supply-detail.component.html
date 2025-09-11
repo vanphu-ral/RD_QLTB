@@ -32,14 +32,7 @@
     </div>
 
     <div class="row my-3">
-      <div class="col-6">
-        <p-floatlabel variant="on">
-          <input pInputText id="price" name="price" [(ngModel)]="model.price" autocomplete="off" [disabled]="isViewMode"
-            [fluid]="true" />
-          <label for="price">Giá vật tư</label>
-        </p-floatlabel>
-      </div>
-      <div class="col-6">
+      <div class="col-12">
         <p-floatlabel variant="on">
           <input pInputText id="source" name="source" [(ngModel)]="model.source" autocomplete="off"
             [disabled]="isViewMode" [fluid]="true" />
@@ -69,17 +62,17 @@
         </thead>
         <tbody>
           <tr *ngFor="let row of listSerials; let i = index">
-            <td><input type="text" pInputText [(ngModel)]="row.serial" name="serial-{{i}}"></td>
+            <td><input type="text" pInputText [(ngModel)]="row.serial" name="serial-{{i}}" [disabled]="isViewMode"></td>
             <td><p-datepicker [(ngModel)]="row.importDate" [iconDisplay]="'input'" [showIcon]="true"
                 name="importDate-{{i}}" inputId="icondisplay" [dateFormat]="'yy-mm-dd'" [showTime]="true"
-                appendTo="body" />
+                appendTo="body" [disabled]="isViewMode"/>
             </td>
-            <td><input type="text" pInputText [(ngModel)]="row.supplier" name="supplier-{{i}}"></td>
-            <td><input type="text" pInputText [(ngModel)]="row.unit" name="unit-{{i}}"></td>
-            <td><input type="number" pInputText [(ngModel)]="row.price" name="price-{{i}}"></td>
+            <td><input type="text" pInputText [(ngModel)]="row.supplier" name="supplier-{{i}}" [disabled]="isViewMode"></td>
+            <td><input type="text" pInputText [(ngModel)]="row.unit" name="unit-{{i}}" [disabled]="isViewMode"></td>
+            <td><p-inputnumber id="price" name="price-{{i}}" [(ngModel)]="row.price" autocomplete="off" [disabled]="isViewMode" [fluid]="true" mode="decimal"/></td>
             <td>
               <p-floatlabel variant="on">
-                <p-select [(ngModel)]="row.status" [options]="listStatus" optionLabel="label" [fluid]="true"
+                <p-select [(ngModel)]="row.status" [options]="listStatus" optionLabel="label" [fluid]="true" [disabled]="isViewMode"
                   optionValue="value" [showClear]="true" [appendTo]="'body'" id="status-{{i}}" name="status-{{i}}">
                 </p-select>
                 <label for="status-{{i}}">Trạng thái</label>

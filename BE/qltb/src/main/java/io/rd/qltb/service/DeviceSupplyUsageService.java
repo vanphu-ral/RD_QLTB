@@ -108,8 +108,6 @@ public class DeviceSupplyUsageService {
             supplyCopy.setId(deviceSupplyUsage.getSupply().getId());
             supplyCopy.setCode(deviceSupplyUsage.getSupply().getCode());
             supplyCopy.setName(deviceSupplyUsage.getSupply().getName());
-            supplyCopy.setQuantity(deviceSupplyUsage.getSupply().getQuantity());
-            supplyCopy.setPrice(deviceSupplyUsage.getSupply().getPrice());
             supplyCopy.setStatus(deviceSupplyUsage.getSupply().getStatus());
             supplyCopy.setCreatedAt(deviceSupplyUsage.getSupply().getCreatedAt());
             supplyCopy.setUpdatedAt(deviceSupplyUsage.getSupply().getUpdatedAt());

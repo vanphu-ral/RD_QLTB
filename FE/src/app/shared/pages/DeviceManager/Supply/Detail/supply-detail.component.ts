@@ -73,6 +73,22 @@ export class SupplyDetailComponent extends BasePageComponent<Supply> {
     }
   }
 
+  // saveSerials() {
+  //   this.supplyDetailService.createList(this.listSerials).subscribe({
+  //     next: (res: any) => {
+  //       this.listSerials = res.map((item: any) => ({
+  //         ...item,
+  //         importDate: item.importDate ? new Date(item.importDate) : undefined,
+  //         supply: this.data
+  //       }));
+  //       this.ref.close({ ListSerial: this.listSerials, item: this.data });
+  //       Util.toastMessage('Lưu thành công', 'success');
+  //     },
+  //     error: (err) => {
+  //       Util.handleApiError(err);
+  //     }
+  //   });
+  // }
 
   public override save(): void {
     if (this.model) {

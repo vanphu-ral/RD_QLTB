@@ -8,26 +8,33 @@
             <thead>
                 <tr>
                     <th>mã serial</th>
-                    <th>ngày nhập</th>
+                    <th style="min-width: 200px;">ngày nhập</th>
                     <th>xuất xứ</th>
-                    <th>Thao tác</th>
+                    <th>đơn vị</th>
+                    <th>giá</th>
                     <th>Trạng thái</th>
+                    <th>Thao tác</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let row of listSerials; let i = index">
-                    <td><input type="text" pInputText [(ngModel)]="row.serial"></td>
-                    <td> <p-datepicker [(ngModel)]="row.importDate" [iconDisplay]="'input'" [showIcon]="true"
-                            inputId="icondisplay" [dateFormat]="'yy-mm-dd'" [showTime]="true" appendTo="body" />
+                    <td><input type="text" pInputText [(ngModel)]="row.serial" name="serial-{{i}}"></td>
+                    <td><p-datepicker [(ngModel)]="row.importDate" [iconDisplay]="'input'" [showIcon]="true"
+                            name="importDate-{{i}}" inputId="icondisplay" [dateFormat]="'yy-mm-dd'" [showTime]="true"
+                            appendTo="body" />
                     </td>
-                    <td><input type="text" pInputText [(ngModel)]="row.supplier"></td>
+                    <td><input type="text" pInputText [(ngModel)]="row.supplier" name="supplier-{{i}}"></td>
+                    <td><input type="text" pInputText [(ngModel)]="row.unit" name="unit-{{i}}">
+                    </td>
+                    <td><p-inputnumber id="price" name="price-{{i}}" [(ngModel)]="row.price" autocomplete="off"
+                            [fluid]="true" mode="decimal" /></td>
                     <td>
                         <p-floatlabel variant="on">
                             <p-select [(ngModel)]="row.status" [options]="listStatus" optionLabel="label" [fluid]="true"
-                                optionValue="value" [showClear]="true" [appendTo]="'body'"
-                                id="status" name="status">
+                                optionValue="value" [showClear]="true" [appendTo]="'body'" id="status-{{i}}"
+                                name="status-{{i}}">
                             </p-select>
-                            <label for="status">Trạng thái</label>
+                            <label for="status-{{i}}">Trạng thái</label>
                         </p-floatlabel>
                     </td>
                     <td class="text-center">

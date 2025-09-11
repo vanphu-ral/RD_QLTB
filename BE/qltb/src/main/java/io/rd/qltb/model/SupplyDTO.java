@@ -3,6 +3,8 @@ package io.rd.qltb.model;
 import io.rd.qltb.domain.SupplyGroup;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,11 +24,6 @@ public class SupplyDTO {
     @Size(max = 150)
     private String name;
 
-    @NotNull
-    private Integer quantity;
-
-    private Double price;
-
     @Size(max = 255)
     private String description;
 
@@ -34,10 +31,10 @@ public class SupplyDTO {
     private String source;
 
     @NotNull
-    private OffsetDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @NotNull
-    private OffsetDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
     @Size(max = 255)
     private String createdBy;

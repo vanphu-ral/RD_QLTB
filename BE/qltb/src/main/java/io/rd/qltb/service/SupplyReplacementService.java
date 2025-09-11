@@ -82,8 +82,6 @@ public class SupplyReplacementService {
             supplyCopy.setId(supplyReplacement.getSupply().getId());
             supplyCopy.setCode(supplyReplacement.getSupply().getCode());
             supplyCopy.setName(supplyReplacement.getSupply().getName());
-            supplyCopy.setQuantity(supplyReplacement.getSupply().getQuantity());
-            supplyCopy.setPrice(supplyReplacement.getSupply().getPrice());
             supplyCopy.setDescription(supplyReplacement.getSupply().getDescription());
             supplyCopy.setSource(supplyReplacement.getSupply().getSource());
             supplyCopy.setCreatedAt(supplyReplacement.getSupply().getCreatedAt());

@@ -35,20 +35,27 @@ public class SupplyDetailResource {
 
     @GetMapping("/{id}")
     public ResponseEntity<SupplyDetailDTO> getSupplyDetail(
-            @PathVariable(name = "id") final Integer id) {
+            @PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(supplyDetailService.get(id));
     }
 
     @PostMapping
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<Integer> createSupplyDetail(
+    public ResponseEntity<Long> createSupplyDetail(
             @RequestBody @Valid final SupplyDetailDTO supplyDetailDTO) {
-        final Integer createdId = supplyDetailService.create(supplyDetailDTO);
+        final Long createdId = supplyDetailService.create(supplyDetailDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
 
+    @PostMapping("/creates")
+    @ApiResponse(responseCode = "201")
+    public ResponseEntity<List<Long>> creates(@RequestBody @Valid List<SupplyDetailDTO> supplyDetailDTOs) {
+        List<Long> createdIds = supplyDetailService.creates(supplyDetailDTOs);
+        return new ResponseEntity<>(createdIds, HttpStatus.CREATED);
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<Integer> updateSupplyDetail(@PathVariable(name = "id") final Integer id,
+    public ResponseEntity<Long> updateSupplyDetail(@PathVariable(name = "id") final Long id,
             @RequestBody @Valid final SupplyDetailDTO supplyDetailDTO) {
         supplyDetailService.update(id, supplyDetailDTO);
         return ResponseEntity.ok(id);
@@ -56,7 +63,7 @@ public class SupplyDetailResource {
 
     @DeleteMapping("/{id}")
     @ApiResponse(responseCode = "204")
-    public ResponseEntity<Void> deleteSupplyDetail(@PathVariable(name = "id") final Integer id) {
+    public ResponseEntity<Void> deleteSupplyDetail(@PathVariable(name = "id") final Long id) {
         supplyDetailService.delete(id);
         return ResponseEntity.noContent().build();
     }
