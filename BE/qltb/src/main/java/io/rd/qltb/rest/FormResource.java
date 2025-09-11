@@ -34,19 +34,19 @@ public class FormResource {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FormDTO> getForm(@PathVariable(name = "id") final Integer id) {
+    public ResponseEntity<FormDTO> getForm(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(formService.get(id));
     }
 
     @PostMapping
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<Integer> createForm(@RequestBody @Valid final FormDTO formDTO) {
-        final Integer createdId = formService.create(formDTO);
+    public ResponseEntity<Long> createForm(@RequestBody @Valid final FormDTO formDTO) {
+        final Long createdId = formService.create(formDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Integer> updateForm(@PathVariable(name = "id") final Integer id,
+    public ResponseEntity<Long> updateForm(@PathVariable(name = "id") final Long id,
             @RequestBody @Valid final FormDTO formDTO) {
         formService.update(id, formDTO);
         return ResponseEntity.ok(id);
@@ -54,7 +54,7 @@ public class FormResource {
 
     @DeleteMapping("/{id}")
     @ApiResponse(responseCode = "204")
-    public ResponseEntity<Void> deleteForm(@PathVariable(name = "id") final Integer id) {
+    public ResponseEntity<Void> deleteForm(@PathVariable(name = "id") final Long id) {
         formService.delete(id);
         return ResponseEntity.noContent().build();
     }

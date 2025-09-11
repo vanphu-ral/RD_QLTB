@@ -34,19 +34,19 @@ public class SupplyResource {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SupplyDTO> getSupply(@PathVariable(name = "id") final Integer id) {
+    public ResponseEntity<SupplyDTO> getSupply(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(supplyService.get(id));
     }
 
     @PostMapping
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<Integer> createSupply(@RequestBody @Valid final SupplyDTO supplyDTO) {
-        final Integer createdId = supplyService.create(supplyDTO);
+    public ResponseEntity<Long> createSupply(@RequestBody @Valid final SupplyDTO supplyDTO) {
+        final Long createdId = supplyService.create(supplyDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Integer> updateSupply(@PathVariable(name = "id") final Integer id,
+    public ResponseEntity<Long> updateSupply(@PathVariable(name = "id") final Long id,
             @RequestBody @Valid final SupplyDTO supplyDTO) {
         supplyService.update(id, supplyDTO);
         return ResponseEntity.ok(id);
@@ -54,7 +54,7 @@ public class SupplyResource {
 
     @DeleteMapping("/{id}")
     @ApiResponse(responseCode = "204")
-    public ResponseEntity<Void> deleteSupply(@PathVariable(name = "id") final Integer id) {
+    public ResponseEntity<Void> deleteSupply(@PathVariable(name = "id") final Long id) {
         supplyService.delete(id);
         return ResponseEntity.noContent().build();
     }

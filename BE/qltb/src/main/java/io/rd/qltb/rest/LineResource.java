@@ -34,19 +34,19 @@ public class LineResource {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineDTO> getLine(@PathVariable(name = "id") final Integer id) {
+    public ResponseEntity<LineDTO> getLine(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(lineService.get(id));
     }
 
     @PostMapping
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<Integer> createLine(@RequestBody @Valid final LineDTO lineDTO) {
-        final Integer createdId = lineService.create(lineDTO);
+    public ResponseEntity<Long> createLine(@RequestBody @Valid final LineDTO lineDTO) {
+        final Long createdId = lineService.create(lineDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Integer> updateLine(@PathVariable(name = "id") final Integer id,
+    public ResponseEntity<Long> updateLine(@PathVariable(name = "id") final Long id,
             @RequestBody @Valid final LineDTO lineDTO) {
         lineService.update(id, lineDTO);
         return ResponseEntity.ok(id);
@@ -54,7 +54,7 @@ public class LineResource {
 
     @DeleteMapping("/{id}")
     @ApiResponse(responseCode = "204")
-    public ResponseEntity<Void> deleteLine(@PathVariable(name = "id") final Integer id) {
+    public ResponseEntity<Void> deleteLine(@PathVariable(name = "id") final Long id) {
         lineService.delete(id);
         return ResponseEntity.noContent().build();
     }

@@ -35,20 +35,20 @@ public class KeyMappingResource {
 
     @GetMapping("/{id}")
     public ResponseEntity<KeyMappingDTO> getKeyMapping(
-            @PathVariable(name = "id") final Integer id) {
+            @PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(keyMappingService.get(id));
     }
 
     @PostMapping
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<Integer> createKeyMapping(
+    public ResponseEntity<Long> createKeyMapping(
             @RequestBody @Valid final KeyMappingDTO keyMappingDTO) {
-        final Integer createdId = keyMappingService.create(keyMappingDTO);
+        final Long createdId = keyMappingService.create(keyMappingDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Integer> updateKeyMapping(@PathVariable(name = "id") final Integer id,
+    public ResponseEntity<Long> updateKeyMapping(@PathVariable(name = "id") final Long id,
             @RequestBody @Valid final KeyMappingDTO keyMappingDTO) {
         keyMappingService.update(id, keyMappingDTO);
         return ResponseEntity.ok(id);
@@ -56,7 +56,7 @@ public class KeyMappingResource {
 
     @DeleteMapping("/{id}")
     @ApiResponse(responseCode = "204")
-    public ResponseEntity<Void> deleteKeyMapping(@PathVariable(name = "id") final Integer id) {
+    public ResponseEntity<Void> deleteKeyMapping(@PathVariable(name = "id") final Long id) {
         keyMappingService.delete(id);
         return ResponseEntity.noContent().build();
     }

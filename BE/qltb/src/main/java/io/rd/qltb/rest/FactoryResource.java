@@ -34,19 +34,19 @@ public class FactoryResource {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FactoryDTO> getFactory(@PathVariable(name = "id") final Integer id) {
+    public ResponseEntity<FactoryDTO> getFactory(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(factoryService.get(id));
     }
 
     @PostMapping
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<Integer> createFactory(@RequestBody @Valid final FactoryDTO factoryDTO) {
-        final Integer createdId = factoryService.create(factoryDTO);
+    public ResponseEntity<Long> createFactory(@RequestBody @Valid final FactoryDTO factoryDTO) {
+        final Long createdId = factoryService.create(factoryDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Integer> updateFactory(@PathVariable(name = "id") final Integer id,
+    public ResponseEntity<Long> updateFactory(@PathVariable(name = "id") final Long id,
             @RequestBody @Valid final FactoryDTO factoryDTO) {
         factoryService.update(id, factoryDTO);
         return ResponseEntity.ok(id);
@@ -54,7 +54,7 @@ public class FactoryResource {
 
     @DeleteMapping("/{id}")
     @ApiResponse(responseCode = "204")
-    public ResponseEntity<Void> deleteFactory(@PathVariable(name = "id") final Integer id) {
+    public ResponseEntity<Void> deleteFactory(@PathVariable(name = "id") final Long id) {
         factoryService.delete(id);
         return ResponseEntity.noContent().build();
     }

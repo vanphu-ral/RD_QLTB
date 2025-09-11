@@ -35,20 +35,20 @@ public class PlanSupplieResource {
 
     @GetMapping("/{id}")
     public ResponseEntity<PlanSupplieDTO> getPlanSupplie(
-            @PathVariable(name = "id") final Integer id) {
+            @PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(planSupplieService.get(id));
     }
 
     @PostMapping
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<Integer> createPlanSupplie(
+    public ResponseEntity<Long> createPlanSupplie(
             @RequestBody @Valid final PlanSupplieDTO planSupplieDTO) {
-        final Integer createdId = planSupplieService.create(planSupplieDTO);
+        final Long createdId = planSupplieService.create(planSupplieDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Integer> updatePlanSupplie(@PathVariable(name = "id") final Integer id,
+    public ResponseEntity<Long> updatePlanSupplie(@PathVariable(name = "id") final Long id,
             @RequestBody @Valid final PlanSupplieDTO planSupplieDTO) {
         planSupplieService.update(id, planSupplieDTO);
         return ResponseEntity.ok(id);
@@ -56,7 +56,7 @@ public class PlanSupplieResource {
 
     @DeleteMapping("/{id}")
     @ApiResponse(responseCode = "204")
-    public ResponseEntity<Void> deletePlanSupplie(@PathVariable(name = "id") final Integer id) {
+    public ResponseEntity<Void> deletePlanSupplie(@PathVariable(name = "id") final Long id) {
         planSupplieService.delete(id);
         return ResponseEntity.noContent().build();
     }

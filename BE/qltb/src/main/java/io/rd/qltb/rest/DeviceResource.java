@@ -34,19 +34,19 @@ public class DeviceResource {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DeviceDTO> getDevice(@PathVariable(name = "id") final Integer id) {
+    public ResponseEntity<DeviceDTO> getDevice(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(deviceService.get(id));
     }
 
     @PostMapping
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<Integer> createDevice(@RequestBody @Valid final DeviceDTO deviceDTO) {
-        final Integer createdId = deviceService.create(deviceDTO);
+    public ResponseEntity<Long> createDevice(@RequestBody @Valid final DeviceDTO deviceDTO) {
+        final Long createdId = deviceService.create(deviceDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Integer> updateDevice(@PathVariable(name = "id") final Integer id,
+    public ResponseEntity<Long> updateDevice(@PathVariable(name = "id") final Long id,
             @RequestBody @Valid final DeviceDTO deviceDTO) {
         deviceService.update(id, deviceDTO);
         return ResponseEntity.ok(id);
@@ -54,7 +54,7 @@ public class DeviceResource {
 
     @DeleteMapping("/{id}")
     @ApiResponse(responseCode = "204")
-    public ResponseEntity<Void> deleteDevice(@PathVariable(name = "id") final Integer id) {
+    public ResponseEntity<Void> deleteDevice(@PathVariable(name = "id") final Long id) {
         deviceService.delete(id);
         return ResponseEntity.noContent().build();
     }

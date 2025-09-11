@@ -35,21 +35,21 @@ public class PlanTargetResultResource {
 
     @GetMapping("/{id}")
     public ResponseEntity<PlanTargetResultDTO> getPlanTargetResult(
-            @PathVariable(name = "id") final Integer id) {
+            @PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(planTargetResultService.get(id));
     }
 
     @PostMapping
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<Integer> createPlanTargetResult(
+    public ResponseEntity<Long> createPlanTargetResult(
             @RequestBody @Valid final PlanTargetResultDTO planTargetResultDTO) {
-        final Integer createdId = planTargetResultService.create(planTargetResultDTO);
+        final Long createdId = planTargetResultService.create(planTargetResultDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Integer> updatePlanTargetResult(
-            @PathVariable(name = "id") final Integer id,
+    public ResponseEntity<Long> updatePlanTargetResult(
+            @PathVariable(name = "id") final Long id,
             @RequestBody @Valid final PlanTargetResultDTO planTargetResultDTO) {
         planTargetResultService.update(id, planTargetResultDTO);
         return ResponseEntity.ok(id);
@@ -58,7 +58,7 @@ public class PlanTargetResultResource {
     @DeleteMapping("/{id}")
     @ApiResponse(responseCode = "204")
     public ResponseEntity<Void> deletePlanTargetResult(
-            @PathVariable(name = "id") final Integer id) {
+            @PathVariable(name = "id") final Long id) {
         planTargetResultService.delete(id);
         return ResponseEntity.noContent().build();
     }

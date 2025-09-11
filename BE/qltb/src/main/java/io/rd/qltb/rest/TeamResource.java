@@ -34,19 +34,19 @@ public class TeamResource {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TeamDTO> getTeam(@PathVariable(name = "id") final Integer id) {
+    public ResponseEntity<TeamDTO> getTeam(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(teamService.get(id));
     }
 
     @PostMapping
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<Integer> createTeam(@RequestBody @Valid final TeamDTO teamDTO) {
-        final Integer createdId = teamService.create(teamDTO);
+    public ResponseEntity<Long> createTeam(@RequestBody @Valid final TeamDTO teamDTO) {
+        final Long createdId = teamService.create(teamDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Integer> updateTeam(@PathVariable(name = "id") final Integer id,
+    public ResponseEntity<Long> updateTeam(@PathVariable(name = "id") final Long id,
             @RequestBody @Valid final TeamDTO teamDTO) {
         teamService.update(id, teamDTO);
         return ResponseEntity.ok(id);
@@ -54,7 +54,7 @@ public class TeamResource {
 
     @DeleteMapping("/{id}")
     @ApiResponse(responseCode = "204")
-    public ResponseEntity<Void> deleteTeam(@PathVariable(name = "id") final Integer id) {
+    public ResponseEntity<Void> deleteTeam(@PathVariable(name = "id") final Long id) {
         teamService.delete(id);
         return ResponseEntity.noContent().build();
     }

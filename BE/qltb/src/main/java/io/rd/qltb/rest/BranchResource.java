@@ -34,19 +34,19 @@ public class BranchResource {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BranchDTO> getBranch(@PathVariable(name = "id") final Integer id) {
+    public ResponseEntity<BranchDTO> getBranch(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(branchService.get(id));
     }
 
     @PostMapping
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<Integer> createBranch(@RequestBody @Valid final BranchDTO branchDTO) {
-        final Integer createdId = branchService.create(branchDTO);
+    public ResponseEntity<Long> createBranch(@RequestBody @Valid final BranchDTO branchDTO) {
+        final Long createdId = branchService.create(branchDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Integer> updateBranch(@PathVariable(name = "id") final Integer id,
+    public ResponseEntity<Long> updateBranch(@PathVariable(name = "id") final Long id,
             @RequestBody @Valid final BranchDTO branchDTO) {
         branchService.update(id, branchDTO);
         return ResponseEntity.ok(id);
@@ -54,7 +54,7 @@ public class BranchResource {
 
     @DeleteMapping("/{id}")
     @ApiResponse(responseCode = "204")
-    public ResponseEntity<Void> deleteBranch(@PathVariable(name = "id") final Integer id) {
+    public ResponseEntity<Void> deleteBranch(@PathVariable(name = "id") final Long id) {
         branchService.delete(id);
         return ResponseEntity.noContent().build();
     }

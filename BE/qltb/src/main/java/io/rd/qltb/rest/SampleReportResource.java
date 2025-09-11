@@ -35,20 +35,20 @@ public class SampleReportResource {
 
     @GetMapping("/{id}")
     public ResponseEntity<SampleReportDTO> getSampleReport(
-            @PathVariable(name = "id") final Integer id) {
+            @PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(sampleReportService.get(id));
     }
 
     @PostMapping
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<Integer> createSampleReport(
+    public ResponseEntity<Long> createSampleReport(
             @RequestBody @Valid final SampleReportDTO sampleReportDTO) {
-        final Integer createdId = sampleReportService.create(sampleReportDTO);
+        final Long createdId = sampleReportService.create(sampleReportDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Integer> updateSampleReport(@PathVariable(name = "id") final Integer id,
+    public ResponseEntity<Long> updateSampleReport(@PathVariable(name = "id") final Long id,
             @RequestBody @Valid final SampleReportDTO sampleReportDTO) {
         sampleReportService.update(id, sampleReportDTO);
         return ResponseEntity.ok(id);
@@ -56,7 +56,7 @@ public class SampleReportResource {
 
     @DeleteMapping("/{id}")
     @ApiResponse(responseCode = "204")
-    public ResponseEntity<Void> deleteSampleReport(@PathVariable(name = "id") final Integer id) {
+    public ResponseEntity<Void> deleteSampleReport(@PathVariable(name = "id") final Long id) {
         sampleReportService.delete(id);
         return ResponseEntity.noContent().build();
     }

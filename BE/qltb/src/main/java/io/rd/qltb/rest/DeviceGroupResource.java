@@ -35,20 +35,20 @@ public class DeviceGroupResource {
 
     @GetMapping("/{id}")
     public ResponseEntity<DeviceGroupDTO> getDeviceGroup(
-            @PathVariable(name = "id") final Integer id) {
+            @PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(deviceGroupService.get(id));
     }
 
     @PostMapping
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<Integer> createDeviceGroup(
+    public ResponseEntity<Long> createDeviceGroup(
             @RequestBody @Valid final DeviceGroupDTO deviceGroupDTO) {
-        final Integer createdId = deviceGroupService.create(deviceGroupDTO);
+        final Long createdId = deviceGroupService.create(deviceGroupDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Integer> updateDeviceGroup(@PathVariable(name = "id") final Integer id,
+    public ResponseEntity<Long> updateDeviceGroup(@PathVariable(name = "id") final Long id,
             @RequestBody @Valid final DeviceGroupDTO deviceGroupDTO) {
         deviceGroupService.update(id, deviceGroupDTO);
         return ResponseEntity.ok(id);
@@ -56,7 +56,7 @@ public class DeviceGroupResource {
 
     @DeleteMapping("/{id}")
     @ApiResponse(responseCode = "204")
-    public ResponseEntity<Void> deleteDeviceGroup(@PathVariable(name = "id") final Integer id) {
+    public ResponseEntity<Void> deleteDeviceGroup(@PathVariable(name = "id") final Long id) {
         deviceGroupService.delete(id);
         return ResponseEntity.noContent().build();
     }

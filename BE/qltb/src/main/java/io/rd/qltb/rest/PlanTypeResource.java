@@ -34,20 +34,20 @@ public class PlanTypeResource {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PlanTypeDTO> getPlanType(@PathVariable(name = "id") final Integer id) {
+    public ResponseEntity<PlanTypeDTO> getPlanType(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(planTypeService.get(id));
     }
 
     @PostMapping
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<Integer> createPlanType(
+    public ResponseEntity<Long> createPlanType(
             @RequestBody @Valid final PlanTypeDTO planTypeDTO) {
-        final Integer createdId = planTypeService.create(planTypeDTO);
+        final Long createdId = planTypeService.create(planTypeDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Integer> updatePlanType(@PathVariable(name = "id") final Integer id,
+    public ResponseEntity<Long> updatePlanType(@PathVariable(name = "id") final Long id,
             @RequestBody @Valid final PlanTypeDTO planTypeDTO) {
         planTypeService.update(id, planTypeDTO);
         return ResponseEntity.ok(id);
@@ -55,7 +55,7 @@ public class PlanTypeResource {
 
     @DeleteMapping("/{id}")
     @ApiResponse(responseCode = "204")
-    public ResponseEntity<Void> deletePlanType(@PathVariable(name = "id") final Integer id) {
+    public ResponseEntity<Void> deletePlanType(@PathVariable(name = "id") final Long id) {
         planTypeService.delete(id);
         return ResponseEntity.noContent().build();
     }

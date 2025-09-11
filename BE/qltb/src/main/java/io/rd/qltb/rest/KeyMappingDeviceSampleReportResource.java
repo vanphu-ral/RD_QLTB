@@ -37,21 +37,21 @@ public class KeyMappingDeviceSampleReportResource {
 
     @GetMapping("/{id}")
     public ResponseEntity<KeyMappingDeviceSampleReportDTO> getKeyMappingDeviceSampleReport(
-            @PathVariable(name = "id") final Integer id) {
+            @PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(keyMappingDeviceSampleReportService.get(id));
     }
 
     @PostMapping
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<Integer> createKeyMappingDeviceSampleReport(
+    public ResponseEntity<Long> createKeyMappingDeviceSampleReport(
             @RequestBody @Valid final KeyMappingDeviceSampleReportDTO keyMappingDeviceSampleReportDTO) {
-        final Integer createdId = keyMappingDeviceSampleReportService.create(keyMappingDeviceSampleReportDTO);
+        final Long createdId = keyMappingDeviceSampleReportService.create(keyMappingDeviceSampleReportDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Integer> updateKeyMappingDeviceSampleReport(
-            @PathVariable(name = "id") final Integer id,
+    public ResponseEntity<Long> updateKeyMappingDeviceSampleReport(
+            @PathVariable(name = "id") final Long id,
             @RequestBody @Valid final KeyMappingDeviceSampleReportDTO keyMappingDeviceSampleReportDTO) {
         keyMappingDeviceSampleReportService.update(id, keyMappingDeviceSampleReportDTO);
         return ResponseEntity.ok(id);
@@ -60,7 +60,7 @@ public class KeyMappingDeviceSampleReportResource {
     @DeleteMapping("/{id}")
     @ApiResponse(responseCode = "204")
     public ResponseEntity<Void> deleteKeyMappingDeviceSampleReport(
-            @PathVariable(name = "id") final Integer id) {
+            @PathVariable(name = "id") final Long id) {
         keyMappingDeviceSampleReportService.delete(id);
         return ResponseEntity.noContent().build();
     }

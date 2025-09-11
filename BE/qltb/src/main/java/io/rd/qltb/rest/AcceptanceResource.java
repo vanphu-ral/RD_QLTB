@@ -35,20 +35,20 @@ public class AcceptanceResource {
 
     @GetMapping("/{id}")
     public ResponseEntity<AcceptanceDTO> getAcceptance(
-            @PathVariable(name = "id") final Integer id) {
+            @PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(acceptanceService.get(id));
     }
 
     @PostMapping
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<Integer> createAcceptance(
+    public ResponseEntity<Long> createAcceptance(
             @RequestBody @Valid final AcceptanceDTO acceptanceDTO) {
-        final Integer createdId = acceptanceService.create(acceptanceDTO);
+        final Long createdId = acceptanceService.create(acceptanceDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Integer> updateAcceptance(@PathVariable(name = "id") final Integer id,
+    public ResponseEntity<Long> updateAcceptance(@PathVariable(name = "id") final Long id,
             @RequestBody @Valid final AcceptanceDTO acceptanceDTO) {
         acceptanceService.update(id, acceptanceDTO);
         return ResponseEntity.ok(id);
@@ -56,7 +56,7 @@ public class AcceptanceResource {
 
     @DeleteMapping("/{id}")
     @ApiResponse(responseCode = "204")
-    public ResponseEntity<Void> deleteAcceptance(@PathVariable(name = "id") final Integer id) {
+    public ResponseEntity<Void> deleteAcceptance(@PathVariable(name = "id") final Long id) {
         acceptanceService.delete(id);
         return ResponseEntity.noContent().build();
     }

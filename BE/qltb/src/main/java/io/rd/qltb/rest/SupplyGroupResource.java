@@ -35,20 +35,20 @@ public class SupplyGroupResource {
 
     @GetMapping("/{id}")
     public ResponseEntity<SupplyGroupDTO> getSupplyGroup(
-            @PathVariable(name = "id") final Integer id) {
+            @PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(supplyGroupService.get(id));
     }
 
     @PostMapping
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<Integer> createSupplyGroup(
+    public ResponseEntity<Long> createSupplyGroup(
             @RequestBody @Valid final SupplyGroupDTO supplyGroupDTO) {
-        final Integer createdId = supplyGroupService.create(supplyGroupDTO);
+        final Long createdId = supplyGroupService.create(supplyGroupDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Integer> updateSupplyGroup(@PathVariable(name = "id") final Integer id,
+    public ResponseEntity<Long> updateSupplyGroup(@PathVariable(name = "id") final Long id,
             @RequestBody @Valid final SupplyGroupDTO supplyGroupDTO) {
         supplyGroupService.update(id, supplyGroupDTO);
         return ResponseEntity.ok(id);
@@ -56,7 +56,7 @@ public class SupplyGroupResource {
 
     @DeleteMapping("/{id}")
     @ApiResponse(responseCode = "204")
-    public ResponseEntity<Void> deleteSupplyGroup(@PathVariable(name = "id") final Integer id) {
+    public ResponseEntity<Void> deleteSupplyGroup(@PathVariable(name = "id") final Long id) {
         supplyGroupService.delete(id);
         return ResponseEntity.noContent().build();
     }
