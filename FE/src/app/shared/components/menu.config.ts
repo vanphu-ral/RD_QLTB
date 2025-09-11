@@ -8,10 +8,11 @@ export const MENU_ITEMS: MenuItem[] = [
                 label: 'Quản lý kế hoạch',
                 icon: 'fas fa-calendar-alt',
                 items: [
-                    { label: 'Danh mục kế hoạch', icon: 'pi pi-fw pi-calendar', routerLink: ['/Plan'] },
-                    { label: 'Danh mục loại kế hoạch', icon: 'pi pi-fw pi-list', routerLink: ['/PlanType'] },
-                    { label: 'Mẫu báo cáo', icon: 'pi pi-fw pi-file', routerLink: ['/ReportTemplate'] },
-                    { label: 'Hạng mục kiểm tra', icon: 'pi pi-fw pi-check-square', routerLink: ['/CheckItem'] },
+                    { label: 'Danh mục kế hoạch', icon: 'pi pi-fw pi-calendar', routerLink: ['/Plans'] },
+                    { label: 'Danh mục loại kế hoạch', icon: 'pi pi-fw pi-list', routerLink: ['/PlanTypes'] },
+                    { label: 'Mẫu báo cáo', icon: 'pi pi-fw pi-file', routerLink: ['/ReportTemplates'] },
+                    { label: 'Nhóm hạng mục kiểm tra', icon: 'pi pi-fw pi-list-check', routerLink: ['/CriterialGroups'] },
+                    { label: 'Hạng mục kiểm tra', icon: 'pi pi-fw pi-check-square', routerLink: ['/Criterials'] },
                 ]
             },
             {
@@ -41,8 +42,8 @@ export const MENU_ITEMS: MenuItem[] = [
                     { label: 'Danh mục ngành sản xuất', icon: 'fa-solid fa-code-branch', routerLink: ['/Branches'] },
                     { label: 'Danh mục tổ sản xuất', icon: 'fa-solid fa-object-ungroup', routerLink: ['/Teams'] },
                     { label: 'Danh mục dây chuyền sản xuất', icon: 'fa-solid fa-grip-lines', routerLink: ['/Lines'] },
-                    { label: 'Danh mục ca sản xuất', icon: 'fa-solid fa-clock', routerLink: ['/Shift'] },
-                    { label: 'Danh mục chức vụ', icon: 'fa-solid fa-crosshairs', routerLink: ['/Position'] }
+                    // { label: 'Danh mục ca sản xuất', icon: 'fa-solid fa-clock', routerLink: ['/Shift'] },
+                    // { label: 'Danh mục chức vụ', icon: 'fa-solid fa-crosshairs', routerLink: ['/Position'] }
                 ]
             },
             {

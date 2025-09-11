@@ -4,5 +4,7 @@ export class SerialSupply {
     supply?: string;
     importDate?: Date;
     supplier?: string;
+    unit?: string;
+    price?: number;
     status?: number;
 }

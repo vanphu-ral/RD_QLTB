@@ -2,9 +2,9 @@ export class Device {
     id?: number;
     code?: string;
     name?: string;
-    numMaterialUse?: number;
     serialNumber?: string;
     source?: string;
+    supplier?: any;
     installationDate?: Date;
     maintenanceCycle?: number;
     dateManufacture?: Date;
@@ -22,5 +22,6 @@ export class Device {
     group?: any;
     line?: any;
     branch?: any;
+    team?: any;
 }
 

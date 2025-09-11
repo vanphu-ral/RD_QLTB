@@ -6,6 +6,8 @@ import { Util } from '../../../../core/utils/utils-function';
 import { SupplyService } from '../Service/supply.service';
 import { Supply } from '../../../../models/DeviceManager/supply.model';
 import { SupplyGroupService } from '../../SupplyGroup/Service/supply-group.service';
+import { SerialSupply } from '../../../../models/DeviceManager/serial-supply.model';
+import { SupplyDetailService } from '../Service/supply-detail.service';
 
 @Component({
   selector: 'app-supply-detail',
@@ -17,10 +19,12 @@ import { SupplyGroupService } from '../../SupplyGroup/Service/supply-group.servi
 export class SupplyDetailComponent extends BasePageComponent<Supply> {
 
   listSupplyGroups: any[] = [];
+  listSerials: SerialSupply[] = [];
 
   constructor(
     protected override apiService: SupplyService,
     private apiSupplyGroup: SupplyGroupService,
+    private supplyDetailService: SupplyDetailService,
   ) {
     super(apiService);
   }
@@ -28,9 +32,45 @@ export class SupplyDetailComponent extends BasePageComponent<Supply> {
   override ngOnInit(): void {
     super.ngOnInit();
     this.apiSupplyGroup.getAll().subscribe((res) => {
-      console.log(res);
       this.listSupplyGroups = res;
     })
+    if(this.isEditMode || this.isViewMode) {
+      this.loadData();
+    }
+  }
+
+  loadData() {
+    this.supplyDetailService.getBySupplyId(this.model!.id as number).subscribe((res) => {
+      if (Util.isEmptyArray(res)) {
+        this.listSerials.push({ status: 1 });
+        return;
+      } else {
+        this.listSerials = res.map((item: any) => ({
+          ...item,
+          importDate: item.importDate ? new Date(item.importDate) : undefined,
+          supply: this.model
+        }));
+      }
+      this.cdr.detectChanges();
+    });
+  }
+
+  addNewRow() {
+    this.listSerials.push({ status: 1 });
+  }
+
+  deleteRow(index: number) {
+    if (this.listSerials[index].id) {
+      this.supplyDetailService.delete(this.listSerials[index].id as number).subscribe({
+        next: () => {
+          this.listSerials.splice(index, 1);
+          this.loadData();
+          // this.messageService.add({ severity: 'info', summary: 'Đã xác nhận', detail: 'Xóa thành công!', life: 3000 });
+        }
+      });
+    } else {
+      this.listSerials.splice(index, 1);
+    }
   }
 
 

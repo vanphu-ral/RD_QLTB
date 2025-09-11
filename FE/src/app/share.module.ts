@@ -24,6 +24,9 @@ import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { Dialog } from 'primeng/dialog';
 import { DatePickerModule } from 'primeng/datepicker';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { FileUpload } from 'primeng/fileupload';
+import { CardModule } from 'primeng/card';
 
 @NgModule({
   imports: [
@@ -49,7 +52,10 @@ import { DatePickerModule } from 'primeng/datepicker';
     FieldsetModule,
     DynamicDialogModule,
     Dialog,
-    DatePickerModule
+    DatePickerModule,
+    InputNumberModule,
+    FileUpload,
+    CardModule 
   ],
   exports: [
     CommonModule,
@@ -74,7 +80,10 @@ import { DatePickerModule } from 'primeng/datepicker';
     FieldsetModule,
     DynamicDialogModule,
     Dialog,
-    DatePickerModule
+    DatePickerModule,
+    InputNumberModule,
+    FileUpload,
+    CardModule
   ],
   providers: [DialogService, MessageService]
 })

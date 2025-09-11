@@ -29,7 +29,7 @@
     </div>
 
     <div class="row my-3">
-      <div class="col-6">
+      <div class="col-4">
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.branch" [options]="listBranches" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
             [showClear]="true" [appendTo]="'body'" id="branch" name="branch" dataKey="id">
@@ -38,7 +38,7 @@
         </p-floatlabel>
       </div>
 
-      <div class="col-6">
+      <div class="col-4">
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.line" [options]="listLines" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
             [showClear]="true" [appendTo]="'body'" id="line" name="line" dataKey="id">
@@ -46,6 +46,121 @@
           <label for="line">Tên dây truyền sản xuất</label>
         </p-floatlabel>
       </div>
+
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.team" [options]="listTeams" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
+            [showClear]="true" [appendTo]="'body'" id="team" name="team" dataKey="id">
+          </p-select>
+          <label for="team">Tên tổ sản xuất</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <div class="row my-3">
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <input pInputText id="serialNumber" name="serialNumber" [(ngModel)]="model.serialNumber" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
+          <label for="serialNumber">Số serial</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <input pInputText id="source" name="source" [(ngModel)]="model.source" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
+          <label for="source">Nguồn</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <input pInputText id="supplier" name="supplier" [(ngModel)]="model.supplier" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
+          <label for="supplier">Nhà cung cấp</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <div class="row my-3">
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.maintenanceCycle" [options]="listMaintenanceCycles" optionLabel="label" [fluid]="true" [disabled]="isViewMode"
+            [showClear]="true" [appendTo]="'body'" id="maintenanceCycle" name="maintenanceCycle" dataKey="id">
+          </p-select>
+          <label for="maintenanceCycle">Chu kỳ bảo trì</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <p-datepicker [(ngModel)]="model.installationDate" [iconDisplay]="'input'" [showIcon]="true" name="installationDate"
+            inputId="icondisplay" [dateFormat]="'dd-mm-yy'"  appendTo="body" [inputSize]="100"/>
+          <label for="installationDate">Ngày lắp đặt</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <p-datepicker [(ngModel)]="model.dateManufacture" [iconDisplay]="'input'" [showIcon]="true" name="dateManufacture"
+            inputId="icondisplay" [dateFormat]="'dd-mm-yy'"  appendTo="body" [inputSize]="100"/>
+          <label for="dateManufacture">Ngày sản xuất</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <div class="row my-3">
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <input pInputText id="unit" name="unit" [(ngModel)]="model.unit" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
+          <label for="unit">Đơn vị tính</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <p-inputnumber id="price" name="price" [(ngModel)]="model.price" autocomplete="off" [disabled]="isViewMode" [fluid]="true" mode="decimal"/>
+          <label for="price">Giá tiền</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.userManager" [options]="listUsers" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
+            [showClear]="true" [appendTo]="'body'" id="userManager" name="userManager" dataKey="id">
+          </p-select>
+          <label for="userManager">Người quản lý</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <div class="row my-3">
+      <div class="col-6">
+        <p-card>
+          <ng-template #subtitle>Ảnh QR Code</ng-template>
+          <p-fileupload name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php"
+            [multiple]="true" accept="image/*" maxFileSize="1000000" mode="advanced">
+            <ng-template #empty>
+              <div>Drag and drop files to here to upload.</div>
+            </ng-template>
+          </p-fileupload>
+        </p-card>
+      </div>
+      <div class="col-6">
+        <p-card>
+          <ng-template #subtitle>Ảnh thiết bị</ng-template>
+          <p-fileupload name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php"
+            [multiple]="true" accept="image/*" maxFileSize="1000000" mode="advanced">
+            <ng-template #empty>
+              <div>Drag and drop files to here to upload.</div>
+            </ng-template>
+          </p-fileupload>
+        </p-card>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end align-items-center my-3">
+      <p-button label="Quản lý danh sách vật tư" icon="pi pi-plus" severity="success" class="mx-1" (click)="openMaterialDialog(model)"></p-button>
+      <p-button label="Quản lý thông số" icon="pi pi-plus" severity="success" class="mx-1" (click)="openParameterDialog(model)"></p-button>
+
     </div>
 
     <div class="row my-3">

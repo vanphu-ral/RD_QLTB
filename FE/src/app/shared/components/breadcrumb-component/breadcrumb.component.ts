@@ -3,6 +3,7 @@ import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs';
 import { MenuItem } from 'primeng/api';
 import { Breadcrumb } from 'primeng/breadcrumb';
+import { MENU_ITEMS } from '../menu.config';
 
 @Component({
   selector: 'app-breadcrumb',
@@ -21,10 +22,26 @@ import { Breadcrumb } from 'primeng/breadcrumb';
 })
 export class BreadcrumbComponent {
   breadcrumbItems: MenuItem[] = [];
+  private routeLabelMap: Record<string, string> = {};
 
   constructor(private router: Router) {
-    this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
-      this.generateBreadcrumbFromUrl(this.router.url);
+    this.buildRouteLabelMap(MENU_ITEMS);
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.generateBreadcrumbFromUrl(this.router.url);
+      });
+  }
+
+  private buildRouteLabelMap(menuItems: MenuItem[]) {
+    menuItems.forEach(item => {
+      if (item.routerLink) {
+        const path = Array.isArray(item.routerLink) ? item.routerLink[0] : item.routerLink;
+        this.routeLabelMap[path.toLowerCase()] = item.label!;
+      }
+      if (item.items) {
+        this.buildRouteLabelMap(item.items);
+      }
     });
   }
 
@@ -35,8 +52,17 @@ export class BreadcrumbComponent {
     let accumulatedPath = '';
     for (const segment of segments) {
       accumulatedPath += `/${segment}`;
+
+      let label = this.routeLabelMap[accumulatedPath.toLowerCase()] || this.formatLabel(segment);
+      if (['add', 'create', 'new'].includes(segment.toLowerCase())) {
+        label = 'Thêm mới';
+      } else if (['edit', 'update'].includes(segment.toLowerCase())) {
+        label = 'Sửa';
+      } else if (['view', 'detail'].includes(segment.toLowerCase())) {
+        label = 'Xem chi tiết';
+      }
       breadcrumb.push({
-        label: this.formatLabel(segment),
+        label,
         routerLink: accumulatedPath
       });
     }
@@ -45,8 +71,7 @@ export class BreadcrumbComponent {
   }
 
   formatLabel(segment: string): string {
-    return segment
-      .replace(/-/g, ' ')
+    return segment.replace(/-/g, ' ')
       .replace(/\b\w/g, char => char.toUpperCase());
   }
 }

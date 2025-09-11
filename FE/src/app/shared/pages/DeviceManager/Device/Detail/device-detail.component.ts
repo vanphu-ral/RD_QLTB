@@ -12,6 +12,10 @@ import { Device } from '../../../../models/DeviceManager/device.model';
 import { DeviceGroupService } from '../../DeviceGroup/Service/device-group.service';
 import { BranchService } from '../../../Categories/Branch/Service/branch.service';
 import { LineService } from '../../../Categories/Line/Service/line.service';
+import { TeamService } from '../../../Categories/Team/Service/team.service';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { MaterialListManagerDialogComponent } from '../Dialog/material-list-manager/material-list-manager.dialog';
+import { ParameterListManagerDialogComponent } from '../Dialog/parameter-list-manager/parameter-list-manager.dialog';
 
 @Component({
   selector: 'app-device-detail',
@@ -25,12 +29,24 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
   listDeviceGroups: any[] = [];
   listBranches: any[] = [];
   listLines: any[] = [];
+  listTeams: any[] = [];
+  listMaintenanceCycles = [
+    { label: '1 Tháng', value: 1 },
+    { label: '3 Tháng', value: 3 },
+    { label: '6 Tháng', value: 6 },
+    { label: '12 Tháng', value: 12 },
+  ];
+  listUsers: any[] = [];
+  ref?: DynamicDialogRef;
+
 
   constructor(
     protected override apiService: DeviceService,
     private deviceGroupService: DeviceGroupService,
     private branchService: BranchService,
     private lineService: LineService,
+    private teamService: TeamService,
+    private dialogService: DialogService
   ) {
     super(apiService);
   }
@@ -48,6 +64,40 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
     this.lineService.getAll().subscribe(lines => {
       this.listLines = lines;
       this.cdr.detectChanges();
+    });
+    this.teamService.getAll().subscribe(teams => {
+      this.listTeams = teams;
+      this.cdr.detectChanges();
+    });
+  }
+
+  openMaterialDialog(row: any) {
+    this.ref = this.dialogService.open(MaterialListManagerDialogComponent, {
+      header: 'Danh sách vật tư sử dụng trong thiết bị',
+      width: 'auto',
+      modal: true,
+      data: row,
+    });
+
+    this.ref.onClose.subscribe((result) => {
+      if (result) {
+        console.log('Data trả về:', result);
+      }
+    });
+  }
+
+  openParameterDialog(row: any) {
+    this.ref = this.dialogService.open(ParameterListManagerDialogComponent, {
+      header: 'Quản lý thông số thiết bị',
+      width: 'auto',
+      modal: true,
+      data: row,
+    });
+
+    this.ref.onClose.subscribe((result) => {
+      if (result) {
+        console.log('Data trả về:', result);
+      }
     });
   }
 
