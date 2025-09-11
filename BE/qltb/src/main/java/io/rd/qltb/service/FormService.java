@@ -25,26 +25,26 @@ public class FormService {
                 .toList();
     }
 
-    public FormDTO get(final Integer id) {
+    public FormDTO get(final Long id) {
         return formRepository.findById(id)
                 .map(form -> mapToDTO(form, new FormDTO()))
                 .orElseThrow(NotFoundException::new);
     }
 
-    public Integer create(final FormDTO formDTO) {
+    public Long create(final FormDTO formDTO) {
         final Form form = new Form();
         mapToEntity(formDTO, form);
         return formRepository.save(form).getId();
     }
 
-    public void update(final Integer id, final FormDTO formDTO) {
+    public void update(final Long id, final FormDTO formDTO) {
         final Form form = formRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(formDTO, form);
         formRepository.save(form);
     }
 
-    public void delete(final Integer id) {
+    public void delete(final Long id) {
         final Form form = formRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         formRepository.delete(form);

@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 public class FormDTO {
 
-    private Integer id;
+    private Long id;
 
     @Size(max = 150)
     private String code;
@@ -28,13 +28,13 @@ public class FormDTO {
     @Size(max = 150)
     private String filePath;
 
-    private Integer factoryId;
+    private Long factoryId;
 
-    private Integer branchId;
+    private Long branchId;
 
-    private Integer teamId;
+    private Long teamId;
 
-    private Integer lineId;
+    private Long lineId;
 
     private LocalDateTime publishDate;
 

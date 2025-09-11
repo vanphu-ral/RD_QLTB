@@ -39,26 +39,26 @@ public class AcceptanceService {
                 .toList();
     }
 
-    public AcceptanceDTO get(final Integer id) {
+    public AcceptanceDTO get(final Long id) {
         return acceptanceRepository.findById(id)
                 .map(acceptance -> mapToDTO(acceptance, new AcceptanceDTO()))
                 .orElseThrow(NotFoundException::new);
     }
 
-    public Integer create(final AcceptanceDTO acceptanceDTO) {
+    public Long create(final AcceptanceDTO acceptanceDTO) {
         final Acceptance acceptance = new Acceptance();
         mapToEntity(acceptanceDTO, acceptance);
         return acceptanceRepository.save(acceptance).getId();
     }
 
-    public void update(final Integer id, final AcceptanceDTO acceptanceDTO) {
+    public void update(final Long id, final AcceptanceDTO acceptanceDTO) {
         final Acceptance acceptance = acceptanceRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(acceptanceDTO, acceptance);
         acceptanceRepository.save(acceptance);
     }
 
-    public void delete(final Integer id) {
+    public void delete(final Long id) {
         final Acceptance acceptance = acceptanceRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         acceptanceRepository.delete(acceptance);

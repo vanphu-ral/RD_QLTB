@@ -29,7 +29,7 @@ public class Approval {
     private Long entityId;
 
     @Column(nullable = false, length = 450)
-    private String userApprovalId;
+    private Long userApprovalId;
 
     @Column(nullable = false)
     private Long workflowId;

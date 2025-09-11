@@ -26,7 +26,7 @@ public class AssetHistory {
     private Integer assetType;
 
     @Column
-    private Integer assetId;
+    private Long assetId;
 
     @Column(nullable = false, length = 50)
     private String eventType;

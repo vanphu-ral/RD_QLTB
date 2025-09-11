@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DeviceRelocationHistoryRepository extends JpaRepository<DeviceRelocationHistory, Long> {
 
-    DeviceRelocationHistory findFirstByDeviceId(Integer id);
+    DeviceRelocationHistory findFirstByDeviceId(Long id);
 
 }

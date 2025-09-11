@@ -8,6 +8,6 @@ public interface SupplyReplacementRepository extends JpaRepository<SupplyReplace
 
     SupplyReplacement findFirstByPlanResultId(Long id);
 
-    SupplyReplacement findFirstBySupplyId(Integer id);
+    SupplyReplacement findFirstBySupplyId(Long id);
 
 }

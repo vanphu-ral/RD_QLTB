@@ -20,7 +20,7 @@ public class Form {
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(length = 150)
     private String code;
@@ -38,16 +38,16 @@ public class Form {
     private String filePath;
 
     @Column
-    private Integer factoryId;
+    private Long factoryId;
 
     @Column
-    private Integer branchId;
+    private Long branchId;
 
     @Column
-    private Integer teamId;
+    private Long teamId;
 
     @Column
-    private Integer lineId;
+    private Long lineId;
 
     @Column
     private LocalDateTime publishDate;

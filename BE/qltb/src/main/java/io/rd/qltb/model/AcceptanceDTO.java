@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 public class AcceptanceDTO {
 
-    private Integer id;
+    private Long id;
 
     @Size(max = 255)
     private String code;

@@ -18,9 +18,9 @@ public class PlanDTO {
     @Size(max = 200)
     private String name;
 
-    private Integer factoryId;
+    private Long factoryId;
 
-    private Integer branchId;
+    private Long branchId;
 
     @Size(max = 50)
     private String frequency;

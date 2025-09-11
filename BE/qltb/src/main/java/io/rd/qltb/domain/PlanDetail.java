@@ -26,7 +26,7 @@ public class PlanDetail {
     private Long id;
 
     @Column
-    private Integer sampleReporId;
+    private Long sampleReporId;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;

@@ -37,26 +37,26 @@ public class LineService {
                 .toList();
     }
 
-    public LineDTO get(final Integer id) {
+    public LineDTO get(final Long id) {
         return lineRepository.findById(id)
                 .map(line -> mapToDTO(line, new LineDTO()))
                 .orElseThrow(NotFoundException::new);
     }
 
-    public Integer create(final LineDTO lineDTO) {
+    public Long create(final LineDTO lineDTO) {
         final Line line = new Line();
         mapToEntity(lineDTO, line);
         return lineRepository.save(line).getId();
     }
 
-    public void update(final Integer id, final LineDTO lineDTO) {
+    public void update(final Long id, final LineDTO lineDTO) {
         final Line line = lineRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(lineDTO, line);
         lineRepository.save(line);
     }
 
-    public void delete(final Integer id) {
+    public void delete(final Long id) {
         final Line line = lineRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         publisher.publishEvent(new BeforeDeleteLine(id));

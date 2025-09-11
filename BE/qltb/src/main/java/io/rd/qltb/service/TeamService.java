@@ -37,26 +37,26 @@ public class TeamService {
                 .toList();
     }
 
-    public TeamDTO get(final Integer id) {
+    public TeamDTO get(final Long id) {
         return teamRepository.findById(id)
                 .map(team -> mapToDTO(team, new TeamDTO()))
                 .orElseThrow(NotFoundException::new);
     }
 
-    public Integer create(final TeamDTO teamDTO) {
+    public Long create(final TeamDTO teamDTO) {
         final Team team = new Team();
         mapToEntity(teamDTO, team);
         return teamRepository.save(team).getId();
     }
 
-    public void update(final Integer id, final TeamDTO teamDTO) {
+    public void update(final Long id, final TeamDTO teamDTO) {
         final Team team = teamRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(teamDTO, team);
         teamRepository.save(team);
     }
 
-    public void delete(final Integer id) {
+    public void delete(final Long id) {
         final Team team = teamRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         publisher.publishEvent(new BeforeDeleteTeam(id));

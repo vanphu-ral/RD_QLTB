@@ -39,26 +39,26 @@ public class KeyMappingService {
                 .toList();
     }
 
-    public KeyMappingDTO get(final Integer id) {
+    public KeyMappingDTO get(final Long id) {
         return keyMappingRepository.findById(id)
                 .map(keyMapping -> mapToDTO(keyMapping, new KeyMappingDTO()))
                 .orElseThrow(NotFoundException::new);
     }
 
-    public Integer create(final KeyMappingDTO keyMappingDTO) {
+    public Long create(final KeyMappingDTO keyMappingDTO) {
         final KeyMapping keyMapping = new KeyMapping();
         mapToEntity(keyMappingDTO, keyMapping);
         return keyMappingRepository.save(keyMapping).getId();
     }
 
-    public void update(final Integer id, final KeyMappingDTO keyMappingDTO) {
+    public void update(final Long id, final KeyMappingDTO keyMappingDTO) {
         final KeyMapping keyMapping = keyMappingRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(keyMappingDTO, keyMapping);
         keyMappingRepository.save(keyMapping);
     }
 
-    public void delete(final Integer id) {
+    public void delete(final Long id) {
         final KeyMapping keyMapping = keyMappingRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         keyMappingRepository.delete(keyMapping);

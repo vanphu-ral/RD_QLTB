@@ -9,6 +9,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +28,7 @@ public class DeviceSupplyUsage {
     private Long id;
 
     @Column(nullable = false)
-    private OffsetDateTime usageDate;
+    private LocalDateTime usageDate;
 
     @Column
     private String serial;
@@ -35,10 +37,10 @@ public class DeviceSupplyUsage {
     private String note;
 
     @Column(nullable = false)
-    private OffsetDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @Column(nullable = false)
-    private OffsetDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
     @Column
     private String createdBy;

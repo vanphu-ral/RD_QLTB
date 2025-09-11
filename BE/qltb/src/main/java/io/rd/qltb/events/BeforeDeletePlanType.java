@@ -8,6 +8,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class BeforeDeletePlanType {
 
-    private Integer id;
+    private Long id;
 
 }

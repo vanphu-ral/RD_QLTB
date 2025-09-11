@@ -3,6 +3,8 @@ package io.rd.qltb.model;
 import io.rd.qltb.domain.Supply;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,7 +19,7 @@ public class SupplyDetailDTO {
     @Size(max = 255)
     private String serial;
 
-    private OffsetDateTime importDate;
+    private LocalDateTime importDate;
 
     @Size(max = 255)
     private String supplier;

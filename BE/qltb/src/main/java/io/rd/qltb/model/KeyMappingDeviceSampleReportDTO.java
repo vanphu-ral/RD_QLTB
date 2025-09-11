@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 public class KeyMappingDeviceSampleReportDTO {
 
-    private Integer id;
+    private Long id;
 
     @NotNull
     private SampleReport sampleReport;

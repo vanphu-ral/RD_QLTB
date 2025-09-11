@@ -4,8 +4,8 @@ import io.rd.qltb.domain.SampleReport;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
-public interface SampleReportRepository extends JpaRepository<SampleReport, Integer> {
+public interface SampleReportRepository extends JpaRepository<SampleReport, Long> {
 
-    SampleReport findFirstByDeviceGroupId(Integer id);
+    SampleReport findFirstByDeviceGroupId(Long id);
 
 }

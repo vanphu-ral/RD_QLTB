@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 public class SampleReportDTO {
 
-    private Integer id;
+    private Long id;
 
     @NotNull
     @Size(max = 50)

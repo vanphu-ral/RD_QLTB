@@ -8,6 +8,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class BeforeDeleteBranch {
 
-    private Integer id;
+    private Long id;
 
 }

@@ -30,26 +30,26 @@ public class SupplyGroupService {
                 .toList();
     }
 
-    public SupplyGroupDTO get(final Integer id) {
+    public SupplyGroupDTO get(final Long id) {
         return supplyGroupRepository.findById(id)
                 .map(supplyGroup -> mapToDTO(supplyGroup, new SupplyGroupDTO()))
                 .orElseThrow(NotFoundException::new);
     }
 
-    public Integer create(final SupplyGroupDTO supplyGroupDTO) {
+    public Long create(final SupplyGroupDTO supplyGroupDTO) {
         final SupplyGroup supplyGroup = new SupplyGroup();
         mapToEntity(supplyGroupDTO, supplyGroup);
         return supplyGroupRepository.save(supplyGroup).getId();
     }
 
-    public void update(final Integer id, final SupplyGroupDTO supplyGroupDTO) {
+    public void update(final Long id, final SupplyGroupDTO supplyGroupDTO) {
         final SupplyGroup supplyGroup = supplyGroupRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(supplyGroupDTO, supplyGroup);
         supplyGroupRepository.save(supplyGroup);
     }
 
-    public void delete(final Integer id) {
+    public void delete(final Long id) {
         final SupplyGroup supplyGroup = supplyGroupRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         publisher.publishEvent(new BeforeDeleteSupplyGroup(id));

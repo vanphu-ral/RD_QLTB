@@ -30,26 +30,26 @@ public class FactoryService {
                 .toList();
     }
 
-    public FactoryDTO get(final Integer id) {
+    public FactoryDTO get(final Long id) {
         return factoryRepository.findById(id)
                 .map(factory -> mapToDTO(factory, new FactoryDTO()))
                 .orElseThrow(NotFoundException::new);
     }
 
-    public Integer create(final FactoryDTO factoryDTO) {
+    public Long create(final FactoryDTO factoryDTO) {
         final Factory factory = new Factory();
         mapToEntity(factoryDTO, factory);
         return factoryRepository.save(factory).getId();
     }
 
-    public void update(final Integer id, final FactoryDTO factoryDTO) {
+    public void update(final Long id, final FactoryDTO factoryDTO) {
         final Factory factory = factoryRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(factoryDTO, factory);
         factoryRepository.save(factory);
     }
 
-    public void delete(final Integer id) {
+    public void delete(final Long id) {
         final Factory factory = factoryRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         publisher.publishEvent(new BeforeDeleteFactory(id));

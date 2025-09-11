@@ -4,8 +4,8 @@ import io.rd.qltb.domain.Supply;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
-public interface SupplyRepository extends JpaRepository<Supply, Integer> {
+public interface SupplyRepository extends JpaRepository<Supply, Long> {
 
-    Supply findFirstByGroupId(Integer id);
+    Supply findFirstByGroupId(Long id);
 
 }

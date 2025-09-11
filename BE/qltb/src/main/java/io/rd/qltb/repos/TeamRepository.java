@@ -4,8 +4,8 @@ import io.rd.qltb.domain.Team;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
-public interface TeamRepository extends JpaRepository<Team, Integer> {
+public interface TeamRepository extends JpaRepository<Team, Long> {
 
-    Team findFirstByBranchId(Integer id);
+    Team findFirstByBranchId(Long id);
 
 }

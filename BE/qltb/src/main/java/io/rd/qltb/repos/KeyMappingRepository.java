@@ -4,9 +4,9 @@ import io.rd.qltb.domain.KeyMapping;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
-public interface KeyMappingRepository extends JpaRepository<KeyMapping, Integer> {
+public interface KeyMappingRepository extends JpaRepository<KeyMapping, Long> {
 
-    KeyMapping findFirstBySampleReportId(Integer id);
+    KeyMapping findFirstBySampleReportId(Long id);
 
     KeyMapping findFirstByCriterialId(Long id);
 

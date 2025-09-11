@@ -33,26 +33,26 @@ public class PlanTargetResultService {
                 .toList();
     }
 
-    public PlanTargetResultDTO get(final Integer id) {
+    public PlanTargetResultDTO get(final Long id) {
         return planTargetResultRepository.findById(id)
                 .map(planTargetResult -> mapToDTO(planTargetResult, new PlanTargetResultDTO()))
                 .orElseThrow(NotFoundException::new);
     }
 
-    public Integer create(final PlanTargetResultDTO planTargetResultDTO) {
+    public Long create(final PlanTargetResultDTO planTargetResultDTO) {
         final PlanTargetResult planTargetResult = new PlanTargetResult();
         mapToEntity(planTargetResultDTO, planTargetResult);
         return planTargetResultRepository.save(planTargetResult).getId();
     }
 
-    public void update(final Integer id, final PlanTargetResultDTO planTargetResultDTO) {
+    public void update(final Long id, final PlanTargetResultDTO planTargetResultDTO) {
         final PlanTargetResult planTargetResult = planTargetResultRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(planTargetResultDTO, planTargetResult);
         planTargetResultRepository.save(planTargetResult);
     }
 
-    public void delete(final Integer id) {
+    public void delete(final Long id) {
         final PlanTargetResult planTargetResult = planTargetResultRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         planTargetResultRepository.delete(planTargetResult);

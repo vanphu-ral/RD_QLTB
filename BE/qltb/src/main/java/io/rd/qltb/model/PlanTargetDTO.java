@@ -13,7 +13,7 @@ public class PlanTargetDTO {
 
     private Long id;
 
-    private Integer branchId;
+    private Long branchId;
 
     @Size(max = 500)
     private String targetDescription;

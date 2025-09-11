@@ -14,21 +14,21 @@ public class DeviceRelocationHistoryDTO {
 
     private Long id;
 
-    private Integer oldFactoryId;
+    private Long oldFactoryId;
 
-    private Integer newFactoryId;
+    private Long newFactoryId;
 
-    private Integer oldBranchId;
+    private Long oldBranchId;
 
-    private Integer newBranchId;
+    private Long newBranchId;
 
-    private Integer oldTeamId;
+    private Long oldTeamId;
 
-    private Integer newTeamId;
+    private Long newTeamId;
 
-    private Integer oldLineId;
+    private Long oldLineId;
 
-    private Integer newLineId;
+    private Long newLineId;
 
     private String reason;
 

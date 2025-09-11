@@ -20,7 +20,7 @@ import lombok.Setter;
 @Setter
 public class DeviceDTO {
 
-    private Integer id;
+    private Long id;
 
     @NotNull
     @Size(max = 50)

@@ -38,26 +38,26 @@ public class SampleReportService {
                 .toList();
     }
 
-    public SampleReportDTO get(final Integer id) {
+    public SampleReportDTO get(final Long id) {
         return sampleReportRepository.findById(id)
                 .map(sampleReport -> mapToDTO(sampleReport, new SampleReportDTO()))
                 .orElseThrow(NotFoundException::new);
     }
 
-    public Integer create(final SampleReportDTO sampleReportDTO) {
+    public Long create(final SampleReportDTO sampleReportDTO) {
         final SampleReport sampleReport = new SampleReport();
         mapToEntity(sampleReportDTO, sampleReport);
         return sampleReportRepository.save(sampleReport).getId();
     }
 
-    public void update(final Integer id, final SampleReportDTO sampleReportDTO) {
+    public void update(final Long id, final SampleReportDTO sampleReportDTO) {
         final SampleReport sampleReport = sampleReportRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(sampleReportDTO, sampleReport);
         sampleReportRepository.save(sampleReport);
     }
 
-    public void delete(final Integer id) {
+    public void delete(final Long id) {
         final SampleReport sampleReport = sampleReportRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         publisher.publishEvent(new BeforeDeleteSampleReport(id));

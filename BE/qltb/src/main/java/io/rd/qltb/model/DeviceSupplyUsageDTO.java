@@ -4,6 +4,8 @@ import io.rd.qltb.domain.Device;
 import io.rd.qltb.domain.Supply;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +18,7 @@ public class DeviceSupplyUsageDTO {
     private Long id;
 
     @NotNull
-    private OffsetDateTime usageDate;
+    private LocalDateTime usageDate;
 
     @Size(max = 255)
     private String serial;
@@ -24,10 +26,10 @@ public class DeviceSupplyUsageDTO {
     private String note;
 
     @NotNull
-    private OffsetDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @NotNull
-    private OffsetDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
     @Size(max = 255)
     private String createdBy;

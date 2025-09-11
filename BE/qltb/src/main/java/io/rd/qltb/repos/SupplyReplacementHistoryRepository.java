@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SupplyReplacementHistoryRepository extends JpaRepository<SupplyReplacementHistory, Long> {
 
-    SupplyReplacementHistory findFirstByOldSupplyId(Integer id);
+    SupplyReplacementHistory findFirstByOldSupplyId(Long id);
 
-    SupplyReplacementHistory findFirstByNewSupplyId(Integer id);
+    SupplyReplacementHistory findFirstByNewSupplyId(Long id);
 
 }

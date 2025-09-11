@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 public class KeyMappingDTO {
 
-    private Integer id;
+    private Long id;
 
     private Long criterialGroupId;
 

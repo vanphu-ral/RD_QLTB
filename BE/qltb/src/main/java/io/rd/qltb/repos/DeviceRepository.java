@@ -4,14 +4,14 @@ import io.rd.qltb.domain.Device;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
-public interface DeviceRepository extends JpaRepository<Device, Integer> {
+public interface DeviceRepository extends JpaRepository<Device, Long> {
 
-    Device findFirstByGroupId(Integer id);
+    Device findFirstByGroupId(Long id);
 
-    Device findFirstByLineId(Integer id);
+    Device findFirstByLineId(Long id);
 
-    Device findFirstByBranchId(Integer id);
+    Device findFirstByBranchId(Long id);
 
-    Device findFirstByTeamId(Integer id);
+    Device findFirstByTeamId(Long id);
 
 }

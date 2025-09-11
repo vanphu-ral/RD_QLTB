@@ -22,7 +22,7 @@ public class KeyMapping {
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column
     private Long criterialGroupId;

@@ -22,7 +22,7 @@ public class ApprovalDTO {
 
     @NotNull
     @Size(max = 450)
-    private String userApprovalId;
+    private Long userApprovalId;
 
     @NotNull
     private Long workflowId;

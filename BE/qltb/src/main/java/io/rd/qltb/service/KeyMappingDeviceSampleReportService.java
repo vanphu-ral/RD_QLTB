@@ -40,19 +40,19 @@ public class KeyMappingDeviceSampleReportService {
                 .toList();
     }
 
-    public KeyMappingDeviceSampleReportDTO get(final Integer id) {
+    public KeyMappingDeviceSampleReportDTO get(final Long id) {
         return keyMappingDeviceSampleReportRepository.findById(id)
                 .map(keyMappingDeviceSampleReport -> mapToDTO(keyMappingDeviceSampleReport, new KeyMappingDeviceSampleReportDTO()))
                 .orElseThrow(NotFoundException::new);
     }
 
-    public Integer create(final KeyMappingDeviceSampleReportDTO keyMappingDeviceSampleReportDTO) {
+    public Long create(final KeyMappingDeviceSampleReportDTO keyMappingDeviceSampleReportDTO) {
         final KeyMappingDeviceSampleReport keyMappingDeviceSampleReport = new KeyMappingDeviceSampleReport();
         mapToEntity(keyMappingDeviceSampleReportDTO, keyMappingDeviceSampleReport);
         return keyMappingDeviceSampleReportRepository.save(keyMappingDeviceSampleReport).getId();
     }
 
-    public void update(final Integer id,
+    public void update(final Long id,
             final KeyMappingDeviceSampleReportDTO keyMappingDeviceSampleReportDTO) {
         final KeyMappingDeviceSampleReport keyMappingDeviceSampleReport = keyMappingDeviceSampleReportRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
@@ -60,7 +60,7 @@ public class KeyMappingDeviceSampleReportService {
         keyMappingDeviceSampleReportRepository.save(keyMappingDeviceSampleReport);
     }
 
-    public void delete(final Integer id) {
+    public void delete(final Long id) {
         final KeyMappingDeviceSampleReport keyMappingDeviceSampleReport = keyMappingDeviceSampleReportRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         keyMappingDeviceSampleReportRepository.delete(keyMappingDeviceSampleReport);

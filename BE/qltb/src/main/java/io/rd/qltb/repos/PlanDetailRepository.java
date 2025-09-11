@@ -8,8 +8,8 @@ public interface PlanDetailRepository extends JpaRepository<PlanDetail, Long> {
 
     PlanDetail findFirstByPlanId(Long id);
 
-    PlanDetail findFirstByDeviceId(Integer id);
+    PlanDetail findFirstByDeviceId(Long id);
 
-    PlanDetail findFirstByDeviceGroupId(Integer id);
+    PlanDetail findFirstByDeviceGroupId(Long id);
 
 }

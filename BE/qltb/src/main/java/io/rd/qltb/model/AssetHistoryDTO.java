@@ -15,7 +15,7 @@ public class AssetHistoryDTO {
 
     private Integer assetType;
 
-    private Integer assetId;
+    private Long assetId;
 
     @NotNull
     @Size(max = 50)

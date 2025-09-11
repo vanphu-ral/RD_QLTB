@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PlanRepository extends JpaRepository<Plan, Long> {
 
-    Plan findFirstByPlanTypeId(Integer id);
+    Plan findFirstByPlanTypeId(Long id);
 
 }

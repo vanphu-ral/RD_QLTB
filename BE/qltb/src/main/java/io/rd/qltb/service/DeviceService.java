@@ -54,26 +54,26 @@ public class DeviceService {
                 .toList();
     }
 
-    public DeviceDTO get(final Integer id) {
+    public DeviceDTO get(final Long id) {
         return deviceRepository.findById(id)
                 .map(device -> mapToDTO(device, new DeviceDTO()))
                 .orElseThrow(NotFoundException::new);
     }
 
-    public Integer create(final DeviceDTO deviceDTO) {
+    public Long create(final DeviceDTO deviceDTO) {
         final Device device = new Device();
         mapToEntity(deviceDTO, device);
         return deviceRepository.save(device).getId();
     }
 
-    public void update(final Integer id, final DeviceDTO deviceDTO) {
+    public void update(final Long id, final DeviceDTO deviceDTO) {
         final Device device = deviceRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(deviceDTO, device);
         deviceRepository.save(device);
     }
 
-    public void delete(final Integer id) {
+    public void delete(final Long id) {
         final Device device = deviceRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         publisher.publishEvent(new BeforeDeleteDevice(id));

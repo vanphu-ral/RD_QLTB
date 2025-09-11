@@ -37,26 +37,26 @@ public class BranchService {
                 .toList();
     }
 
-    public BranchDTO get(final Integer id) {
+    public BranchDTO get(final Long id) {
         return branchRepository.findById(id)
                 .map(branch -> mapToDTO(branch, new BranchDTO()))
                 .orElseThrow(NotFoundException::new);
     }
 
-    public Integer create(final BranchDTO branchDTO) {
+    public Long create(final BranchDTO branchDTO) {
         final Branch branch = new Branch();
         mapToEntity(branchDTO, branch);
         return branchRepository.save(branch).getId();
     }
 
-    public void update(final Integer id, final BranchDTO branchDTO) {
+    public void update(final Long id, final BranchDTO branchDTO) {
         final Branch branch = branchRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(branchDTO, branch);
         branchRepository.save(branch);
     }
 
-    public void delete(final Integer id) {
+    public void delete(final Long id) {
         final Branch branch = branchRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         publisher.publishEvent(new BeforeDeleteBranch(id));

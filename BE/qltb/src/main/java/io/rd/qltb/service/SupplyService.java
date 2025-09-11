@@ -38,26 +38,26 @@ public class SupplyService {
                 .toList();
     }
 
-    public SupplyDTO get(final Integer id) {
+    public SupplyDTO get(final Long id) {
         return supplyRepository.findById(id)
                 .map(supply -> mapToDTO(supply, new SupplyDTO()))
                 .orElseThrow(NotFoundException::new);
     }
 
-    public Integer create(final SupplyDTO supplyDTO) {
+    public Long create(final SupplyDTO supplyDTO) {
         final Supply supply = new Supply();
         mapToEntity(supplyDTO, supply);
         return supplyRepository.save(supply).getId();
     }
 
-    public void update(final Integer id, final SupplyDTO supplyDTO) {
+    public void update(final Long id, final SupplyDTO supplyDTO) {
         final Supply supply = supplyRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(supplyDTO, supply);
         supplyRepository.save(supply);
     }
 
-    public void delete(final Integer id) {
+    public void delete(final Long id) {
         final Supply supply = supplyRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         publisher.publishEvent(new BeforeDeleteSupply(id));

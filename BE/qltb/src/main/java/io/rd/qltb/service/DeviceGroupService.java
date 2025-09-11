@@ -30,26 +30,26 @@ public class DeviceGroupService {
                 .toList();
     }
 
-    public DeviceGroupDTO get(final Integer id) {
+    public DeviceGroupDTO get(final Long id) {
         return deviceGroupRepository.findById(id)
                 .map(deviceGroup -> mapToDTO(deviceGroup, new DeviceGroupDTO()))
                 .orElseThrow(NotFoundException::new);
     }
 
-    public Integer create(final DeviceGroupDTO deviceGroupDTO) {
+    public Long create(final DeviceGroupDTO deviceGroupDTO) {
         final DeviceGroup deviceGroup = new DeviceGroup();
         mapToEntity(deviceGroupDTO, deviceGroup);
         return deviceGroupRepository.save(deviceGroup).getId();
     }
 
-    public void update(final Integer id, final DeviceGroupDTO deviceGroupDTO) {
+    public void update(final Long id, final DeviceGroupDTO deviceGroupDTO) {
         final DeviceGroup deviceGroup = deviceGroupRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(deviceGroupDTO, deviceGroup);
         deviceGroupRepository.save(deviceGroup);
     }
 
-    public void delete(final Integer id) {
+    public void delete(final Long id) {
         final DeviceGroup deviceGroup = deviceGroupRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         publisher.publishEvent(new BeforeDeleteDeviceGroup(id));

@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 public class PlanSupplieDTO {
 
-    private Integer id;
+    private Long id;
 
     @Size(max = 150)
     private String code;

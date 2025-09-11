@@ -32,10 +32,10 @@ public class Plan {
     private String name;
 
     @Column
-    private Integer factoryId;
+    private Long factoryId;
 
     @Column
-    private Integer branchId;
+    private Long branchId;
 
     @Column(length = 50)
     private String frequency;

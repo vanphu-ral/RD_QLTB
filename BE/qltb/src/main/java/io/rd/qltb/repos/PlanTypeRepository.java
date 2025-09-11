@@ -4,5 +4,5 @@ import io.rd.qltb.domain.PlanType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
-public interface PlanTypeRepository extends JpaRepository<PlanType, Integer> {
+public interface PlanTypeRepository extends JpaRepository<PlanType, Long> {
 }

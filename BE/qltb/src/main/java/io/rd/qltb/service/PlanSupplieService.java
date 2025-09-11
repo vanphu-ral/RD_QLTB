@@ -25,26 +25,26 @@ public class PlanSupplieService {
                 .toList();
     }
 
-    public PlanSupplieDTO get(final Integer id) {
+    public PlanSupplieDTO get(final Long id) {
         return planSupplieRepository.findById(id)
                 .map(planSupplie -> mapToDTO(planSupplie, new PlanSupplieDTO()))
                 .orElseThrow(NotFoundException::new);
     }
 
-    public Integer create(final PlanSupplieDTO planSupplieDTO) {
+    public Long create(final PlanSupplieDTO planSupplieDTO) {
         final PlanSupplie planSupplie = new PlanSupplie();
         mapToEntity(planSupplieDTO, planSupplie);
         return planSupplieRepository.save(planSupplie).getId();
     }
 
-    public void update(final Integer id, final PlanSupplieDTO planSupplieDTO) {
+    public void update(final Long id, final PlanSupplieDTO planSupplieDTO) {
         final PlanSupplie planSupplie = planSupplieRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(planSupplieDTO, planSupplie);
         planSupplieRepository.save(planSupplie);
     }
 
-    public void delete(final Integer id) {
+    public void delete(final Long id) {
         final PlanSupplie planSupplie = planSupplieRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         planSupplieRepository.delete(planSupplie);

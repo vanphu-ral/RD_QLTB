@@ -4,5 +4,5 @@ import io.rd.qltb.domain.SupplyGroup;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
-public interface SupplyGroupRepository extends JpaRepository<SupplyGroup, Integer> {
+public interface SupplyGroupRepository extends JpaRepository<SupplyGroup, Long> {
 }

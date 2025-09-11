@@ -26,7 +26,7 @@ public class PlanTarget {
     private Long id;
 
     @Column
-    private Integer branchId;
+    private Long branchId;
 
     @Column(length = 500)
     private String targetDescription;

@@ -26,28 +26,28 @@ public class DeviceRelocationHistory {
     private Long id;
 
     @Column
-    private Integer oldFactoryId;
+    private Long oldFactoryId;
 
     @Column
-    private Integer newFactoryId;
+    private Long newFactoryId;
 
     @Column
-    private Integer oldBranchId;
+    private Long oldBranchId;
 
     @Column
-    private Integer newBranchId;
+    private Long newBranchId;
 
     @Column
-    private Integer oldTeamId;
+    private Long oldTeamId;
 
     @Column
-    private Integer newTeamId;
+    private Long newTeamId;
 
     @Column
-    private Integer oldLineId;
+    private Long oldLineId;
 
     @Column
-    private Integer newLineId;
+    private Long newLineId;
 
     @Column(columnDefinition = "longtext")
     private String reason;

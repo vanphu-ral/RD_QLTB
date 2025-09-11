@@ -4,8 +4,8 @@ import io.rd.qltb.domain.Branch;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
-public interface BranchRepository extends JpaRepository<Branch, Integer> {
+public interface BranchRepository extends JpaRepository<Branch, Long> {
 
-    Branch findFirstByFactoryId(Integer id);
+    Branch findFirstByFactoryId(Long id);
 
 }

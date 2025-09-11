@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 public class PlanTargetResultDTO {
 
-    private Integer id;
+    private Long id;
 
     @Size(max = 255)
     private String result;

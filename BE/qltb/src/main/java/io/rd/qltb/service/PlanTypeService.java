@@ -30,26 +30,26 @@ public class PlanTypeService {
                 .toList();
     }
 
-    public PlanTypeDTO get(final Integer id) {
+    public PlanTypeDTO get(final Long id) {
         return planTypeRepository.findById(id)
                 .map(planType -> mapToDTO(planType, new PlanTypeDTO()))
                 .orElseThrow(NotFoundException::new);
     }
 
-    public Integer create(final PlanTypeDTO planTypeDTO) {
+    public Long create(final PlanTypeDTO planTypeDTO) {
         final PlanType planType = new PlanType();
         mapToEntity(planTypeDTO, planType);
         return planTypeRepository.save(planType).getId();
     }
 
-    public void update(final Integer id, final PlanTypeDTO planTypeDTO) {
+    public void update(final Long id, final PlanTypeDTO planTypeDTO) {
         final PlanType planType = planTypeRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(planTypeDTO, planType);
         planTypeRepository.save(planType);
     }
 
-    public void delete(final Integer id) {
+    public void delete(final Long id) {
         final PlanType planType = planTypeRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         publisher.publishEvent(new BeforeDeletePlanType(id));

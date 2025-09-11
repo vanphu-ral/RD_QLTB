@@ -16,7 +16,7 @@ public class PlanDetailDTO {
 
     private Long id;
 
-    private Integer sampleReporId;
+    private Long sampleReporId;
 
     @NotNull
     private LocalDateTime createdAt;

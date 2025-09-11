@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DeviceSupplyUsageRepository extends JpaRepository<DeviceSupplyUsage, Long> {
 
-    DeviceSupplyUsage findFirstByDeviceId(Integer id);
+    DeviceSupplyUsage findFirstByDeviceId(Long id);
 
-    DeviceSupplyUsage findFirstBySupplyId(Integer id);
+    DeviceSupplyUsage findFirstBySupplyId(Long id);
 
 }

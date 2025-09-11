@@ -20,7 +20,7 @@ public class PlanSupplie {
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(length = 150)
     private String code;
