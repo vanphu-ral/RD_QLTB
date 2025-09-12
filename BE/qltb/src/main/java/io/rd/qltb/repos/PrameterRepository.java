@@ -8,6 +8,5 @@ public interface PrameterRepository extends JpaRepository<Prameter, Long> {
 
     Prameter findFirstByParameterGroupId(Long id);
 
-    Prameter findFirstByDeviceId(Long id);
 
 }

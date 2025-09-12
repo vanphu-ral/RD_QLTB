@@ -1,32 +1,33 @@
 package io.rd.qltb.domain;
 
 import jakarta.persistence.*;
-
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.util.HashSet;
-import java.util.Set;
-
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.OffsetDateTime;
+
 
 @Entity
-@Table(name = "Prameters")
 @Getter
 @Setter
-public class Prameter {
+public class DeviceParameterUse {
 
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 50)
-    private String code;
+    @Column
+    private Double value;
 
-    @Column(length = 200)
-    private String name;
+    @Column
+    private Double min;
+
+    @Column
+    private Double max;
+
+    @Column
+    private Double unit;
 
     @Column(name = "\"description\"")
     private String description;
@@ -46,12 +47,12 @@ public class Prameter {
     @Column
     private Integer status;
 
-    @OneToMany(mappedBy = "parameter")
-    private Set<DeviceParameterUse> parameterDeviceParameterUses = new HashSet<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "device_id")
+    private Device device;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parameter_group_id")
-    private PrameterGroup parameterGroup;
+    @JoinColumn(name = "parameter_id")
+    private Prameter parameter;
 
 }
-

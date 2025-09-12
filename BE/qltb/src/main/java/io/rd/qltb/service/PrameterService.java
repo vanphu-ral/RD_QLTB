@@ -68,10 +68,6 @@ public class PrameterService {
         dto.setId(prameter.getId());
         dto.setCode(prameter.getCode());
         dto.setName(prameter.getName());
-        dto.setValue(prameter.getValue());
-        dto.setMin(prameter.getMin());
-        dto.setMax(prameter.getMax());
-        dto.setUnit(prameter.getUnit());
         dto.setDescription(prameter.getDescription());
         dto.setCreatedAt(prameter.getCreatedAt());
         dto.setUpdatedAt(prameter.getUpdatedAt());
@@ -100,32 +96,6 @@ public class PrameterService {
             dto.setParameterGroup(null);
         }
 
-        // Sao chép Device có kiểm soát
-        if (prameter.getDevice() != null) {
-            Device deviceCopy = new Device();
-            deviceCopy.setId(prameter.getDevice().getId());
-            deviceCopy.setCode(prameter.getDevice().getCode());
-            deviceCopy.setName(prameter.getDevice().getName());
-            deviceCopy.setSerialNumber(prameter.getDevice().getSerialNumber());
-            deviceCopy.setUnit(prameter.getDevice().getUnit());
-            deviceCopy.setStatus(prameter.getDevice().getStatus());
-            deviceCopy.setCreatedAt(prameter.getDevice().getCreatedAt());
-            deviceCopy.setUpdatedAt(prameter.getDevice().getUpdatedAt());
-
-            // Xóa các quan hệ con để tránh vòng lặp
-            deviceCopy.setGroup(null);
-            deviceCopy.setLine(null);
-            deviceCopy.setBranch(null);
-            deviceCopy.setTeam(null);
-            deviceCopy.setDevicePrameters(null);
-            deviceCopy.setDeviceDeviceRelocationHistories(null);
-            deviceCopy.setDeviceDeviceSupplyUsages(null);
-            deviceCopy.setDevicePlanDetails(null);
-
-            dto.setDevice(deviceCopy);
-        } else {
-            dto.setDevice(null);
-        }
 
         return dto;
     }
@@ -134,10 +104,6 @@ public class PrameterService {
     private Prameter mapToEntity(final PrameterDTO prameterDTO, final Prameter prameter) {
         prameter.setCode(prameterDTO.getCode());
         prameter.setName(prameterDTO.getName());
-        prameter.setValue(prameterDTO.getValue());
-        prameter.setMin(prameterDTO.getMin());
-        prameter.setMax(prameterDTO.getMax());
-        prameter.setUnit(prameterDTO.getUnit());
         prameter.setDescription(prameterDTO.getDescription());
         prameter.setCreatedAt(prameterDTO.getCreatedAt());
         prameter.setUpdatedAt(prameterDTO.getUpdatedAt());
@@ -147,9 +113,6 @@ public class PrameterService {
         final PrameterGroup parameterGroup = prameterDTO.getParameterGroup() == null ? null : prameterGroupRepository.findById(prameterDTO.getParameterGroup().getId())
                 .orElseThrow(() -> new NotFoundException("parameterGroup not found"));
         prameter.setParameterGroup(parameterGroup);
-        final Device device = prameterDTO.getDevice() == null ? null : deviceRepository.findById(prameterDTO.getDevice().getId())
-                .orElseThrow(() -> new NotFoundException("device not found"));
-        prameter.setDevice(device);
         return prameter;
     }
 
@@ -164,15 +127,5 @@ public class PrameterService {
         }
     }
 
-    @EventListener(BeforeDeleteDevice.class)
-    public void on(final BeforeDeleteDevice event) {
-        final ReferencedException referencedException = new ReferencedException();
-        final Prameter devicePrameter = prameterRepository.findFirstByDeviceId(event.getId());
-        if (devicePrameter != null) {
-            referencedException.setKey("device.prameter.device.referenced");
-            referencedException.addParam(devicePrameter.getId());
-            throw referencedException;
-        }
-    }
 
 }

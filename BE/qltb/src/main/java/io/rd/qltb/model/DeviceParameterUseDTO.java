@@ -1,28 +1,28 @@
 package io.rd.qltb.model;
 
 import io.rd.qltb.domain.Device;
-import io.rd.qltb.domain.PrameterGroup;
+import io.rd.qltb.domain.Prameter;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.OffsetDateTime;
 
 
 @Getter
 @Setter
-public class PrameterDTO {
+public class DeviceParameterUseDTO {
 
     private Long id;
 
-    @NotNull
-    @Size(max = 50)
-    private String code;
+    private Double value;
 
-    @Size(max = 200)
-    private String name;
+    private Double min;
+
+    private Double max;
+
+    private Double unit;
 
     @Size(max = 255)
     private String description;
@@ -41,6 +41,8 @@ public class PrameterDTO {
 
     private Integer status;
 
-    private PrameterGroup parameterGroup;
+    private Device device;
+
+    private Prameter parameter;
 
 }
