@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BaseApiService } from '../../../../service/base-api.service';
-import { CriterialGroup } from '../../../../models/PlanManger/criterial-group.model';
+import { Criterial } from '../../../../models/PlanManger/criterial.model';
 
 @Injectable({ providedIn: 'root' })
-export class CriterialGroupService extends BaseApiService<CriterialGroup> {
+export class CriterialService extends BaseApiService<Criterial> {
   constructor(http: HttpClient) {
-    super(http, 'api/criterialGroups');
+    super(http, 'api/criterials');
   }
 }

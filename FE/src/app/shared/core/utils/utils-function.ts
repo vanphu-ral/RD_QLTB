@@ -7,6 +7,7 @@ export class Util {
    * Sinh mã code từ tên + thời gian (ddMMyyyyHHmm)
    * @param name Chuỗi tên (ví dụ: "Nguyen Van A")
    * @returns Ví dụ: "NVA-260820250929"
+   * Chỉ lấy 10 ký tự
    */
   static generateCode(name: string): string {
     const initials = _.chain(name)
@@ -14,7 +15,8 @@ export class Util {
       .map(w => w.charAt(0))
       .join('')
       .toUpper()
-      .value();
+      .value()
+      .slice(0, 10);
     const timestamp = dayjs().format('DDMMYYYYHHmm');
     return `${initials}-${timestamp}`;
   }

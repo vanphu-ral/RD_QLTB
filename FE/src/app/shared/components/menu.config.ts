@@ -23,6 +23,8 @@ export const MENU_ITEMS: MenuItem[] = [
                     { label: 'Danh mục thiết bị', icon: 'fa-solid fa-tablet', routerLink: ['/Devices'] },
                     { label: 'Danh mục nhóm vật tư', icon: 'fa-solid fa-layer-group', routerLink: ['/SupplyGroups'] },
                     { label: 'Danh mục vật tư, phụ tùng', icon: 'fa-solid fa-wrench', routerLink: ['/Supplies'] },
+                    { label: 'Danh mục nhóm thông số', icon: 'fa-solid fa-layer-group', routerLink: ['/ParameterGroups']},
+                    { label: 'Danh mục thông số', icon: 'fa-solid fa-calculator', routerLink: ['/Parameters']}
                 ]
             },
             {

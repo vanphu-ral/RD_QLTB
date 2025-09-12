@@ -61,6 +61,7 @@ public class CriterialGroupService {
         criterialGroupDTO.setId(criterialGroup.getId());
         criterialGroupDTO.setCode(criterialGroup.getCode());
         criterialGroupDTO.setName(criterialGroup.getName());
+        criterialGroupDTO.setDescription(criterialGroup.getDescription());
         criterialGroupDTO.setCreatedAt(criterialGroup.getCreatedAt());
         criterialGroupDTO.setUpdatedAt(criterialGroup.getUpdatedAt());
         criterialGroupDTO.setCreatedBy(criterialGroup.getCreatedBy());
@@ -73,6 +74,7 @@ public class CriterialGroupService {
             final CriterialGroup criterialGroup) {
         criterialGroup.setCode(criterialGroupDTO.getCode());
         criterialGroup.setName(criterialGroupDTO.getName());
+        criterialGroup.setDescription(criterialGroupDTO.getDescription());
         criterialGroup.setCreatedAt(criterialGroupDTO.getCreatedAt());
         criterialGroup.setUpdatedAt(criterialGroupDTO.getUpdatedAt());
         criterialGroup.setCreatedBy(criterialGroupDTO.getCreatedBy());

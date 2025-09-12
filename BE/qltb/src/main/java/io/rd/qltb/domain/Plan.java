@@ -43,8 +43,8 @@ public class Plan {
     @Column
     private Integer planNumber;
 
-    @Column
-    private String note;
+    @Column(length = 500, name = "\"description\"")
+    private String description;
 
     @Column(nullable = false, length = 200)
     private String createdBy;

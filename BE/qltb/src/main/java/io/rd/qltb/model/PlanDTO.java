@@ -27,8 +27,7 @@ public class PlanDTO {
 
     private Integer planNumber;
 
-    @Size(max = 255)
-    private String note;
+    private String description;
 
     @NotNull
     @Size(max = 200)

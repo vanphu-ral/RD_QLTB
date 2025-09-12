@@ -37,6 +37,7 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
     { name: "Quý", code: "Quý" },
     { name: "Năm", code: "Năm" }
   ];
+  listMaterial: any[] = [];
   listUsers: any[] = [];
   ref?: DynamicDialogRef;
 
@@ -84,6 +85,7 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
     });
     this.ref.onClose.subscribe((result) => {
       if (result) {
+        this.listMaterial = result;
         console.log('Data trả về:', result);
       }
     });
@@ -113,7 +115,9 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
       }
       if (this.isAddMode) {
         this.apiService.create(this.model).subscribe({
-          next: () => {
+          next: (id) => {
+            // id bản ghi mới tạo
+            console.log(id)
             Util.ConfirmMessage('Thêm mới thành công', 'success');
           },
           error: () => {

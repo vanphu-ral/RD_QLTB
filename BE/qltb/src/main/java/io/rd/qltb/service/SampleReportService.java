@@ -71,6 +71,7 @@ public class SampleReportService {
         dto.setName(sampleReport.getName());
         dto.setFrequency(sampleReport.getFrequency());
         dto.setType(sampleReport.getType());
+        dto.setDescription(sampleReport.getDescription());
         dto.setCreatedAt(sampleReport.getCreatedAt());
         dto.setUpdatedAt(sampleReport.getUpdatedAt());
         dto.setCreatedBy(sampleReport.getCreatedBy());
@@ -111,6 +112,7 @@ public class SampleReportService {
         sampleReport.setName(sampleReportDTO.getName());
         sampleReport.setFrequency(sampleReportDTO.getFrequency());
         sampleReport.setType(sampleReportDTO.getType());
+        sampleReport.setDescription(sampleReportDTO.getDescription());
         sampleReport.setCreatedAt(sampleReportDTO.getCreatedAt());
         sampleReport.setUpdatedAt(sampleReportDTO.getUpdatedAt());
         sampleReport.setCreatedBy(sampleReportDTO.getCreatedBy());

@@ -65,6 +65,9 @@ public class DeviceDTO {
     @Size(max = 255)
     private String userManager;
 
+    @Size(max = 255)
+    private String description;
+
     @NotNull
     private LocalDateTime createdAt;
 

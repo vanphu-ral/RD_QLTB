@@ -71,7 +71,7 @@ public class PlanService {
         dto.setBranchId(plan.getBranchId());
         dto.setFrequency(plan.getFrequency());
         dto.setPlanNumber(plan.getPlanNumber());
-        dto.setNote(plan.getNote());
+        dto.setDescription(plan.getDescription());
         dto.setCreatedBy(plan.getCreatedBy());
         dto.setCreatedAt(plan.getCreatedAt());
         dto.setUpdatedAt(plan.getUpdatedAt());
@@ -108,7 +108,7 @@ public class PlanService {
         plan.setBranchId(planDTO.getBranchId());
         plan.setFrequency(planDTO.getFrequency());
         plan.setPlanNumber(planDTO.getPlanNumber());
-        plan.setNote(planDTO.getNote());
+        plan.setDescription(planDTO.getDescription());
         plan.setCreatedBy(planDTO.getCreatedBy());
         plan.setCreatedAt(planDTO.getCreatedAt());
         plan.setUpdatedAt(planDTO.getUpdatedAt());

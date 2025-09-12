@@ -20,9 +20,8 @@ public class PlanTypeDTO {
     @NotNull
     @Size(max = 150)
     private String name;
-    @NotNull
-    @Size(max = 150)
-    private String note;
+
+    private String description;
     @NotNull
     private LocalDateTime createdAt;
 

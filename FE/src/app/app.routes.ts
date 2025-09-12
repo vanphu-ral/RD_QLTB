@@ -69,6 +69,16 @@ export const routes: Routes = [
         component: AppLayout,
         loadChildren: () => import('./shared/pages/DeviceManager/Device/device.routes').then(m => m.default)
     },
+    {
+        path: 'ParameterGroups',
+        component: AppLayout,
+        loadChildren: () => import('./shared/pages/DeviceManager/ParameterGroup/parameter-group.routes').then(m => m.default)
+    },
+    {
+        path: 'Parameters',
+        component: AppLayout,
+        loadChildren: () => import('./shared/pages/DeviceManager/Parameter/parameter.routes').then(m => m.default)
+    },
     // Plan Manager
     {
         path: 'PlanTypes',
@@ -79,5 +89,10 @@ export const routes: Routes = [
         path: 'CriterialGroups',
         component: AppLayout,
         loadChildren: () => import('./shared/pages/PlanManager/CriterialGroup/criterial-group.routes').then(m => m.default)
+    },
+    {
+        path: 'Criterials',
+        component: AppLayout,
+        loadChildren: () => import('./shared/pages/PlanManager/Criterial/criterial.routes').then(m => m.default)
     }
 ];

@@ -40,6 +40,9 @@ public class SampleReport {
     @Column
     private String type;
 
+    @Column(length = 500, name = "\"description\"")
+    private String description;
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
 

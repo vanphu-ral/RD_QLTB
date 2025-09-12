@@ -27,6 +27,9 @@ public class SampleReportDTO {
     @Size(max = 255)
     private String type;
 
+    @Size(max = 255)
+    private String description;
+
     @NotNull
     private LocalDateTime createdAt;
 
