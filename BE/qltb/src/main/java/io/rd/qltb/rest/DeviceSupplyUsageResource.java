@@ -29,6 +29,11 @@ public class DeviceSupplyUsageResource {
         this.deviceSupplyUsageService = deviceSupplyUsageService;
     }
 
+    @GetMapping("/byDevice/{deviceId}")
+    public ResponseEntity<List<DeviceSupplyUsageDTO>> getBySupply(@PathVariable Long deviceId) {
+        return ResponseEntity.ok(deviceSupplyUsageService.getByDeviceId(deviceId));
+    }
+
     @GetMapping
     public ResponseEntity<List<DeviceSupplyUsageDTO>> getAllDeviceSupplyUsages() {
         return ResponseEntity.ok(deviceSupplyUsageService.findAll());

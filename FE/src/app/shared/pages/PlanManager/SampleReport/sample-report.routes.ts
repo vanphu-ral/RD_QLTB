@@ -1,0 +1,38 @@
+import { Routes } from '@angular/router';
+import { SampleReportListComponent } from './List/sample-reportlist.component';
+import { SampleReportResolve } from './Resolve/sample-report-resolve.service';
+import { SampleReportDetailComponent } from './Detail/sample-report-detail.component';
+
+
+const sampleReportRoute: Routes = [
+  {
+    path: '',
+    component: SampleReportListComponent,
+  },
+  {
+    path: ':id/view',
+    component: SampleReportDetailComponent,
+    data: { mode: 'view' },
+    resolve: {
+      data: SampleReportResolve,
+    }
+  },
+  {
+    path: 'add',
+    component: SampleReportDetailComponent,
+    data: { mode: 'add' },
+    resolve: {
+      data: SampleReportResolve,
+    },
+  },
+  {
+    path: ':id/edit',
+    component: SampleReportDetailComponent,
+    data: { mode: 'edit' },
+    resolve: {
+      data: SampleReportResolve,
+    },
+  },
+];
+
+export default sampleReportRoute;

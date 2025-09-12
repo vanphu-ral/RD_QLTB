@@ -94,5 +94,10 @@ export const routes: Routes = [
         path: 'Criterials',
         component: AppLayout,
         loadChildren: () => import('./shared/pages/PlanManager/Criterial/criterial.routes').then(m => m.default)
+    },
+    {
+        path: 'SampleReports',
+        component: AppLayout,
+        loadChildren: () => import('./shared/pages/PlanManager/SampleReport/sample-report.routes').then(m => m.default)
     }
 ];

@@ -16,6 +16,8 @@ import io.rd.qltb.util.ReferencedException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -40,6 +42,12 @@ public class DeviceSupplyUsageService {
         return deviceSupplyUsages.stream()
                 .map(deviceSupplyUsage -> mapToDTO(deviceSupplyUsage, new DeviceSupplyUsageDTO()))
                 .toList();
+    }
+
+    public List<DeviceSupplyUsageDTO> getByDeviceId(Long deviceId) {
+        return deviceSupplyUsageRepository.findByDeviceId(deviceId).stream()
+                .map(s -> mapToDTO(s, new DeviceSupplyUsageDTO()))
+                .collect(Collectors.toList());
     }
 
     public DeviceSupplyUsageDTO get(final Long id) {
