@@ -19,6 +19,11 @@ export class ListSerialSupplyDialogComponent {
         { label: 'Kích hoạt', value: 1 },
         { label: 'Vô hiệu hóa', value: 0 }
     ];
+    listCurrency: any[] = [
+        { label: 'VND', value: 'VND' },
+        { label: 'USD', value: 'USD' },
+        { label: 'EUR', value: 'EUR' }
+    ];
 
     constructor(
         public ref: DynamicDialogRef,
@@ -51,7 +56,7 @@ export class ListSerialSupplyDialogComponent {
 
 
     addNewRow() {
-        this.listSerials.push({status: 1});
+        this.listSerials.push({quantity: 1, status: 1});
     }
 
     deleteRow(index: number) {

@@ -1,50 +1,92 @@
 <div class="p-1">
-    <div class="d-flex justify-content-end mt-2 mb-4">
+    <div class="d-flex justify-content-between mt-2 mb-4">
+        <h5>Danh sách vật tư đang sử dụng</h5>
         <p-button label="Thêm vật tư" icon="pi pi-plus" (onClick)="addNewRow()"></p-button>
     </div>
 
     <div class="table-responsive">
-        <table class="table table-bordered">
-            <thead>
+        <p-table [value]="listMaterial" responsiveLayout="scroll">
+            <ng-template pTemplate="header">
                 <tr>
-                    <th>vật tư</th>
-                    <th>mã serial</th>
-                    <th>số lượng sử dụng</th>
-                    <th>mô tả</th>
+                    <th>STT</th>
+                    <th>Vật tư</th>
+                    <th>Mã serial</th>
+                    <th>Thời gian bắt đầu sử dụng</th>
+                    <th>Số lượng sử dụng</th>
+                    <th>Mô tả</th>
                     <th>Thao tác</th>
                 </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let row of listMaterial; let i = index">
+            </ng-template>
+
+            <ng-template pTemplate="body" let-row let-i="rowIndex">
+                <tr>
+                    <td>{{ i + 1 }}</td>
                     <td>
-                        <p-floatlabel variant="on">
-                            <p-select [(ngModel)]="row.status" [options]="listStatus" optionLabel="label" [fluid]="true"
-                                optionValue="value" [showClear]="true" [appendTo]="'body'"
-                                id="status" name="status-{{i}}">
-                            </p-select>
-                            <label for="status">Trạng thái</label>
-                        </p-floatlabel>
+                        <p-select [(ngModel)]="row.supply" [options]="listSupply" optionLabel="name" [fluid]="true"
+                            [showClear]="true" [appendTo]="'body'" (onChange)="onChangeSupply($event, i)"
+                            id="supply-{{ i }}" name="supply-{{ i }}">
+                        </p-select>
                     </td>
                     <td>
-                        <p-floatlabel variant="on">
-                            <p-select [(ngModel)]="row.status" [options]="listStatus" optionLabel="label" [fluid]="true"
-                                optionValue="value" [showClear]="true" [appendTo]="'body'"
-                                id="status" name="status-{{i}}">
-                            </p-select>
-                            <label for="status">Trạng thái</label>
-                        </p-floatlabel>
+                        <p-select [(ngModel)]="row.serial" [options]="listSerial" optionLabel="serial" [fluid]="true"
+                            [showClear]="true" [appendTo]="'body'" (onChange)="serial = $event.value"
+                            id="serial-{{ i }}" name="serial-{{ i }}">
+                        </p-select>
                     </td>
-                    <td><p-inputnumber [(ngModel)]="row.quantity" name="quantity-{{i}}" inputId="minmax" mode="decimal" [min]="0" [max]="100" /></td>
                     <td>
-                        <input type="text" pInputText [(ngModel)]="row.description">
+                        <p-datepicker [(ngModel)]="row.usageDate" appDateConvert [iconDisplay]="'input'"
+                            [showIcon]="true" name="usageDate-{{ i }}" inputId="usageDate-{{ i }}"
+                            [dateFormat]="'dd-mm-yy'" appendTo="body">
+                        </p-datepicker>
+                    </td>
+                    <td>
+                        <p-inputnumber [(ngModel)]="row.quantityUsed" name="quantityUsed-{{ i }}" mode="decimal"
+                            inputId="quantityUsed-{{ i }}" [useGrouping]="false" [min]="0" [max]="serial?.quantity">
+                        </p-inputnumber>
+                    </td>
+                    <td>
+                        <input type="text" pInputText [(ngModel)]="row.note" />
                     </td>
                     <td class="text-center">
-                        <p-button icon="pi pi-trash" severity="danger" (onClick)="deleteRow(i)"></p-button>
+                        <p-button icon="pi pi-refresh" severity="info" (onClick)="deleteRow(i)">
+                        </p-button>
                     </td>
                 </tr>
-            </tbody>
-        </table>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="6" class="text-center">Chưa có vật tư nào được thêm</td>
+                </tr>
+            </ng-template>
+        </p-table>
+
     </div>
+
+    <div class="d-flex justify-content-start mt-2 mb-4">
+        <h5>Lịch sử thay đổi vật tư</h5>
+    </div>
+
+    <div class="table-responsive">
+        <p-table [value]="listMaterial" responsiveLayout="scroll">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>STT</th>
+                    <th>Tên vật tư</th>
+                    <th>Mã serial</th>
+                    <th>Chi tiết thay đổi</th>
+                    <th>Số lượng sử dụng</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-row let-i="rowIndex">
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="5" class="text-center">Chưa có lịch sử thay đổi</td>
+                </tr>
+            </ng-template>
+        </p-table>
 
     <div class="d-flex justify-content-end gap-2 mt-4">
         <p-button label="Lưu" severity="success" (onClick)="submit()"></p-button>

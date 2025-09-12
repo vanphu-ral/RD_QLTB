@@ -3,6 +3,11 @@ import { FormsModule } from '@angular/forms';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { SharedModule } from '../../../../../../share.module';
 import { Util } from '../../../../../core/utils/utils-function';
+import { DeviceSupplyUse } from '../../../../../models/DeviceManager/device-supply-use.model';
+import { SupplyService } from '../../../Supply/Service/supply.service';
+import { SupplyDetailService } from '../../../Supply/Service/supply-detail.service';
+import { DeviceSupplyUseService } from '../../Service/device-supply-use.service';
+import _ from 'lodash';
 
 @Component({
     selector: 'app-material-list-manager-dialog',
@@ -12,24 +17,40 @@ import { Util } from '../../../../../core/utils/utils-function';
 })
 export class MaterialListManagerDialogComponent {
     data: any;
-    listMaterial: any[] = [];
-    listStatus = [
-        { label: 'Tốt', value: 'Tốt' },
-        { label: 'Hỏng', value: 'Hỏng' },
-        { label: 'Đang sửa', value: 'Đang sửa' },
-        { label: 'Đã thanh lý', value: 'Đã thanh lý' },
-    ];
+    listMaterial: DeviceSupplyUse[] = [];
+    listSupply: any[] = []
+    listSerial: any[] = []
+    serial: any
 
     constructor(
         public ref: DynamicDialogRef,
         public config: DynamicDialogConfig,
-        private cdr: ChangeDetectorRef
+        public supplyService: SupplyService,
+        public supplyDetailService: SupplyDetailService,
+        public deviceSupplyUseService: DeviceSupplyUseService,
     ) {
         this.data = config.data;
     }
 
     ngOnInit() {
+       this.loadData();
+    }
 
+    loadData() {
+         this.supplyService.getAll().subscribe({
+            next: (res) => {
+                this.listSupply = res
+            }
+        });
+    }
+
+    onChangeSupply(event: any, index: number) {
+        const supplyId = event.value.id;
+        this.supplyDetailService.getBySupplyId(supplyId).subscribe({
+            next: (res) => {
+                this.listSerial = res;
+            }
+        });
     }
 
     addNewRow() {
@@ -38,12 +59,12 @@ export class MaterialListManagerDialogComponent {
 
     deleteRow(index: number) {
         if (this.listMaterial[index].id) {
-            // this.supplyDetailService.delete(this.listMaterial[index].id as number).subscribe({
-            //     next: () => {
-            //         this.listMaterial.splice(index, 1);
-            //         this.loadData();
-            //     }
-            // });
+            this.deviceSupplyUseService.delete(this.listMaterial[index].id as number).subscribe({
+                next: () => {
+                    this.listMaterial.splice(index, 1);
+                    this.loadData();
+                }
+            });
         } else {
             this.listMaterial.splice(index, 1);
         }
@@ -55,7 +76,11 @@ export class MaterialListManagerDialogComponent {
     }
 
     submit() {
-        this.ref.close({ item: this.data });
+        this.listMaterial = this.listMaterial.map(item => ({
+            ...item,
+            serial: _.get(item.serial, 'serial'),
+        }));
+        this.ref.close(this.listMaterial);
     }
 
 }

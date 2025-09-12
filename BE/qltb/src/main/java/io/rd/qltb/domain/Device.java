@@ -49,7 +49,7 @@ public class Device {
     private LocalDate installationDate;
 
     @Column
-    private Integer maintenanceCycle;
+    private String maintenanceCycle;
 
     @Column
     private LocalDateTime dateManufacture;

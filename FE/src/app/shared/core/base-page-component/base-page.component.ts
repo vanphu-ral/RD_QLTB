@@ -10,7 +10,7 @@ import { AccountService } from '../auth/account/account.service';
 export abstract class BasePageComponent<T> implements OnInit {
   
   public id?: string | number;
-  public model: T | null = null;
+  public model: T = {} as T;
   
   public mode!: 'add' | 'view' | 'edit';
   
@@ -54,6 +54,7 @@ export abstract class BasePageComponent<T> implements OnInit {
       _.set(this.model as any, 'createdBy', this.accountService.getUser()?.email ?? 'unknown');
       _.set(this.model as any, 'status', 1);
     }
+    this.cdr.detectChanges();
   }
   
  protected initNewModel(): void {

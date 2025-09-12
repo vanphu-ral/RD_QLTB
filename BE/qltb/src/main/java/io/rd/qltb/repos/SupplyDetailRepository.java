@@ -3,9 +3,15 @@ package io.rd.qltb.repos;
 import io.rd.qltb.domain.SupplyDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 
 public interface SupplyDetailRepository extends JpaRepository<SupplyDetail, Long> {
 
     SupplyDetail findFirstBySupplyId(Long id);
+
+    List<SupplyDetail> findBySupplyId(Long supplyId);
+
+    SupplyDetail findFirstBySerialAndSupplyId(String serial, Long supplyId);
 
 }

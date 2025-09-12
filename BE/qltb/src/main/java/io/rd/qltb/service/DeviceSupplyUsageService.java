@@ -3,14 +3,18 @@ package io.rd.qltb.service;
 import io.rd.qltb.domain.Device;
 import io.rd.qltb.domain.DeviceSupplyUsage;
 import io.rd.qltb.domain.Supply;
+import io.rd.qltb.domain.SupplyDetail;
 import io.rd.qltb.events.BeforeDeleteDevice;
 import io.rd.qltb.events.BeforeDeleteSupply;
 import io.rd.qltb.model.DeviceSupplyUsageDTO;
+import io.rd.qltb.model.SupplyDetailDTO;
 import io.rd.qltb.repos.DeviceRepository;
 import io.rd.qltb.repos.DeviceSupplyUsageRepository;
 import io.rd.qltb.repos.SupplyRepository;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
+
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
@@ -50,6 +54,22 @@ public class DeviceSupplyUsageService {
         return deviceSupplyUsageRepository.save(deviceSupplyUsage).getId();
     }
 
+    public List<Long> creates(final List<DeviceSupplyUsageDTO> deviceSupplyUsageDTOS) {
+        List<Long> createdIds = new ArrayList<>();
+        for (DeviceSupplyUsageDTO dto : deviceSupplyUsageDTOS) {
+            DeviceSupplyUsage entity;
+            if (dto.getId() != null) {
+                entity = deviceSupplyUsageRepository.findById(dto.getId()).orElse(new DeviceSupplyUsage());
+            } else {
+                entity = new DeviceSupplyUsage();
+            }
+            mapToEntity(dto, entity);
+            DeviceSupplyUsage saved = deviceSupplyUsageRepository.save(entity);
+            createdIds.add(saved.getId());
+        }
+        return createdIds;
+    }
+
     public void update(final Long id, final DeviceSupplyUsageDTO deviceSupplyUsageDTO) {
         final DeviceSupplyUsage deviceSupplyUsage = deviceSupplyUsageRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
@@ -69,6 +89,7 @@ public class DeviceSupplyUsageService {
         deviceSupplyUsageDTO.setUsageDate(deviceSupplyUsage.getUsageDate());
         deviceSupplyUsageDTO.setSerial(deviceSupplyUsage.getSerial());
         deviceSupplyUsageDTO.setNote(deviceSupplyUsage.getNote());
+        deviceSupplyUsageDTO.setQuantityUsed(deviceSupplyUsage.getQuantityUsed());
         deviceSupplyUsageDTO.setCreatedAt(deviceSupplyUsage.getCreatedAt());
         deviceSupplyUsageDTO.setUpdatedAt(deviceSupplyUsage.getUpdatedAt());
         deviceSupplyUsageDTO.setCreatedBy(deviceSupplyUsage.getCreatedBy());
@@ -134,6 +155,7 @@ public class DeviceSupplyUsageService {
         deviceSupplyUsage.setUsageDate(deviceSupplyUsageDTO.getUsageDate());
         deviceSupplyUsage.setSerial(deviceSupplyUsageDTO.getSerial());
         deviceSupplyUsage.setNote(deviceSupplyUsageDTO.getNote());
+        deviceSupplyUsage.setQuantityUsed(deviceSupplyUsageDTO.getQuantityUsed());
         deviceSupplyUsage.setCreatedAt(deviceSupplyUsageDTO.getCreatedAt());
         deviceSupplyUsage.setUpdatedAt(deviceSupplyUsageDTO.getUpdatedAt());
         deviceSupplyUsage.setCreatedBy(deviceSupplyUsageDTO.getCreatedBy());

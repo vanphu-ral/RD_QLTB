@@ -31,10 +31,11 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
   listLines: any[] = [];
   listTeams: any[] = [];
   listMaintenanceCycles = [
-    { label: '1 Tháng', value: 1 },
-    { label: '3 Tháng', value: 3 },
-    { label: '6 Tháng', value: 6 },
-    { label: '12 Tháng', value: 12 },
+    { name: "Ngày", code: "Ngày" },
+    { name: "Tuần", code: "Tuần" },
+    { name: "Tháng", code: "Tháng" },
+    { name: "Quý", code: "Quý" },
+    { name: "Năm", code: "Năm" }
   ];
   listUsers: any[] = [];
   ref?: DynamicDialogRef;
@@ -69,6 +70,9 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
       this.listTeams = teams;
       this.cdr.detectChanges();
     });
+    if (typeof this.model.maintenanceCycle === 'string' && !Util.isEmptyString(this.model.maintenanceCycle)) {
+      this.model.maintenanceCycle = Util.stringToDropdownOptions(this.model.maintenanceCycle);
+    }
   }
 
   openMaterialDialog(row: any) {
@@ -78,7 +82,6 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
       modal: true,
       data: row,
     });
-
     this.ref.onClose.subscribe((result) => {
       if (result) {
         console.log('Data trả về:', result);
@@ -105,7 +108,9 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
   public override save(): void {
     if (this.model) {
       this.model = Util.prepareModel(this.model);
-
+      if (!Util.isEmptyArray(this.model.maintenanceCycle)) {
+        this.model.maintenanceCycle = this.model.maintenanceCycle.map((item: any) => item.code).join(',');
+      }
       if (this.isAddMode) {
         this.apiService.create(this.model).subscribe({
           next: () => {

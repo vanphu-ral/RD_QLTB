@@ -33,6 +33,9 @@ public class DeviceSupplyUsage {
     @Column
     private String serial;
 
+    @Column
+    private Integer quantityUsed;
+
     @Column(columnDefinition = "longtext")
     private String note;
 

@@ -11,6 +11,8 @@ import io.rd.qltb.util.ReferencedException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,12 @@ public class SupplyDetailService {
             final SupplyRepository supplyRepository) {
         this.supplyDetailRepository = supplyDetailRepository;
         this.supplyRepository = supplyRepository;
+    }
+
+    public List<SupplyDetailDTO> getBySupplyId(Long supplyId) {
+        return supplyDetailRepository.findBySupplyId(supplyId).stream()
+                .map(s -> mapToDTO(s, new SupplyDetailDTO()))
+                .collect(Collectors.toList());
     }
 
     public List<SupplyDetailDTO> findAll() {
@@ -82,6 +90,10 @@ public class SupplyDetailService {
         dto.setSerial(supplyDetail.getSerial());
         dto.setImportDate(supplyDetail.getImportDate());
         dto.setSupplier(supplyDetail.getSupplier());
+        dto.setPrice(supplyDetail.getPrice());
+        dto.setUnit(supplyDetail.getUnit());
+        dto.setQuantity(supplyDetail.getQuantity());
+        dto.setCurrency(supplyDetail.getCurrency());
         dto.setStatus(supplyDetail.getStatus());
 
         // Sao chép Supply có kiểm soát
@@ -120,6 +132,10 @@ public class SupplyDetailService {
         supplyDetail.setSerial(supplyDetailDTO.getSerial());
         supplyDetail.setImportDate(supplyDetailDTO.getImportDate());
         supplyDetail.setSupplier(supplyDetailDTO.getSupplier());
+        supplyDetail.setPrice(supplyDetailDTO.getPrice());
+        supplyDetail.setUnit(supplyDetailDTO.getUnit());
+        supplyDetail.setQuantity(supplyDetailDTO.getQuantity());
+        supplyDetail.setCurrency(supplyDetailDTO.getCurrency());
         supplyDetail.setStatus(supplyDetailDTO.getStatus());
         final Supply supply = supplyDetailDTO.getSupply() == null ? null : supplyRepository.findById(supplyDetailDTO.getSupply().getId())
                 .orElseThrow(() -> new NotFoundException("supply not found"));

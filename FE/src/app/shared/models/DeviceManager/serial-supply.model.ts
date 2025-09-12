@@ -6,5 +6,7 @@ export class SerialSupply {
     supplier?: string;
     unit?: string;
     price?: number;
+    currency?: string;
+    quantity?: number;
     status?: number;
 }

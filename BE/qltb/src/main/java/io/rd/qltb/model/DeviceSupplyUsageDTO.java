@@ -23,6 +23,8 @@ public class DeviceSupplyUsageDTO {
     @Size(max = 255)
     private String serial;
 
+    private Integer quantityUsed;
+
     private String note;
 
     @NotNull

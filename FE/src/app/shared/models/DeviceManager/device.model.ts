@@ -6,7 +6,7 @@ export class Device {
     source?: string;
     supplier?: any;
     installationDate?: Date;
-    maintenanceCycle?: number;
+    maintenanceCycle?: any;
     dateManufacture?: Date;
     unit?: string;
     price?: number; 

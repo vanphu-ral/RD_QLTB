@@ -40,7 +40,7 @@ public class DeviceDTO {
 
     private LocalDate installationDate;
 
-    private Integer maintenanceCycle;
+    private String maintenanceCycle;
 
     private LocalDateTime dateManufacture;
 

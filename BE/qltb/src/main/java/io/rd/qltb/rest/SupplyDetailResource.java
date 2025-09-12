@@ -28,6 +28,11 @@ public class SupplyDetailResource {
         this.supplyDetailService = supplyDetailService;
     }
 
+    @GetMapping("/bySupply/{supplyId}")
+    public ResponseEntity<List<SupplyDetailDTO>> getBySupply(@PathVariable Long supplyId) {
+        return ResponseEntity.ok(supplyDetailService.getBySupplyId(supplyId));
+    }
+
     @GetMapping
     public ResponseEntity<List<SupplyDetailDTO>> getAllSupplyDetails() {
         return ResponseEntity.ok(supplyDetailService.findAll());

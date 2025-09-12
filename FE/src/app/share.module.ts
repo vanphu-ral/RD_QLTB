@@ -27,6 +27,8 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { FileUpload } from 'primeng/fileupload';
 import { CardModule } from 'primeng/card';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { DateConvertDirective } from './shared/directive/date-convert.directive';
 
 @NgModule({
   imports: [
@@ -55,7 +57,9 @@ import { CardModule } from 'primeng/card';
     DatePickerModule,
     InputNumberModule,
     FileUpload,
-    CardModule 
+    CardModule,
+    MultiSelectModule,
+    DateConvertDirective 
   ],
   exports: [
     CommonModule,
@@ -83,7 +87,9 @@ import { CardModule } from 'primeng/card';
     DatePickerModule,
     InputNumberModule,
     FileUpload,
-    CardModule
+    CardModule,
+    MultiSelectModule,
+    DateConvertDirective
   ],
   providers: [DialogService, MessageService]
 })

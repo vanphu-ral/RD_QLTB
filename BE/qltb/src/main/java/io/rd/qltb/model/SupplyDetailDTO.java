@@ -24,6 +24,14 @@ public class SupplyDetailDTO {
     @Size(max = 255)
     private String supplier;
 
+    private Double price;
+
+    private String unit;
+
+    private String currency;
+
+    private Integer quantity;
+
     private Integer status;
 
     @NotNull

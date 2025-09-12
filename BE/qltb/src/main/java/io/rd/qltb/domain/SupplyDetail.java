@@ -37,6 +37,18 @@ public class SupplyDetail {
     private String supplier;
 
     @Column
+    private Double price;
+
+    @Column
+    private String unit;
+
+    @Column
+    private String currency;
+
+    @Column
+    private Integer quantity;
+
+    @Column
     private Integer status;
 
     @ManyToOne(fetch = FetchType.LAZY)
