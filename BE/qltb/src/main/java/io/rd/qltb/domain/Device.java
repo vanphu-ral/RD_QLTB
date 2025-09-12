@@ -103,7 +103,7 @@ public class Device {
     private Branch branch;
 
     @OneToMany(mappedBy = "device")
-    private Set<Prameter> devicePrameters = new HashSet<>();
+    private Set<DeviceParameterUse> deviceDeviceParameterUses = new HashSet<>();
 
     @OneToMany(mappedBy = "device")
     private Set<DeviceRelocationHistory> deviceDeviceRelocationHistories = new HashSet<>();

@@ -109,7 +109,7 @@ public class DeviceRelocationHistoryService {
             deviceCopy.setLine(null);
             deviceCopy.setBranch(null);
             deviceCopy.setTeam(null);
-            deviceCopy.setDevicePrameters(null);
+            deviceCopy.setDeviceDeviceParameterUses(null);
             deviceCopy.setDeviceDeviceRelocationHistories(null);
             deviceCopy.setDeviceDeviceSupplyUsages(null);
             deviceCopy.setDevicePlanDetails(null);
