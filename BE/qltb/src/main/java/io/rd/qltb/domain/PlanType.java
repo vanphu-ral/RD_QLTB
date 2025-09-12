@@ -30,8 +30,8 @@ public class PlanType {
 
     @Column(nullable = false, length = 150)
     private String name;
-    @Column(nullable = false, length = 150)
-    private String note;
+    @Column(length = 500, name = "\"description\"")
+    private String description;
     @Column(nullable = false)
     private LocalDateTime createdAt;
 

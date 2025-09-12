@@ -7,6 +7,6 @@ import { PlanType } from '../../../../models/PlanManger/plan-type.model';
 @Injectable({ providedIn: 'root' })
 export class PlanTypeService extends BaseApiService<PlanType> {
   constructor(http: HttpClient) {
-    super(http, 'api/plan-types'); 
+    super(http, 'api/planTypes'); 
   }
 }

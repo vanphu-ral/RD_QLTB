@@ -60,7 +60,7 @@ public class PlanTypeService {
         planTypeDTO.setId(planType.getId());
         planTypeDTO.setCode(planType.getCode());
         planTypeDTO.setName(planType.getName());
-        planTypeDTO.setNote(planType.getNote());
+        planTypeDTO.setDescription(planType.getDescription());
         planTypeDTO.setCreatedAt(planType.getCreatedAt());
         planTypeDTO.setUpdatedAt(planType.getUpdatedAt());
         planTypeDTO.setCreatedBy(planType.getCreatedBy());
@@ -71,7 +71,7 @@ public class PlanTypeService {
 
     private PlanType mapToEntity(final PlanTypeDTO planTypeDTO, final PlanType planType) {
         planType.setCode(planTypeDTO.getCode());
-        planType.setNote(planTypeDTO.getNote());
+        planType.setDescription(planTypeDTO.getDescription());
         planType.setName(planTypeDTO.getName());
         planType.setCreatedAt(planTypeDTO.getCreatedAt());
         planType.setUpdatedAt(planTypeDTO.getUpdatedAt());

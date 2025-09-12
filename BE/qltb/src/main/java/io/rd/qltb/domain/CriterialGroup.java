@@ -31,6 +31,9 @@ public class CriterialGroup {
     @Column(length = 200)
     private String name;
 
+    @Column(length = 500, name = "\"description\"")
+    private String description;
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
 

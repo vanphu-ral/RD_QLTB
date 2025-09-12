@@ -96,6 +96,7 @@ public class DeviceService {
         deviceDTO.setQrcode(device.getQrcode());
         deviceDTO.setImg(device.getImg());
         deviceDTO.setUserManager(device.getUserManager());
+        deviceDTO.setDescription(device.getDescription());
         deviceDTO.setCreatedAt(device.getCreatedAt());
         deviceDTO.setUpdatedAt(device.getUpdatedAt());
         deviceDTO.setCreatedBy(device.getCreatedBy());
@@ -216,6 +217,7 @@ public class DeviceService {
         device.setQrcode(deviceDTO.getQrcode());
         device.setImg(deviceDTO.getImg());
         device.setUserManager(deviceDTO.getUserManager());
+        device.setDescription(deviceDTO.getDescription());
         device.setCreatedAt(deviceDTO.getCreatedAt());
         device.setUpdatedAt(deviceDTO.getUpdatedAt());
         device.setCreatedBy(deviceDTO.getCreatedBy());

@@ -20,6 +20,9 @@ public class CriterialGroupDTO {
     @Size(max = 200)
     private String name;
 
+    @Size(max = 255)
+    private String description;
+
     @NotNull
     private LocalDateTime createdAt;
 

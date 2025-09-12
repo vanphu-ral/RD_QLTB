@@ -88,7 +88,7 @@ public class PlanDetailService {
             planCopy.setBranchId(planDetail.getPlan().getBranchId());
             planCopy.setFrequency(planDetail.getPlan().getFrequency());
             planCopy.setPlanNumber(planDetail.getPlan().getPlanNumber());
-            planCopy.setNote(planDetail.getPlan().getNote());
+            planCopy.setDescription(planDetail.getPlan().getDescription());
             planCopy.setCreatedBy(planDetail.getPlan().getCreatedBy());
             planCopy.setCreatedAt(planDetail.getPlan().getCreatedAt());
             planCopy.setUpdatedAt(planDetail.getPlan().getUpdatedAt());
