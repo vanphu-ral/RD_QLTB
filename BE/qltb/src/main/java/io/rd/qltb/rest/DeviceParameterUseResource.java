@@ -1,6 +1,7 @@
 package io.rd.qltb.rest;
 
 import io.rd.qltb.model.DeviceParameterUseDTO;
+import io.rd.qltb.model.SupplyDetailDTO;
 import io.rd.qltb.service.DeviceParameterUseService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
@@ -40,7 +41,12 @@ public class DeviceParameterUseResource {
         final Long createdId = deviceParameterUseService.create(deviceParameterUseDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
-
+    @PostMapping("/creates")
+    @ApiResponse(responseCode = "201")
+    public ResponseEntity<List<Long>> creates(@RequestBody @Valid List<DeviceParameterUseDTO> deviceParameterUseDTOS) {
+        List<Long> createdIds = deviceParameterUseService.creates(deviceParameterUseDTOS);
+        return new ResponseEntity<>(createdIds, HttpStatus.CREATED);
+    }
     @PutMapping("/{id}")
     public ResponseEntity<Long> updateDeviceParameterUse(@PathVariable(name = "id") final Long id,
             @RequestBody @Valid final DeviceParameterUseDTO deviceParameterUseDTO) {

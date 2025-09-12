@@ -1,16 +1,20 @@
 package io.rd.qltb.service;
 
 import io.rd.qltb.domain.Device;
+import io.rd.qltb.domain.DeviceSupplyUsage;
 import io.rd.qltb.domain.Prameter;
 import io.rd.qltb.domain.PrameterGroup;
 import io.rd.qltb.events.BeforeDeleteDevice;
 import io.rd.qltb.events.BeforeDeletePrameterGroup;
+import io.rd.qltb.model.DeviceSupplyUsageDTO;
 import io.rd.qltb.model.PrameterDTO;
 import io.rd.qltb.repos.DeviceRepository;
 import io.rd.qltb.repos.PrameterGroupRepository;
 import io.rd.qltb.repos.PrameterRepository;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
+
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;

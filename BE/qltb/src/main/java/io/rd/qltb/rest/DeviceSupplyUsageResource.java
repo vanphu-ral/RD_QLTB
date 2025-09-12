@@ -1,6 +1,7 @@
 package io.rd.qltb.rest;
 
 import io.rd.qltb.model.DeviceSupplyUsageDTO;
+import io.rd.qltb.model.SupplyDetailDTO;
 import io.rd.qltb.service.DeviceSupplyUsageService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
@@ -32,7 +33,12 @@ public class DeviceSupplyUsageResource {
     public ResponseEntity<List<DeviceSupplyUsageDTO>> getAllDeviceSupplyUsages() {
         return ResponseEntity.ok(deviceSupplyUsageService.findAll());
     }
-
+    @PostMapping("/creates")
+    @ApiResponse(responseCode = "201")
+    public ResponseEntity<List<Long>> creates(@RequestBody @Valid List<DeviceSupplyUsageDTO> deviceSupplyUsageDTOS) {
+        List<Long> createdIds = deviceSupplyUsageService.creates(deviceSupplyUsageDTOS);
+        return new ResponseEntity<>(createdIds, HttpStatus.CREATED);
+    }
     @GetMapping("/{id}")
     public ResponseEntity<DeviceSupplyUsageDTO> getDeviceSupplyUsage(
             @PathVariable(name = "id") final Long id) {

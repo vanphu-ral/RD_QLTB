@@ -7,6 +7,7 @@ import io.rd.qltb.domain.Prameter;
 import io.rd.qltb.events.BeforeDeleteDevice;
 import io.rd.qltb.events.BeforeDeletePrameter;
 import io.rd.qltb.model.DeviceParameterUseDTO;
+import io.rd.qltb.model.PrameterDTO;
 import io.rd.qltb.repos.DeviceParameterUseRepository;
 import io.rd.qltb.repos.DeviceRepository;
 import io.rd.qltb.repos.PrameterRepository;
@@ -16,6 +17,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -52,7 +54,21 @@ public class DeviceParameterUseService {
         mapToEntity(deviceParameterUseDTO, deviceParameterUse);
         return deviceParameterUseRepository.save(deviceParameterUse).getId();
     }
-
+    public List<Long> creates(final List<DeviceParameterUseDTO> deviceParameterUseDTOS) {
+        List<Long> createdIds = new ArrayList<>();
+        for (DeviceParameterUseDTO dto : deviceParameterUseDTOS) {
+            DeviceParameterUse entity;
+            if (dto.getId() != null) {
+                entity = deviceParameterUseRepository.findById(dto.getId()).orElse(new DeviceParameterUse());
+            } else {
+                entity = new DeviceParameterUse();
+            }
+            mapToEntity(dto, entity);
+            DeviceParameterUse saved = deviceParameterUseRepository.save(entity);
+            createdIds.add(saved.getId());
+        }
+        return createdIds;
+    }
     public void update(final Long id, final DeviceParameterUseDTO deviceParameterUseDTO) {
         final DeviceParameterUse deviceParameterUse = deviceParameterUseRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
