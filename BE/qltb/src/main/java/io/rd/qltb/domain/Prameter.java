@@ -32,10 +32,10 @@ public class Prameter {
     private String description;
 
     @Column(nullable = false)
-    private OffsetDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @Column(nullable = false)
-    private OffsetDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
     @Column
     private String createdBy;

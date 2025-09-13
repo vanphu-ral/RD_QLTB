@@ -28,10 +28,10 @@ public class PrameterDTO {
     private String description;
 
     @NotNull
-    private OffsetDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @NotNull
-    private OffsetDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
     @Size(max = 255)
     private String createdBy;

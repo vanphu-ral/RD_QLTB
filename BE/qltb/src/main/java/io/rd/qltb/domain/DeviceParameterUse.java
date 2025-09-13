@@ -27,22 +27,10 @@ public class DeviceParameterUse {
     private Double max;
 
     @Column
-    private Double unit;
+    private String unit;
 
     @Column(name = "\"description\"")
     private String description;
-
-    @Column(nullable = false)
-    private OffsetDateTime createdAt;
-
-    @Column(nullable = false)
-    private OffsetDateTime updatedAt;
-
-    @Column
-    private String createdBy;
-
-    @Column
-    private String updatedBy;
 
     @Column
     private Integer status;

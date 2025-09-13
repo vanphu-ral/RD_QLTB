@@ -19,6 +19,9 @@ import { ParameterListManagerDialogComponent } from '../Dialog/parameter-list-ma
 import { DeviceSupplyUseService } from '../Service/device-supply-use.service';
 import { DeviceSupplyUse } from '../../../../models/DeviceManager/device-supply-use.model';
 import _ from 'lodash';
+import { DeviceParameterUse } from '../../../../models/DeviceManager/device-parameter-use.model';
+import { DeviceParameterUseService } from '../Service/device-parameter-use.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-device-detail',
@@ -41,6 +44,7 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
     { name: "Năm", code: "Năm" }
   ];
   listMaterial: DeviceSupplyUse[] = [];
+  listParameter: DeviceParameterUse[] = [];
   listUsers: any[] = [];
   ref?: DynamicDialogRef;
 
@@ -52,7 +56,8 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
     private lineService: LineService,
     private teamService: TeamService,
     private dialogService: DialogService,
-    private deviceSupplyUseService: DeviceSupplyUseService
+    private deviceSupplyUseService: DeviceSupplyUseService,
+    private deviceParameterUseService: DeviceParameterUseService
   ) {
     super(apiService);
   }
@@ -75,6 +80,18 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
       this.listTeams = teams;
       this.cdr.detectChanges();
     });
+    this.apiService.getUsers().subscribe(users => {
+      this.listUsers = _.map(users, user => {
+        const firstName = user.firstName ?? '';
+        const lastName = user.lastName ?? '';
+        const fullName = [firstName, lastName].filter(Boolean).join(' ').trim();
+        return {
+          name: fullName ? `${user.username} - ${fullName}` : user.username,
+          username: user.username,
+        };
+      })
+      this.cdr.detectChanges();
+    })
     if (typeof this.model.maintenanceCycle === 'string' && !Util.isEmptyString(this.model.maintenanceCycle)) {
       this.model.maintenanceCycle = Util.stringToDropdownOptions(this.model.maintenanceCycle);
     }
@@ -90,73 +107,60 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
     this.ref.onClose.subscribe((result) => {
       if (result) {
         this.listMaterial = result
-        console.log('Data trả về:', result);
       }
     });
   }
 
-  openParameterDialog(row: any) {
+  openParameterDialog(data: any) {
     this.ref = this.dialogService.open(ParameterListManagerDialogComponent, {
       header: 'Quản lý thông số thiết bị',
       width: 'auto',
       modal: true,
-      data: row,
+      data: this.model,
     });
 
     this.ref.onClose.subscribe((result) => {
       if (result) {
-        console.log('Data trả về:', result);
+        this.listParameter = result
       }
     });
   }
 
 
   public override save(): void {
-    if (this.model) {
-      this.model = Util.prepareModel(this.model);
-      if (!Util.isEmptyArray(this.model.maintenanceCycle)) {
-        this.model.maintenanceCycle = this.model.maintenanceCycle.map((item: any) => item.code).join(',');
-      }
-      if (this.isAddMode) {
-        this.apiService.create(this.model).subscribe({
-          next: (id) => {
-            this.model.id = id as number
-            this.listMaterial = _.map(this.listMaterial, item => {
-              return {
-                ...item,
-                device: this.model
-              }
-            })
-            this.deviceSupplyUseService.createList(this.listMaterial).subscribe({
-              next: () => {
-                Util.ConfirmMessage('Thêm mới thành công', 'success');
-              }
-            })
-          },
-          error: () => {
-            Util.ConfirmMessage('Thêm mới thất bại', 'error');
-          }
-        }).add(() => this.navigationService.back());
-      } else {
-        this.apiService.update(this.model.id!, this.model).subscribe({
-          next: () => {
-            this.listMaterial = _.map(this.listMaterial, item => {
-              return {
-                ...item,
-                device: this.model
-              }
-            })
-            this.deviceSupplyUseService.createList(this.listMaterial).subscribe({
-              next: () => {
-                Util.ConfirmMessage('Thêm mới thành công', 'success');
-              }
-            })
-          },
-          error: () => {
-            Util.ConfirmMessage('Cập nhật thất bại', 'error');
-          }
-        }).add(() => this.navigationService.back());
-      }
+    if (!this.model) return;
+    this.model = Util.prepareModel(this.model);
+    if (!_.isEmpty(this.model.maintenanceCycle)) {
+      this.model.maintenanceCycle = _.join(
+        _.map(this.model.maintenanceCycle, 'code'),
+        ','
+      );
+    }
+    const updateRelations = () => {
+      this.listMaterial = _.map(this.listMaterial, item => ({ ...item, device: this.model }));
+      this.listParameter = _.map(this.listParameter, para => ({ ...para, device: this.model }));
+      forkJoin([
+        this.deviceParameterUseService.createList(this.listParameter),
+        this.deviceSupplyUseService.createList(this.listMaterial)
+      ]).subscribe({
+        next: () => Util.ConfirmMessage('Thao tác thành công', 'success'),
+        error: () => Util.ConfirmMessage('Có lỗi xảy ra khi lưu dữ liệu', 'error')
+      });
+    };
+    const handleError = (message: string) => Util.ConfirmMessage(message, 'error');
+    if (this.isAddMode) {
+      this.apiService.create(this.model).subscribe({
+        next: (id) => {
+          this.model.id = id as number;
+          updateRelations();
+        },
+        error: () => handleError('Thêm mới thất bại')
+      }).add(() => this.navigationService.back());
+    } else {
+      this.apiService.update(this.model.id!, this.model).subscribe({
+        next: () => updateRelations(),
+        error: () => handleError('Cập nhật thất bại')
+      }).add(() => this.navigationService.back());
     }
   }
 }

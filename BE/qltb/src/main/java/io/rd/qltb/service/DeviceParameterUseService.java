@@ -7,6 +7,7 @@ import io.rd.qltb.domain.Prameter;
 import io.rd.qltb.events.BeforeDeleteDevice;
 import io.rd.qltb.events.BeforeDeletePrameter;
 import io.rd.qltb.model.DeviceParameterUseDTO;
+import io.rd.qltb.model.DeviceSupplyUsageDTO;
 import io.rd.qltb.model.PrameterDTO;
 import io.rd.qltb.repos.DeviceParameterUseRepository;
 import io.rd.qltb.repos.DeviceRepository;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -41,6 +43,12 @@ public class DeviceParameterUseService {
         return deviceParameterUses.stream()
                 .map(deviceParameterUse -> mapToDTO(deviceParameterUse, new DeviceParameterUseDTO()))
                 .toList();
+    }
+
+    public List<DeviceParameterUseDTO> getByDeviceId(Long deviceId) {
+        return deviceParameterUseRepository.findByDeviceId(deviceId).stream()
+                .map(s -> mapToDTO(s, new DeviceParameterUseDTO()))
+                .collect(Collectors.toList());
     }
 
     public DeviceParameterUseDTO get(final Long id) {
@@ -90,35 +98,74 @@ public class DeviceParameterUseService {
         deviceParameterUseDTO.setMax(deviceParameterUse.getMax());
         deviceParameterUseDTO.setUnit(deviceParameterUse.getUnit());
         deviceParameterUseDTO.setDescription(deviceParameterUse.getDescription());
-        deviceParameterUseDTO.setCreatedAt(deviceParameterUse.getCreatedAt());
-        deviceParameterUseDTO.setUpdatedAt(deviceParameterUse.getUpdatedAt());
-        deviceParameterUseDTO.setCreatedBy(deviceParameterUse.getCreatedBy());
-        deviceParameterUseDTO.setUpdatedBy(deviceParameterUse.getUpdatedBy());
         deviceParameterUseDTO.setStatus(deviceParameterUse.getStatus());
         deviceParameterUseDTO.setDevice(deviceParameterUse.getDevice() == null ? null : deviceParameterUse.getDevice());
         deviceParameterUseDTO.setParameter(deviceParameterUse.getParameter() == null ? null : deviceParameterUse.getParameter());
         return deviceParameterUseDTO;
     }
 
-    private DeviceParameterUse mapToEntity(final DeviceParameterUseDTO deviceParameterUseDTO,
-            final DeviceParameterUse deviceParameterUse) {
-        deviceParameterUse.setValue(deviceParameterUseDTO.getValue());
-        deviceParameterUse.setMin(deviceParameterUseDTO.getMin());
-        deviceParameterUse.setMax(deviceParameterUseDTO.getMax());
-        deviceParameterUse.setUnit(deviceParameterUseDTO.getUnit());
-        deviceParameterUse.setDescription(deviceParameterUseDTO.getDescription());
-        deviceParameterUse.setCreatedAt(deviceParameterUseDTO.getCreatedAt());
-        deviceParameterUse.setUpdatedAt(deviceParameterUseDTO.getUpdatedAt());
-        deviceParameterUse.setCreatedBy(deviceParameterUseDTO.getCreatedBy());
-        deviceParameterUse.setUpdatedBy(deviceParameterUseDTO.getUpdatedBy());
-        deviceParameterUse.setStatus(deviceParameterUseDTO.getStatus());
-        final Device device = deviceParameterUseDTO.getDevice() == null ? null : deviceRepository.findById(deviceParameterUseDTO.getDevice().getId())
-                .orElseThrow(() -> new NotFoundException("device not found"));
-        deviceParameterUse.setDevice(device);
-        final Prameter parameter = deviceParameterUseDTO.getParameter() == null ? null : prameterRepository.findById(deviceParameterUseDTO.getParameter().getId())
-                .orElseThrow(() -> new NotFoundException("parameter not found"));
-        deviceParameterUse.setParameter(parameter);
-        return deviceParameterUse;
+    private DeviceParameterUseDTO mapToDTO(final DeviceParameterUse deviceParameterUse,
+                                           final DeviceParameterUseDTO dto) {
+        dto.setId(deviceParameterUse.getId());
+        dto.setValue(deviceParameterUse.getValue());
+        dto.setMin(deviceParameterUse.getMin());
+        dto.setMax(deviceParameterUse.getMax());
+        dto.setUnit(deviceParameterUse.getUnit());
+        dto.setDescription(deviceParameterUse.getDescription());
+        dto.setStatus(deviceParameterUse.getStatus());
+
+        // Sao chép Device có kiểm soát
+        if (deviceParameterUse.getDevice() != null) {
+            Device deviceCopy = new Device();
+            deviceCopy.setId(deviceParameterUse.getDevice().getId());
+            deviceCopy.setCode(deviceParameterUse.getDevice().getCode());
+            deviceCopy.setName(deviceParameterUse.getDevice().getName());
+            deviceCopy.setSerialNumber(deviceParameterUse.getDevice().getSerialNumber());
+            deviceCopy.setUnit(deviceParameterUse.getDevice().getUnit());
+            deviceCopy.setStatus(deviceParameterUse.getDevice().getStatus());
+            deviceCopy.setCreatedAt(deviceParameterUse.getDevice().getCreatedAt());
+            deviceCopy.setUpdatedAt(deviceParameterUse.getDevice().getUpdatedAt());
+
+            // Xóa các quan hệ con để tránh vòng lặp
+            deviceCopy.setGroup(null);
+            deviceCopy.setLine(null);
+            deviceCopy.setBranch(null);
+            deviceCopy.setTeam(null);
+            deviceCopy.setDevicePrameters(null);
+            deviceCopy.setDeviceDeviceRelocationHistories(null);
+            deviceCopy.setDeviceSupplyUsages(null);
+            deviceCopy.setDevicePlanDetails(null);
+
+            dto.setDevice(deviceCopy);
+        } else {
+            dto.setDevice(null);
+        }
+
+        // Sao chép Prameter có kiểm soát
+        if (deviceParameterUse.getParameter() != null) {
+            Prameter paramCopy = new Prameter();
+            paramCopy.setId(deviceParameterUse.getParameter().getId());
+            paramCopy.setCode(deviceParameterUse.getParameter().getCode());
+            paramCopy.setName(deviceParameterUse.getParameter().getName());
+            paramCopy.setValue(deviceParameterUse.getParameter().getValue());
+            paramCopy.setMin(deviceParameterUse.getParameter().getMin());
+            paramCopy.setMax(deviceParameterUse.getParameter().getMax());
+            paramCopy.setUnit(deviceParameterUse.getParameter().getUnit());
+            paramCopy.setDescription(deviceParameterUse.getParameter().getDescription());
+            paramCopy.setCreatedAt(deviceParameterUse.getParameter().getCreatedAt());
+            paramCopy.setUpdatedAt(deviceParameterUse.getParameter().getUpdatedAt());
+            paramCopy.setCreatedBy(deviceParameterUse.getParameter().getCreatedBy());
+            paramCopy.setUpdatedBy(deviceParameterUse.getParameter().getUpdatedBy());
+            paramCopy.setStatus(deviceParameterUse.getParameter().getStatus());
+
+            // Xóa các quan hệ con để tránh vòng lặp
+            paramCopy.setParameterGroup(null);
+            dto.setParameter(paramCopy);
+        } else {
+            dto.setParameter(null);
+        }
+
+        return dto;
     }
 
     @EventListener(BeforeDeleteDevice.class)

@@ -56,16 +56,19 @@ export class MaterialListManagerDialogComponent {
         });
         this.supplyDetailService.getAll().subscribe({
             next: (res) => {
-                this.listSerial = res
-                this.listMaterial = _.map(this.listMaterial, item => {
-                    return {
-                        ...item,
-                        serial: _.find(this.listSerial, seri => seri.serial == item.serial)
-                    }
-                })
-                this.cdr.detectChanges();
+                setTimeout(() => {
+                    this.listSerial = res;
+                    this.listMaterial = this.listMaterial.map(item => {
+                        const serialObj = this.listSerial.find(seri => seri.serial === item.serial)
+                            || item.serial; 
+                        return {
+                            ...item,
+                            serial: serialObj
+                        };
+                    });
+                });
             }
-        })
+        });
     }
 
     onChangeSupply(event: any, index: number) {

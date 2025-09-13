@@ -1,6 +1,7 @@
 package io.rd.qltb.rest;
 
 import io.rd.qltb.model.DeviceParameterUseDTO;
+import io.rd.qltb.model.DeviceSupplyUsageDTO;
 import io.rd.qltb.model.SupplyDetailDTO;
 import io.rd.qltb.service.DeviceParameterUseService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -21,6 +22,11 @@ public class DeviceParameterUseResource {
 
     public DeviceParameterUseResource(final DeviceParameterUseService deviceParameterUseService) {
         this.deviceParameterUseService = deviceParameterUseService;
+    }
+
+    @GetMapping("/byDevice/{deviceId}")
+    public ResponseEntity<List<DeviceParameterUseDTO>> getBySupply(@PathVariable Long deviceId) {
+        return ResponseEntity.ok(deviceParameterUseService.getByDeviceId(deviceId));
     }
 
     @GetMapping

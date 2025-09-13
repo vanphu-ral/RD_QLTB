@@ -5,6 +5,7 @@ import { BasePageComponent } from '../../../../core/base-page-component/base-pag
 import { Util } from '../../../../core/utils/utils-function';
 import { ParameterService } from '../Service/parameter.service';
 import { Parameter } from '../../../../models/DeviceManager/parameter.model';
+import { ParameterGroupService } from '../../ParameterGroup/Service/parameter-group.service';
 
 @Component({
   selector: 'app-parameter-detail',
@@ -15,12 +16,21 @@ import { Parameter } from '../../../../models/DeviceManager/parameter.model';
 })
 export class ParameterDetailComponent extends BasePageComponent<Parameter> {
 
-  listFactories: any[] = [];
+  listParameterGroup: any[] = [];
 
   constructor(
     protected override apiService: ParameterService,
+    private parameterGroupService: ParameterGroupService
   ) {
     super(apiService);
+  }
+
+  override ngOnInit(): void {
+    super.ngOnInit();
+    this.parameterGroupService.getAll().subscribe(res => {
+      this.listParameterGroup = res
+      this.cdr.detectChanges();
+    })
   }
 
 

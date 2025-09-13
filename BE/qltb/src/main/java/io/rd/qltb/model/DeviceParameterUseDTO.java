@@ -22,22 +22,10 @@ public class DeviceParameterUseDTO {
 
     private Double max;
 
-    private Double unit;
+    private String unit;
 
     @Size(max = 255)
     private String description;
-
-    @NotNull
-    private OffsetDateTime createdAt;
-
-    @NotNull
-    private OffsetDateTime updatedAt;
-
-    @Size(max = 255)
-    private String createdBy;
-
-    @Size(max = 255)
-    private String updatedBy;
 
     private Integer status;
 

@@ -8,5 +8,5 @@ export class Parameter {
     createdAt?: Date;
     updatedAt?: Date;
     status?: number;
-    group?: any;
+    parameterGroup?: any;
 }

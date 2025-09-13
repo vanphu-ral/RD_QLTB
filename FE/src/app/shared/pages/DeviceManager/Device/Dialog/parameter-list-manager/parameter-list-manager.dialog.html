@@ -1,53 +1,65 @@
 <div class="p-1">
-    <div class="d-flex justify-content-end mt-2 mb-4">
-        <p-button label="Thêm thông số" icon="pi pi-plus" (onClick)="addNewRow()"></p-button>
-    </div>
+  <div class="d-flex justify-content-end mt-2 mb-4">
+    <p-button label="Thêm thông số" icon="pi pi-plus" (onClick)="addNewRow()"></p-button>
+  </div>
 
-    <div class="table-responsive">
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>thông số</th>
-                    <th>mã serial</th>
-                    <th>số lượng sử dụng</th>
-                    <th>mô tả</th>
-                    <th>Thao tác</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let row of listParameter; let i = index">
-                    <td>
-                        <p-floatlabel variant="on">
-                            <p-select [(ngModel)]="row.status" [options]="listStatus" optionLabel="label" [fluid]="true"
-                                optionValue="value" [showClear]="true" [appendTo]="'body'"
-                                id="status" name="status-{{i}}">
-                            </p-select>
-                            <label for="status">Trạng thái</label>
-                        </p-floatlabel>
-                    </td>
-                    <td>
-                        <p-floatlabel variant="on">
-                            <p-select [(ngModel)]="row.status" [options]="listStatus" optionLabel="label" [fluid]="true"
-                                optionValue="value" [showClear]="true" [appendTo]="'body'"
-                                id="status" name="status-{{i}}">
-                            </p-select>
-                            <label for="status">Trạng thái</label>
-                        </p-floatlabel>
-                    </td>
-                    <td><p-inputnumber [(ngModel)]="row.quantity" name="quantity-{{i}}" inputId="minmax" mode="decimal" [min]="0" [max]="100" /></td>
-                    <td>
-                        <input type="text" pInputText [(ngModel)]="row.description">
-                    </td>
-                    <td class="text-center">
-                        <p-button icon="pi pi-trash" severity="danger" (onClick)="deleteRow(i)"></p-button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+  <div class="table-responsive">
+    <p-table [value]="listParameterUse" responsiveLayout="scroll">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Thông số</th>
+          <th>Min</th>
+          <th>Max</th>
+          <th>Giá trị</th>
+          <th>Đơn vị tính</th>
+          <th>Mô tả</th>
+          <th>Thao tác</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-row let-i="rowIndex">
+        <tr>
+          <td>
+            <p-select [(ngModel)]="row.parameter"
+                      [options]="listParameters"
+                      optionLabel="name"
+                      dataKey="id"
+                      [fluid]="true"
+                      [showClear]="true"
+                      appendTo="body"
+                      name="parameter-{{i}}">
+            </p-select>
+          </td>
+          <td>
+            <p-inputnumber [(ngModel)]="row.min" name="min-{{i}}" mode="decimal"></p-inputnumber>
+          </td>
+          <td>
+            <p-inputnumber [(ngModel)]="row.max" name="max-{{i}}" mode="decimal"></p-inputnumber>
+          </td>
+          <td>
+            <p-inputnumber [(ngModel)]="row.value" name="value-{{i}}" mode="decimal"></p-inputnumber>
+          </td>
+          <td>
+            <input type="text" pInputText [(ngModel)]="row.unit" name="unit-{{i}}" />
+          </td>
+          <td>
+            <input type="text" pInputText [(ngModel)]="row.description" name="description-{{i}}" />
+          </td>
+          <td class="text-center">
+            <p-button icon="pi pi-trash" severity="danger" (onClick)="deleteRow(i)"></p-button>
+          </td>
+        </tr>
+      </ng-template>
 
-    <div class="d-flex justify-content-end gap-2 mt-4">
-        <p-button label="Lưu" severity="success" (onClick)="submit()"></p-button>
-        <p-button label="Đóng" (onClick)="close()"></p-button>
-    </div>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7" class="text-center">Chưa có thông số nào được thêm</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <div class="d-flex justify-content-end gap-2 mt-4">
+    <p-button label="Lưu" severity="success" (onClick)="submit()"></p-button>
+    <p-button label="Đóng" (onClick)="close()"></p-button>
+  </div>
 </div>

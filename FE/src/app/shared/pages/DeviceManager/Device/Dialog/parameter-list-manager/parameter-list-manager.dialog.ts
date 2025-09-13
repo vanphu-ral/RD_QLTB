@@ -3,6 +3,10 @@ import { FormsModule } from '@angular/forms';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { SharedModule } from '../../../../../../share.module';
 import { Util } from '../../../../../core/utils/utils-function';
+import { DeviceParameterUse } from '../../../../../models/DeviceManager/device-parameter-use.model';
+import { ParameterService } from '../../../Parameter/Service/parameter.service';
+import { DeviceParameterUseService } from '../../Service/device-parameter-use.service';
+import _ from 'lodash';
 
 @Component({
     selector: 'app-parameter-list-manager-dialog',
@@ -12,40 +16,55 @@ import { Util } from '../../../../../core/utils/utils-function';
 })
 export class ParameterListManagerDialogComponent {
     data: any;
-    listParameter: any[] = [];
-    listStatus = [
-        { label: 'Tốt', value: 'Tốt' },
-        { label: 'Hỏng', value: 'Hỏng' },
-        { label: 'Đang sửa', value: 'Đang sửa' },
-        { label: 'Đã thanh lý', value: 'Đã thanh lý' },
-    ];
+    listParameterUse: DeviceParameterUse[] = [];
+    listParameters: any[] = []
 
     constructor(
         public ref: DynamicDialogRef,
         public config: DynamicDialogConfig,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private parameterService: ParameterService,
+        private deviceParameterUseService: DeviceParameterUseService
     ) {
         this.data = config.data;
     }
 
     ngOnInit() {
+        this.loadData();
+    }
 
+    loadData() {
+        this.deviceParameterUseService.getBySupplyId(_.get(this.data, 'id')).subscribe({
+            next: (res) => {
+                if (Util.isEmptyArray(res)) {
+                    this.listParameterUse.push({ status: 1 })
+                } else {
+                    this.listParameterUse = res
+                    this.cdr.detectChanges();
+                }
+            }
+        })
+
+        this.parameterService.getAll().subscribe(res => {
+            this.listParameters = res
+            this.cdr.detectChanges();
+        })
     }
 
     addNewRow() {
-        this.listParameter.push({status: 1});
+        this.listParameterUse.push({status: 1});
     }
 
     deleteRow(index: number) {
-        if (this.listParameter[index].id) {
-            // this.supplyDetailService.delete(this.listParameter[index].id as number).subscribe({
-            //     next: () => {
-            //         this.listParameter.splice(index, 1);
-            //         this.loadData();
-            //     }
-            // });
+        if (this.listParameterUse[index].id) {
+            this.deviceParameterUseService.delete(this.listParameterUse[index].id as number).subscribe({
+                next: () => {
+                    this.listParameterUse.splice(index, 1);
+                    this.loadData();
+                }
+            });
         } else {
-            this.listParameter.splice(index, 1);
+            this.listParameterUse.splice(index, 1);
         }
     }
    
@@ -55,7 +74,7 @@ export class ParameterListManagerDialogComponent {
     }
 
     submit() {
-        this.ref.close({ item: this.data });
+        this.ref.close(this.listParameterUse);
     }
 
 }

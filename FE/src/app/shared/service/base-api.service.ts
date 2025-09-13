@@ -1,10 +1,12 @@
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { map, Observable, switchMap } from 'rxjs';
 
 export type CreateEntity<T> = Omit<T, 'id'> & { id?: number | string };
 
 export abstract class BaseApiService<T> {
   private readonly fullBaseUrl: string;
+  private tokenUrl = 'http://192.168.68.90:8080/auth/realms/QLSX/protocol/openid-connect/token';
+  private usersUrl = 'http://192.168.68.90:8080/auth/admin/realms/QLSX/users?first=0&max=2000';
   constructor(protected http: HttpClient, protected baseUrl: string) {
     this.fullBaseUrl = `http://localhost:8081/${this.baseUrl}`;
   }
@@ -48,5 +50,25 @@ export abstract class BaseApiService<T> {
 
   delete(id: number | string): Observable<void> {
     return this.http.delete<void>(`${this.fullBaseUrl}/${id}`, { withCredentials: true });
+  }
+
+  getToken(): Observable<string> {
+    const body = new HttpParams().set('grant_type', 'password').set('client_id', 'iso').set('username', 'admin').set('password', '123321');
+
+    return this.http
+      .post<any>(this.tokenUrl, body.toString(), {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      })
+      .pipe(map(res => res.access_token));
+  }
+
+  getUsers(): Observable<any[]> {
+    return this.getToken().pipe(
+      switchMap(token =>
+        this.http.get<any[]>(this.usersUrl, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      ),
+    );
   }
 }

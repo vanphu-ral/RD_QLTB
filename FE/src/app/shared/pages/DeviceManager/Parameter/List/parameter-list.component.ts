@@ -19,6 +19,7 @@ export class ParameterListComponent {
     { Field: 'id', Header: 'ID', IsHide: true },
     { Field: 'code', Header: 'Mã thông số', IsSearch: true, TypeSearch: 'text' },
     { Field: 'name', Header: 'Tên thông số', IsSearch: true, TypeSearch: 'text' },
+    { Field: 'parameterGroup.name', Header: 'Tên nhóm thông số', IsSearch: true, TypeSearch: 'text' },
     { Field: 'createdBy', Header: 'Người tạo', IsSearch: true, TypeSearch: 'text' },
     { Field: 'createdAt', Header: 'Ngày tạo', IsSearch: true, TypeSearch: 'date' },
     { Field: 'updatedAt', Header: 'Ngày cập nhật', IsSearch: true, TypeSearch: 'date', style: { 'min-width': '150px' } },
