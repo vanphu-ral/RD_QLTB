@@ -89,21 +89,6 @@ public class DeviceParameterUseService {
                 .orElseThrow(NotFoundException::new);
         deviceParameterUseRepository.delete(deviceParameterUse);
     }
-
-    private DeviceParameterUseDTO mapToDTO(final DeviceParameterUse deviceParameterUse,
-            final DeviceParameterUseDTO deviceParameterUseDTO) {
-        deviceParameterUseDTO.setId(deviceParameterUse.getId());
-        deviceParameterUseDTO.setValue(deviceParameterUse.getValue());
-        deviceParameterUseDTO.setMin(deviceParameterUse.getMin());
-        deviceParameterUseDTO.setMax(deviceParameterUse.getMax());
-        deviceParameterUseDTO.setUnit(deviceParameterUse.getUnit());
-        deviceParameterUseDTO.setDescription(deviceParameterUse.getDescription());
-        deviceParameterUseDTO.setStatus(deviceParameterUse.getStatus());
-        deviceParameterUseDTO.setDevice(deviceParameterUse.getDevice() == null ? null : deviceParameterUse.getDevice());
-        deviceParameterUseDTO.setParameter(deviceParameterUse.getParameter() == null ? null : deviceParameterUse.getParameter());
-        return deviceParameterUseDTO;
-    }
-
     private DeviceParameterUseDTO mapToDTO(final DeviceParameterUse deviceParameterUse,
                                            final DeviceParameterUseDTO dto) {
         dto.setId(deviceParameterUse.getId());
@@ -131,9 +116,9 @@ public class DeviceParameterUseService {
             deviceCopy.setLine(null);
             deviceCopy.setBranch(null);
             deviceCopy.setTeam(null);
-            deviceCopy.setDevicePrameters(null);
+            deviceCopy.setDeviceDeviceParameterUses(null);
             deviceCopy.setDeviceDeviceRelocationHistories(null);
-            deviceCopy.setDeviceSupplyUsages(null);
+            deviceCopy.setDeviceDeviceSupplyUsages(null);
             deviceCopy.setDevicePlanDetails(null);
 
             dto.setDevice(deviceCopy);
@@ -147,10 +132,6 @@ public class DeviceParameterUseService {
             paramCopy.setId(deviceParameterUse.getParameter().getId());
             paramCopy.setCode(deviceParameterUse.getParameter().getCode());
             paramCopy.setName(deviceParameterUse.getParameter().getName());
-            paramCopy.setValue(deviceParameterUse.getParameter().getValue());
-            paramCopy.setMin(deviceParameterUse.getParameter().getMin());
-            paramCopy.setMax(deviceParameterUse.getParameter().getMax());
-            paramCopy.setUnit(deviceParameterUse.getParameter().getUnit());
             paramCopy.setDescription(deviceParameterUse.getParameter().getDescription());
             paramCopy.setCreatedAt(deviceParameterUse.getParameter().getCreatedAt());
             paramCopy.setUpdatedAt(deviceParameterUse.getParameter().getUpdatedAt());
@@ -167,7 +148,22 @@ public class DeviceParameterUseService {
 
         return dto;
     }
-
+    private DeviceParameterUse mapToEntity(final DeviceParameterUseDTO deviceParameterUseDTO,
+                                           final DeviceParameterUse deviceParameterUse) {
+        deviceParameterUse.setValue(deviceParameterUseDTO.getValue());
+        deviceParameterUse.setMin(deviceParameterUseDTO.getMin());
+        deviceParameterUse.setMax(deviceParameterUseDTO.getMax());
+        deviceParameterUse.setUnit(deviceParameterUseDTO.getUnit());
+        deviceParameterUse.setDescription(deviceParameterUseDTO.getDescription());
+        deviceParameterUse.setStatus(deviceParameterUseDTO.getStatus());
+        final Device device = deviceParameterUseDTO.getDevice() == null ? null : deviceRepository.findById(deviceParameterUseDTO.getDevice().getId())
+                .orElseThrow(() -> new NotFoundException("device not found"));
+        deviceParameterUse.setDevice(device);
+        final Prameter parameter = deviceParameterUseDTO.getParameter() == null ? null : prameterRepository.findById(deviceParameterUseDTO.getParameter().getId())
+                .orElseThrow(() -> new NotFoundException("parameter not found"));
+        deviceParameterUse.setParameter(parameter);
+        return deviceParameterUse;
+    }
     @EventListener(BeforeDeleteDevice.class)
     public void on(final BeforeDeleteDevice event) {
         final ReferencedException referencedException = new ReferencedException();
