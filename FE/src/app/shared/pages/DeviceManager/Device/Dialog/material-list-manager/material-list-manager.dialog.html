@@ -24,13 +24,13 @@
                     <td>
                         <p-select [(ngModel)]="row.supply" [options]="listSupply" optionLabel="name" [fluid]="true"
                             [showClear]="true" [appendTo]="'body'" (onChange)="onChangeSupply($event, i)"
-                            id="supply-{{ i }}" name="supply-{{ i }}">
+                            id="supply-{{ i }}" name="supply-{{ i }}" dataKey="id">
                         </p-select>
                     </td>
                     <td>
                         <p-select [(ngModel)]="row.serial" [options]="listSerial" optionLabel="serial" [fluid]="true"
                             [showClear]="true" [appendTo]="'body'" (onChange)="serial = $event.value"
-                            id="serial-{{ i }}" name="serial-{{ i }}">
+                            id="serial-{{ i }}" name="serial-{{ i }}" dataKey="serial">
                         </p-select>
                     </td>
                     <td>
@@ -45,7 +45,7 @@
                         </p-inputnumber>
                     </td>
                     <td>
-                        <input type="text" pInputText [(ngModel)]="row.note" />
+                        <input type="text" pInputText [(ngModel)]="row.description" />
                     </td>
                     <td class="text-center">
                         <p-button icon="pi pi-refresh" severity="info" (onClick)="deleteRow(i)">

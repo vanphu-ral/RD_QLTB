@@ -28,6 +28,7 @@ export class MaterialListManagerDialogComponent {
         public supplyService: SupplyService,
         public supplyDetailService: SupplyDetailService,
         public deviceSupplyUseService: DeviceSupplyUseService,
+        private cdr: ChangeDetectorRef
     ) {
         this.data = config.data;
     }
@@ -37,11 +38,34 @@ export class MaterialListManagerDialogComponent {
     }
 
     loadData() {
-         this.supplyService.getAll().subscribe({
+        this.deviceSupplyUseService.getBySupplyId(_.get(this.data, 'id')).subscribe({
+            next: (res) => {
+                if(Util.isEmptyArray(res)) {
+                    this.listMaterial.push({status: 1})
+                }else {
+                    this.listMaterial = res
+                    this.cdr.detectChanges();
+                }
+            }
+        })
+        this.supplyService.getAll().subscribe({
             next: (res) => {
                 this.listSupply = res
+                this.cdr.detectChanges();
             }
         });
+        this.supplyDetailService.getAll().subscribe({
+            next: (res) => {
+                this.listSerial = res
+                this.listMaterial = _.map(this.listMaterial, item => {
+                    return {
+                        ...item,
+                        serial: _.find(this.listSerial, seri => seri.serial == item.serial)
+                    }
+                })
+                this.cdr.detectChanges();
+            }
+        })
     }
 
     onChangeSupply(event: any, index: number) {
@@ -49,6 +73,7 @@ export class MaterialListManagerDialogComponent {
         this.supplyDetailService.getBySupplyId(supplyId).subscribe({
             next: (res) => {
                 this.listSerial = res;
+                this.cdr.detectChanges();
             }
         });
     }

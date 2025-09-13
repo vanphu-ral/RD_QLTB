@@ -25,19 +25,7 @@ public class DeviceSupplyUsageDTO {
 
     private Integer quantityUsed;
 
-    private String note;
-
-    @NotNull
-    private LocalDateTime createdAt;
-
-    @NotNull
-    private LocalDateTime updatedAt;
-
-    @Size(max = 255)
-    private String createdBy;
-
-    @Size(max = 255)
-    private String updatedBy;
+    private String description;
 
     private Integer status;
 

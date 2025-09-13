@@ -16,6 +16,9 @@ import { TeamService } from '../../../Categories/Team/Service/team.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MaterialListManagerDialogComponent } from '../Dialog/material-list-manager/material-list-manager.dialog';
 import { ParameterListManagerDialogComponent } from '../Dialog/parameter-list-manager/parameter-list-manager.dialog';
+import { DeviceSupplyUseService } from '../Service/device-supply-use.service';
+import { DeviceSupplyUse } from '../../../../models/DeviceManager/device-supply-use.model';
+import _ from 'lodash';
 
 @Component({
   selector: 'app-device-detail',
@@ -37,7 +40,7 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
     { name: "Quý", code: "Quý" },
     { name: "Năm", code: "Năm" }
   ];
-  listMaterial: any[] = [];
+  listMaterial: DeviceSupplyUse[] = [];
   listUsers: any[] = [];
   ref?: DynamicDialogRef;
 
@@ -48,7 +51,8 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
     private branchService: BranchService,
     private lineService: LineService,
     private teamService: TeamService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private deviceSupplyUseService: DeviceSupplyUseService
   ) {
     super(apiService);
   }
@@ -76,16 +80,16 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
     }
   }
 
-  openMaterialDialog(row: any) {
+  openMaterialDialog(data: any) {
     this.ref = this.dialogService.open(MaterialListManagerDialogComponent, {
       header: 'Danh sách vật tư sử dụng trong thiết bị',
       width: 'auto',
       modal: true,
-      data: row,
+      data: this.model,
     });
     this.ref.onClose.subscribe((result) => {
       if (result) {
-        this.listMaterial = result;
+        this.listMaterial = result
         console.log('Data trả về:', result);
       }
     });
@@ -116,9 +120,18 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
       if (this.isAddMode) {
         this.apiService.create(this.model).subscribe({
           next: (id) => {
-            // id bản ghi mới tạo
-            console.log(id)
-            Util.ConfirmMessage('Thêm mới thành công', 'success');
+            this.model.id = id as number
+            this.listMaterial = _.map(this.listMaterial, item => {
+              return {
+                ...item,
+                device: this.model
+              }
+            })
+            this.deviceSupplyUseService.createList(this.listMaterial).subscribe({
+              next: () => {
+                Util.ConfirmMessage('Thêm mới thành công', 'success');
+              }
+            })
           },
           error: () => {
             Util.ConfirmMessage('Thêm mới thất bại', 'error');
@@ -127,7 +140,17 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
       } else {
         this.apiService.update(this.model.id!, this.model).subscribe({
           next: () => {
-            Util.ConfirmMessage('Cập nhật thành công', 'success');
+            this.listMaterial = _.map(this.listMaterial, item => {
+              return {
+                ...item,
+                device: this.model
+              }
+            })
+            this.deviceSupplyUseService.createList(this.listMaterial).subscribe({
+              next: () => {
+                Util.ConfirmMessage('Thêm mới thành công', 'success');
+              }
+            })
           },
           error: () => {
             Util.ConfirmMessage('Cập nhật thất bại', 'error');

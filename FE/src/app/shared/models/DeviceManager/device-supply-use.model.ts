@@ -3,7 +3,7 @@ export class DeviceSupplyUse {
     usageDate?: Date;
     serial?: string;
     quantityUsed?: number;
-    note?: string;
+    description?: string;
     createdAt?: Date;
     updatedAt?: Date;
     createdBy?: string;

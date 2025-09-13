@@ -37,19 +37,7 @@ public class DeviceSupplyUsage {
     private Integer quantityUsed;
 
     @Column(columnDefinition = "longtext")
-    private String note;
-
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(nullable = false)
-    private LocalDateTime updatedAt;
-
-    @Column
-    private String createdBy;
-
-    @Column
-    private String updatedBy;
+    private String description;
 
     @Column
     private Integer status;

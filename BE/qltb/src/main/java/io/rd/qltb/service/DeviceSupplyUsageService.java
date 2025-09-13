@@ -96,12 +96,8 @@ public class DeviceSupplyUsageService {
         deviceSupplyUsageDTO.setId(deviceSupplyUsage.getId());
         deviceSupplyUsageDTO.setUsageDate(deviceSupplyUsage.getUsageDate());
         deviceSupplyUsageDTO.setSerial(deviceSupplyUsage.getSerial());
-        deviceSupplyUsageDTO.setNote(deviceSupplyUsage.getNote());
+        deviceSupplyUsageDTO.setDescription(deviceSupplyUsage.getDescription());
         deviceSupplyUsageDTO.setQuantityUsed(deviceSupplyUsage.getQuantityUsed());
-        deviceSupplyUsageDTO.setCreatedAt(deviceSupplyUsage.getCreatedAt());
-        deviceSupplyUsageDTO.setUpdatedAt(deviceSupplyUsage.getUpdatedAt());
-        deviceSupplyUsageDTO.setCreatedBy(deviceSupplyUsage.getCreatedBy());
-        deviceSupplyUsageDTO.setUpdatedBy(deviceSupplyUsage.getUpdatedBy());
         deviceSupplyUsageDTO.setStatus(deviceSupplyUsage.getStatus());
 
         // Sao chép Device có kiểm soát
@@ -162,12 +158,8 @@ public class DeviceSupplyUsageService {
             final DeviceSupplyUsage deviceSupplyUsage) {
         deviceSupplyUsage.setUsageDate(deviceSupplyUsageDTO.getUsageDate());
         deviceSupplyUsage.setSerial(deviceSupplyUsageDTO.getSerial());
-        deviceSupplyUsage.setNote(deviceSupplyUsageDTO.getNote());
+        deviceSupplyUsage.setDescription(deviceSupplyUsageDTO.getDescription());
         deviceSupplyUsage.setQuantityUsed(deviceSupplyUsageDTO.getQuantityUsed());
-        deviceSupplyUsage.setCreatedAt(deviceSupplyUsageDTO.getCreatedAt());
-        deviceSupplyUsage.setUpdatedAt(deviceSupplyUsageDTO.getUpdatedAt());
-        deviceSupplyUsage.setCreatedBy(deviceSupplyUsageDTO.getCreatedBy());
-        deviceSupplyUsage.setUpdatedBy(deviceSupplyUsageDTO.getUpdatedBy());
         deviceSupplyUsage.setStatus(deviceSupplyUsageDTO.getStatus());
         final Device device = deviceSupplyUsageDTO.getDevice() == null ? null : deviceRepository.findById(deviceSupplyUsageDTO.getDevice().getId())
                 .orElseThrow(() -> new NotFoundException("device not found"));
