@@ -3,10 +3,10 @@ package io.rd.qltb.service;
 import io.rd.qltb.domain.ApprovalGroup;
 import io.rd.qltb.domain.ApprovalWorkflow;
 import io.rd.qltb.domain.GroupApprovalName;
-import io.rd.qltb.events.BeforeDeleteApprovalGroup;
 import io.rd.qltb.events.BeforeDeleteApprovalWorkflow;
 import io.rd.qltb.model.ApprovalGroupDTO;
 import io.rd.qltb.repos.ApprovalGroupRepository;
+import io.rd.qltb.repos.ApprovalGroupUserRepository;
 import io.rd.qltb.repos.ApprovalWorkflowRepository;
 import io.rd.qltb.repos.GroupApprovalNameRepository;
 import io.rd.qltb.util.NotFoundException;
@@ -24,15 +24,17 @@ public class ApprovalGroupService {
     private final ApprovalGroupRepository approvalGroupRepository;
     private final ApprovalWorkflowRepository approvalWorkflowRepository;
     private final GroupApprovalNameRepository groupApprovalNameRepository;
+    private final ApprovalGroupUserRepository approvalGroupUserRepository;
     private final ApplicationEventPublisher publisher;
 
     public ApprovalGroupService(final ApprovalGroupRepository approvalGroupRepository,
-            final ApprovalWorkflowRepository approvalWorkflowRepository,
-            final GroupApprovalNameRepository groupApprovalNameRepository,
-            final ApplicationEventPublisher publisher) {
+                                final ApprovalWorkflowRepository approvalWorkflowRepository,
+                                final GroupApprovalNameRepository groupApprovalNameRepository,
+                                ApprovalGroupUserRepository approvalGroupUserRepository, final ApplicationEventPublisher publisher) {
         this.approvalGroupRepository = approvalGroupRepository;
         this.approvalWorkflowRepository = approvalWorkflowRepository;
         this.groupApprovalNameRepository = groupApprovalNameRepository;
+        this.approvalGroupUserRepository = approvalGroupUserRepository;
         this.publisher = publisher;
     }
 
@@ -63,10 +65,13 @@ public class ApprovalGroupService {
     }
 
     public void delete(final Long id) {
-        final ApprovalGroup approvalGroup = approvalGroupRepository.findById(id)
-                .orElseThrow(NotFoundException::new);
-        publisher.publishEvent(new BeforeDeleteApprovalGroup(id));
-        approvalGroupRepository.delete(approvalGroup);
+//        final ApprovalGroup approvalGroup = approvalGroupRepository.findById(id)
+//                .orElseThrow(NotFoundException::new);
+//        publisher.publishEvent(new BeforeDeleteApprovalGroup(id));
+        approvalGroupUserRepository.deleteItemByGroupId(id);
+        approvalGroupUserRepository.flush(); // đảm bảo xóa được thực hiện ngay
+
+        approvalGroupRepository.deleteById(id);
     }
 
     private ApprovalGroupDTO mapToDTO(final ApprovalGroup approvalGroup, final ApprovalGroupDTO approvalGroupDTO) {
