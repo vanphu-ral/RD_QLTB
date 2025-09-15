@@ -1,8 +1,11 @@
 package io.rd.qltb.service;
 
+import io.rd.qltb.domain.ApprovalGroup;
 import io.rd.qltb.domain.ApprovalWorkflow;
 import io.rd.qltb.events.BeforeDeleteApprovalWorkflow;
 import io.rd.qltb.model.ApprovalWorkflowDTO;
+import io.rd.qltb.repos.ApprovalGroupRepository;
+import io.rd.qltb.repos.ApprovalGroupUserRepository;
 import io.rd.qltb.repos.ApprovalWorkflowRepository;
 import io.rd.qltb.util.NotFoundException;
 import java.util.List;
@@ -16,11 +19,15 @@ public class ApprovalWorkflowService {
 
     private final ApprovalWorkflowRepository approvalWorkflowRepository;
     private final ApplicationEventPublisher publisher;
+    private final ApprovalGroupRepository approvalGroupRepository;
+    private final ApprovalGroupUserRepository approvalGroupUserRepository;
 
     public ApprovalWorkflowService(final ApprovalWorkflowRepository approvalWorkflowRepository,
-            final ApplicationEventPublisher publisher) {
+                                   final ApplicationEventPublisher publisher, ApprovalGroupRepository approvalGroupRepository, ApprovalGroupUserRepository approvalGroupUserRepository) {
         this.approvalWorkflowRepository = approvalWorkflowRepository;
         this.publisher = publisher;
+        this.approvalGroupRepository = approvalGroupRepository;
+        this.approvalGroupUserRepository = approvalGroupUserRepository;
     }
 
     public List<ApprovalWorkflowDTO> findAll() {
@@ -52,6 +59,11 @@ public class ApprovalWorkflowService {
     public void delete(final Long id) {
         final ApprovalWorkflow approvalWorkflow = approvalWorkflowRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
+       List<ApprovalGroup> approvalGroups = approvalGroupRepository.findByWorkflowId(id);
+       for (ApprovalGroup approvalGroup : approvalGroups) {
+              approvalGroupUserRepository.deleteByGroupId(approvalGroup.getId());
+       }
+         approvalGroupRepository.deleteByWorkflowId(id);
         publisher.publishEvent(new BeforeDeleteApprovalWorkflow(id));
         approvalWorkflowRepository.delete(approvalWorkflow);
     }
