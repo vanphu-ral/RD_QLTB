@@ -99,5 +99,16 @@ export const routes: Routes = [
         path: 'SampleReports',
         component: AppLayout,
         loadChildren: () => import('./shared/pages/PlanManager/SampleReport/sample-report.routes').then(m => m.default)
+    },
+    // Approval Manager
+    {
+        path: 'ApprovalGroupUsers',
+        component: AppLayout,
+        loadChildren: () => import('./shared/pages/ApprovalManager/GroupApprovalName/group-approval-name.routes').then(m => m.default)
+    },
+    {
+        path: 'ApprovalWorkflows',
+        component: AppLayout,
+        loadChildren: () => import('./shared/pages/ApprovalManager/ApprovalWorkflow/approval-workflow.routes').then(m => m.default)
     }
 ];

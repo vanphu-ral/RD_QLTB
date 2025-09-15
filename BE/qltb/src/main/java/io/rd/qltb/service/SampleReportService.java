@@ -1,10 +1,14 @@
 package io.rd.qltb.service;
 
+import io.rd.qltb.domain.ApprovalWorkflow;
+import io.rd.qltb.domain.Branch;
 import io.rd.qltb.domain.DeviceGroup;
 import io.rd.qltb.domain.SampleReport;
 import io.rd.qltb.events.BeforeDeleteDeviceGroup;
 import io.rd.qltb.events.BeforeDeleteSampleReport;
 import io.rd.qltb.model.SampleReportDTO;
+import io.rd.qltb.repos.ApprovalWorkflowRepository;
+import io.rd.qltb.repos.BranchRepository;
 import io.rd.qltb.repos.DeviceGroupRepository;
 import io.rd.qltb.repos.SampleReportRepository;
 import io.rd.qltb.util.NotFoundException;
@@ -21,13 +25,19 @@ public class SampleReportService {
 
     private final SampleReportRepository sampleReportRepository;
     private final DeviceGroupRepository deviceGroupRepository;
+    private final BranchRepository branchRepository;
+    private final ApprovalWorkflowRepository approvalWorkflowRepository;
     private final ApplicationEventPublisher publisher;
 
     public SampleReportService(final SampleReportRepository sampleReportRepository,
             final DeviceGroupRepository deviceGroupRepository,
+            final BranchRepository branchRepository,
+            final ApprovalWorkflowRepository approvalWorkflowRepository,
             final ApplicationEventPublisher publisher) {
         this.sampleReportRepository = sampleReportRepository;
         this.deviceGroupRepository = deviceGroupRepository;
+        this.branchRepository = branchRepository;
+        this.approvalWorkflowRepository = approvalWorkflowRepository;
         this.publisher = publisher;
     }
 
@@ -71,6 +81,7 @@ public class SampleReportService {
         dto.setName(sampleReport.getName());
         dto.setFrequency(sampleReport.getFrequency());
         dto.setType(sampleReport.getType());
+        dto.setDocumentNumber(sampleReport.getDocumentNumber());
         dto.setDescription(sampleReport.getDescription());
         dto.setCreatedAt(sampleReport.getCreatedAt());
         dto.setUpdatedAt(sampleReport.getUpdatedAt());
@@ -102,6 +113,44 @@ public class SampleReportService {
             dto.setDeviceGroup(null);
         }
 
+        if (sampleReport.getBranch() != null) {
+            Branch branchCopy = new Branch();
+            branchCopy.setId(sampleReport.getBranch().getId());
+            branchCopy.setCode(sampleReport.getBranch().getCode());
+            branchCopy.setName(sampleReport.getBranch().getName());
+            branchCopy.setDescription(sampleReport.getBranch().getDescription());
+            branchCopy.setCreatedAt(sampleReport.getBranch().getCreatedAt());
+            branchCopy.setUpdatedAt(sampleReport.getBranch().getUpdatedAt());
+            branchCopy.setCreatedBy(sampleReport.getBranch().getCreatedBy());
+            branchCopy.setUpdatedBy(sampleReport.getBranch().getUpdatedBy());
+            branchCopy.setStatus(sampleReport.getBranch().getStatus());
+            branchCopy.setBranchTeams(null);
+            branchCopy.setBranchDevices(null);
+            dto.setBranch(branchCopy);
+        } else {
+            dto.setBranch(null);
+        }
+
+        if (sampleReport.getApprovalWorkflow() != null) {
+            ApprovalWorkflow workflowCopy = new ApprovalWorkflow();
+            workflowCopy.setId(sampleReport.getApprovalWorkflow().getId());
+            workflowCopy.setCode(sampleReport.getApprovalWorkflow().getCode());
+            workflowCopy.setName(sampleReport.getApprovalWorkflow().getName());
+            workflowCopy.setDescription(sampleReport.getApprovalWorkflow().getDescription());
+            workflowCopy.setCreatedAt(sampleReport.getApprovalWorkflow().getCreatedAt());
+            workflowCopy.setUpdatedAt(sampleReport.getApprovalWorkflow().getUpdatedAt());
+            workflowCopy.setCreatedBy(sampleReport.getApprovalWorkflow().getCreatedBy());
+            workflowCopy.setUpdatedBy(sampleReport.getApprovalWorkflow().getUpdatedBy());
+            workflowCopy.setStatus(sampleReport.getApprovalWorkflow().getStatus());
+
+            // tránh vòng lặp
+            workflowCopy.setWorkflowApprovalGroups(null);
+
+            dto.setApprovalWorkflow(workflowCopy);
+        } else {
+            dto.setApprovalWorkflow(null);
+        }
+
         return dto;
     }
 
@@ -112,6 +161,7 @@ public class SampleReportService {
         sampleReport.setName(sampleReportDTO.getName());
         sampleReport.setFrequency(sampleReportDTO.getFrequency());
         sampleReport.setType(sampleReportDTO.getType());
+        sampleReport.setDocumentNumber(sampleReportDTO.getDocumentNumber());
         sampleReport.setDescription(sampleReportDTO.getDescription());
         sampleReport.setCreatedAt(sampleReportDTO.getCreatedAt());
         sampleReport.setUpdatedAt(sampleReportDTO.getUpdatedAt());
@@ -121,6 +171,16 @@ public class SampleReportService {
         final DeviceGroup deviceGroup = sampleReportDTO.getDeviceGroup() == null ? null : deviceGroupRepository.findById(sampleReportDTO.getDeviceGroup().getId())
                 .orElseThrow(() -> new NotFoundException("deviceGroup not found"));
         sampleReport.setDeviceGroup(deviceGroup);
+
+        final Branch branch = sampleReportDTO.getBranch() == null ? null :
+                branchRepository.findById(sampleReportDTO.getBranch().getId())
+                        .orElseThrow(() -> new NotFoundException("branch not found"));
+        sampleReport.setBranch(branch);
+
+        final ApprovalWorkflow approvalWorkflow = sampleReportDTO.getApprovalWorkflow() == null ? null :
+                approvalWorkflowRepository.findById(sampleReportDTO.getApprovalWorkflow().getId())
+                        .orElseThrow(() -> new NotFoundException("approvalWorkflow not found"));
+        sampleReport.setApprovalWorkflow(approvalWorkflow);
         return sampleReport;
     }
 

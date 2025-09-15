@@ -1,5 +1,7 @@
 package io.rd.qltb.model;
 
+import io.rd.qltb.domain.ApprovalWorkflow;
+import io.rd.qltb.domain.Branch;
 import io.rd.qltb.domain.DeviceGroup;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -28,6 +30,9 @@ public class SampleReportDTO {
     private String type;
 
     @Size(max = 255)
+    private String documentNumber;
+
+    @Size(max = 255)
     private String description;
 
     @NotNull
@@ -46,5 +51,11 @@ public class SampleReportDTO {
 
     @NotNull
     private DeviceGroup deviceGroup;
+
+    @NotNull
+    private Branch branch;
+
+    @NotNull
+    private ApprovalWorkflow approvalWorkflow;
 
 }

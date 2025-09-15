@@ -29,9 +29,6 @@ public class ApprovalGroup {
     private Long id;
 
     @Column
-    private Long groupApprNameId;
-
-    @Column
     private Integer level;
 
     @Column(columnDefinition = "tinyint", length = 1)
@@ -55,6 +52,10 @@ public class ApprovalGroup {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workflow_id")
     private ApprovalWorkflow workflow;
+
+    @ManyToOne(fetch =  FetchType.LAZY)
+    @JoinColumn(name = "group_appr_name_id")
+    private GroupApprovalName groupApprovalName;
 
     @OneToMany(mappedBy = "group")
     private Set<ApprovalGroupUser> groupApprovalGroupUsers = new HashSet<>();

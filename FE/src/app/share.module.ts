@@ -29,6 +29,9 @@ import { FileUpload } from 'primeng/fileupload';
 import { CardModule } from 'primeng/card';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { DateConvertDirective } from './shared/directive/date-convert.directive';
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { TagModule } from 'primeng/tag';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @NgModule({
   imports: [
@@ -59,7 +62,10 @@ import { DateConvertDirective } from './shared/directive/date-convert.directive'
     FileUpload,
     CardModule,
     MultiSelectModule,
-    DateConvertDirective 
+    DateConvertDirective,
+    SplitButtonModule,
+    TagModule,
+    CheckboxModule
   ],
   exports: [
     CommonModule,
@@ -89,7 +95,10 @@ import { DateConvertDirective } from './shared/directive/date-convert.directive'
     FileUpload,
     CardModule,
     MultiSelectModule,
-    DateConvertDirective
+    DateConvertDirective,
+    SplitButtonModule,
+    TagModule,
+    CheckboxModule
   ],
   providers: [DialogService, MessageService]
 })

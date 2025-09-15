@@ -61,7 +61,7 @@ public class ApprovalGroupUserService {
     private ApprovalGroupUserDTO mapToDTO(final ApprovalGroupUser approvalGroupUser,
                                           final ApprovalGroupUserDTO approvalGroupUserDTO) {
         approvalGroupUserDTO.setId(approvalGroupUser.getId());
-        approvalGroupUserDTO.setUserId(approvalGroupUser.getUserId());
+        approvalGroupUserDTO.setUsername(approvalGroupUser.getUsername());
         approvalGroupUserDTO.setStatus(approvalGroupUser.getStatus());
         approvalGroupUserDTO.setTimeSign(approvalGroupUser.getTimeSign());
         approvalGroupUserDTO.setCreatedAt(approvalGroupUser.getCreatedAt());
@@ -71,7 +71,6 @@ public class ApprovalGroupUserService {
         if (approvalGroupUser.getGroup() != null) {
             ApprovalGroup groupCopy = new ApprovalGroup();
             groupCopy.setId(approvalGroupUser.getGroup().getId());
-            groupCopy.setGroupApprNameId(approvalGroupUser.getGroup().getGroupApprNameId());
             groupCopy.setLevel(approvalGroupUser.getGroup().getLevel());
             groupCopy.setIsRequired(approvalGroupUser.getGroup().getIsRequired());
             groupCopy.setCreatedAt(approvalGroupUser.getGroup().getCreatedAt());
@@ -95,7 +94,7 @@ public class ApprovalGroupUserService {
 
     private ApprovalGroupUser mapToEntity(final ApprovalGroupUserDTO approvalGroupUserDTO,
             final ApprovalGroupUser approvalGroupUser) {
-        approvalGroupUser.setUserId(approvalGroupUserDTO.getUserId());
+        approvalGroupUser.setUsername(approvalGroupUserDTO.getUsername());
         approvalGroupUser.setStatus(approvalGroupUserDTO.getStatus());
         approvalGroupUser.setTimeSign(approvalGroupUserDTO.getTimeSign());
         approvalGroupUser.setCreatedAt(approvalGroupUserDTO.getCreatedAt());

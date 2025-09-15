@@ -1,41 +1,26 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { SharedModule } from '../../../../../share.module';
 import { CommonModule } from '@angular/common';
 import { BasePageComponent } from '../../../../core/base-page-component/base-page.component';
-import { SampleReportService } from '../Service/sample-report.service';
+import { GroupApprovalNameService } from '../Service/group-approval-name.service';
 import { Util } from '../../../../core/utils/utils-function';
-import { SampleReport } from '../../../../models/PlanManger/sample-report.model';
-import { BranchService } from '../../../Categories/Branch/Service/branch.service';
+import { GroupApprovalName } from '../../../../models/ApprovalManager/group-approval-name.model';
 
 @Component({
-  selector: 'app-sample-report-detail',
+  selector: 'app-group-approval-name-detail',
   standalone: true,
   imports: [SharedModule, CommonModule],
-  templateUrl: './sample-report-detail.component.html',
-  styleUrls: ['./sample-report-detail.component.scss']
+  templateUrl: './group-approval-name-detail.component.html',
+  styleUrls: ['./group-approval-name-detail.component.scss']
 })
-export class SampleReportDetailComponent extends BasePageComponent<SampleReport> {
+export class GroupApprovalNameDetailComponent extends BasePageComponent<GroupApprovalName> {
 
-  listFrequencies: any[] = ["Ngày", "Tuần", "Tháng", "Quỹ", "6 Tháng", "Năm"];
-  listTypes: any[] = ["Kiểm tra", "Bảo trì", "Sửa chữa"];
-  listBranchs: any[] = [];
-  listApprovalWorkflow: any[] = []
-
+  listFactories: any[] = [];
 
   constructor(
-    protected override apiService: SampleReportService,
-    private branchService: BranchService
+    protected override apiService: GroupApprovalNameService,
   ) {
     super(apiService);
-  }
-
-  override ngOnInit(): void {
-    super.ngOnInit();
-    this.branchService.getAll().subscribe(res => {
-      this.listBranchs = res;
-      this.cdr.detectChanges();
-    })
   }
 
 

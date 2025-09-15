@@ -40,6 +40,9 @@ public class SampleReport {
     @Column
     private String type;
 
+    @Column
+    private String documentNumber;
+
     @Column(length = 500, name = "\"description\"")
     private String description;
 
@@ -67,5 +70,13 @@ public class SampleReport {
 
     @OneToMany(mappedBy = "sampleReport")
     private Set<KeyMapping> sampleReportKeyMappings = new HashSet<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "branch_id", nullable = false)
+    private Branch branch;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "approval_workflow_id", nullable = false)
+    private ApprovalWorkflow approvalWorkflow;
 
 }

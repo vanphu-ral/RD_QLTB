@@ -2,6 +2,7 @@ package io.rd.qltb.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.rd.qltb.domain.ApprovalWorkflow;
+import io.rd.qltb.domain.GroupApprovalName;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import lombok.Getter;
@@ -14,7 +15,6 @@ public class ApprovalGroupDTO {
 
     private Long id;
 
-    private Long groupApprNameId;
 
     private Integer level;
 
@@ -34,5 +34,7 @@ public class ApprovalGroupDTO {
     private Integer status;
 
     private ApprovalWorkflow workflow;
+
+    private GroupApprovalName groupApprovalName;
 
 }

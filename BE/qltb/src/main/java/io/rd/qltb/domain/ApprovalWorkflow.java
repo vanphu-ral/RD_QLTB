@@ -52,4 +52,7 @@ public class ApprovalWorkflow {
     @OneToMany(mappedBy = "workflow")
     private Set<ApprovalGroup> workflowApprovalGroups = new HashSet<>();
 
+    @OneToMany(mappedBy = "approvalWorkflow")
+    private Set<SampleReport> workflowSampleReports = new HashSet<>();
+
 }

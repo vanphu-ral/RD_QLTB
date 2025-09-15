@@ -1,0 +1,102 @@
+<div>
+  <h2>{{ isAddMode ? 'Thêm mới kịch bản phê duyệt' : (isViewMode ? 'Xem chi tiết kịch bản phê duyệt' : 'Sửa kịch bản phê duyệt') }}</h2>
+
+  <form *ngIf="model">
+    <div class="row my-3">
+      <div class="col-6">
+        <p-floatlabel variant="on">
+          <input pInputText id="code" name="code" [(ngModel)]="model.code" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
+          <label for="code">Mã kịch bản phê duyệt</label>
+        </p-floatlabel>
+      </div>
+      <div class="col-6">
+        <p-floatlabel variant="on">
+          <input pInputText id="name" name="name" [(ngModel)]="model.name" [invalid]="!model.name" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
+          <label for="name">Tên kịch bản phê duyệt</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <div class="approval-section my-3">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h5 class="m-0 text-900 font-bold">Quản lý Nhóm Phê duyệt</h5>
+        <p-button *ngIf="!isViewMode" label="Thêm Nhóm" icon="pi pi-plus-circle" (click)="addNewApprovalGroup()"
+          styleClass="p-button-success p-button-outlined"></p-button>
+      </div>
+    
+      <div *ngFor="let group of model.approvalGroups; let i = index">
+        <div class="group-box my-4">
+          <div class="header-group-name row">
+            <div class="col-12">
+              <p-floatlabel variant="on">
+                <p-select [(ngModel)]="group.groupApprovalName" [options]="listApprovalGroupsName" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
+                  [showClear]="true" [appendTo]="'body'" id="groupApprovalName" name="groupApprovalName-{{i}}" [invalid]="!group.groupApprovalName">
+                </p-select>
+                <label for="groupApprovalName">Tên nhóm phê duyệt</label>
+              </p-floatlabel>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-10">
+              <p-card>
+                <ng-template #header>
+                  <div class="d-flex align-items-center justify-content-between p-3">
+                    <h6>Danh sách người phê duyệt</h6>
+                    <p-button *ngIf="!isViewMode" icon="pi pi-user-plus" (onClick)="addNewApprovalUser(i)"
+                      styleClass="p-button-success p-button-outlined"></p-button>
+                  </div>
+                </ng-template>
+                <div class="content-group row mb-3" *ngFor="let user of group.approvalGroupUser; let j = index">
+                  <div class="col-11">
+                    <p-floatlabel variant="on">
+                      <p-select [(ngModel)]="user.username" [filter]="true" [options]="listUsers" optionLabel="name" optionValue="username" [fluid]="true" [disabled]="isViewMode"
+                        [showClear]="true" [appendTo]="'body'" id="username" name="username-{{i}}-{{j}}" [invalid]="!user.username">
+                      </p-select>
+                      <label for="username">Người phê duyệt</label>
+                    </p-floatlabel>
+                  </div>
+                  <div class="col-1">
+                    <p-button icon="pi pi-trash" styleClass="p-button-sm p-button-rounded p-button-danger m-1" (onClick)="removeApprovalUser(i, j)"></p-button>
+                  </div>
+                </div>
+              </p-card>
+            </div>
+            <div class="col-2">
+              <div class="d-flex h-100 w-100 align-items-center justify-content-around">
+                <p-checkbox inputId="isRequired" [(ngModel)]="group.isRequired" [binary]="true"  name="isRequired-{{i}}" />
+                <label for="isRequired" class="">Bắt buộc</label>
+                <p-button icon="pi pi-trash" styleClass="p-button-sm p-button-rounded p-button-danger m-1" (onClick)="removeApprovalGroup(i)"></p-button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row my-3">
+      <div class="col-12">
+        <p-fieldset legend="Mô tả" class="custom-fieldset">
+          <p-editor [(ngModel)]="model.description" name="description" [style]="{ height: '150px' }" [readonly]="isViewMode"></p-editor>
+        </p-fieldset>
+      </div>
+    </div>
+
+    <div class="row my-3">
+      <div class="col-12">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.status" [options]="listStatus" optionLabel="label" [fluid]="true" [disabled]="isViewMode"
+            optionValue="value" [showClear]="true" [appendTo]="'body'" id="status" name="status" [invalid]="!model.status">
+          </p-select>
+          <label for="status">Trạng thái</label>
+        </p-floatlabel>
+      </div>
+    </div>
+    
+    <div class="d-flex justify-content-end mt-3">
+      <p-button label="Quay lại" severity="info" (click)="onBack()" icon="pi pi-arrow-left" class="me-2"></p-button>
+      <p-button *ngIf="!isViewMode" label="Lưu" icon="pi pi-save" severity="success" [disabled]="!model.name" class="w-full max-w-[17.35rem]" (click)="save()"
+            styleClass="w-full mx-auto" />
+    </div>
+  </form>
+</div>

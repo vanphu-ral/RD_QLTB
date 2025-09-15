@@ -1,17 +1,14 @@
-export class SampleReport {
+import { ApprovalGroup } from "./approval-group.model";
+
+export class ApprovalWorkflow {
     id?: number;
     name?: string;
     code?: string;
-    frequency?: string;
-    type?: string
     description?: string;
-    documentNumber?: string
     createdBy?: string;
     updatedBy?: string;
     createdAt?: Date;
     updatedAt?: Date;
     status?: number;
-    branch?: any;
-    deviceGroup?: any
-    approvalWorkflow?: any
+    approvalGroups?: ApprovalGroup[] = [];
 }

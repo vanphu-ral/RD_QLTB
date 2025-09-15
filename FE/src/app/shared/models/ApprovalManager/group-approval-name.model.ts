@@ -1,17 +1,11 @@
-export class SampleReport {
+export class GroupApprovalName {
     id?: number;
     name?: string;
     code?: string;
-    frequency?: string;
-    type?: string
     description?: string;
-    documentNumber?: string
     createdBy?: string;
     updatedBy?: string;
     createdAt?: Date;
     updatedAt?: Date;
     status?: number;
-    branch?: any;
-    deviceGroup?: any
-    approvalWorkflow?: any
 }

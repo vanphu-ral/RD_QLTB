@@ -27,7 +27,7 @@ public class ApprovalGroupUser {
     private Long id;
 
     @Column(nullable = false)
-    private Long userId;
+    private String username;
 
     @Column
     private String status;

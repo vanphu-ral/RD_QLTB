@@ -65,4 +65,7 @@ public class Branch {
     @OneToMany(mappedBy = "branch")
     private Set<Device> branchDevices = new HashSet<>();
 
+    @OneToMany(mappedBy = "branch")
+    private Set<SampleReport> sampleReports = new HashSet<>();
+
 }

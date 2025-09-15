@@ -14,7 +14,8 @@ public class GroupApprovalNameDTO {
     private Long id;
 
     @NotNull
-    private Long code;
+    @Size(max = 50)
+    private String code;
 
     @NotNull
     @Size(max = 255)

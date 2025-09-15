@@ -1,12 +1,11 @@
 package io.rd.qltb.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,8 +21,8 @@ public class GroupApprovalName {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Long code;
+    @Column(nullable = false, length = 50)
+    private String code;
 
     @Column(nullable = false)
     private String name;
@@ -45,5 +44,8 @@ public class GroupApprovalName {
 
     @Column
     private Integer status;
+
+    @OneToMany(mappedBy = "groupApprovalName")
+    private Set<ApprovalGroup> approvalGroups = new HashSet<>();
 
 }

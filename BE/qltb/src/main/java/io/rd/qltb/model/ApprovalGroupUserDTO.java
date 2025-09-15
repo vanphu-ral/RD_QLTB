@@ -16,7 +16,7 @@ public class ApprovalGroupUserDTO {
     private Long id;
 
     @NotNull
-    private Long userId;
+    private String username;
 
     @Size(max = 255)
     private String status;

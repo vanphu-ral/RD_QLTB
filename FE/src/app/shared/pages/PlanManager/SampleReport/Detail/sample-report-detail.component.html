@@ -18,6 +18,53 @@
     </div>
 
     <div class="row my-3">
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.frequency" [options]="listFrequencies" [fluid]="true" [disabled]="isViewMode"
+            [showClear]="true" [appendTo]="'body'" id="frequency" name="frequency">
+          </p-select>
+          <label for="frequency">Tên tổ sản xuất</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.type" [options]="listTypes" [fluid]="true" [disabled]="isViewMode"
+            [showClear]="true" [appendTo]="'body'" id="type" name="type">
+          </p-select>
+          <label for="type">Tên tổ sản xuất</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.branch" [options]="listBranchs" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
+            [showClear]="true" [appendTo]="'body'" id="branch" name="branch">
+          </p-select>
+          <label for="branch">Tên tổ sản xuất</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <div class="row my-3">
+      <div class="col-6">
+        <p-floatlabel variant="on">
+          <input pInputText id="documentNumber" name="documentNumber" [(ngModel)]="model.documentNumber" [invalid]="!model.documentNumber" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
+          <label for="documentNumber">Số hiệu biên bản</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="col-6">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.approvalWorkflow" [options]="listApprovalWorkflow" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
+            [showClear]="true" [appendTo]="'body'" id="approvalWorkflow" name="approvalWorkflow">
+          </p-select>
+          <label for="approvalWorkflow">Kịch bản phê duyệt</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <div class="row my-3">
       <div class="col-12">
         <p-fieldset legend="Mô tả" class="custom-fieldset">
           <p-editor [(ngModel)]="model.description" name="description" [style]="{ height: '150px' }" [readonly]="isViewMode"></p-editor>

@@ -2,11 +2,13 @@ package io.rd.qltb.service;
 
 import io.rd.qltb.domain.ApprovalGroup;
 import io.rd.qltb.domain.ApprovalWorkflow;
+import io.rd.qltb.domain.GroupApprovalName;
 import io.rd.qltb.events.BeforeDeleteApprovalGroup;
 import io.rd.qltb.events.BeforeDeleteApprovalWorkflow;
 import io.rd.qltb.model.ApprovalGroupDTO;
 import io.rd.qltb.repos.ApprovalGroupRepository;
 import io.rd.qltb.repos.ApprovalWorkflowRepository;
+import io.rd.qltb.repos.GroupApprovalNameRepository;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
 import java.util.List;
@@ -21,13 +23,16 @@ public class ApprovalGroupService {
 
     private final ApprovalGroupRepository approvalGroupRepository;
     private final ApprovalWorkflowRepository approvalWorkflowRepository;
+    private final GroupApprovalNameRepository groupApprovalNameRepository;
     private final ApplicationEventPublisher publisher;
 
     public ApprovalGroupService(final ApprovalGroupRepository approvalGroupRepository,
             final ApprovalWorkflowRepository approvalWorkflowRepository,
+            final GroupApprovalNameRepository groupApprovalNameRepository,
             final ApplicationEventPublisher publisher) {
         this.approvalGroupRepository = approvalGroupRepository;
         this.approvalWorkflowRepository = approvalWorkflowRepository;
+        this.groupApprovalNameRepository = groupApprovalNameRepository;
         this.publisher = publisher;
     }
 
@@ -66,7 +71,6 @@ public class ApprovalGroupService {
 
     private ApprovalGroupDTO mapToDTO(final ApprovalGroup approvalGroup, final ApprovalGroupDTO approvalGroupDTO) {
         approvalGroupDTO.setId(approvalGroup.getId());
-        approvalGroupDTO.setGroupApprNameId(approvalGroup.getGroupApprNameId());
         approvalGroupDTO.setLevel(approvalGroup.getLevel());
         approvalGroupDTO.setIsRequired(approvalGroup.getIsRequired());
         approvalGroupDTO.setCreatedAt(approvalGroup.getCreatedAt());
@@ -95,12 +99,31 @@ public class ApprovalGroupService {
             approvalGroupDTO.setWorkflow(null);
         }
 
+        if (approvalGroup.getGroupApprovalName() != null) {
+            GroupApprovalName groupNameCopy = new GroupApprovalName();
+            groupNameCopy.setId(approvalGroup.getGroupApprovalName().getId());
+            groupNameCopy.setCode(approvalGroup.getGroupApprovalName().getCode());
+            groupNameCopy.setName(approvalGroup.getGroupApprovalName().getName());
+            groupNameCopy.setDescription(approvalGroup.getGroupApprovalName().getDescription());
+            groupNameCopy.setCreatedAt(approvalGroup.getGroupApprovalName().getCreatedAt());
+            groupNameCopy.setUpdatedAt(approvalGroup.getGroupApprovalName().getUpdatedAt());
+            groupNameCopy.setCreatedBy(approvalGroup.getGroupApprovalName().getCreatedBy());
+            groupNameCopy.setUpdatedBy(approvalGroup.getGroupApprovalName().getUpdatedBy());
+            groupNameCopy.setStatus(approvalGroup.getGroupApprovalName().getStatus());
+
+            // tránh vòng lặp
+            groupNameCopy.setApprovalGroups(null);
+
+            approvalGroupDTO.setGroupApprovalName(groupNameCopy);
+        } else {
+            approvalGroupDTO.setGroupApprovalName(null);
+        }
+
         return approvalGroupDTO;
     }
 
     private ApprovalGroup mapToEntity(final ApprovalGroupDTO approvalGroupDTO,
             final ApprovalGroup approvalGroup) {
-        approvalGroup.setGroupApprNameId(approvalGroupDTO.getGroupApprNameId());
         approvalGroup.setLevel(approvalGroupDTO.getLevel());
         approvalGroup.setIsRequired(approvalGroupDTO.getIsRequired());
         approvalGroup.setCreatedAt(approvalGroupDTO.getCreatedAt());
@@ -111,6 +134,11 @@ public class ApprovalGroupService {
         final ApprovalWorkflow workflow = approvalGroupDTO.getWorkflow() == null ? null : approvalWorkflowRepository.findById(approvalGroupDTO.getWorkflow().getId())
                 .orElseThrow(() -> new NotFoundException("workflow not found"));
         approvalGroup.setWorkflow(workflow);
+
+        final GroupApprovalName groupApprovalName = approvalGroupDTO.getGroupApprovalName() == null ? null :
+                groupApprovalNameRepository.findById(approvalGroupDTO.getGroupApprovalName().getId())
+                        .orElseThrow(() -> new NotFoundException("groupApprovalName not found"));
+        approvalGroup.setGroupApprovalName(groupApprovalName);
         return approvalGroup;
     }
 

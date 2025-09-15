@@ -36,10 +36,10 @@ export const appConfig: ApplicationConfig = {
         matchAny: 'Khớp bất kỳ',
         dayNamesMin: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
         monthNames: [
-          'Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6',
-          'Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'
+          'Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',
+          'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'
         ],
-        monthNamesShort: ['Th1','Th2','Th3','Th4','Th5','Th6','Th7','Th8','Th9','Th10','Th11','Th12'],
+        monthNamesShort: ['Th1', 'Th2', 'Th3', 'Th4', 'Th5', 'Th6', 'Th7', 'Th8', 'Th9', 'Th10', 'Th11', 'Th12'],
         today: 'Hôm nay',
         clear: 'Xóa',
         dateFormat: 'dd/mm/yy',
@@ -50,8 +50,11 @@ export const appConfig: ApplicationConfig = {
       provide: APP_INITIALIZER,
       useFactory: (loginService: LoginService) => {
         return () => {
-          // Nếu app vừa load sau Keycloak redirect
-          loginService.handlePostLogin();
+          const currentPath = window.location.pathname;
+          if (currentPath.startsWith('/callback')) {
+            return loginService.handlePostLogin();
+          }
+          return Promise.resolve();
         };
       },
       deps: [LoginService],

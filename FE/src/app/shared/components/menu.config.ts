@@ -16,6 +16,14 @@ export const MENU_ITEMS: MenuItem[] = [
                 ]
             },
             {
+                label: 'Quản lý kịch bản phê duyệt',
+                icon: 'fa-solid fa-scroll',
+                items: [
+                    { label: 'Danh mục nhóm phê duyệt', icon: 'fa-solid fa-users', routerLink: ['/ApprovalGroupUsers'] },
+                    { label: 'Danh mục kịch bản phê duyệt', icon: 'fa-solid fa-file-circle-check', routerLink: ['/ApprovalWorkflows']}
+                ]
+            },
+            {
                 label: 'Quản lý thiết bị',
                 icon: 'pi pi-fw pi-cog',
                 items: [

@@ -23,6 +23,10 @@ export class FactoryDetailComponent extends BasePageComponent<Factory> {
     super(apiService);
   }
 
+  override ngOnInit(): void {
+      super.ngOnInit();
+  }
+
 
   public override save(): void {
     if (this.model) {
