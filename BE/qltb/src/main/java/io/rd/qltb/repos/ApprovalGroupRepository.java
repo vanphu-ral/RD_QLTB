@@ -4,10 +4,11 @@ import io.rd.qltb.domain.ApprovalGroup;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-
+@Repository
 public interface ApprovalGroupRepository extends JpaRepository<ApprovalGroup, Long> {
 
     ApprovalGroup findFirstByWorkflowId(Long id);
