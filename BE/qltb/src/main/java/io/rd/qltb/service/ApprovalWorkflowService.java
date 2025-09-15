@@ -65,7 +65,7 @@ public class ApprovalWorkflowService {
        }
          approvalGroupRepository.deleteItemByWorkflowId(id);
         publisher.publishEvent(new BeforeDeleteApprovalWorkflow(id));
-        approvalWorkflowRepository.delete(approvalWorkflow);
+        approvalWorkflowRepository.deleteById(approvalWorkflow.getId());
     }
 
     private ApprovalWorkflowDTO mapToDTO(final ApprovalWorkflow approvalWorkflow,
