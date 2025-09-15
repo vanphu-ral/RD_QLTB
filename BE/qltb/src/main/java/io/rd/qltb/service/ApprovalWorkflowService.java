@@ -57,15 +57,17 @@ public class ApprovalWorkflowService {
     }
 
     public void delete(final Long id) {
-        final ApprovalWorkflow approvalWorkflow = approvalWorkflowRepository.findById(id)
-                .orElseThrow(NotFoundException::new);
+//        final ApprovalWorkflow approvalWorkflow = approvalWorkflowRepository.findById(id)
+//                .orElseThrow(NotFoundException::new);
        List<ApprovalGroup> approvalGroups = approvalGroupRepository.findByWorkflowId(id);
-       for (ApprovalGroup approvalGroup : approvalGroups) {
-              approvalGroupUserRepository.deleteItemByGroupId(approvalGroup.getId());
-       }
-         approvalGroupRepository.deleteItemByWorkflowId(id);
-        publisher.publishEvent(new BeforeDeleteApprovalWorkflow(id));
-        approvalWorkflowRepository.deleteById(approvalWorkflow.getId());
+        for (ApprovalGroup approvalGroup : approvalGroups) {
+            approvalGroupUserRepository.deleteItemByGroupId(approvalGroup.getId());
+        }
+        approvalGroupRepository.deleteItemByWorkflowId(id);
+        approvalGroupRepository.flush(); // đảm bảo xóa được thực hiện ngay
+
+        approvalWorkflowRepository.deleteById(id);
+
     }
 
     private ApprovalWorkflowDTO mapToDTO(final ApprovalWorkflow approvalWorkflow,
