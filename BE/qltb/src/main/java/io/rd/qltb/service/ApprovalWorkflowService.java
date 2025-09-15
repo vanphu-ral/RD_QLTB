@@ -61,9 +61,9 @@ public class ApprovalWorkflowService {
                 .orElseThrow(NotFoundException::new);
        List<ApprovalGroup> approvalGroups = approvalGroupRepository.findByWorkflowId(id);
        for (ApprovalGroup approvalGroup : approvalGroups) {
-              approvalGroupUserRepository.deleteByGroupId(approvalGroup.getId());
+              approvalGroupUserRepository.deleteItemByGroupId(approvalGroup.getId());
        }
-         approvalGroupRepository.deleteByWorkflowId(id);
+         approvalGroupRepository.deleteItemByWorkflowId(id);
         publisher.publishEvent(new BeforeDeleteApprovalWorkflow(id));
         approvalWorkflowRepository.delete(approvalWorkflow);
     }

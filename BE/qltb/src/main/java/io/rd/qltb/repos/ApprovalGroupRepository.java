@@ -2,6 +2,8 @@ package io.rd.qltb.repos;
 
 import io.rd.qltb.domain.ApprovalGroup;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -10,5 +12,7 @@ public interface ApprovalGroupRepository extends JpaRepository<ApprovalGroup, Lo
 
     ApprovalGroup findFirstByWorkflowId(Long id);
     List<ApprovalGroup> findByWorkflowId(Long id);
-    void deleteByWorkflowId(Long id);
+    @Modifying
+    @Query(value = "delete from approval_group ag where ag.workflow_id = ?1",nativeQuery = true)
+    void deleteItemByWorkflowId(Long id);
 }
