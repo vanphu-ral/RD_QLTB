@@ -1,3 +1,5 @@
+import { keyMapping } from "./key-mapping.model";
+
 export class SampleReport {
     id?: number;
     name?: string;
@@ -14,4 +16,6 @@ export class SampleReport {
     branch?: any;
     deviceGroup?: any
     approvalWorkflow?: any
+
+    keyMappings?: keyMapping[] = [];
 }

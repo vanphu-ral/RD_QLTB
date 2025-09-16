@@ -23,7 +23,7 @@
           <p-select [(ngModel)]="model.frequency" [options]="listFrequencies" [fluid]="true" [disabled]="isViewMode"
             [showClear]="true" [appendTo]="'body'" id="frequency" name="frequency">
           </p-select>
-          <label for="frequency">Tên tổ sản xuất</label>
+          <label for="frequency">Tần suất</label>
         </p-floatlabel>
       </div>
 
@@ -32,36 +32,91 @@
           <p-select [(ngModel)]="model.type" [options]="listTypes" [fluid]="true" [disabled]="isViewMode"
             [showClear]="true" [appendTo]="'body'" id="type" name="type">
           </p-select>
-          <label for="type">Tên tổ sản xuất</label>
+          <label for="type">Loại</label>
         </p-floatlabel>
       </div>
 
       <div class="col-4">
         <p-floatlabel variant="on">
-          <p-select [(ngModel)]="model.branch" [options]="listBranchs" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
-            [showClear]="true" [appendTo]="'body'" id="branch" name="branch">
+          <p-select [(ngModel)]="model.deviceGroup" [options]="listDeviceGroup" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
+            [showClear]="true" [appendTo]="'body'" id="deviceGroup" name="deviceGroup" dataKey="id">
           </p-select>
-          <label for="branch">Tên tổ sản xuất</label>
+          <label for="deviceGroup">Nhóm thiết bị</label>
         </p-floatlabel>
       </div>
     </div>
 
     <div class="row my-3">
-      <div class="col-6">
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.branch" [options]="listBranchs" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
+            [showClear]="true" [appendTo]="'body'" id="branch" name="branch" dataKey="id">
+          </p-select>
+          <label for="branch">Ngành</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="col-4">
         <p-floatlabel variant="on">
           <input pInputText id="documentNumber" name="documentNumber" [(ngModel)]="model.documentNumber" [invalid]="!model.documentNumber" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
           <label for="documentNumber">Số hiệu biên bản</label>
         </p-floatlabel>
       </div>
 
-      <div class="col-6">
+      <div class="col-4">
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.approvalWorkflow" [options]="listApprovalWorkflow" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
-            [showClear]="true" [appendTo]="'body'" id="approvalWorkflow" name="approvalWorkflow">
+            [showClear]="true" [appendTo]="'body'" id="approvalWorkflow" name="approvalWorkflow" dataKey="id">
           </p-select>
           <label for="approvalWorkflow">Kịch bản phê duyệt</label>
         </p-floatlabel>
       </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center my-3">
+      <h5 class="m-0 text-900 font-bold">Quản lý danh sách tiêu trí</h5>
+      <p-button *ngIf="!isViewMode" label="Thêm dòng" icon="pi pi-plus-circle"
+        styleClass="p-button-success p-button-outlined" (onClick)="addRow()"></p-button>
+    </div>
+
+    <div class="table-responsive">
+        <p-table [value]="listCriterialBySample" responsiveLayout="scroll">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>STT</th>
+                    <th>Nhóm tiêu trí</th>
+                    <th>Tiêu trí</th>
+                    <th>Thao tác</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-row let-i="rowIndex">
+                <tr>
+                    <td>{{ i + 1 }}</td>
+                    <td>
+                        <p-select [(ngModel)]="row.group" [options]="listCriterialGroup" optionLabel="name" [fluid]="true"
+                            [showClear]="true" [appendTo]="'body'" (onChange)="onChangeGroup($event, i)"
+                            id="group-{{ i }}" name="group-{{ i }}" dataKey="id">
+                        </p-select>
+                    </td>
+                    <td>
+                        <p-select [(ngModel)]="row.criterial" [options]="row.criterials" optionLabel="name" [fluid]="true"
+                            [showClear]="true" [appendTo]="'body'"
+                            id="criterial-{{ i }}" name="criterial-{{ i }}" dataKey="id">
+                        </p-select>
+                    </td>
+                    <td class="text-center">
+                        <p-button icon="pi pi-trash" severity="danger" (onClick)="deleteRow(i)">
+                        </p-button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="6" class="text-center">Chưa có tiêu trí nào được thêm</td>
+                </tr>
+            </ng-template>
+        </p-table>
+
     </div>
 
     <div class="row my-3">

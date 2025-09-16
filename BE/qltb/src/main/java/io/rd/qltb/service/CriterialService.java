@@ -5,11 +5,14 @@ import io.rd.qltb.domain.CriterialGroup;
 import io.rd.qltb.events.BeforeDeleteCriterial;
 import io.rd.qltb.events.BeforeDeleteCriterialGroup;
 import io.rd.qltb.model.CriterialDTO;
+import io.rd.qltb.model.SupplyDetailDTO;
 import io.rd.qltb.repos.CriterialGroupRepository;
 import io.rd.qltb.repos.CriterialRepository;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
@@ -36,6 +39,12 @@ public class CriterialService {
         return criterials.stream()
                 .map(criterial -> mapToDTO(criterial, new CriterialDTO()))
                 .toList();
+    }
+
+    public List<CriterialDTO> getByCriterialGroup(Long criterialGroupId) {
+        return criterialRepository.findByCriterialGroupId(criterialGroupId).stream()
+                .map(s -> mapToDTO(s, new CriterialDTO()))
+                .collect(Collectors.toList());
     }
 
     public CriterialDTO get(final Long id) {

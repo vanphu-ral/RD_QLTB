@@ -13,11 +13,13 @@ import { ApprovalGroupService } from '../Service/approval-group.service';
 import { ApprovalGroupUserService } from '../Service/approval-group-user.service';
 import { ApprovalGroup } from '../../../../models/ApprovalManager/approval-group.model';
 import { ApprovalGroupUser } from '../../../../models/ApprovalManager/approval-group-user.model';
+import { ConfirmationService } from 'primeng/api';
 
 
 @Component({
   selector: 'app-approval-workflow-detail',
   standalone: true,
+  providers: [ConfirmationService],
   imports: [SharedModule, CommonModule],
   templateUrl: './approval-workflow-detail.component.html',
   styleUrls: ['./approval-workflow-detail.component.scss']
@@ -30,7 +32,8 @@ export class ApprovalWorkflowDetailComponent extends BasePageComponent<ApprovalW
     protected override apiService: ApprovalWorlflowService,
     private approvalGroupNameService: GroupApprovalNameService,
     private approvalGroupService: ApprovalGroupService,
-    private approvalGroupUserService: ApprovalGroupUserService
+    private approvalGroupUserService: ApprovalGroupUserService,
+    private confirmationService: ConfirmationService
   ) {
     super(apiService);
   }
@@ -53,6 +56,48 @@ export class ApprovalWorkflowDetailComponent extends BasePageComponent<ApprovalW
       this.listApprovalGroupsName = res
       this.cdr.detectChanges();
     })
+
+    if (this.isViewMode || this.isEditMode) {
+      this.loadGroupsAndUsers();
+    }
+  }
+
+  private loadGroupsAndUsers(): void {
+    if (!this.model?.id) return;
+
+    this.approvalGroupService.getAll().pipe(
+      switchMap(groups => {
+        // lọc group thuộc workflow hiện tại
+        const relatedGroups = groups.filter(g => g.workflow?.id === this.model.id);
+
+        if (relatedGroups.length === 0) {
+          this.model.approvalGroups = [];
+          return of([]);
+        }
+
+        // map từng group -> load user
+        const groupRequests = relatedGroups.map(group =>
+          this.approvalGroupUserService.getAll().pipe(
+            map(users => {
+              group.approvalGroupUser = users.filter(u => u.group?.id === group.id);
+              return group;
+            })
+          )
+        );
+
+        return forkJoin(groupRequests);
+      })
+    ).subscribe({
+      next: (groupsWithUsers) => {
+        this.model.approvalGroups = groupsWithUsers;
+        console.log("Workflow sau khi merge:", this.model);
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        Util.ConfirmMessage('Không load được group/users', 'error');
+        console.error(err);
+      }
+    });
   }
 
   // #region fuction nhóm phê duyệt
@@ -64,9 +109,22 @@ export class ApprovalWorkflowDetailComponent extends BasePageComponent<ApprovalW
   }
 
   removeApprovalGroup(index: number): void {
-    this.model.approvalGroups!.splice(index, 1);
-  }
+    const group = this.model.approvalGroups?.[index];
+    if (!group) return;
 
+    if ((group as any).id) {
+      this.approvalGroupService.delete((group as any).id).subscribe({
+        next: () => {
+          this.model.approvalGroups?.splice(index, 1);
+        },
+        error: (err) => {
+          console.error('Lỗi khi xoá group:', err);
+        }
+      });
+    } else {
+      this.model.approvalGroups?.splice(index, 1);
+    }
+  }
   // #endregion fuction nhóm phê duyệt
 
   // #region fuction người phê duyệt
@@ -78,8 +136,38 @@ export class ApprovalWorkflowDetailComponent extends BasePageComponent<ApprovalW
   }
 
 
-  removeApprovalUser(indexGroup: number, indexUser: number) {
-    this.model.approvalGroups![indexGroup].approvalGroupUser?.splice(indexUser, 1)
+  removeApprovalGroupUser(indexGroup: number, indexUser: number) {
+    const group = this.model.approvalGroups?.[indexGroup];
+    const user = group?.approvalGroupUser?.[indexUser];
+    if (!group || !user) return;
+    if ((user as any).id) {
+      this.approvalGroupUserService.delete((user as any).id).subscribe({
+        next: () => {
+          group.approvalGroupUser?.splice(indexUser, 1);
+        },
+        error: (err) => {
+          console.error('Lỗi khi xoá user:', err);
+        }
+      });
+    } else {
+      group.approvalGroupUser?.splice(indexUser, 1);
+    }
+  }
+
+
+  // Confirm trước khi xoá
+  confirmDeleteGroup(groupIndex: number): void {
+    this.confirmationService.confirm({
+      message: 'Bạn có chắc chắn muốn xóa nhóm phê duyệt này?',
+      accept: () => this.removeApprovalGroup(groupIndex)
+    });
+  }
+
+  confirmDeleteUser(groupIndex: number, userIndex: number): void {
+    this.confirmationService.confirm({
+      message: 'Bạn có chắc chắn muốn xóa user này?',
+      accept: () => this.removeApprovalGroupUser(groupIndex, userIndex)
+    });
   }
 
   private saveWorkflow(workflow: ApprovalWorkflow): Observable<ApprovalWorkflow> {

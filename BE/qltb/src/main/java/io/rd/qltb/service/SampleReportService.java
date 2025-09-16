@@ -1,11 +1,9 @@
 package io.rd.qltb.service;
 
-import io.rd.qltb.domain.ApprovalWorkflow;
-import io.rd.qltb.domain.Branch;
-import io.rd.qltb.domain.DeviceGroup;
-import io.rd.qltb.domain.SampleReport;
+import io.rd.qltb.domain.*;
 import io.rd.qltb.events.BeforeDeleteDeviceGroup;
 import io.rd.qltb.events.BeforeDeleteSampleReport;
+import io.rd.qltb.model.KeyMappingDTO;
 import io.rd.qltb.model.SampleReportDTO;
 import io.rd.qltb.repos.ApprovalWorkflowRepository;
 import io.rd.qltb.repos.BranchRepository;
@@ -13,6 +11,8 @@ import io.rd.qltb.repos.DeviceGroupRepository;
 import io.rd.qltb.repos.SampleReportRepository;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
+
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
@@ -88,6 +88,36 @@ public class SampleReportService {
         dto.setCreatedBy(sampleReport.getCreatedBy());
         dto.setUpdatedBy(sampleReport.getUpdatedBy());
         dto.setStatus(sampleReport.getStatus());
+
+        if (sampleReport.getSampleReportKeyMappings() != null) {
+            List<KeyMappingDTO> keyMappingDTOs = new ArrayList<>();
+
+            for (KeyMapping mapping : sampleReport.getSampleReportKeyMappings()) {
+                KeyMappingDTO mappingDTO = new KeyMappingDTO();
+
+                // Ánh xạ các trường cơ bản
+                mappingDTO.setId(mapping.getId());
+
+                // Ánh xạ thông tin từ Criterial nếu có
+                if (mapping.getCriterial() != null) {
+                    mapping.getCriterial().setCriterialKeyMappings(null); // tránh vòng lặp
+                    mappingDTO.setCriterial(mapping.getCriterial());
+
+
+                    // Ánh xạ thông tin từ CriterialGroup nếu có
+                    if (mappingDTO.getCriterial().getCriterialGroup() != null) {
+                        mappingDTO.getCriterial().getCriterialGroup().setCriterialGroupCriterials(null); // tránh vòng lặp
+                    }
+                }
+
+                keyMappingDTOs.add(mappingDTO);
+            }
+
+            dto.setSampleReportKeyMappings(keyMappingDTOs);
+        } else {
+            dto.setSampleReportKeyMappings(null);
+        }
+
 
         // Sao chép DeviceGroup có kiểm soát
         if (sampleReport.getDeviceGroup() != null) {

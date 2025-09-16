@@ -11,8 +11,8 @@ export const MENU_ITEMS: MenuItem[] = [
                     { label: 'Danh mục kế hoạch', icon: 'pi pi-fw pi-calendar', routerLink: ['/Plans'] },
                     { label: 'Danh mục loại kế hoạch', icon: 'pi pi-fw pi-list', routerLink: ['/PlanTypes'] },
                     { label: 'Mẫu báo cáo', icon: 'pi pi-fw pi-file', routerLink: ['/SampleReports'] },
-                    { label: 'Nhóm hạng mục kiểm tra', icon: 'pi pi-fw pi-list-check', routerLink: ['/CriterialGroups'] },
-                    { label: 'Hạng mục kiểm tra', icon: 'pi pi-fw pi-check-square', routerLink: ['/Criterials'] },
+                    { label: 'Nhóm tiêu trí', icon: 'pi pi-fw pi-list-check', routerLink: ['/CriterialGroups'] },
+                    { label: 'Tiêu trí', icon: 'pi pi-fw pi-check-square', routerLink: ['/Criterials'] },
                 ]
             },
             {

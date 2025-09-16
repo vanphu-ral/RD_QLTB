@@ -30,7 +30,7 @@
             <div class="col-12">
               <p-floatlabel variant="on">
                 <p-select [(ngModel)]="group.groupApprovalName" [options]="listApprovalGroupsName" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
-                  [showClear]="true" [appendTo]="'body'" id="groupApprovalName" name="groupApprovalName-{{i}}" [invalid]="!group.groupApprovalName">
+                  [showClear]="true" [appendTo]="'body'" id="groupApprovalName" name="groupApprovalName-{{i}}" [invalid]="!group.groupApprovalName" dataKey="id">
                 </p-select>
                 <label for="groupApprovalName">Tên nhóm phê duyệt</label>
               </p-floatlabel>
@@ -57,16 +57,16 @@
                     </p-floatlabel>
                   </div>
                   <div class="col-1">
-                    <p-button icon="pi pi-trash" styleClass="p-button-sm p-button-rounded p-button-danger m-1" (onClick)="removeApprovalUser(i, j)"></p-button>
+                    <p-button icon="pi pi-trash" *ngIf="!isViewMode" styleClass="p-button-sm p-button-rounded p-button-danger m-1" (onClick)="confirmDeleteUser(i, j)"></p-button>
                   </div>
                 </div>
               </p-card>
             </div>
             <div class="col-2">
               <div class="d-flex h-100 w-100 align-items-center justify-content-around">
-                <p-checkbox inputId="isRequired" [(ngModel)]="group.isRequired" [binary]="true"  name="isRequired-{{i}}" />
+                <p-checkbox inputId="isRequired" [disabled]="isViewMode" [(ngModel)]="group.isRequired" [binary]="true"  name="isRequired-{{i}}" />
                 <label for="isRequired" class="">Bắt buộc</label>
-                <p-button icon="pi pi-trash" styleClass="p-button-sm p-button-rounded p-button-danger m-1" (onClick)="removeApprovalGroup(i)"></p-button>
+                <p-button icon="pi pi-trash" *ngIf="!isViewMode" styleClass="p-button-sm p-button-rounded p-button-danger m-1" (onClick)="confirmDeleteGroup(i)"></p-button>
               </div>
             </div>
           </div>
@@ -100,3 +100,5 @@
     </div>
   </form>
 </div>
+
+<p-confirmDialog></p-confirmDialog>

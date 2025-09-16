@@ -1,6 +1,7 @@
 package io.rd.qltb.rest;
 
 import io.rd.qltb.model.CriterialDTO;
+import io.rd.qltb.model.SupplyDetailDTO;
 import io.rd.qltb.service.CriterialService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
@@ -36,6 +37,11 @@ public class CriterialResource {
     @GetMapping("/{id}")
     public ResponseEntity<CriterialDTO> getCriterial(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(criterialService.get(id));
+    }
+
+    @GetMapping("/ByCriterialGroup/{criterialGroupId}")
+    public ResponseEntity<List<CriterialDTO>> getBySupply(@PathVariable Long criterialGroupId) {
+        return ResponseEntity.ok(criterialService.getByCriterialGroup(criterialGroupId));
     }
 
     @PostMapping

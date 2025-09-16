@@ -1,6 +1,7 @@
 package io.rd.qltb.rest;
 
 import io.rd.qltb.model.KeyMappingDTO;
+import io.rd.qltb.model.SupplyDetailDTO;
 import io.rd.qltb.service.KeyMappingService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
@@ -33,6 +34,11 @@ public class KeyMappingResource {
         return ResponseEntity.ok(keyMappingService.findAll());
     }
 
+    @GetMapping("/bySampleReport/{sampleReportId}")
+    public ResponseEntity<List<KeyMappingDTO>> getBySupply(@PathVariable Long sampleReportId) {
+        return ResponseEntity.ok(keyMappingService.getBySampleReportId(sampleReportId));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<KeyMappingDTO> getKeyMapping(
             @PathVariable(name = "id") final Long id) {
@@ -45,6 +51,13 @@ public class KeyMappingResource {
             @RequestBody @Valid final KeyMappingDTO keyMappingDTO) {
         final Long createdId = keyMappingService.create(keyMappingDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/creates")
+    @ApiResponse(responseCode = "201")
+    public ResponseEntity<List<Long>> creates(@RequestBody @Valid List<KeyMappingDTO> keyMappingDTOS) {
+        List<Long> createdIds = keyMappingService.creates(keyMappingDTOS);
+        return new ResponseEntity<>(createdIds, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")

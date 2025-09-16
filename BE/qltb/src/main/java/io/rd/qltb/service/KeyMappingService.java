@@ -11,7 +11,11 @@ import io.rd.qltb.repos.KeyMappingRepository;
 import io.rd.qltb.repos.SampleReportRepository;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -32,11 +36,33 @@ public class KeyMappingService {
         this.criterialRepository = criterialRepository;
     }
 
+    public List<KeyMappingDTO> getBySampleReportId(Long sampleReportId) {
+        return keyMappingRepository.findBySampleReportId(sampleReportId).stream()
+                .map(s -> mapToDTO(s, new KeyMappingDTO()))
+                .collect(Collectors.toList());
+    }
+
     public List<KeyMappingDTO> findAll() {
         final List<KeyMapping> keyMappings = keyMappingRepository.findAll(Sort.by("id"));
         return keyMappings.stream()
                 .map(keyMapping -> mapToDTO(keyMapping, new KeyMappingDTO()))
                 .toList();
+    }
+
+    public List<Long> creates(final List<KeyMappingDTO> keyMappingDTOS) {
+        List<Long> createdIds = new ArrayList<>();
+        for (KeyMappingDTO dto : keyMappingDTOS) {
+            KeyMapping entity;
+            if (dto.getId() != null) {
+                entity = keyMappingRepository.findById(dto.getId()).orElse(new KeyMapping());
+            } else {
+                entity = new KeyMapping();
+            }
+            mapToEntity(dto, entity);
+            KeyMapping saved = keyMappingRepository.save(entity);
+            createdIds.add(saved.getId());
+        }
+        return createdIds;
     }
 
     public KeyMappingDTO get(final Long id) {
@@ -66,7 +92,6 @@ public class KeyMappingService {
 
     private KeyMappingDTO mapToDTO(final KeyMapping keyMapping, final KeyMappingDTO dto) {
         dto.setId(keyMapping.getId());
-        dto.setCriterialGroupId(keyMapping.getCriterialGroupId());
 
         // Sao chép SampleReport có kiểm soát
         if (keyMapping.getSampleReport() != null) {
@@ -121,7 +146,6 @@ public class KeyMappingService {
 
 
     private KeyMapping mapToEntity(final KeyMappingDTO keyMappingDTO, final KeyMapping keyMapping) {
-        keyMapping.setCriterialGroupId(keyMappingDTO.getCriterialGroupId());
         final SampleReport sampleReport = keyMappingDTO.getSampleReport() == null ? null : sampleReportRepository.findById(keyMappingDTO.getSampleReport().getId())
                 .orElseThrow(() -> new NotFoundException("sampleReport not found"));
         keyMapping.setSampleReport(sampleReport);

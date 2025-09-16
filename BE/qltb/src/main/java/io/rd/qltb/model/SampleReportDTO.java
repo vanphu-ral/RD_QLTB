@@ -3,9 +3,12 @@ package io.rd.qltb.model;
 import io.rd.qltb.domain.ApprovalWorkflow;
 import io.rd.qltb.domain.Branch;
 import io.rd.qltb.domain.DeviceGroup;
+import io.rd.qltb.domain.KeyMapping;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -57,5 +60,8 @@ public class SampleReportDTO {
 
     @NotNull
     private ApprovalWorkflow approvalWorkflow;
+
+    @NotNull
+    private List<KeyMappingDTO> sampleReportKeyMappings;
 
 }

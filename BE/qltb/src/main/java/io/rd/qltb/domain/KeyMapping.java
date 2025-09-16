@@ -24,9 +24,6 @@ public class KeyMapping {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private Long criterialGroupId;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sample_report_id", nullable = false)
     private SampleReport sampleReport;
