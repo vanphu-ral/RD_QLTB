@@ -70,6 +70,7 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
     })
     if (!this.isAddMode) {
       this.keyMappingService.getBySampleReport(this.model.id!).subscribe(res => {
+        console.log("check res :: ", res);
         this.listCriterialBySample = res.map(x => {
           const group = this.listCriterialGroup.find(g =>
             this.listCriterial.some(c => c.id === x.criterial?.id && c.group?.id === g.id)

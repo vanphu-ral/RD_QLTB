@@ -89,35 +89,6 @@ public class SampleReportService {
         dto.setUpdatedBy(sampleReport.getUpdatedBy());
         dto.setStatus(sampleReport.getStatus());
 
-        if (sampleReport.getSampleReportKeyMappings() != null) {
-            List<KeyMappingDTO> keyMappingDTOs = new ArrayList<>();
-
-            for (KeyMapping mapping : sampleReport.getSampleReportKeyMappings()) {
-                KeyMappingDTO mappingDTO = new KeyMappingDTO();
-
-                // Ánh xạ các trường cơ bản
-                mappingDTO.setId(mapping.getId());
-
-                // Ánh xạ thông tin từ Criterial nếu có
-                if (mapping.getCriterial() != null) {
-                    mapping.getCriterial().setCriterialKeyMappings(null); // tránh vòng lặp
-                    mappingDTO.setCriterial(mapping.getCriterial());
-
-
-                    // Ánh xạ thông tin từ CriterialGroup nếu có
-                    if (mappingDTO.getCriterial().getCriterialGroup() != null) {
-                        mappingDTO.getCriterial().getCriterialGroup().setCriterialGroupCriterials(null); // tránh vòng lặp
-                    }
-                }
-
-                keyMappingDTOs.add(mappingDTO);
-            }
-
-            dto.setSampleReportKeyMappings(keyMappingDTOs);
-        } else {
-            dto.setSampleReportKeyMappings(null);
-        }
-
 
         // Sao chép DeviceGroup có kiểm soát
         if (sampleReport.getDeviceGroup() != null) {

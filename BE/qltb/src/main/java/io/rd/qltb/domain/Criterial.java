@@ -1,5 +1,6 @@
 package io.rd.qltb.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -60,6 +61,7 @@ public class Criterial {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "criterial_group_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private CriterialGroup criterialGroup;
 
     @OneToMany(mappedBy = "criterial")

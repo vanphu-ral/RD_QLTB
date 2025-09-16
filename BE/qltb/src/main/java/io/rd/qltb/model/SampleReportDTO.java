@@ -61,7 +61,5 @@ public class SampleReportDTO {
     @NotNull
     private ApprovalWorkflow approvalWorkflow;
 
-    @NotNull
-    private List<KeyMappingDTO> sampleReportKeyMappings;
 
 }

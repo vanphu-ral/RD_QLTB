@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.hibernate.Hibernate;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -92,7 +93,6 @@ public class KeyMappingService {
 
     private KeyMappingDTO mapToDTO(final KeyMapping keyMapping, final KeyMappingDTO dto) {
         dto.setId(keyMapping.getId());
-
         // Sao chép SampleReport có kiểm soát
         if (keyMapping.getSampleReport() != null) {
             SampleReport sampleReportCopy = new SampleReport();
@@ -131,9 +131,9 @@ public class KeyMappingService {
             criterialCopy.setCreatedBy(keyMapping.getCriterial().getCreatedBy());
             criterialCopy.setUpdatedBy(keyMapping.getCriterial().getUpdatedBy());
             criterialCopy.setStatus(keyMapping.getCriterial().getStatus());
-
+            criterialCopy.setCriterialGroup(keyMapping.getCriterial().getCriterialGroup());
             // Xóa các quan hệ con
-            criterialCopy.setCriterialGroup(null);
+            criterialCopy.getCriterialGroup().setCriterialGroupCriterials(null);
             criterialCopy.setCriterialKeyMappings(null);
 
             dto.setCriterial(criterialCopy);

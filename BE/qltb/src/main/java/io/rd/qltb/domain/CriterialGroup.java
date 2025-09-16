@@ -1,5 +1,6 @@
 package io.rd.qltb.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -50,6 +51,7 @@ public class CriterialGroup {
     private Integer status;
 
     @OneToMany(mappedBy = "criterialGroup")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Set<Criterial> criterialGroupCriterials = new HashSet<>();
 
 }
