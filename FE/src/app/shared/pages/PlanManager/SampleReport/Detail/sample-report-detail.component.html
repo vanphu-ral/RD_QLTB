@@ -91,24 +91,24 @@
             <th>STT</th>
             <th>Nhóm tiêu trí</th>
             <th>Tiêu trí</th>
-            <th>Thao tác</th>
+            <th *ngIf="!isViewMode">Thao tác</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-row let-i="rowIndex">
           <tr>
             <td>{{ i + 1 }}</td>
             <td>
-              <p-select [(ngModel)]="row.criterial.criterialGroup" [options]="listCriterialGroup" optionLabel="name"
+              <p-select [(ngModel)]="row.group" [options]="listCriterialGroup" optionLabel="name" [disabled]="isViewMode"
                 [fluid]="true" [showClear]="true" [appendTo]="'body'" (onChange)="onChangeGroup($event, i)"
                 id="group-{{ i }}" name="group-{{ i }}" dataKey="id">
               </p-select>
             </td>
             <td>
-              <p-select [(ngModel)]="row.criterial.name" [options]="row.criterials" optionLabel="name" [fluid]="true"
+              <p-select [(ngModel)]="row.criterial" [options]="row.criterials" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
                 [showClear]="true" [appendTo]="'body'" id="criterial-{{ i }}" name="criterial-{{ i }}" dataKey="id">
               </p-select>
             </td>
-            <td class="text-center">
+            <td class="text-center" *ngIf="!isViewMode">
               <p-button icon="pi pi-trash" severity="danger" (onClick)="deleteRow(i)">
               </p-button>
             </td>
