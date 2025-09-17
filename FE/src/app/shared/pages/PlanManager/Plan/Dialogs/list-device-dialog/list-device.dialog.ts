@@ -29,18 +29,15 @@ export class ListDeviceDialog {
 
     ngOnInit() {
         console.log(this.data);
-        this.deviceService.getByGroupId(this.data.id).subscribe(res => {
-            console.log(res);
-            this.ListDevice = _.map(res, item => {
-                return {
-                    device: item,
-                    serialNumber: item.serialNumber,
-                    manager: item.userManager
-                }
-            });
-            this.listdevices = [...res];
-            this.cdr.detectChanges();
-        })
+
+        this.ListDevice = _.map(this.data.groupDevices, item => {
+            return {
+                device: item,
+                serialNumber: item.serialNumber,
+                manager: item.userManager
+            }
+        });
+        this.listdevices = [...this.data.groupDevices];
         this.deviceService.getUsers().subscribe(users => {
             this.listManagers = _.map(users, user => {
                 const firstName = user.firstName ?? '';
@@ -70,6 +67,7 @@ export class ListDeviceDialog {
     }
 
     submit() {
+        // Gửi mảng các đối tượng đã được ánh xạ về component cha
         this.ref.close(this.ListDevice);
     }
 }

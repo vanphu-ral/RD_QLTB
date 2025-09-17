@@ -19,7 +19,7 @@
       <div class="col-4">
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.planType" [options]="listTypes" [fluid]="true" [disabled]="isViewMode"
-            [showClear]="true" [appendTo]="'body'" id="planType" name="planType" optionLabel="name" optionValue="name">
+            [showClear]="true" [appendTo]="'body'" id="planType" name="planType" optionLabel="name" dataKey="id">
           </p-select>
           <label for="planType">Loại</label>
         </p-floatlabel>
@@ -84,7 +84,7 @@
     </div>
 
     <list-device-group-component [isAddMode]="isAddMode" [isEditMode]="isEditMode" 
-      [isViewMode]="isViewMode" [ListDeviceGroup]="listDetail">
+      [isViewMode]="isViewMode" [ListDetail]="listDetail">
     </list-device-group-component>
 
     <div class="row my-3">

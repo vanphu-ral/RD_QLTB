@@ -18,11 +18,12 @@ export class ListDeviceComponent implements OnInit {
     @Input() isAddMode: boolean = false
     @Input() isViewMode: boolean = false
     @Input() isEditMode: boolean = false
-    @Input() ListDeviceGroup: any[] = []
+    @Input() ListDetail: any[] = []
 
     listSampleReport: any[] = []
     listdeviceGroups: any[] = []
     ref?: DynamicDialogRef;
+    deviceUpdates: { deviceId: number, serial?: string, manager?: string }[] = [];
 
 
     constructor(private sampleReportService: SampleReportService, private deviceGroupService: DeviceGroupService, private cdr: ChangeDetectorRef, private dialogService: DialogService) { }
@@ -39,26 +40,37 @@ export class ListDeviceComponent implements OnInit {
     }
 
     addRow() {
-        this.ListDeviceGroup.push({})
+        this.ListDetail.push({})
     }
 
     editRow(index: number) {
         this.ref = this.dialogService.open(ListDeviceDialog, {
-            header: `Danh sách thiết bị thuộc nhóm - ${this.ListDeviceGroup[index].deviceGroup.name}`,
-            width: 'auto',
-            modal: true,
-            data: this.ListDeviceGroup[index].deviceGroup,
+            data: this.ListDetail[index].deviceGroup,
         });
         this.ref.onClose.subscribe((result) => {
-            if (result) {
-                console.log(result);
-                
+            if (result && result.length > 0) {
+                result.forEach((updatedDevice: any) => {
+                    const existingUpdateIndex = this.deviceUpdates.findIndex(
+                        update => update.deviceId === updatedDevice.device.id
+                    );
+                    if (existingUpdateIndex !== -1) {
+                        this.deviceUpdates[existingUpdateIndex].serial = updatedDevice.serialNumber;
+                        this.deviceUpdates[existingUpdateIndex].manager = updatedDevice.manager;
+                    } else {
+                        this.deviceUpdates.push({
+                            deviceId: updatedDevice.device.id,
+                            serial: updatedDevice.serialNumber,
+                            manager: updatedDevice.manager
+                        });
+                    }
+                });
+                this.cdr.detectChanges();
             }
         });
     }
 
     deleteRow(index: number) {
-        this.ListDeviceGroup.splice(index, 1)
+        this.ListDetail.splice(index, 1)
     }
 
 
