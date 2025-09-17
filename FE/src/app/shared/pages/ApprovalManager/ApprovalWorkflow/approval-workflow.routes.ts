@@ -13,9 +13,6 @@ const approvalWorkflowRoute: Routes = [
     path: 'add',
     component: ApprovalWorkflowDetailComponent,
     data: { mode: 'add' },
-    resolve: {
-      data: ApprovalWorkflowResolve,
-    },
   },
   {
     path: ':id/view',

@@ -35,4 +35,13 @@ export class LoginService {
       }
     });
   }
+
+  restoreLoginFromStorage(): Promise<void> {
+    return new Promise((resolve) => {
+      this.accountService.identity(false).subscribe({
+        next: () => resolve(),
+        error: () => resolve()
+      });
+    });
+  }
 }

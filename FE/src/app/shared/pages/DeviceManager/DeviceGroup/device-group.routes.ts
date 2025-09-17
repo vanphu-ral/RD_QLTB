@@ -10,20 +10,17 @@ const deviceGroupRoute: Routes = [
     component: DeviceGroupListComponent,
   },
   {
+    path: 'add',
+    component: DeviceGroupDetailComponent,
+    data: { mode: 'add' },
+  },
+  {
     path: ':id/view',
     component: DeviceGroupDetailComponent,
     data: { mode: 'view' },
     resolve: {
       data: DeviceGroupResolve,
     }
-  },
-  {
-    path: 'add',
-    component: DeviceGroupDetailComponent,
-    data: { mode: 'add' },
-    resolve: {
-      data: DeviceGroupResolve,
-    },
   },
   {
     path: ':id/edit',

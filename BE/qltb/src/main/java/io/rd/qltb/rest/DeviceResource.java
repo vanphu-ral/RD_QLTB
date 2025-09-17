@@ -33,6 +33,15 @@ public class DeviceResource {
         return ResponseEntity.ok(deviceService.findAll());
     }
 
+    @GetMapping("/group/{groupId}")
+    public ResponseEntity<List<DeviceDTO>> getDevicesByGroupId(@PathVariable Long groupId) {
+        List<DeviceDTO> devices = deviceService.getDevicesByGroupId(groupId);
+        if (devices.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(devices);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<DeviceDTO> getDevice(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(deviceService.get(id));

@@ -10,20 +10,17 @@ const criterialGroupRoute: Routes = [
     component: CriterialGroupListComponent,
   },
   {
+    path: 'add',
+    component: CriterialGroupDetailComponent,
+    data: { mode: 'add' },
+  },
+  {
     path: ':id/view',
     component: CriterialGroupDetailComponent,
     data: { mode: 'view' },
     resolve: {
       data: CriterialGroupResolve,
     }
-  },
-  {
-    path: 'add',
-    component: CriterialGroupDetailComponent,
-    data: { mode: 'add' },
-    resolve: {
-      data: CriterialGroupResolve,
-    },
   },
   {
     path: ':id/edit',

@@ -10,20 +10,17 @@ const deviceRoute: Routes = [
     component: DeviceListComponent,
   },
   {
+    path: 'add',
+    component: DeviceDetailComponent,
+    data: { mode: 'add' },
+  },
+  {
     path: ':id/view',
     component: DeviceDetailComponent,
     data: { mode: 'view' },
     resolve: {
       data: DeviceResolve,
     }
-  },
-  {
-    path: 'add',
-    component: DeviceDetailComponent,
-    data: { mode: 'add' },
-    resolve: {
-      data: DeviceResolve,
-    },
   },
   {
     path: ':id/edit',

@@ -10,20 +10,17 @@ const criterialRoute: Routes = [
     component: CriterialListComponent,
   },
   {
+    path: 'add',
+    component: CriterialDetailComponent,
+    data: { mode: 'add' },
+  },
+  {
     path: ':id/view',
     component: CriterialDetailComponent,
     data: { mode: 'view' },
     resolve: {
       data: CriterialResolve,
     }
-  },
-  {
-    path: 'add',
-    component: CriterialDetailComponent,
-    data: { mode: 'add' },
-    resolve: {
-      data: CriterialResolve,
-    },
   },
   {
     path: ':id/edit',

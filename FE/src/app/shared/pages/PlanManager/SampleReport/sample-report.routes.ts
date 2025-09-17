@@ -10,20 +10,17 @@ const sampleReportRoute: Routes = [
     component: SampleReportListComponent,
   },
   {
+    path: 'add',
+    component: SampleReportDetailComponent,
+    data: { mode: 'add' },
+  },
+  {
     path: ':id/view',
     component: SampleReportDetailComponent,
     data: { mode: 'view' },
     resolve: {
       data: SampleReportResolve,
     }
-  },
-  {
-    path: 'add',
-    component: SampleReportDetailComponent,
-    data: { mode: 'add' },
-    resolve: {
-      data: SampleReportResolve,
-    },
   },
   {
     path: ':id/edit',

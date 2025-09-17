@@ -1,0 +1,115 @@
+<div>
+  <h2>{{ isAddMode ? 'Thêm mới kế hoạch' : (isViewMode ? 'Xem chi tiết kế hoạch' : 'Sửa kế hoạch') }}</h2>
+
+  <form *ngIf="model">
+    <div class="row my-3">
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <input pInputText id="code" name="code" [(ngModel)]="model.code" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
+          <label for="code">Mã kế hoạch</label>
+        </p-floatlabel>
+      </div>
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <input pInputText id="name" name="name" [(ngModel)]="model.name" [invalid]="!model.name" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
+          <label for="name">Tên kế hoạch</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.planType" [options]="listTypes" [fluid]="true" [disabled]="isViewMode"
+            [showClear]="true" [appendTo]="'body'" id="planType" name="planType" optionLabel="name" optionValue="name">
+          </p-select>
+          <label for="planType">Loại</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <div class="row my-3">
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.frequency" [options]="listFrequencies" [fluid]="true" [disabled]="isViewMode"
+            [showClear]="true" [appendTo]="'body'" id="frequency" name="frequency">
+          </p-select>
+          <label for="frequency">Tần suất</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <input pInputText id="planNumber" name="planNumber" [(ngModel)]="model.planNumber" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
+          <label for="planNumber">Số kế hoạch</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.userPerformer" [options]="listUserPerformer" [fluid]="true" [disabled]="isViewMode"
+            [showClear]="true" [appendTo]="'body'" id="userPerformer" name="userPerformer" optionLabel="name" optionValue="username" dataKey="username">
+          </p-select>
+          <label for="userPerformer">Người thực hiện</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <div class="row my-3">
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.factory" [options]="listFactory" [fluid]="true" [disabled]="isViewMode"
+            [showClear]="true" [appendTo]="'body'" id="factory" name="factory" optionLabel="name" dataKey="id">
+          </p-select>
+          <label for="factory">Xưởng</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.branch" [options]="listBranchs" [fluid]="true" [disabled]="isViewMode"
+            [showClear]="true" [appendTo]="'body'" id="branch" name="branch" optionLabel="name" dataKey="id">
+          </p-select>
+          <label for="branch">Ngành</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.approvalWorkflow" [options]="listApprovalWorkflow" optionLabel="name"
+            [fluid]="true" [disabled]="isViewMode" [showClear]="true" [appendTo]="'body'" id="approvalWorkflow"
+            name="approvalWorkflow" dataKey="id">
+          </p-select>
+          <label for="approvalWorkflow">Kịch bản phê duyệt</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <list-device-group-component [isAddMode]="isAddMode" [isEditMode]="isEditMode" 
+      [isViewMode]="isViewMode" [ListDeviceGroup]="listDetail">
+    </list-device-group-component>
+
+    <div class="row my-3">
+      <div class="col-12">
+        <p-fieldset legend="Mô tả" class="custom-fieldset">
+          <p-editor [(ngModel)]="model.description" name="description" [style]="{ height: '150px' }" [readonly]="isViewMode"></p-editor>
+        </p-fieldset>
+      </div>
+    </div>
+
+    <div class="row my-3">
+      <div class="col-12">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.status" [options]="listStatus" optionLabel="label" [fluid]="true" [disabled]="isViewMode"
+            optionValue="value" [showClear]="true" [appendTo]="'body'" id="status" name="status" [invalid]="!model.status">
+          </p-select>
+          <label for="status">Trạng thái</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end mt-3">
+      <p-button label="Quay lại" severity="info" (click)="onBack()" icon="pi pi-arrow-left" class="me-2"></p-button>
+      <p-button *ngIf="!isViewMode" label="Lưu" icon="pi pi-save" severity="success" [disabled]="!model.name" class="w-full max-w-[17.35rem]" (click)="save()"
+            styleClass="w-full mx-auto" />
+    </div>
+  </form>
+</div>

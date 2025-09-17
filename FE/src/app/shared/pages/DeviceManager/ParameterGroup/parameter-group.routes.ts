@@ -10,20 +10,17 @@ const parameterGroupRoute: Routes = [
     component: ParameterGroupListComponent,
   },
   {
+    path: 'add',
+    component: ParameterGroupDetailComponent,
+    data: { mode: 'add' },
+  },
+  {
     path: ':id/view',
     component: ParameterGroupDetailComponent,
     data: { mode: 'view' },
     resolve: {
       data: ParameterGroupResolve,
     }
-  },
-  {
-    path: 'add',
-    component: ParameterGroupDetailComponent,
-    data: { mode: 'add' },
-    resolve: {
-      data: ParameterGroupResolve,
-    },
   },
   {
     path: ':id/edit',

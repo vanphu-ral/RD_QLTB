@@ -10,20 +10,17 @@ const supplyGroupRoute: Routes = [
     component: SupplyListComponent,
   },
   {
+    path: 'add',
+    component: SupplyDetailComponent,
+    data: { mode: 'add' },
+  },
+  {
     path: ':id/view',
     component: SupplyDetailComponent,
     data: { mode: 'view' },
     resolve: {
       data: SupplyResolve,
     }
-  },
-  {
-    path: 'add',
-    component: SupplyDetailComponent,
-    data: { mode: 'add' },
-    resolve: {
-      data: SupplyResolve,
-    },
   },
   {
     path: ':id/edit',

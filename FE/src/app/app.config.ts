@@ -49,12 +49,13 @@ export const appConfig: ApplicationConfig = {
     {
       provide: APP_INITIALIZER,
       useFactory: (loginService: LoginService) => {
-        return () => {
+        return async () => {
           const currentPath = window.location.pathname;
           if (currentPath.startsWith('/callback')) {
-            return loginService.handlePostLogin();
+            await loginService.handlePostLogin();
+          } else {
+            await loginService.restoreLoginFromStorage();
           }
-          return Promise.resolve();
         };
       },
       deps: [LoginService],

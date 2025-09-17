@@ -1,0 +1,55 @@
+<div class="p-1">
+    <div class="d-flex justify-content-between mt-2 mb-4">
+        <p-button label="Thêm thiết bị" icon="pi pi-plus"></p-button>
+    </div>
+
+    <div class="table-responsive">
+        <p-table [value]="ListDevice" responsiveLayout="scroll">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>STT</th>
+                    <th>Tên thiết bị</th>
+                    <th>Mã serial</th>
+                    <th>Người quản lý</th>
+                    <th>Thao tác</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-row let-i="rowIndex">
+                <tr>
+                    <td>{{ i + 1 }}</td>
+                    <td>
+                        <p-select [(ngModel)]="row.device" [options]="listdevices" optionLabel="name" [fluid]="true"
+                            [showClear]="true" [appendTo]="'body'"
+                            id="device-{{ i }}" name="device-{{ i }}" dataKey="id">
+                        </p-select>
+                    </td>
+                    <td>
+                        <input type="text" pInputText [(ngModel)]="row.serialNumber" />
+                    </td>
+                    <td>
+                        <p-select [(ngModel)]="row.manager" [options]="listManagers" optionLabel="name" optionValue="username" [fluid]="true"
+                            [showClear]="true" [appendTo]="'body'"
+                            id="manager-{{ i }}" name="manager-{{ i }}" dataKey="username">
+                        </p-select>
+                    </td>
+                    <td class="text-center">
+                        <p-button icon="pi pi-trash" severity="danger">
+                        </p-button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="6" class="text-center">Chưa có thiết bị nào thuộc nhóm thiết bị {{ data.name }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <p-button label="Lưu" severity="success" (onClick)="submit()"></p-button>
+        <p-button label="Đóng" (onClick)="close()"></p-button>
+    </div>
+</div>

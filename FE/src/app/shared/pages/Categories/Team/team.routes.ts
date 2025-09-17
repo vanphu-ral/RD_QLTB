@@ -10,20 +10,17 @@ const teamRoute: Routes = [
     component: TeamListComponent,
   },
   {
+    path: 'add',
+    component: TeamDetailComponent,
+    data: { mode: 'add' },
+  },
+  {
     path: ':id/view',
     component: TeamDetailComponent,
     data: { mode: 'view' },
     resolve: {
       data: TeamResolve,
     }
-  },
-  {
-    path: 'add',
-    component: TeamDetailComponent,
-    data: { mode: 'add' },
-    resolve: {
-      data: TeamResolve,
-    },
   },
   {
     path: ':id/edit',

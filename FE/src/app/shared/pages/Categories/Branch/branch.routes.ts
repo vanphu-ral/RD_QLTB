@@ -10,20 +10,17 @@ const branchRoute: Routes = [
     component: BranchListComponent,
   },
   {
+    path: 'add',
+    component: BranchDetailComponent,
+    data: { mode: 'add' },
+  },
+  {
     path: ':id/view',
     component: BranchDetailComponent,
     data: { mode: 'view' },
     resolve: {
       data: BranchResolve,
     }
-  },
-  {
-    path: 'add',
-    component: BranchDetailComponent,
-    data: { mode: 'add' },
-    resolve: {
-      data: BranchResolve,
-    },
   },
   {
     path: ':id/edit',

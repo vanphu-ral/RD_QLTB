@@ -10,20 +10,17 @@ const parameterRoute: Routes = [
     component: ParameterListComponent,
   },
   {
+    path: 'add',
+    component: ParameterDetailComponent,
+    data: { mode: 'add' },
+  },
+  {
     path: ':id/view',
     component: ParameterDetailComponent,
     data: { mode: 'view' },
     resolve: {
       data: ParameterResolve,
     }
-  },
-  {
-    path: 'add',
-    component: ParameterDetailComponent,
-    data: { mode: 'add' },
-    resolve: {
-      data: ParameterResolve,
-    },
   },
   {
     path: ':id/edit',

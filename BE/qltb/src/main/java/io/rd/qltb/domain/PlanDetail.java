@@ -25,9 +25,6 @@ public class PlanDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private Long sampleReporId;
-
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
@@ -57,5 +54,9 @@ public class PlanDetail {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "device_group_id", nullable = false)
     private DeviceGroup deviceGroup;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sample_report_id", nullable = false)
+    private SampleReport sampleReport;
 
 }

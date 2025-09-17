@@ -10,20 +10,17 @@ const lineRoute: Routes = [
     component: LineListComponent,
   },
   {
+    path: 'add',
+    component: LineDetailComponent,
+    data: { mode: 'add' },
+  },
+  {
     path: ':id/view',
     component: LineDetailComponent,
     data: { mode: 'view' },
     resolve: {
       data: LineResolve,
     }
-  },
-  {
-    path: 'add',
-    component: LineDetailComponent,
-    data: { mode: 'add' },
-    resolve: {
-      data: LineResolve,
-    },
   },
   {
     path: ':id/edit',

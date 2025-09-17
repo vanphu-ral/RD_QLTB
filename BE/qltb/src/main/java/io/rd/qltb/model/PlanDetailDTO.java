@@ -3,6 +3,7 @@ package io.rd.qltb.model;
 import io.rd.qltb.domain.Device;
 import io.rd.qltb.domain.DeviceGroup;
 import io.rd.qltb.domain.Plan;
+import io.rd.qltb.domain.SampleReport;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -15,8 +16,6 @@ import lombok.Setter;
 public class PlanDetailDTO {
 
     private Long id;
-
-    private Long sampleReporId;
 
     @NotNull
     private LocalDateTime createdAt;
@@ -44,5 +43,8 @@ public class PlanDetailDTO {
 
     @NotNull
     private DeviceGroup deviceGroup;
+
+    @NotNull
+    private SampleReport sampleReport;
 
 }

@@ -10,20 +10,17 @@ const departmentRoute: Routes = [
     component: DepartmentListComponent,
   },
   {
+    path: 'add',
+    component: DepartmentDetailComponent,
+    data: { mode: 'add' },
+  },
+  {
     path: ':id/view',
     component: DepartmentDetailComponent,
     data: { mode: 'view' },
     resolve: {
       data: DepartmentResolve,
     }
-  },
-  {
-    path: 'add',
-    component: DepartmentDetailComponent,
-    data: { mode: 'add' },
-    resolve: {
-      data: DepartmentResolve,
-    },
   },
   {
     path: ':id/edit',

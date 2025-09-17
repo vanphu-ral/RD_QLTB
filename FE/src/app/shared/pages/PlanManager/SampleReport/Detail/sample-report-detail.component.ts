@@ -15,6 +15,7 @@ import { CriterialService } from '../../Criterial/Service/criterial.service';
 import _ from 'lodash';
 import { KeyMappingService } from '../Service/key-mapping.service';
 import { forkJoin } from 'rxjs';
+import { PlanTypeService } from '../../PlanType/Service/plan-type.service';
 
 @Component({
   selector: 'app-sample-report-detail',
@@ -26,7 +27,7 @@ import { forkJoin } from 'rxjs';
 export class SampleReportDetailComponent extends BasePageComponent<SampleReport> {
 
   listFrequencies: any[] = ["Ngày", "Tuần", "Tháng", "Quỹ", "6 Tháng", "Năm"];
-  listTypes: any[] = ["Kiểm tra", "Bảo trì", "Sửa chữa"];
+  listTypes: any[] = [];
   listBranchs: any[] = [];
   listApprovalWorkflow: any[] = []
   listDeviceGroup: any[] = []
@@ -42,7 +43,8 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
     private deviceGroupService: DeviceGroupService,
     private criterialGroupServie: CriterialGroupService,
     private criterialService: CriterialService,
-    private keyMappingService: KeyMappingService
+    private keyMappingService: KeyMappingService,
+    private planTypeService: PlanTypeService
   ) {
     super(apiService);
   }
@@ -55,13 +57,15 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
       workflows: this.approvalWorkflowService.getAll(),
       deviceGroups: this.deviceGroupService.getAll(),
       criterialGroups: this.criterialGroupServie.getAll(),
-      criterials: this.criterialService.getAll()
+      criterials: this.criterialService.getAll(),
+      planTypes: this.planTypeService.getAll()
     }).subscribe(result => {
       this.listBranchs = result.branchs;
       this.listApprovalWorkflow = result.workflows;
       this.listDeviceGroup = result.deviceGroups;
       this.listCriterialGroup = result.criterialGroups;
       this.listCriterial = result.criterials;
+      this.listTypes = result.planTypes;
       if (!this.isAddMode) {
         this.keyMappingService.getBySampleReport(this.model.id!).subscribe(res => {
           this.listCriterialBySample = res.map(x => {

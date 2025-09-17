@@ -28,20 +28,20 @@ public class Plan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, length = 50)
+    private String code;
+
     @Column(nullable = false, length = 200)
     private String name;
-
-    @Column
-    private Long factoryId;
-
-    @Column
-    private Long branchId;
 
     @Column(length = 50)
     private String frequency;
 
-    @Column
-    private Integer planNumber;
+    @Column(length = 50)
+    private String planNumber;
+
+    @Column(length = 50)
+    private String userPerformer;
 
     @Column(length = 500, name = "\"description\"")
     private String description;
@@ -65,7 +65,19 @@ public class Plan {
     @JoinColumn(name = "plan_type_id", nullable = false)
     private PlanType planType;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "factory_id", nullable = false)
+    private Factory factory;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "branch_id", nullable = false)
+    private Branch branch;
+
     @OneToMany(mappedBy = "plan")
     private Set<PlanDetail> planPlanDetails = new HashSet<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "approval_workflow_id", nullable = false)
+    private ApprovalWorkflow approvalWorkflow;
 
 }

@@ -10,20 +10,17 @@ const groupApprovalNameRoute: Routes = [
     component: GroupApprovalNameListComponent,
   },
   {
+    path: 'add',
+    component: GroupApprovalNameDetailComponent,
+    data: { mode: 'add' },
+  },
+  {
     path: ':id/view',
     component: GroupApprovalNameDetailComponent,
     data: { mode: 'view' },
     resolve: {
       data: GroupApprovalNameResolve,
     }
-  },
-  {
-    path: 'add',
-    component: GroupApprovalNameDetailComponent,
-    data: { mode: 'add' },
-    resolve: {
-      data: GroupApprovalNameResolve,
-    },
   },
   {
     path: ':id/edit',

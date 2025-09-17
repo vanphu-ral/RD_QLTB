@@ -1,0 +1,45 @@
+<div class="d-flex justify-content-between align-items-center my-3">
+    <h5 class="m-0 text-900 font-bold">Danh sách nhóm thiết bị kiểm tra</h5>
+    <p-button *ngIf="!isViewMode" label="Thêm dòng" icon="pi pi-plus-circle"
+        styleClass="p-button-success p-button-outlined" (onClick)="addRow()"></p-button>
+</div>
+
+<div class="table-responsive">
+    <p-table [value]="ListDeviceGroup" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>STT</th>
+                <th>Mẫu biên bản</th>
+                <th>Nhóm thiết bị</th>
+                <th *ngIf="!isViewMode">Thao tác</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-row let-i="rowIndex">
+            <tr>
+                <td>{{ i + 1 }}</td>
+                <td>
+                    <p-select [(ngModel)]="row.sampleReport" [options]="listSampleReport" optionLabel="name"
+                        [disabled]="isViewMode" [fluid]="true" [showClear]="true" [appendTo]="'body'"
+                        id="sampleReport-{{ i }}" name="sampleReport-{{ i }}" dataKey="id">
+                    </p-select>
+                </td>
+                <td>
+                    <p-select [(ngModel)]="row.deviceGroup" [options]="listdeviceGroups" optionLabel="name" [fluid]="true"
+                        [disabled]="isViewMode" [showClear]="true" [appendTo]="'body'" id="deviceGroup-{{ i }}"
+                        name="deviceGroup-{{ i }}" dataKey="id">
+                    </p-select>
+                </td>
+                <td class="text-center" *ngIf="!isViewMode">
+                    <p-button icon="pi pi-pencil" severity="warn" class="m-1" (onClick)="editRow(i)"></p-button>
+                    <p-button icon="pi pi-trash" severity="danger" class="m-1" (onClick)="deleteRow(i)"></p-button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="6" class="text-center">Chưa có tiêu trí nào được thêm</td>
+            </tr>
+        </ng-template>
+    </p-table>
+
+</div>

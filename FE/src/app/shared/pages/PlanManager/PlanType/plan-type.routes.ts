@@ -10,20 +10,17 @@ const planTypeRoute: Routes = [
     component: PlanTypeListComponent,
   },
   {
+    path: 'add',
+    component: PlanTypeDetailComponent,
+    data: { mode: 'add' },
+  },
+  {
     path: ':id/view',
     component: PlanTypeDetailComponent,
     data: { mode: 'view' },
     resolve: {
       data: PlanTypeResolve,
     }
-  },
-  {
-    path: 'add',
-    component: PlanTypeDetailComponent,
-    data: { mode: 'add' },
-    resolve: {
-      data: PlanTypeResolve,
-    },
   },
   {
     path: ':id/edit',

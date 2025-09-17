@@ -1,17 +1,11 @@
 package io.rd.qltb.service;
 
-import io.rd.qltb.domain.Device;
-import io.rd.qltb.domain.DeviceGroup;
-import io.rd.qltb.domain.Plan;
-import io.rd.qltb.domain.PlanDetail;
+import io.rd.qltb.domain.*;
 import io.rd.qltb.events.BeforeDeleteDevice;
 import io.rd.qltb.events.BeforeDeleteDeviceGroup;
 import io.rd.qltb.events.BeforeDeletePlan;
 import io.rd.qltb.model.PlanDetailDTO;
-import io.rd.qltb.repos.DeviceGroupRepository;
-import io.rd.qltb.repos.DeviceRepository;
-import io.rd.qltb.repos.PlanDetailRepository;
-import io.rd.qltb.repos.PlanRepository;
+import io.rd.qltb.repos.*;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
 import java.util.List;
@@ -26,15 +20,18 @@ public class PlanDetailService {
     private final PlanDetailRepository planDetailRepository;
     private final PlanRepository planRepository;
     private final DeviceRepository deviceRepository;
+    private final SampleReportRepository sampleReportRepository;
     private final DeviceGroupRepository deviceGroupRepository;
 
     public PlanDetailService(final PlanDetailRepository planDetailRepository,
             final PlanRepository planRepository, final DeviceRepository deviceRepository,
+            final SampleReportRepository sampleReportRepository,
             final DeviceGroupRepository deviceGroupRepository) {
         this.planDetailRepository = planDetailRepository;
         this.planRepository = planRepository;
         this.deviceRepository = deviceRepository;
         this.deviceGroupRepository = deviceGroupRepository;
+        this.sampleReportRepository = sampleReportRepository;
     }
 
     public List<PlanDetailDTO> findAll() {
@@ -71,7 +68,6 @@ public class PlanDetailService {
 
     private PlanDetailDTO mapToDTO(final PlanDetail planDetail, final PlanDetailDTO dto) {
         dto.setId(planDetail.getId());
-        dto.setSampleReporId(planDetail.getSampleReporId());
         dto.setCreatedAt(planDetail.getCreatedAt());
         dto.setUpdatedAt(planDetail.getUpdatedAt());
         dto.setCreatedBy(planDetail.getCreatedBy());
@@ -84,8 +80,6 @@ public class PlanDetailService {
             Plan planCopy = new Plan();
             planCopy.setId(planDetail.getPlan().getId());
             planCopy.setName(planDetail.getPlan().getName());
-            planCopy.setFactoryId(planDetail.getPlan().getFactoryId());
-            planCopy.setBranchId(planDetail.getPlan().getBranchId());
             planCopy.setFrequency(planDetail.getPlan().getFrequency());
             planCopy.setPlanNumber(planDetail.getPlan().getPlanNumber());
             planCopy.setDescription(planDetail.getPlan().getDescription());
@@ -155,12 +149,26 @@ public class PlanDetailService {
             dto.setDeviceGroup(null);
         }
 
+        if(planDetail.getSampleReport() != null) {
+            SampleReport sampleReportCopy = new SampleReport();
+            sampleReportCopy.setId(planDetail.getSampleReport().getId());
+            sampleReportCopy.setCode(planDetail.getSampleReport().getCode());
+            sampleReportCopy.setName(planDetail.getSampleReport().getName());
+            sampleReportCopy.setStatus(planDetail.getSampleReport().getStatus());
+
+            // Xóa các quan hệ con
+            sampleReportCopy.setDeviceGroup(null);
+            sampleReportCopy.setSampleReportKeyMappingDeviceSampleReports(null);
+            sampleReportCopy.setSampleReportKeyMappings(null);
+            sampleReportCopy.setBranch(null);
+            sampleReportCopy.setApprovalWorkflow(null);
+        }
+
         return dto;
     }
 
 
     private PlanDetail mapToEntity(final PlanDetailDTO planDetailDTO, final PlanDetail planDetail) {
-        planDetail.setSampleReporId(planDetailDTO.getSampleReporId());
         planDetail.setCreatedAt(planDetailDTO.getCreatedAt());
         planDetail.setUpdatedAt(planDetailDTO.getUpdatedAt());
         planDetail.setCreatedBy(planDetailDTO.getCreatedBy());
@@ -176,6 +184,10 @@ public class PlanDetailService {
         final DeviceGroup deviceGroup = planDetailDTO.getDeviceGroup() == null ? null : deviceGroupRepository.findById(planDetailDTO.getDeviceGroup().getId())
                 .orElseThrow(() -> new NotFoundException("deviceGroup not found"));
         planDetail.setDeviceGroup(deviceGroup);
+
+        final SampleReport sampleReport = planDetailDTO.getSampleReport() == null ? null : sampleReportRepository.findById(planDetailDTO.getSampleReport().getId())
+                .orElseThrow(() -> new NotFoundException("sampleReport not found"));
+        planDetail.setSampleReport(sampleReport);
         return planDetail;
     }
 
