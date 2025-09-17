@@ -1,8 +1,11 @@
 package io.rd.qltb.model;
 
+import io.rd.qltb.domain.Device;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,5 +40,6 @@ public class DeviceGroupDTO {
     private String updatedBy;
 
     private Integer status;
+    private List<Device> groupDevices;
 
 }

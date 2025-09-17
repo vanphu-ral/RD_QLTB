@@ -1,5 +1,6 @@
 package io.rd.qltb.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -91,31 +92,39 @@ public class Device {
     private String supplier;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @JoinColumn(name = "group_id", nullable = false)
     private DeviceGroup group;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @JoinColumn(name = "line_id", nullable = false)
     private Line line;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @JoinColumn(name = "branch_id", nullable = false)
     private Branch branch;
 
     @OneToMany(mappedBy = "device")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Set<DeviceParameterUse> deviceDeviceParameterUses = new HashSet<>();
 
     @OneToMany(mappedBy = "device")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Set<DeviceRelocationHistory> deviceDeviceRelocationHistories = new HashSet<>();
 
     @OneToMany(mappedBy = "device")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Set<DeviceSupplyUsage> deviceDeviceSupplyUsages = new HashSet<>();
 
     @OneToMany(mappedBy = "device")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Set<PlanDetail> devicePlanDetails = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Team team;
 
 }

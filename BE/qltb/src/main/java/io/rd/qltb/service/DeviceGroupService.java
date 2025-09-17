@@ -1,5 +1,6 @@
 package io.rd.qltb.service;
 
+import io.rd.qltb.domain.Device;
 import io.rd.qltb.domain.DeviceGroup;
 import io.rd.qltb.events.BeforeDeleteDeviceGroup;
 import io.rd.qltb.model.DeviceGroupDTO;
@@ -67,6 +68,20 @@ public class DeviceGroupService {
         deviceGroupDTO.setCreatedBy(deviceGroup.getCreatedBy());
         deviceGroupDTO.setUpdatedBy(deviceGroup.getUpdatedBy());
         deviceGroupDTO.setStatus(deviceGroup.getStatus());
+        if(deviceGroup.getGroupDevices() != null) {
+            for(Device device : deviceGroup.getGroupDevices()) {
+                device.setGroup(null);
+                device.setLine(null);
+                device.setBranch(null);
+                device.setDeviceDeviceParameterUses(null);
+                device.setDeviceDeviceRelocationHistories(null);
+                device.setDeviceDeviceSupplyUsages(null);
+                device.setDevicePlanDetails(null);
+                device.setTeam(null);
+            }
+            deviceGroupDTO.setGroupDevices(
+                    deviceGroup.getGroupDevices().stream().toList());
+        }
         return deviceGroupDTO;
     }
 

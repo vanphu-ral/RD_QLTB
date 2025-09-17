@@ -1,5 +1,6 @@
 package io.rd.qltb.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -50,15 +51,19 @@ public class DeviceGroup {
     private Integer status;
 
     @OneToMany(mappedBy = "deviceGroup")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Set<SampleReport> deviceGroupSampleReports = new HashSet<>();
 
     @OneToMany(mappedBy = "deviceGroup")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Set<KeyMappingDeviceSampleReport> deviceGroupKeyMappingDeviceSampleReports = new HashSet<>();
 
     @OneToMany(mappedBy = "group")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Set<Device> groupDevices = new HashSet<>();
 
     @OneToMany(mappedBy = "deviceGroup")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Set<PlanDetail> deviceGroupPlanDetails = new HashSet<>();
 
 }
