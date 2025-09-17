@@ -1,16 +1,13 @@
 package io.rd.qltb.service;
 
-import io.rd.qltb.domain.Branch;
-import io.rd.qltb.domain.Device;
-import io.rd.qltb.domain.DeviceGroup;
-import io.rd.qltb.domain.Line;
-import io.rd.qltb.domain.Team;
+import io.rd.qltb.domain.*;
 import io.rd.qltb.events.BeforeDeleteBranch;
 import io.rd.qltb.events.BeforeDeleteDevice;
 import io.rd.qltb.events.BeforeDeleteDeviceGroup;
 import io.rd.qltb.events.BeforeDeleteLine;
 import io.rd.qltb.events.BeforeDeleteTeam;
 import io.rd.qltb.model.DeviceDTO;
+import io.rd.qltb.model.DeviceSupplyUsageDTO;
 import io.rd.qltb.repos.BranchRepository;
 import io.rd.qltb.repos.DeviceGroupRepository;
 import io.rd.qltb.repos.DeviceRepository;
@@ -18,6 +15,8 @@ import io.rd.qltb.repos.LineRepository;
 import io.rd.qltb.repos.TeamRepository;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
+
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
@@ -72,7 +71,21 @@ public class DeviceService {
         mapToEntity(deviceDTO, device);
         return deviceRepository.save(device).getId();
     }
-
+    public List<Long> creates(final List<DeviceDTO> deviceDTO) {
+        List<Long> createdIds = new ArrayList<>();
+        for (DeviceDTO dto : deviceDTO) {
+            Device entity;
+            if (dto.getId() != null) {
+                entity = deviceRepository.findById(dto.getId()).orElse(new Device());
+            } else {
+                entity = new Device();
+            }
+            mapToEntity(dto, entity);
+            Device saved = deviceRepository.save(entity);
+            createdIds.add(saved.getId());
+        }
+        return createdIds;
+    }
     public void update(final Long id, final DeviceDTO deviceDTO) {
         final Device device = deviceRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
@@ -199,7 +212,6 @@ public class DeviceService {
             teamCopy.setBranch(null);
             teamCopy.setTeamLines(null);
             teamCopy.setTeamDevices(null);
-
             deviceDTO.setTeam(teamCopy);
         } else {
             deviceDTO.setTeam(null);

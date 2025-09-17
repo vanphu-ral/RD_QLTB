@@ -1,5 +1,6 @@
 package io.rd.qltb.rest;
 
+import io.rd.qltb.model.DeviceSupplyUsageDTO;
 import io.rd.qltb.model.PlanDetailDTO;
 import io.rd.qltb.service.PlanDetailService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -45,7 +46,12 @@ public class PlanDetailResource {
         final Long createdId = planDetailService.create(planDetailDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
-
+    @PostMapping("/creates")
+    @ApiResponse(responseCode = "201")
+    public ResponseEntity<List<Long>> creates(@RequestBody @Valid List<PlanDetailDTO> planDetailDTO) {
+        List<Long> createdIds = planDetailService.creates(planDetailDTO);
+        return new ResponseEntity<>(createdIds, HttpStatus.CREATED);
+    }
     @PutMapping("/{id}")
     public ResponseEntity<Long> updatePlanDetail(@PathVariable(name = "id") final Long id,
             @RequestBody @Valid final PlanDetailDTO planDetailDTO) {

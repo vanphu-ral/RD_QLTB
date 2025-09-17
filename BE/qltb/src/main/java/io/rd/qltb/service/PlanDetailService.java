@@ -4,10 +4,13 @@ import io.rd.qltb.domain.*;
 import io.rd.qltb.events.BeforeDeleteDevice;
 import io.rd.qltb.events.BeforeDeleteDeviceGroup;
 import io.rd.qltb.events.BeforeDeletePlan;
+import io.rd.qltb.model.DeviceSupplyUsageDTO;
 import io.rd.qltb.model.PlanDetailDTO;
 import io.rd.qltb.repos.*;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
+
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
@@ -51,6 +54,21 @@ public class PlanDetailService {
         final PlanDetail planDetail = new PlanDetail();
         mapToEntity(planDetailDTO, planDetail);
         return planDetailRepository.save(planDetail).getId();
+    }
+    public List<Long> creates(final List<PlanDetailDTO> planDetailDTOS) {
+        List<Long> createdIds = new ArrayList<>();
+        for (PlanDetailDTO dto : planDetailDTOS) {
+            PlanDetail entity;
+            if (dto.getId() != null) {
+                entity = planDetailRepository.findById(dto.getId()).orElse(new PlanDetail());
+            } else {
+                entity = new PlanDetail();
+            }
+            mapToEntity(dto, entity);
+            PlanDetail saved = planDetailRepository.save(entity);
+            createdIds.add(saved.getId());
+        }
+        return createdIds;
     }
 
     public void update(final Long id, final PlanDetailDTO planDetailDTO) {
