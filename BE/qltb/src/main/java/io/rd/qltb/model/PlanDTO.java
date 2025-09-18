@@ -48,7 +48,7 @@ public class PlanDTO {
     private String updatedBy;
 
     @Size(max = 255)
-    private String status;
+    private Integer status;
 
     @NotNull
     private PlanType planType;

@@ -34,7 +34,7 @@ public class PlanResultDTO {
     private String updatedBy;
 
     @Size(max = 255)
-    private String status;
+    private Integer status;
 
     @Size(max = 255)
     private String statusRepair;

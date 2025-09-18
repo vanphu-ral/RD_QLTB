@@ -34,8 +34,7 @@ public class ApprovalDTO {
     private ApprovalGroup group;
 
     @NotNull
-    @Size(max = 50)
-    private String status;
+    private Integer status;
 
     private LocalDateTime signedAt;
 

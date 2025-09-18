@@ -59,7 +59,7 @@ public class Plan {
     private String updatedBy;
 
     @Column
-    private String status;
+    private Integer status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "plan_type_id", nullable = false)

@@ -71,7 +71,7 @@ public class ErrorReport {
     private String updatedBy;
 
     @Column
-    private String status;
+    private Integer status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "plan_result_id", nullable = false)

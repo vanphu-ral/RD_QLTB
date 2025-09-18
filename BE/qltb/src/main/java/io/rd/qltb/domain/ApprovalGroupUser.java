@@ -30,7 +30,7 @@ public class ApprovalGroupUser {
     private String username;
 
     @Column
-    private String status;
+    private Integer status;
 
     @Column
     private LocalDate timeSign;

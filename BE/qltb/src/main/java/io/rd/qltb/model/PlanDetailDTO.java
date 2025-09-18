@@ -36,7 +36,7 @@ public class PlanDetailDTO {
     private String manager;
 
     @Size(max = 255)
-    private String status;
+    private Integer status;
 
     @NotNull
     private Plan plan;

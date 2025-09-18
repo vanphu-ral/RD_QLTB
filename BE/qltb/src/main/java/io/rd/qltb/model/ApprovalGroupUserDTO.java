@@ -18,8 +18,8 @@ public class ApprovalGroupUserDTO {
     @NotNull
     private String username;
 
-    @Size(max = 255)
-    private String status;
+
+    private Integer status;
 
     private LocalDate timeSign;
 

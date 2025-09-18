@@ -43,7 +43,7 @@ public class PlanDetail {
     private String manager;
 
     @Column
-    private String status;
+    private Integer status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "plan_id", nullable = false)

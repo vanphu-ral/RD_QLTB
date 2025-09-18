@@ -36,8 +36,8 @@ public class Approval {
     @JoinColumn(name = "group_id", nullable = false)
     private ApprovalGroup group;
 
-    @Column(nullable = false, length = 50)
-    private String status;
+    @Column
+    private Integer status;
 
     @Column
     private LocalDateTime signedAt;

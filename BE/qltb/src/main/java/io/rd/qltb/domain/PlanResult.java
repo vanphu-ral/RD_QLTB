@@ -47,7 +47,7 @@ public class PlanResult {
     private String updatedBy;
 
     @Column
-    private String status;
+    private Integer status;
 
     @Column
     private String statusRepair;

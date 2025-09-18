@@ -57,7 +57,7 @@ public class ErrorReportDTO {
     private String updatedBy;
 
     @Size(max = 255)
-    private String status;
+    private Integer status;
 
     @NotNull
     private PlanResult planResult;
