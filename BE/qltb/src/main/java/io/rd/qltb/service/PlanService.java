@@ -131,11 +131,15 @@ public class PlanService {
             planRequest.setPlanDetails(planDetailRequests);
     }
 //         planDetails = null;
-        plan.setPlanType(null);
-        plan.setFactory(null);
-        plan.setBranch(null);
+        plan.getPlanType().setPlanTypePlans(null);
+        plan.getFactory().setFactoryBranches(null);
+        plan.getBranch().setFactory(null);
+        plan.getBranch().setBranchDevices(null);
+        plan.getBranch().setBranchTeams(null);
+        plan.getBranch().setSampleReports(null);
         plan.setPlanPlanDetails(null);
-        plan.setApprovalWorkflow(null);
+        plan.getApprovalWorkflow().setWorkflowSampleReports(null);
+        plan.getApprovalWorkflow().setWorkflowApprovalGroups(null);
         planRequest.setPlan(plan);
         return planRequest;
     }
