@@ -1,5 +1,7 @@
 export class PlanDetail {
     id?: number
+    serial?: string
+    manager?: string
     createdBy?: string;
     updatedBy?: string;
     createdAt?: Date;

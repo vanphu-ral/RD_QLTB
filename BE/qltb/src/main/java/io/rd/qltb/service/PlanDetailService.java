@@ -86,6 +86,7 @@ public class PlanDetailService {
 
     private PlanDetailDTO mapToDTO(final PlanDetail planDetail, final PlanDetailDTO dto) {
         dto.setId(planDetail.getId());
+        dto.setSerial(planDetail.getSerial());
         dto.setCreatedAt(planDetail.getCreatedAt());
         dto.setUpdatedAt(planDetail.getUpdatedAt());
         dto.setCreatedBy(planDetail.getCreatedBy());
@@ -187,6 +188,7 @@ public class PlanDetailService {
 
 
     private PlanDetail mapToEntity(final PlanDetailDTO planDetailDTO, final PlanDetail planDetail) {
+        planDetail.setSerial(planDetailDTO.getSerial());
         planDetail.setCreatedAt(planDetailDTO.getCreatedAt());
         planDetail.setUpdatedAt(planDetailDTO.getUpdatedAt());
         planDetail.setCreatedBy(planDetailDTO.getCreatedBy());

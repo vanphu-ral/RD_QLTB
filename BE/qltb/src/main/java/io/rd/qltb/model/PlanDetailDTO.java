@@ -18,6 +18,9 @@ public class PlanDetailDTO {
     private Long id;
 
 
+    private String serial;
+
+    @NotNull
     private LocalDateTime createdAt;
 
 

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SharedModule } from '../../../../../share.module';
 import { CommonModule } from '@angular/common';
@@ -32,6 +32,8 @@ export class PlanDetailComponent extends BasePageComponent<Plan> {
   listApprovalWorkflow: any[] = []
   listUserPerformer: any[] = []
   listDetail: PlanDetail[] = []
+
+  @ViewChild(ListDeviceComponent) listDeviceComponent?: ListDeviceComponent;
 
   constructor(
     protected override apiService: PlanService,
@@ -72,30 +74,56 @@ export class PlanDetailComponent extends BasePageComponent<Plan> {
     })
   }
 
+  submitData(planId: number) {
+    const dataToSend = this.listDetail.flatMap(detail => {
+      if (detail.deviceGroup && detail.deviceGroup.groupDevices) {
+        return detail.deviceGroup.groupDevices.map((device: any) => {
+          const newPlanDetail = new PlanDetail();
+          newPlanDetail.id = detail.id;
+          newPlanDetail.plan = {id: planId};
+          newPlanDetail.deviceGroup = detail.deviceGroup;
+          newPlanDetail.sampleReport = detail.sampleReport;
+          newPlanDetail.device = device;
+          const updatedDevice = this.listDeviceComponent?.deviceUpdates.find(
+            update => update.deviceId === device.id
+          );
+          newPlanDetail.serial = updatedDevice?.serial || device.serialNumber;
+          newPlanDetail.manager = updatedDevice?.manager || device.userManager;
+          return newPlanDetail;
+        });
+      }
+      return [];
+    });
+    return dataToSend
+  }
+
 
   public override save(): void {
     if (this.model) {
       this.model = Util.prepareModel(this.model);
 
-      if (this.isAddMode) {
-        this.apiService.create(this.model).subscribe({
-          next: () => {
-            Util.ConfirmMessage('Thêm mới thành công', 'success');
-          },
-          error: () => {
-            Util.ConfirmMessage('Thêm mới thất bại', 'error');
-          }
-        }).add(() => this.navigationService.back());
-      } else {
-        this.apiService.update(this.model.id!, this.model).subscribe({
-          next: () => {
-            Util.ConfirmMessage('Cập nhật thành công', 'success');
-          },
-          error: () => {
-            Util.ConfirmMessage('Cập nhật thất bại', 'error');
-          }
-        }).add(() => this.navigationService.back());
-      }
+
+      console.log(this.model);
+
+      // if (this.isAddMode) {
+      //   this.apiService.create(this.model).subscribe({
+      //     next: () => {
+      //       Util.ConfirmMessage('Thêm mới thành công', 'success');
+      //     },
+      //     error: () => {
+      //       Util.ConfirmMessage('Thêm mới thất bại', 'error');
+      //     }
+      //   }).add(() => this.navigationService.back());
+      // } else {
+      //   this.apiService.update(this.model.id!, this.model).subscribe({
+      //     next: () => {
+      //       Util.ConfirmMessage('Cập nhật thành công', 'success');
+      //     },
+      //     error: () => {
+      //       Util.ConfirmMessage('Cập nhật thất bại', 'error');
+      //     }
+      //   }).add(() => this.navigationService.back());
+      // }
     }
   }
 }

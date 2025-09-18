@@ -25,6 +25,8 @@ public class PlanDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String serial;
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
