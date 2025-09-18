@@ -1,7 +1,7 @@
 <div>
   <h2>{{ isAddMode ? 'Thêm mới mẫu biên bản' : (isViewMode ? 'Xem chi tiết mẫu biên bản' : 'Sửa mẫu biên bản') }}</h2>
 
-  <form *ngIf="model">
+  <form #f="ngForm" *ngIf="model">
     <div class="row my-3">
       <div class="col-6">
         <p-floatlabel variant="on">
@@ -12,7 +12,7 @@
       </div>
       <div class="col-6">
         <p-floatlabel variant="on">
-          <input pInputText id="name" name="name" [(ngModel)]="model.name" [invalid]="!model.name" autocomplete="off"
+          <input pInputText id="name" name="name" [(ngModel)]="model.name" required [invalid]="!model.name" autocomplete="off"
             [disabled]="isViewMode" [fluid]="true" />
           <label for="name">Tên mẫu biên bản</label>
         </p-floatlabel>
@@ -62,7 +62,7 @@
       <div class="col-4">
         <p-floatlabel variant="on">
           <input pInputText id="documentNumber" name="documentNumber" [(ngModel)]="model.documentNumber"
-            [invalid]="!model.documentNumber" autocomplete="off" [disabled]="isViewMode" [fluid]="true" />
+            [invalid]="!model.documentNumber" required  autocomplete="off" [disabled]="isViewMode" [fluid]="true" />
           <label for="documentNumber">Số hiệu biên bản</label>
         </p-floatlabel>
       </div>
@@ -137,7 +137,7 @@
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.status" [options]="listStatus" optionLabel="label" [fluid]="true"
             [disabled]="isViewMode" optionValue="value" [showClear]="true" [appendTo]="'body'" id="status" name="status"
-            [invalid]="!model.status">
+            [invalid]="!model.status" required >
           </p-select>
           <label for="status">Trạng thái</label>
         </p-floatlabel>
@@ -146,7 +146,7 @@
 
     <div class="d-flex justify-content-end mt-3">
       <p-button label="Quay lại" severity="info" (click)="onBack()" icon="pi pi-arrow-left" class="me-2"></p-button>
-      <p-button *ngIf="!isViewMode" label="Lưu" icon="pi pi-save" severity="success" [disabled]="!model.name"
+      <p-button *ngIf="!isViewMode" label="Lưu" icon="pi pi-save" severity="success" [disableIfInvalid]="f"
         class="w-full max-w-[17.35rem]" (click)="save()" styleClass="w-full mx-auto" />
     </div>
   </form>

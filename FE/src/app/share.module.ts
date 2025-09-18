@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
@@ -32,6 +31,10 @@ import { DateConvertDirective } from './shared/directive/date-convert.directive'
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { TagModule } from 'primeng/tag';
 import { CheckboxModule } from 'primeng/checkbox';
+import { OverlayBadgeModule } from 'primeng/overlaybadge';
+import { PopoverModule } from 'primeng/popover';
+import { BadgeModule } from 'primeng/badge';
+import { DisableIfInvalidDirective } from './shared/directive/disable-invalid.directive';
 
 @NgModule({
   imports: [
@@ -65,7 +68,11 @@ import { CheckboxModule } from 'primeng/checkbox';
     DateConvertDirective,
     SplitButtonModule,
     TagModule,
-    CheckboxModule
+    CheckboxModule,
+    OverlayBadgeModule,
+    PopoverModule,
+    BadgeModule,
+    DisableIfInvalidDirective
   ],
   exports: [
     CommonModule,
@@ -98,7 +105,11 @@ import { CheckboxModule } from 'primeng/checkbox';
     DateConvertDirective,
     SplitButtonModule,
     TagModule,
-    CheckboxModule
+    CheckboxModule,
+    OverlayBadgeModule,
+    PopoverModule,
+    BadgeModule,
+    DisableIfInvalidDirective
   ],
   providers: [DialogService, MessageService]
 })

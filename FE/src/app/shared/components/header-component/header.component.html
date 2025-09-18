@@ -18,6 +18,11 @@
 
     <div class="layout-topbar-menu hidden lg:block">
       <div class="layout-topbar-menu-content">
+        <a class="layout-topbar-action" (click)="notificationPopover.toggle($event)">
+          <p-overlaybadge [value]="unreadCount" severity="danger">
+            <i class="pi pi-bell"></i>
+          </p-overlaybadge>
+        </a>
         <a class="layout-topbar-action" routerLink="/qr-code">
           <i class="fa-solid fa-qrcode"></i>
           <span>QR Code</span>
@@ -43,6 +48,30 @@
           <p-menu #menu [model]="userMenuItems" [popup]="true"></p-menu>
         </div>
       </div>
+
+
+      <!-- Thông báo -->
+      <p-popover #notificationPopover [dismissable]="true" styleClass="w-20rem">
+        <ng-template pTemplate="content">
+          <div class="notification-list">
+            <ng-container *ngIf="notifications.length > 0; else emptyNoti">
+              <div *ngFor="let noti of notifications"
+                class="p-2 border-bottom-1 surface-border cursor-pointer flex align-items-center"
+                (click)="openNotification(noti)">
+                <i class="pi pi-info-circle text-primary" *ngIf="!noti.read"></i>
+                <span [ngClass]="noti.read ? 'ms-4' : 'ms-2'">{{ noti.message }}</span>
+              </div>
+              <div class="p-2 text-center">
+                <button pButton type="button" label="Đánh dấu tất cả đã đọc" class="p-button-sm p-button-text"
+                  (click)="markAllAsRead(); notificationPopover.hide()"></button>
+              </div>
+            </ng-container>
+            <ng-template #emptyNoti>
+              <div class="p-3 text-center text-500">Không có thông báo</div>
+            </ng-template>
+          </div>
+        </ng-template>
+      </p-popover>
     </div>
   </div>
 </div>
