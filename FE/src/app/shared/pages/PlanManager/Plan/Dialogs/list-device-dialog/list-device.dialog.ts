@@ -29,7 +29,6 @@ export class ListDeviceDialog {
 
     ngOnInit() {
         console.log(this.data);
-
         this.ListDevice = _.map(this.data.groupDevices, item => {
             return {
                 device: item,
@@ -67,7 +66,9 @@ export class ListDeviceDialog {
     }
 
     submit() {
-        // Gửi mảng các đối tượng đã được ánh xạ về component cha
+        this.ListDevice = _.forEach(this.ListDevice, item => {
+            item.device.group = {id: this.data.id}
+        })
         this.ref.close(this.ListDevice);
     }
 }

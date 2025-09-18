@@ -1,3 +1,6 @@
+import { Device } from "../DeviceManager/device.model";
+import { PlanDetail } from "./plan-detail.model";
+
 export class Plan {
     id?: number;
     code?: string;

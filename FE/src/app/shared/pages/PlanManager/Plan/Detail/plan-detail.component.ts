@@ -15,6 +15,7 @@ import _ from 'lodash';
 import { FactoryService } from '../../../Categories/Factory/Service/factory.service';
 import { ListDeviceComponent } from '../Components/list-device-group/list-device-group.component';
 import { PlanDetail } from '../../../../models/PlanManger/plan-detail.model';
+import { PlanRequest } from '../../../../models/PlanManger/plan-request.model';
 
 @Component({
   selector: 'app-plan-detail',
@@ -23,7 +24,7 @@ import { PlanDetail } from '../../../../models/PlanManger/plan-detail.model';
   templateUrl: './plan-detail.component.html',
   styleUrls: ['./plan-detail.component.scss']
 })
-export class PlanDetailComponent extends BasePageComponent<Plan> {
+export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
 
   listFrequencies: any[] = ["Ngày", "Tuần", "Tháng", "Quỹ", "6 Tháng", "Năm"];
   listTypes: any[] = [];
@@ -31,7 +32,6 @@ export class PlanDetailComponent extends BasePageComponent<Plan> {
   listFactory: any[] = []
   listApprovalWorkflow: any[] = []
   listUserPerformer: any[] = []
-  listDetail: PlanDetail[] = []
 
   @ViewChild(ListDeviceComponent) listDeviceComponent?: ListDeviceComponent;
 
@@ -44,6 +44,7 @@ export class PlanDetailComponent extends BasePageComponent<Plan> {
     private factoryService: FactoryService
   ) {
     super(apiService);
+    this.model = new PlanRequest()
   }
 
   override ngOnInit(): void {
@@ -74,56 +75,43 @@ export class PlanDetailComponent extends BasePageComponent<Plan> {
     })
   }
 
-  submitData(planId: number) {
-    const dataToSend = this.listDetail.flatMap(detail => {
-      if (detail.deviceGroup && detail.deviceGroup.groupDevices) {
-        return detail.deviceGroup.groupDevices.map((device: any) => {
-          const newPlanDetail = new PlanDetail();
-          newPlanDetail.id = detail.id;
-          newPlanDetail.plan = {id: planId};
-          newPlanDetail.deviceGroup = detail.deviceGroup;
-          newPlanDetail.sampleReport = detail.sampleReport;
-          newPlanDetail.device = device;
-          const updatedDevice = this.listDeviceComponent?.deviceUpdates.find(
-            update => update.deviceId === device.id
-          );
-          newPlanDetail.serial = updatedDevice?.serial || device.serialNumber;
-          newPlanDetail.manager = updatedDevice?.manager || device.userManager;
-          return newPlanDetail;
-        });
-      }
-      return [];
-    });
-    return dataToSend
+  override initNewModel(): void {
+    this.model = new PlanRequest();
+    _.set(this.model as any, 'plan.status', 1);
   }
 
 
   public override save(): void {
     if (this.model) {
-      this.model = Util.prepareModel(this.model);
+      // this.model.plan = Util.prepareModel(this.model.plan!);
+      // console.log(this.model);
+      this.model = {
+        plan: this.model.plan,
+        planDetails: this.model.planDetails,
+        devices: this.model.devices
+      }
 
+      if (this.isAddMode) {
+        this.apiService.createPlanWithDetails(this.model).subscribe({
+          next: () => {
+            Util.ConfirmMessage('Thêm mới thành công', 'success');
+          },
+          error: (error) => {
+            console.log(error);
 
-      console.log(this.model);
-
-      // if (this.isAddMode) {
-      //   this.apiService.create(this.model).subscribe({
-      //     next: () => {
-      //       Util.ConfirmMessage('Thêm mới thành công', 'success');
-      //     },
-      //     error: () => {
-      //       Util.ConfirmMessage('Thêm mới thất bại', 'error');
-      //     }
-      //   }).add(() => this.navigationService.back());
-      // } else {
-      //   this.apiService.update(this.model.id!, this.model).subscribe({
-      //     next: () => {
-      //       Util.ConfirmMessage('Cập nhật thành công', 'success');
-      //     },
-      //     error: () => {
-      //       Util.ConfirmMessage('Cập nhật thất bại', 'error');
-      //     }
-      //   }).add(() => this.navigationService.back());
-      // }
+            Util.ConfirmMessage('Thêm mới thất bại', 'error');
+          }
+        }).add(() => this.navigationService.back());
+      } else {
+        this.apiService.update(this.model.plan.id!, this.model).subscribe({
+          next: () => {
+            Util.ConfirmMessage('Cập nhật thành công', 'success');
+          },
+          error: () => {
+            Util.ConfirmMessage('Cập nhật thất bại', 'error');
+          }
+        }).add(() => this.navigationService.back());
+      }
     }
   }
 }
