@@ -11,7 +11,7 @@
       </div>
       <div class="col-6">
         <p-floatlabel variant="on">
-          <input pInputText id="name" name="name" [(ngModel)]="model.name" [invalid]="!model.name" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
+          <input pInputText id="name" name="name" [(ngModel)]="model.name" required [invalid]="!model.name" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
           <label for="name">Tên kịch bản phê duyệt</label>
         </p-floatlabel>
       </div>
@@ -30,7 +30,7 @@
             <div class="col-12">
               <p-floatlabel variant="on">
                 <p-select [(ngModel)]="group.groupApprovalName" [options]="listApprovalGroupsName" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
-                  [showClear]="true" [appendTo]="'body'" id="groupApprovalName" name="groupApprovalName-{{i}}" [invalid]="!group.groupApprovalName" dataKey="id">
+                  [showClear]="true" [appendTo]="'body'" id="groupApprovalName" name="groupApprovalName-{{i}}" required [invalid]="!group.groupApprovalName" dataKey="id">
                 </p-select>
                 <label for="groupApprovalName">Tên nhóm phê duyệt</label>
               </p-floatlabel>
@@ -51,7 +51,7 @@
                   <div class="col-11">
                     <p-floatlabel variant="on">
                       <p-select [(ngModel)]="user.username" [filter]="true" [options]="listUsers" optionLabel="name" optionValue="username" [fluid]="true" [disabled]="isViewMode"
-                        [showClear]="true" [appendTo]="'body'" id="username" name="username-{{i}}-{{j}}" [invalid]="!user.username">
+                        [showClear]="true" [appendTo]="'body'" id="username" name="username-{{i}}-{{j}}" required [invalid]="!user.username">
                       </p-select>
                       <label for="username">Người phê duyệt</label>
                     </p-floatlabel>
@@ -86,7 +86,7 @@
       <div class="col-12">
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.status" [options]="listStatus" optionLabel="label" [fluid]="true" [disabled]="isViewMode"
-            optionValue="value" [showClear]="true" [appendTo]="'body'" id="status" name="status" [invalid]="!model.status">
+            optionValue="value" [showClear]="true" [appendTo]="'body'" id="status" name="status" required [invalid]="!model.status">
           </p-select>
           <label for="status">Trạng thái</label>
         </p-floatlabel>

@@ -11,7 +11,7 @@
       </div>
       <div class="col-6">
         <p-floatlabel variant="on">
-          <input pInputText id="name" name="name" [(ngModel)]="model.name" [invalid]="!model.name" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
+          <input pInputText id="name" name="name" [(ngModel)]="model.name" required required [invalid]="!model.name" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
           <label for="name">Tên thiết bị</label>
         </p-floatlabel>
       </div>
@@ -21,7 +21,7 @@
       <div class="col-12">
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.group" [options]="listDeviceGroups" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
-            [showClear]="true" [appendTo]="'body'" id="group" name="group" [invalid]="!model.group" dataKey="id">
+            [showClear]="true" [appendTo]="'body'" id="group" name="group" required [invalid]="!model.group" dataKey="id">
           </p-select>
           <label for="group">Tên nhóm thiết bị</label>
         </p-floatlabel>
@@ -175,7 +175,7 @@
       <div class="col-12">
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.status" [options]="listStatus" optionLabel="label" [fluid]="true" [disabled]="isViewMode"
-            optionValue="value" [showClear]="true" [appendTo]="'body'" id="status" name="status" [invalid]="!model.status">
+            optionValue="value" [showClear]="true" [appendTo]="'body'" id="status" name="status" required [invalid]="!model.status">
           </p-select>
           <label for="status">Trạng thái</label>
         </p-floatlabel>
