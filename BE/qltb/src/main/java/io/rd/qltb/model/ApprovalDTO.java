@@ -1,5 +1,8 @@
 package io.rd.qltb.model;
 
+import io.rd.qltb.domain.ApprovalGroup;
+import io.rd.qltb.domain.ApprovalGroupUser;
+import io.rd.qltb.domain.ApprovalWorkflow;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -22,13 +25,13 @@ public class ApprovalDTO {
 
     @NotNull
     @Size(max = 450)
-    private Long userApprovalId;
+    private ApprovalGroupUser userApproval;
 
     @NotNull
-    private Long workflowId;
+    private ApprovalWorkflow workflow;
 
     @NotNull
-    private Long groupId;
+    private ApprovalGroup group;
 
     @NotNull
     @Size(max = 50)
@@ -38,10 +41,10 @@ public class ApprovalDTO {
 
     private String note;
 
-    @NotNull
+
     private LocalDateTime createdAt;
 
-    @NotNull
+
     private LocalDateTime updatedAt;
 
     @Size(max = 255)

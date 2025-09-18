@@ -23,10 +23,10 @@ public class CriterialGroupDTO {
     @Size(max = 255)
     private String description;
 
-    @NotNull
+
     private LocalDateTime createdAt;
 
-    @NotNull
+
     private LocalDateTime updatedAt;
 
     @Size(max = 255)

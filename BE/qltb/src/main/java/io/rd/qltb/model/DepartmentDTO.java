@@ -25,10 +25,10 @@ public class DepartmentDTO {
     @Size(max = 255)
     private String manager;
 
-    @NotNull
+
     private LocalDateTime createdAt;
 
-    @NotNull
+
     private LocalDateTime updatedAt;
 
     @Size(max = 255)

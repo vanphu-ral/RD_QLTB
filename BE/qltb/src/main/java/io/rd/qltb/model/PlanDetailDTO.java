@@ -17,10 +17,10 @@ public class PlanDetailDTO {
 
     private Long id;
 
-    @NotNull
+
     private LocalDateTime createdAt;
 
-    @NotNull
+
     private LocalDateTime updatedAt;
 
     @Size(max = 255)

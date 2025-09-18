@@ -38,10 +38,10 @@ public class DeviceRelocationHistoryDTO {
     @Size(max = 255)
     private String movedBy;
 
-    @NotNull
+
     private LocalDateTime createdAt;
 
-    @NotNull
+
     private LocalDateTime updatedAt;
 
     @Size(max = 255)

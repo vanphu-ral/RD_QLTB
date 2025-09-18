@@ -27,10 +27,10 @@ public class AssetHistoryDTO {
 
     private LocalDateTime downtimeEnd;
 
-    @NotNull
+
     private LocalDateTime createdAt;
 
-    @NotNull
+
     private LocalDateTime updatedAt;
 
     @Size(max = 255)

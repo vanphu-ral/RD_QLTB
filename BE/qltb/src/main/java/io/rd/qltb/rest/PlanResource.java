@@ -1,6 +1,7 @@
 package io.rd.qltb.rest;
 
 import io.rd.qltb.model.PlanDTO;
+import io.rd.qltb.model.PlanRequest;
 import io.rd.qltb.service.PlanService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
@@ -44,7 +45,12 @@ public class PlanResource {
         final Long createdId = planService.create(planDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
-
+    @PostMapping("/create")
+    @ApiResponse(responseCode = "201")
+    public ResponseEntity<PlanRequest> createPlanWithDetails(@RequestBody @Valid final PlanRequest planRequest) {
+        final PlanRequest planWithDetails = planService.createPlanWithDetails(planRequest);
+        return new ResponseEntity<>(planWithDetails, HttpStatus.CREATED);
+    }
     @PutMapping("/{id}")
     public ResponseEntity<Long> updatePlan(@PathVariable(name = "id") final Long id,
             @RequestBody @Valid final PlanDTO planDTO) {

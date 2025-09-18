@@ -24,10 +24,10 @@ public class DepreciationManagementDTO {
 
     private Long deviceId;
 
-    @NotNull
+
     private LocalDateTime createdAt;
 
-    @NotNull
+
     private LocalDateTime updatedAt;
 
     @Size(max = 255)

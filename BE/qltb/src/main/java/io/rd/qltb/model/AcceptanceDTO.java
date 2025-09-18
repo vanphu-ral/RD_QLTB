@@ -28,10 +28,10 @@ public class AcceptanceDTO {
 
     private LocalDateTime timeAcceptance;
 
-    @NotNull
+
     private LocalDateTime createdAt;
 
-    @NotNull
+
     private LocalDateTime updatedAt;
 
     @Size(max = 255)

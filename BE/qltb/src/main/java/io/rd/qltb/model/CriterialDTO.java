@@ -30,10 +30,10 @@ public class CriterialDTO {
     @Size(max = 255)
     private String frequency;
 
-    @NotNull
+
     private LocalDateTime createdAt;
 
-    @NotNull
+
     private LocalDateTime updatedAt;
 
     @Size(max = 255)

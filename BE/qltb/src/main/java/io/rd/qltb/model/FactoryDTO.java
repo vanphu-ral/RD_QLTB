@@ -24,10 +24,10 @@ public class FactoryDTO {
     @Size(max = 500)
     private String description;
 
-    @NotNull
+
     private LocalDateTime createdAt;
 
-    @NotNull
+
     private LocalDateTime updatedAt;
 
     @Size(max = 255)

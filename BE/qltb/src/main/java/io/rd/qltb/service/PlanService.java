@@ -4,9 +4,12 @@ import io.rd.qltb.domain.*;
 import io.rd.qltb.events.BeforeDeletePlan;
 import io.rd.qltb.events.BeforeDeletePlanType;
 import io.rd.qltb.model.PlanDTO;
+import io.rd.qltb.model.PlanRequest;
 import io.rd.qltb.repos.*;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
+
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
@@ -23,19 +26,21 @@ public class PlanService {
     private final BranchRepository branchRepository;
     private final ApprovalWorkflowRepository approvalWorkflowRepository;
     private final ApplicationEventPublisher publisher;
+    private final PlanDetailRepository planDetailRepository;
 
     public PlanService(final PlanRepository planRepository,
-            final PlanTypeRepository planTypeRepository,
-            final FactoryRepository factoryRepository,
-            final BranchRepository branchRepository,
-            final ApprovalWorkflowRepository approvalWorkflowRepository,
-            final ApplicationEventPublisher publisher) {
+                       final PlanTypeRepository planTypeRepository,
+                       final FactoryRepository factoryRepository,
+                       final BranchRepository branchRepository,
+                       final ApprovalWorkflowRepository approvalWorkflowRepository,
+                       final ApplicationEventPublisher publisher, PlanDetailRepository planDetailRepository) {
         this.planRepository = planRepository;
         this.planTypeRepository = planTypeRepository;
         this.factoryRepository = factoryRepository;
         this.branchRepository = branchRepository;
         this.approvalWorkflowRepository = approvalWorkflowRepository;
         this.publisher = publisher;
+        this.planDetailRepository = planDetailRepository;
     }
 
     public List<PlanDTO> findAll() {
@@ -56,7 +61,30 @@ public class PlanService {
         mapToEntity(planDTO, plan);
         return planRepository.save(plan).getId();
     }
+    public PlanRequest createPlanWithDetails(final PlanRequest planRequest) {
+        // Lưu Plan trước
+        Plan plan = planRequest.getPlan();
+        plan = planRepository.save(plan);
+        List<PlanDetail> planDetailSend = new ArrayList<>();
+        // Gán Plan đã lưu cho từng PlanDetail và lưu chúng
+        List<PlanDetail> planDetails = planRequest.getPlanDetails();
+        for (PlanDetail detail : planDetails) {
+            for(Device device : planRequest.getDevices()) {
+                if(device.getGroup().getId() == detail.getDeviceGroup().getId()) {
+                PlanDetail planDetailSave = detail;
+                planDetailSave.setDevice(device);
+                planDetailSend.add(planDetailSave);
+                planDetailRepository.save(planDetailSave);
+                }
+            }
+        }
+        // Giả sử bạn có một PlanDetailRepository để lưu các chi tiết
 
+        // Trả về đối tượng PlanRequest với Plan đã lưu và các chi tiết đã cập nhật
+        planRequest.setPlan(plan);
+        planRequest.setPlanDetails(planDetailSend);
+        return planRequest;
+    }
     public void update(final Long id, final PlanDTO planDTO) {
         final Plan plan = planRepository.findById(id)
                 .orElseThrow(NotFoundException::new);

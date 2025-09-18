@@ -40,10 +40,10 @@ public class PlanResultDetailDTO {
 
     private Integer max;
 
-    @NotNull
+
     private LocalDateTime createdAt;
 
-    @NotNull
+
     private LocalDateTime updatedAt;
 
     @Size(max = 255)

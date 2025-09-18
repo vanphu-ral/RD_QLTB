@@ -38,10 +38,10 @@ public class PlanDTO {
     @Size(max = 200)
     private String createdBy;
 
-    @NotNull
+
     private LocalDateTime createdAt;
 
-    @NotNull
+
     private LocalDateTime updatedAt;
 
     @Size(max = 255)

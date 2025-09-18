@@ -1,6 +1,9 @@
 package io.rd.qltb.service;
 
 import io.rd.qltb.domain.Approval;
+import io.rd.qltb.domain.ApprovalGroup;
+import io.rd.qltb.domain.ApprovalGroupUser;
+import io.rd.qltb.domain.ApprovalWorkflow;
 import io.rd.qltb.model.ApprovalDTO;
 import io.rd.qltb.repos.ApprovalRepository;
 import io.rd.qltb.util.NotFoundException;
@@ -54,9 +57,9 @@ public class ApprovalService {
         approvalDTO.setId(approval.getId());
         approvalDTO.setEntityType(approval.getEntityType());
         approvalDTO.setEntityId(approval.getEntityId());
-        approvalDTO.setUserApprovalId(approval.getUserApprovalId());
-        approvalDTO.setWorkflowId(approval.getWorkflowId());
-        approvalDTO.setGroupId(approval.getGroupId());
+        approvalDTO.setUserApproval(approval.getUserApproval());
+        approvalDTO.setWorkflow(approval.getWorkflow());
+        approvalDTO.setGroup(approval.getGroup());
         approvalDTO.setStatus(approval.getStatus());
         approvalDTO.setSignedAt(approval.getSignedAt());
         approvalDTO.setNote(approval.getNote());
@@ -64,15 +67,70 @@ public class ApprovalService {
         approvalDTO.setUpdatedAt(approval.getUpdatedAt());
         approvalDTO.setCreatedBy(approval.getCreatedBy());
         approvalDTO.setUpdatedBy(approval.getUpdatedBy());
+        // Sao chép ApprovalGroup có kiểm soát
+        if (approval.getGroup() != null) {
+            ApprovalGroup groupCopy = new ApprovalGroup();
+            groupCopy.setId(approval.getGroup().getId());
+            groupCopy.setLevel(approval.getGroup().getLevel());
+            groupCopy.setIsRequired(approval.getGroup().getIsRequired());
+            groupCopy.setCreatedAt(approval.getGroup().getCreatedAt());
+            groupCopy.setUpdatedAt(approval.getGroup().getUpdatedAt());
+            groupCopy.setCreatedBy(approval.getGroup().getCreatedBy());
+            groupCopy.setUpdatedBy(approval.getGroup().getUpdatedBy());
+            groupCopy.setStatus(approval.getGroup().getStatus());
+
+            // Xóa các quan hệ con để tránh vòng lặp
+            groupCopy.setWorkflow(null);
+            groupCopy.setGroupApprovalGroupUsers(null);
+            groupCopy.setGroupApprovalName(null);
+
+            approvalDTO.setGroup(groupCopy);
+        } else {
+            approvalDTO.setGroup(null);
+        }
+        // Sao chép ApprovalGroupUser có kiểm soát
+        if(approval.getUserApproval() != null) {
+            ApprovalGroupUser approvalGroupUserCopy = new ApprovalGroupUser();
+            approvalGroupUserCopy.setId(approval.getUserApproval().getId());
+            approvalGroupUserCopy.setUsername(approval.getUserApproval().getUsername());
+            approvalGroupUserCopy.setStatus(approval.getUserApproval().getStatus());
+            approvalGroupUserCopy.setTimeSign(approval.getUserApproval().getTimeSign());
+            approvalGroupUserCopy.setCreatedAt(approval.getUserApproval().getCreatedAt());
+            approvalGroupUserCopy.setUpdatedAt(approval.getUserApproval().getUpdatedAt());
+            // Xóa các quan hệ con để tránh vòng lặp
+            approvalGroupUserCopy.setGroup(null);
+            approvalDTO.setUserApproval(approvalGroupUserCopy);
+        } else {
+            approvalDTO.setUserApproval(null);
+        }
+        // Sao chép WorkFlow có kiểm soát
+        if (approval.getWorkflow() != null){
+            ApprovalWorkflow workflowCopy = new ApprovalWorkflow();
+            workflowCopy.setId(approval.getWorkflow().getId());
+            workflowCopy.setCode(approval.getWorkflow().getCode());
+            workflowCopy.setName(approval.getWorkflow().getName());
+            workflowCopy.setDescription(approval.getWorkflow().getDescription());
+            workflowCopy.setCreatedAt(approval.getWorkflow().getCreatedAt());
+            workflowCopy.setUpdatedAt(approval.getWorkflow().getUpdatedAt());
+            workflowCopy.setCreatedBy(approval.getWorkflow().getCreatedBy());
+            workflowCopy.setUpdatedBy(approval.getWorkflow().getUpdatedBy());
+            workflowCopy.setStatus(approval.getWorkflow().getStatus());
+            // Xóa các quan hệ con để tránh vòng lặp
+            workflowCopy.setWorkflowApprovalGroups(null);
+            workflowCopy.setWorkflowSampleReports(null);
+            approvalDTO.setWorkflow(workflowCopy);
+        } else {
+            approvalDTO.setWorkflow(null);
+        }
         return approvalDTO;
     }
 
     private Approval mapToEntity(final ApprovalDTO approvalDTO, final Approval approval) {
         approval.setEntityType(approvalDTO.getEntityType());
         approval.setEntityId(approvalDTO.getEntityId());
-        approval.setUserApprovalId(approvalDTO.getUserApprovalId());
-        approval.setWorkflowId(approvalDTO.getWorkflowId());
-        approval.setGroupId(approvalDTO.getGroupId());
+        approval.setEntityId(approvalDTO.getEntityId());
+        approval.setUserApproval(approvalDTO.getUserApproval());
+        approval.setWorkflow(approvalDTO.getWorkflow());
         approval.setStatus(approvalDTO.getStatus());
         approval.setSignedAt(approvalDTO.getSignedAt());
         approval.setNote(approvalDTO.getNote());

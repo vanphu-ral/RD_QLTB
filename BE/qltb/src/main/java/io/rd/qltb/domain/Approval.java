@@ -1,11 +1,7 @@
 package io.rd.qltb.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,13 +25,19 @@ public class Approval {
     private Long entityId;
 
     @Column(nullable = false, length = 450)
-    private Long userApprovalId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_approval_id", nullable = false)
+    private ApprovalGroupUser userApproval;
 
     @Column(nullable = false)
-    private Long workflowId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "workflow_id", nullable = false)
+    private ApprovalWorkflow workflow;
 
     @Column(nullable = false)
-    private Long groupId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_id", nullable = false)
+    private ApprovalGroup group;
 
     @Column(nullable = false, length = 50)
     private String status;

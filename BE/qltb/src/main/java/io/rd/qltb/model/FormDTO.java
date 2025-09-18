@@ -41,10 +41,10 @@ public class FormDTO {
     @Size(max = 150)
     private String publishNum;
 
-    @NotNull
+
     private LocalDateTime createdAt;
 
-    @NotNull
+
     private LocalDateTime updatedAt;
 
     @Size(max = 255)

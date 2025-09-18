@@ -44,10 +44,10 @@ public class ErrorReportDTO {
     @Size(max = 255)
     private String user;
 
-    @NotNull
+
     private LocalDateTime createdAt;
 
-    @NotNull
+
     private LocalDateTime updatedAt;
 
     @Size(max = 255)
