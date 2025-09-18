@@ -84,7 +84,7 @@ public class PlanDetailService {
         planDetailRepository.delete(planDetail);
     }
 
-    private PlanDetailDTO mapToDTO(final PlanDetail planDetail, final PlanDetailDTO dto) {
+    public PlanDetailDTO mapToDTO(final PlanDetail planDetail, final PlanDetailDTO dto) {
         dto.setId(planDetail.getId());
         dto.setSerial(planDetail.getSerial());
         dto.setCreatedAt(planDetail.getCreatedAt());

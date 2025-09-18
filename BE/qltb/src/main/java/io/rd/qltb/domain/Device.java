@@ -24,6 +24,7 @@ import lombok.Setter;
 @Table(name = "Devices")
 @Getter
 @Setter
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Device {
 
     @Id

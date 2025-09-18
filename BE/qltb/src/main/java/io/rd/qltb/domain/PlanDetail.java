@@ -1,5 +1,6 @@
 package io.rd.qltb.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -18,6 +19,7 @@ import lombok.Setter;
 @Table(name = "PlanDetails")
 @Getter
 @Setter
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class PlanDetail {
 
     @Id
@@ -47,18 +49,22 @@ public class PlanDetail {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "plan_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Plan plan;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "device_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Device device;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "device_group_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private DeviceGroup deviceGroup;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sample_report_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private SampleReport sampleReport;
 
 }
