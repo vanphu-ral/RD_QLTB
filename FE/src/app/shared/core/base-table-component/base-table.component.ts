@@ -21,7 +21,7 @@ import { Util } from '../utils/utils-function';
   templateUrl: './base-table.component.html',
   styleUrls: ['./base-table.component.scss'],
 })
-export class BaseTableComponent<T extends { createdAt?: Date; updatedAt?: Date }> implements OnInit, AfterContentInit {
+export class BaseTableComponent<T> implements OnInit, AfterContentInit {
   @Input() apiService!: BaseApiService<T>;
   @Input() columns: Column[] = []
   @Input() onAddClick?: () => void;

@@ -17,11 +17,11 @@ export class PlanListComponent {
 
   columns: Column[] = [
     { Field: 'id', Header: 'ID', IsHide: true },
-    { Field: 'code', Header: 'Mã kế hoạch', IsSearch: true, TypeSearch: 'text' },
-    { Field: 'name', Header: 'Tên kế hoạch', IsSearch: true, TypeSearch: 'text' },
-    { Field: 'createdBy', Header: 'Người tạo', IsSearch: true, TypeSearch: 'text' },
-    { Field: 'createdAt', Header: 'Ngày tạo', IsSearch: true, TypeSearch: 'date' },
-    { Field: 'updatedAt', Header: 'Ngày cập nhật', IsSearch: true, TypeSearch: 'date', style: { 'min-width': '150px' } },
+    { Field: 'plan.code', Header: 'Mã kế hoạch', IsSearch: true, TypeSearch: 'text' },
+    { Field: 'plan.name', Header: 'Tên kế hoạch', IsSearch: true, TypeSearch: 'text' },
+    { Field: 'plan.createdBy', Header: 'Người tạo', IsSearch: true, TypeSearch: 'text' },
+    { Field: 'plan.createdAt', Header: 'Ngày tạo', IsSearch: true, TypeSearch: 'date' },
+    { Field: 'plan.updatedAt', Header: 'Ngày cập nhật', IsSearch: true, TypeSearch: 'date', style: { 'min-width': '150px' } },
   ];
 
   constructor(public apiService: PlanService) {}
