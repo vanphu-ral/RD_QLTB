@@ -23,4 +23,8 @@ export class PlanService extends BaseApiService<PlanRequest> {
     // const newEntity = { ...entity, createdAt: isoLocalVN, updatedAt: isoLocalVN };
     return this.http.post<PlanRequest>(`${this['fullBaseUrl']}/create`, entity, { withCredentials: true });
   }
+
+  getByAllById(id: number | string): Observable<PlanRequest> {
+    return this.http.get<PlanRequest>(`${this['fullBaseUrl']}/detail/${id}`, { withCredentials: true });
+  }
 }

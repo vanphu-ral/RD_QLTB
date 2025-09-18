@@ -25,4 +25,10 @@ export class SampleReportListComponent {
   ];
 
   constructor(public apiService: SampleReportService) {}
+
+
+  approval(data: any) {
+    console.log(data);
+    
+  }
 }

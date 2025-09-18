@@ -2,7 +2,7 @@
   [apiService]="apiService"
   [columns]="columns"
   [title]="'Dánh sách mẫu biên bản'"
-  [showAddButton]="true">
+  [showAddButton]="true" [actionTemplate]="customActions">
   <ng-template appColumnTemplate="createdAt" let-rowData>
     {{ rowData | date: 'dd/MM/yyyy' }}
   </ng-template>
@@ -10,3 +10,6 @@
     {{ rowData | date: 'dd/MM/yyyy' }}
   </ng-template>
 </app-base-table>
+<ng-template #customActions let-row>
+  <p-button icon="pi pi-file-check" styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="approval(row)"></p-button>
+</ng-template>

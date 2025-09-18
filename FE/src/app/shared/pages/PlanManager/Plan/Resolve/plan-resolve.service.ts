@@ -16,7 +16,7 @@ export class PlanResolve {
   resolve(route: ActivatedRouteSnapshot): Observable<PlanRequest | null> {
     const id = route.params['id'];
     if (id) {
-      return this.service.getById(id).pipe(
+      return this.service.getByAllById(id).pipe(
         tap(plan => {
           if (!plan) {
             this.router.navigate(['404']);
