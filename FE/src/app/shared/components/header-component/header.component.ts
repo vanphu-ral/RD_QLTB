@@ -20,6 +20,11 @@ export class AppHeaderComponent {
   @Input() pageTitle = 'Dashboard - QLTB';
   @Output() toggleDrawer = new EventEmitter<void>();
   userMenuItems: MenuItem[] = [];
+  notifications = [
+    { id: 1, message: 'Kế hoạch bảo trì mới được tạo', read: false },
+    { id: 2, message: 'Thiết bị A sắp đến hạn kiểm tra', read: false },
+    { id: 3, message: 'Bạn có 1 yêu cầu phê duyệt', read: true }
+  ];
 
   constructor(
     private router: Router,
@@ -59,5 +64,21 @@ export class AppHeaderComponent {
 
   logout() {
     this.loginService.logout();
+  }
+
+
+  // notification
+  get unreadCount(): number {
+    return this.notifications.filter(n => !n.read).length;
+  }
+
+  openNotification(noti: any) {
+    console.log('Mở thông báo:', noti);
+    noti.read = true;
+    // this.router.navigate(['/notifications', noti.id]);
+  }
+
+  markAllAsRead() {
+    this.notifications.forEach(n => n.read = true);
   }
 }
