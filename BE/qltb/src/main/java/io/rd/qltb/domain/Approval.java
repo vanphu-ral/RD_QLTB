@@ -24,17 +24,14 @@ public class Approval {
     @Column(nullable = false)
     private Long entityId;
 
-    @Column(nullable = false, length = 450)
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_approval_id", nullable = false)
     private ApprovalGroupUser userApproval;
 
-    @Column(nullable = false)
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workflow_id", nullable = false)
     private ApprovalWorkflow workflow;
 
-    @Column(nullable = false)
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = false)
     private ApprovalGroup group;
