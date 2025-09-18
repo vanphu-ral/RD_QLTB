@@ -3,14 +3,15 @@ package io.rd.qltb.service;
 import io.rd.qltb.domain.*;
 import io.rd.qltb.events.BeforeDeletePlan;
 import io.rd.qltb.events.BeforeDeletePlanType;
-import io.rd.qltb.model.PlanDTO;
-import io.rd.qltb.model.PlanRequest;
+import io.rd.qltb.model.*;
 import io.rd.qltb.repos.*;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
@@ -27,13 +28,19 @@ public class PlanService {
     private final ApprovalWorkflowRepository approvalWorkflowRepository;
     private final ApplicationEventPublisher publisher;
     private final PlanDetailRepository planDetailRepository;
+    private final DeviceRepository deviceRepository;
+    private final DeviceGroupRepository deviceGroupRepository;
+    private final SampleReportRepository sampleReportRepository;
+    private final DeviceGroupService  deviceGroupService;
+    private final SampleReportService sampleReportService;
+    private final DeviceService deviceService;
 
     public PlanService(final PlanRepository planRepository,
                        final PlanTypeRepository planTypeRepository,
                        final FactoryRepository factoryRepository,
                        final BranchRepository branchRepository,
                        final ApprovalWorkflowRepository approvalWorkflowRepository,
-                       final ApplicationEventPublisher publisher, PlanDetailRepository planDetailRepository) {
+                       final ApplicationEventPublisher publisher, PlanDetailRepository planDetailRepository, DeviceRepository deviceRepository, DeviceGroupRepository deviceGroupRepository, SampleReportRepository sampleReportRepository, DeviceGroupService deviceGroupService, SampleReportService sampleReportService, DeviceService deviceService) {
         this.planRepository = planRepository;
         this.planTypeRepository = planTypeRepository;
         this.factoryRepository = factoryRepository;
@@ -41,6 +48,12 @@ public class PlanService {
         this.approvalWorkflowRepository = approvalWorkflowRepository;
         this.publisher = publisher;
         this.planDetailRepository = planDetailRepository;
+        this.deviceRepository = deviceRepository;
+        this.deviceGroupRepository = deviceGroupRepository;
+        this.sampleReportRepository = sampleReportRepository;
+        this.deviceGroupService = deviceGroupService;
+        this.sampleReportService = sampleReportService;
+        this.deviceService = deviceService;
     }
 
     public List<PlanDTO> findAll() {
@@ -61,29 +74,153 @@ public class PlanService {
         mapToEntity(planDTO, plan);
         return planRepository.save(plan).getId();
     }
-    public PlanRequest createPlanWithDetails(final PlanRequest planRequest) {
+    public PlanRequest getPlanDetail(final Long id) {
+        PlanRequest planRequest = new PlanRequest();
+         Plan plan = planRepository.findById(id).orElse( null );
+        if(plan != null){
+            planRequest.setPlan(plan);
+        List<PlanDetail> planDetails = (List<PlanDetail>) plan.getPlanPlanDetails();
+        List<PLanDetailRequest> planDetailRequests = new ArrayList<>();
+        List<DeviceRequest> deviceRequests = new ArrayList<>();
+        for(PlanDetail planDetail:planDetails){
+            if(planDetailRequests.size() == 0){
+                PLanDetailRequest planDetailRequest = new PLanDetailRequest();
+                planDetailRequest.setDeviceGroup(deviceGroupService.mapToDTO(planDetail.getDeviceGroup(),new DeviceGroupDTO()));
+                planDetailRequest.setSampleReport(sampleReportService.mapToDTO(planDetail.getSampleReport(),new SampleReportDTO()));
+                planDetailRequests.add(planDetailRequest);
+            }else{
+                for(PLanDetailRequest pLanDetailRequest:planDetailRequests){
+                    if((!Objects.equals(pLanDetailRequest.getDeviceGroup().getId(), planDetail.getDeviceGroup().getId()) &&
+                            Objects.equals(pLanDetailRequest.getSampleReport().getId(), planDetail.getSampleReport().getId())) ||(
+                            Objects.equals(pLanDetailRequest.getDeviceGroup().getId(), planDetail.getDeviceGroup().getId()) &&
+                                    !Objects.equals(pLanDetailRequest.getSampleReport().getId(), planDetail.getSampleReport().getId())
+                            )){
+                        PLanDetailRequest planDetailRequest = new PLanDetailRequest();
+                        planDetailRequest.setDeviceGroup(deviceGroupService.mapToDTO(planDetail.getDeviceGroup(),new DeviceGroupDTO()));
+                        planDetailRequest.setSampleReport(sampleReportService.mapToDTO(planDetail.getSampleReport(),new SampleReportDTO()));
+                        planDetailRequests.add(planDetailRequest);
+                    }
+                }
+            }
+            if(deviceRequests.size() == 0){
+                DeviceRequest deviceRequest = new DeviceRequest();
+                deviceRequest.setDevice(deviceService.mapToDTO(planDetail.getDevice(),new DeviceDTO()));
+                deviceRequest.setSerialNumber(planDetail.getSerial());
+                deviceRequest.setManager(planDetail.getManager());
+                deviceRequests.add(deviceRequest);
+            }else {
+                for(DeviceRequest deviceRequest:deviceRequests){
+                    if(!Objects.equals(deviceRequest.getDevice().getId(), planDetail.getDevice().getId())){
+                        DeviceRequest newDeviceRequest = new DeviceRequest();
+                        newDeviceRequest.setDevice(deviceService.mapToDTO(planDetail.getDevice(),new DeviceDTO()));
+                        newDeviceRequest.setSerialNumber(planDetail.getSerial());
+                        newDeviceRequest.setManager(planDetail.getManager());
+                        deviceRequests.add(newDeviceRequest);
+                    }
+                }
+            }
+            planRequest.setDevices(deviceRequests);
+            planRequest.setPlanDetails(planDetailRequests);
+        }
+    }
+        return planRequest;
+    }
+    public void createPlanWithDetails(final PlanRequest planRequest,String userName) {
+        // check plan
+        if(planRequest.getPlan().getId()==null){
         // Lưu Plan trước
         Plan plan = planRequest.getPlan();
+        plan.setCreatedBy(userName);
+        plan.setCreatedAt(java.time.LocalDateTime.now());
+        plan.setUpdatedAt(java.time.LocalDateTime.now());
+        plan.setApprovalWorkflow(planRequest.getPlan().getApprovalWorkflow());
+        plan.setBranch(planRequest.getPlan().getBranch());
+        plan.setFactory(planRequest.getPlan().getFactory());
+        plan.setCode(planRequest.getPlan().getCode());
+        plan.setName(planRequest.getPlan().getName());
+        plan.setFrequency(planRequest.getPlan().getFrequency());
+        plan.setPlanNumber(planRequest.getPlan().getPlanNumber());
+        plan.setUserPerformer(planRequest.getPlan().getUserPerformer());
+        plan.setDescription(planRequest.getPlan().getDescription());
+        plan.setStatus(planRequest.getPlan().getStatus());
+        plan.setUpdatedBy(null);
         plan = planRepository.save(plan);
         List<PlanDetail> planDetailSend = new ArrayList<>();
         // Gán Plan đã lưu cho từng PlanDetail và lưu chúng
-        List<PlanDetail> planDetails = planRequest.getPlanDetails();
-        for (PlanDetail detail : planDetails) {
-            for(Device device : planRequest.getDevices()) {
-                if(device.getGroup().getId() == detail.getDeviceGroup().getId()) {
-                PlanDetail planDetailSave = detail;
-                planDetailSave.setDevice(device);
-                planDetailSend.add(planDetailSave);
-                planDetailRepository.save(planDetailSave);
+
+        for (PLanDetailRequest detail : planRequest.getPlanDetails()) {
+            for(DeviceRequest deviceRequest: planRequest.getDevices()){
+                if(deviceRequest.getDevice().getGroup().getId() == detail.getDeviceGroup().getId()){
+                    PlanDetail planDetail = new PlanDetail();
+                    planDetail.setPlan(plan);
+                    planDetail.setCreatedAt(java.time.LocalDateTime.now());
+                    planDetail.setUpdatedAt(java.time.LocalDateTime.now());
+                    planDetail.setCreatedBy(userName);
+                    planDetail.setUpdatedBy(null);
+                    planDetail.setStatus(1);
+                    planDetail.setManager(deviceRequest.getManager());
+                    planDetail.setSerial(deviceRequest.getSerialNumber());
+                    Device device = deviceRepository.findById(deviceRequest.getDevice().getId())
+                            .orElseThrow(() -> new NotFoundException("Device not found"));
+                    planDetail.setDevice(device);
+                    DeviceGroup deviceGroup = deviceGroupRepository.findById(detail.getDeviceGroup().getId())
+                            .orElseThrow(() -> new NotFoundException("DeviceGroup not found"));
+                    planDetail.setDeviceGroup(deviceGroup);
+                    SampleReport sampleReport = sampleReportRepository.findById(detail.getSampleReport().getId())
+                            .orElseThrow(() -> new NotFoundException("SampleReport not found"));
+                    planDetail.setSampleReport(sampleReport);
+                    planDetailSend.add(planDetailRepository.save(planDetail));
                 }
             }
-        }
-        // Giả sử bạn có một PlanDetailRepository để lưu các chi tiết
 
-        // Trả về đối tượng PlanRequest với Plan đã lưu và các chi tiết đã cập nhật
-        planRequest.setPlan(plan);
-        planRequest.setPlanDetails(planDetailSend);
-        return planRequest;
+        }
+        }else{
+            System.out.println("Mã kế hoạch đã tồn tại");
+            // Lưu Plan trước
+            Plan plan = planRepository.findById(planRequest.getPlan().getId()).orElseThrow();
+            plan.setUpdatedAt(java.time.LocalDateTime.now());
+            plan.setApprovalWorkflow(planRequest.getPlan().getApprovalWorkflow());
+            plan.setBranch(planRequest.getPlan().getBranch());
+            plan.setFactory(planRequest.getPlan().getFactory());
+            plan.setCode(planRequest.getPlan().getCode());
+            plan.setName(planRequest.getPlan().getName());
+            plan.setFrequency(planRequest.getPlan().getFrequency());
+            plan.setPlanNumber(planRequest.getPlan().getPlanNumber());
+            plan.setUserPerformer(planRequest.getPlan().getUserPerformer());
+            plan.setDescription(planRequest.getPlan().getDescription());
+            plan.setStatus(planRequest.getPlan().getStatus());
+            plan.setUpdatedBy(userName);
+             planRepository.save(plan);
+//            List<PlanDetail> planDetailSend = new ArrayList<>();
+//            // Gán Plan đã lưu cho từng PlanDetail và lưu chúng
+//
+//            for (PLanDetailRequest detail : planRequest.getPlanDetails()) {
+//                for(DeviceRequest deviceRequest: planRequest.getDevices()){
+//                    if(deviceRequest.getDevice().getGroup().getId() == detail.getDeviceGroup().getId()){
+//                        PlanDetail planDetail = new PlanDetail();
+//                        planDetail.setPlan(plan);
+//                        planDetail.setCreatedAt(java.time.LocalDateTime.now());
+//                        planDetail.setUpdatedAt(java.time.LocalDateTime.now());
+//                        planDetail.setCreatedBy(userName);
+//                        planDetail.setUpdatedBy(null);
+//                        planDetail.setStatus(1);
+//                        planDetail.setManager(deviceRequest.getManager());
+//                        planDetail.setSerial(deviceRequest.getSerialNumber());
+//                        Device device = deviceRepository.findById(deviceRequest.getDevice().getId())
+//                                .orElseThrow(() -> new NotFoundException("Device not found"));
+//                        planDetail.setDevice(device);
+//                        DeviceGroup deviceGroup = deviceGroupRepository.findById(detail.getDeviceGroup().getId())
+//                                .orElseThrow(() -> new NotFoundException("DeviceGroup not found"));
+//                        planDetail.setDeviceGroup(deviceGroup);
+//                        SampleReport sampleReport = sampleReportRepository.findById(detail.getSampleReport().getId())
+//                                .orElseThrow(() -> new NotFoundException("SampleReport not found"));
+//                        planDetail.setSampleReport(sampleReport);
+//                        planDetailSend.add(planDetailRepository.save(planDetail));
+//                    }
+//                }
+//
+//            }
+        }
     }
     public void update(final Long id, final PlanDTO planDTO) {
         final Plan plan = planRepository.findById(id)

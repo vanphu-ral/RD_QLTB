@@ -74,7 +74,7 @@ public class SampleReportService {
         sampleReportRepository.delete(sampleReport);
     }
 
-    private SampleReportDTO mapToDTO(final SampleReport sampleReport,
+    public SampleReportDTO mapToDTO(final SampleReport sampleReport,
                                      final SampleReportDTO dto) {
         dto.setId(sampleReport.getId());
         dto.setCode(sampleReport.getCode());

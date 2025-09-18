@@ -1,5 +1,6 @@
 package io.rd.qltb.rest;
 
+import io.rd.qltb.model.DeviceRequest;
 import io.rd.qltb.model.PlanDTO;
 import io.rd.qltb.model.PlanRequest;
 import io.rd.qltb.service.PlanService;
@@ -9,6 +10,8 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,6 +41,10 @@ public class PlanResource {
     public ResponseEntity<PlanDTO> getPlan(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(planService.get(id));
     }
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<PlanRequest> getPlanDetail(@PathVariable(name = "id") final Long id) {
+        return ResponseEntity.ok(planService.getPlanDetail(id));
+    }
 
     @PostMapping
     @ApiResponse(responseCode = "201")
@@ -47,9 +54,12 @@ public class PlanResource {
     }
     @PostMapping("/create")
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<PlanRequest> createPlanWithDetails(@RequestBody @Valid final PlanRequest planRequest) {
-        final PlanRequest planWithDetails = planService.createPlanWithDetails(planRequest);
-        return new ResponseEntity<>(planWithDetails, HttpStatus.CREATED);
+    public void createPlanWithDetails(
+                                                                 @AuthenticationPrincipal OidcUser oidcUser,
+                                                                 @RequestBody  @Valid final PlanRequest planRequest) {
+        System.out.println("User Info: " + oidcUser.getName());
+         planService.createPlanWithDetails(planRequest,oidcUser.getName());
+//        return new ResponseEntity<>(planWithDetails, HttpStatus.CREATED);
     }
     @PutMapping("/{id}")
     public ResponseEntity<Long> updatePlan(@PathVariable(name = "id") final Long id,

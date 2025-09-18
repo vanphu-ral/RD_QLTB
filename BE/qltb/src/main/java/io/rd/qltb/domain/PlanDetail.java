@@ -46,11 +46,11 @@ public class PlanDetail {
     private Integer status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "plan_id", nullable = false)
+    @JoinColumn(name = "plan_id")
     private Plan plan;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "device_id", nullable = false)
+    @JoinColumn(name = "device_id")
     private Device device;
 
     @ManyToOne(fetch = FetchType.LAZY)

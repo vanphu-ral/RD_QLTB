@@ -13,6 +13,6 @@ import java.util.List;
 @Setter
 public class PlanRequest {
     private Plan plan;
-    private List<PlanDetail> planDetails;
-    private List<Device> devices;
+    private List<PLanDetailRequest> planDetails;
+    private List<DeviceRequest> devices;
 }

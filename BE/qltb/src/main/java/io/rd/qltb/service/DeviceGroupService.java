@@ -57,7 +57,7 @@ public class DeviceGroupService {
         deviceGroupRepository.delete(deviceGroup);
     }
 
-    private DeviceGroupDTO mapToDTO(final DeviceGroup deviceGroup,
+    public DeviceGroupDTO mapToDTO(final DeviceGroup deviceGroup,
             final DeviceGroupDTO deviceGroupDTO) {
         deviceGroupDTO.setId(deviceGroup.getId());
         deviceGroupDTO.setCode(deviceGroup.getCode());

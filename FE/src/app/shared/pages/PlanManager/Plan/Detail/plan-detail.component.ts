@@ -81,35 +81,44 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
   }
 
 
+  // ...existing code...
   public override save(): void {
     if (this.model) {
-      // this.model.plan = Util.prepareModel(this.model.plan!);
-      // console.log(this.model);
       this.model = {
         plan: this.model.plan,
         planDetails: this.model.planDetails,
         devices: this.model.devices
       }
 
+      const handleError = (error: any) => {
+        let message = 'Thêm mới thất bại';
+        if (error?.error?.message) {
+          message = error.error.message;
+        } else if (error?.message) {
+          message = error.message;
+        } else if (typeof error === 'string') {
+          message = error;
+        }
+        // Kiểm tra lỗi JSON parse
+        if (message.includes('No _valueDeserializer assigned')) {
+          message = 'Lỗi dữ liệu trả về từ máy chủ. Vui lòng kiểm tra lại thông tin hoặc liên hệ quản trị hệ thống.';
+        }
+        Util.ConfirmMessage(message, 'error');
+      };
+
       if (this.isAddMode) {
         this.apiService.createPlanWithDetails(this.model).subscribe({
           next: () => {
             Util.ConfirmMessage('Thêm mới thành công', 'success');
           },
-          error: (error) => {
-            console.log(error);
-
-            Util.ConfirmMessage('Thêm mới thất bại', 'error');
-          }
+          error: handleError
         }).add(() => this.navigationService.back());
       } else {
         this.apiService.update(this.model.plan.id!, this.model).subscribe({
           next: () => {
             Util.ConfirmMessage('Cập nhật thành công', 'success');
           },
-          error: () => {
-            Util.ConfirmMessage('Cập nhật thất bại', 'error');
-          }
+          error: handleError
         }).add(() => this.navigationService.back());
       }
     }

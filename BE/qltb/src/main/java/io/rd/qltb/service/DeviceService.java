@@ -100,7 +100,7 @@ public class DeviceService {
         deviceRepository.delete(device);
     }
 
-    private DeviceDTO mapToDTO(final Device device, final DeviceDTO deviceDTO) {
+    public DeviceDTO mapToDTO(final Device device, final DeviceDTO deviceDTO) {
         deviceDTO.setId(device.getId());
         deviceDTO.setCode(device.getCode());
         deviceDTO.setName(device.getName());
