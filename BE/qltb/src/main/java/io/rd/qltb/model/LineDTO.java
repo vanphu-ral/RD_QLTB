@@ -34,10 +34,10 @@ public class LineDTO {
 
     private LocalDateTime updatedAt;
 
-    @Size(max = 255)
+
     private String createdBy;
 
-    @Size(max = 255)
+
     private String updatedBy;
 
     private Integer status;

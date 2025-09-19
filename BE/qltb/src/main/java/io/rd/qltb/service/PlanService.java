@@ -32,10 +32,11 @@ public class PlanService {
     private final DeviceRepository deviceRepository;
     private final DeviceGroupRepository deviceGroupRepository;
     private final SampleReportRepository sampleReportRepository;
-    private final DeviceGroupService  deviceGroupService;
+    private final DeviceGroupService deviceGroupService;
     private final SampleReportService sampleReportService;
     private final DeviceService deviceService;
- private final PlanDetailService planDetailService;
+    private final PlanDetailService planDetailService;
+
     public PlanService(final PlanRepository planRepository,
                        final PlanTypeRepository planTypeRepository,
                        final FactoryRepository factoryRepository,
@@ -76,24 +77,26 @@ public class PlanService {
         mapToEntity(planDTO, plan);
         return planRepository.save(plan).getId();
     }
-    public void createPlan2(PlanRequest2 planRequest ){
-        Plan plan = mapToEntity(planRequest.getPlan(),new Plan());
+
+    public void createPlan2(PlanRequest2 planRequest) {
+        Plan plan = mapToEntity(planRequest.getPlan(), new Plan());
         plan = planRepository.save(plan);
         List<PlanDetail> planDetails = new ArrayList<>();
-        for(PlanDetailDTO planDetailDTO: planRequest.getPlanDetails()){
-            PlanDetail planDetail = planDetailService.mapToEntity(planDetailDTO,new PlanDetail());
+        for (PlanDetailDTO planDetailDTO : planRequest.getPlanDetails()) {
+            PlanDetail planDetail = planDetailService.mapToEntity(planDetailDTO, new PlanDetail());
             planDetail.setPlan(plan);
             planDetails.add(planDetail);
         }
     }
+
     public PlanRequest getPlanDetail(final Long id) {
         PlanRequest planRequest = new PlanRequest();
-         Plan plan = planRepository.findById(id).orElse( null );
-        if(plan != null){
+        Plan plan = planRepository.findById(id).orElse(null);
+        if (plan != null) {
             Set<PlanDetail> planDetailsSet = plan.getPlanPlanDetails();
-        List<PlanDetail> planDetails = new ArrayList<>(planDetailsSet);
-        List<PLanDetailRequest> planDetailRequests = new ArrayList<>();
-        List<DeviceRequest> deviceRequests = new ArrayList<>();
+            List<PlanDetail> planDetails = new ArrayList<>(planDetailsSet);
+            List<PLanDetailRequest> planDetailRequests = new ArrayList<>();
+            List<DeviceRequest> deviceRequests = new ArrayList<>();
             List<PLanDetailRequest> tempPlanDetailRequests = new ArrayList<>();
             List<DeviceRequest> tempDeviceRequests = new ArrayList<>();
             for (PlanDetail planDetail : planDetails) {
@@ -141,7 +144,7 @@ public class PlanService {
             deviceRequests.addAll(tempDeviceRequests);
             planRequest.setDevices(deviceRequests);
             planRequest.setPlanDetails(planDetailRequests);
-    }
+        }
 //         planDetails = null;
         plan.getPlanType().setPlanTypePlans(null);
         plan.getFactory().setFactoryBranches(null);
@@ -155,57 +158,58 @@ public class PlanService {
         planRequest.setPlan(plan);
         return planRequest;
     }
-    public void createPlanWithDetails(final PlanRequest planRequest,String userName) {
+
+    public void createPlanWithDetails(final PlanRequest planRequest, String userName) {
         // check plan
-        if(planRequest.getPlan().getId()==null){
-        // Lưu Plan trước
-        Plan plan = planRequest.getPlan();
-        plan.setCreatedBy(userName);
-        plan.setCreatedAt(java.time.LocalDateTime.now());
-        plan.setUpdatedAt(java.time.LocalDateTime.now());
-        plan.setApprovalWorkflow(planRequest.getPlan().getApprovalWorkflow());
-        plan.setBranch(planRequest.getPlan().getBranch());
-        plan.setFactory(planRequest.getPlan().getFactory());
-        plan.setCode(planRequest.getPlan().getCode());
-        plan.setName(planRequest.getPlan().getName());
-        plan.setFrequency(planRequest.getPlan().getFrequency());
-        plan.setPlanNumber(planRequest.getPlan().getPlanNumber());
-        plan.setUserPerformer(planRequest.getPlan().getUserPerformer());
-        plan.setDescription(planRequest.getPlan().getDescription());
-        plan.setStatus(planRequest.getPlan().getStatus());
-        plan.setUpdatedBy(null);
-        plan = planRepository.save(plan);
-        List<PlanDetail> planDetailSend = new ArrayList<>();
-        // Gán Plan đã lưu cho từng PlanDetail và lưu chúng
+        if (planRequest.getPlan().getId() == null) {
+            // Lưu Plan trước
+            Plan plan = planRequest.getPlan();
+            plan.setCreatedBy(userName);
+            plan.setCreatedAt(java.time.LocalDateTime.now());
+            plan.setUpdatedAt(java.time.LocalDateTime.now());
+            plan.setApprovalWorkflow(planRequest.getPlan().getApprovalWorkflow());
+            plan.setBranch(planRequest.getPlan().getBranch());
+            plan.setFactory(planRequest.getPlan().getFactory());
+            plan.setCode(planRequest.getPlan().getCode());
+            plan.setName(planRequest.getPlan().getName());
+            plan.setFrequency(planRequest.getPlan().getFrequency());
+            plan.setPlanNumber(planRequest.getPlan().getPlanNumber());
+            plan.setUserPerformer(planRequest.getPlan().getUserPerformer());
+            plan.setDescription(planRequest.getPlan().getDescription());
+            plan.setStatus(planRequest.getPlan().getStatus());
+            plan.setUpdatedBy(null);
+            plan = planRepository.save(plan);
+            List<PlanDetail> planDetailSend = new ArrayList<>();
+            // Gán Plan đã lưu cho từng PlanDetail và lưu chúng
 
-        for (PLanDetailRequest detail : planRequest.getPlanDetails()) {
-            for(DeviceRequest deviceRequest: planRequest.getDevices()){
-                if(deviceRequest.getDevice().getGroup().getId() == detail.getDeviceGroup().getId()){
-                    PlanDetail planDetail = new PlanDetail();
-                    planDetail.setPlan(plan);
-                    planDetail.setCreatedAt(java.time.LocalDateTime.now());
-                    planDetail.setUpdatedAt(java.time.LocalDateTime.now());
-                    planDetail.setCreatedBy(userName);
-                    planDetail.setUpdatedBy(null);
-                    planDetail.setStatus(1);
-                    planDetail.setManager(deviceRequest.getManager());
-                    planDetail.setSerial(deviceRequest.getSerialNumber());
-                    Device device = deviceRepository.findById(deviceRequest.getDevice().getId())
-                            .orElseThrow(() -> new NotFoundException("Device not found"));
-                    planDetail.setDevice(device);
-                    DeviceGroup deviceGroup = deviceGroupRepository.findById(detail.getDeviceGroup().getId())
-                            .orElseThrow(() -> new NotFoundException("DeviceGroup not found"));
-                    planDetail.setDeviceGroup(deviceGroup);
-                    SampleReport sampleReport = sampleReportRepository.findById(detail.getSampleReport().getId())
-                            .orElseThrow(() -> new NotFoundException("SampleReport not found"));
-                    planDetail.setSampleReport(sampleReport);
-                    planDetailSend.add(planDetailRepository.save(planDetail));
+            for (PLanDetailRequest detail : planRequest.getPlanDetails()) {
+                for (DeviceRequest deviceRequest : planRequest.getDevices()) {
+                    if (deviceRequest.getDevice().getGroup().getId() == detail.getDeviceGroup().getId()) {
+                        PlanDetail planDetail = new PlanDetail();
+                        planDetail.setPlan(plan);
+                        planDetail.setCreatedAt(java.time.LocalDateTime.now());
+                        planDetail.setUpdatedAt(java.time.LocalDateTime.now());
+                        planDetail.setCreatedBy(userName);
+                        planDetail.setUpdatedBy(null);
+                        planDetail.setStatus(1);
+                        planDetail.setManager(deviceRequest.getManager());
+                        planDetail.setSerial(deviceRequest.getSerialNumber());
+                        Device device = deviceRepository.findById(deviceRequest.getDevice().getId())
+                                .orElseThrow(() -> new NotFoundException("Device not found"));
+                        planDetail.setDevice(device);
+                        DeviceGroup deviceGroup = deviceGroupRepository.findById(detail.getDeviceGroup().getId())
+                                .orElseThrow(() -> new NotFoundException("DeviceGroup not found"));
+                        planDetail.setDeviceGroup(deviceGroup);
+                        SampleReport sampleReport = sampleReportRepository.findById(detail.getSampleReport().getId())
+                                .orElseThrow(() -> new NotFoundException("SampleReport not found"));
+                        planDetail.setSampleReport(sampleReport);
+                        planDetailSend.add(planDetailRepository.save(planDetail));
+                    }
                 }
-            }
 
-        }
-        }else{
-            System.out.println("Mã kế hoạch đã tồn tại");
+            }
+        } else {
+            System.out.println("Mã kế hoạch đã tồn tại :: "+ planRequest.getPlan().getCode() + " :: " + planRequest.getPlan().getName());
             // Lưu Plan trước
             Plan plan = planRepository.findById(planRequest.getPlan().getId()).orElseThrow();
             plan.setUpdatedAt(java.time.LocalDateTime.now());
@@ -220,38 +224,34 @@ public class PlanService {
             plan.setDescription(planRequest.getPlan().getDescription());
             plan.setStatus(planRequest.getPlan().getStatus());
             plan.setUpdatedBy(userName);
-             planRepository.save(plan);
+            planRepository.save(plan);
             List<PlanDetail> planDetailSend = new ArrayList<>();
             // Gán Plan đã lưu cho từng PlanDetail và lưu chúng
 
-//            for (PLanDetailRequest detail : planRequest.getPlanDetails()) {
-//                for(DeviceRequest deviceRequest: planRequest.getDevices()){
-//                    if(deviceRequest.getDevice().getGroup().getId() == detail.getDeviceGroup().getId()){
-//                        PlanDetail planDetail = new PlanDetail();
-//                        planDetail.setPlan(plan);
-//                        planDetail.setCreatedAt(java.time.LocalDateTime.now());
-//                        planDetail.setUpdatedAt(java.time.LocalDateTime.now());
-//                        planDetail.setCreatedBy(userName);
-//                        planDetail.setUpdatedBy(null);
-//                        planDetail.setStatus(1);
-//                        planDetail.setManager(deviceRequest.getManager());
-//                        planDetail.setSerial(deviceRequest.getSerialNumber());
-//                        Device device = deviceRepository.findById(deviceRequest.getDevice().getId())
-//                                .orElseThrow(() -> new NotFoundException("Device not found"));
-//                        planDetail.setDevice(device);
-//                        DeviceGroup deviceGroup = deviceGroupRepository.findById(detail.getDeviceGroup().getId())
-//                                .orElseThrow(() -> new NotFoundException("DeviceGroup not found"));
-//                        planDetail.setDeviceGroup(deviceGroup);
-//                        SampleReport sampleReport = sampleReportRepository.findById(detail.getSampleReport().getId())
-//                                .orElseThrow(() -> new NotFoundException("SampleReport not found"));
-//                        planDetail.setSampleReport(sampleReport);
-//                        planDetailSend.add(planDetailRepository.save(planDetail));
-//                    }
-//                }
-//
-//            }
+            for (DeviceRequest deviceRequest : planRequest.getDevices()) {
+                PlanDetail planDetail = planDetailRepository.findById(deviceRequest.getPlanDetailId()).orElse(null);
+                Device deviceSave = deviceRepository.findById(deviceRequest.getDevice().getId())
+                        .orElseThrow(() -> new NotFoundException("Device not found"));
+                if (planDetail != null) {
+                    for (PLanDetailRequest detail : planRequest.getPlanDetails()) {
+                        if (deviceSave.getGroup().getId() == detail.getDeviceGroup().getId()) {
+                            planDetail.setDeviceGroup(deviceSave.getGroup());
+                            planDetail.setSampleReport(sampleReportRepository.findById(detail.getSampleReport().getId())
+                                    .orElseThrow(() -> new NotFoundException("SampleReport not found")));
+                            planDetail.setDevice(deviceSave);
+                            planDetail.setManager(deviceRequest.getManager());
+                            planDetail.setSerial(deviceRequest.getSerialNumber());
+                            planDetail.setUpdatedAt(java.time.LocalDateTime.now());
+                            planDetail.setUpdatedBy(userName);
+                            planDetailRepository.save(planDetail);
+                        }
+                    }
+                }
+            }
+
         }
     }
+
     public void update(final Long id, final PlanDTO planDTO) {
         final Plan plan = planRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
@@ -300,7 +300,7 @@ public class PlanService {
             dto.setPlanType(null);
         }
 
-        if(plan.getFactory() != null) {
+        if (plan.getFactory() != null) {
             Factory factoryCopy = new Factory();
             factoryCopy.setId(plan.getFactory().getId());
             factoryCopy.setCode(plan.getFactory().getCode());
@@ -310,7 +310,7 @@ public class PlanService {
             factoryCopy.setFactoryBranches(null);
 
             dto.setFactory(factoryCopy);
-        }else {
+        } else {
             dto.setFactory(null);
         }
 
@@ -336,7 +336,7 @@ public class PlanService {
             dto.setBranch(null);
         }
 
-        if(plan.getApprovalWorkflow() != null) {
+        if (plan.getApprovalWorkflow() != null) {
             ApprovalWorkflow approvalWorkflowCopy = new ApprovalWorkflow();
             approvalWorkflowCopy.setId(plan.getApprovalWorkflow().getId());
             approvalWorkflowCopy.setCode(plan.getApprovalWorkflow().getCode());
