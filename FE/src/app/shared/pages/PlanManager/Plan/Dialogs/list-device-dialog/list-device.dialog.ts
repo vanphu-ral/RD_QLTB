@@ -26,27 +26,19 @@ export class ListDeviceDialog {
         private cdr: ChangeDetectorRef,
         private deviceService: DeviceService
     ) {
-        this.data = config.data.data;
-        this.index = config.data.index
+        this.data = config.data;
     }
 
     ngOnInit() {
         console.log(this.data);
-        if (Util.isEmptyArray(this.data.devices)) {
-            this.ListDevice = this.data.planDetails[this.index].deviceGroup.groupDevices
-            this.listdevices = this.data.planDetails[this.index].deviceGroup.groupDevices.map((item: any) => {
-                return {
-                    device: item
-                }
-            })
-        } else {
-            this.ListDevice = this.data.devices
-            this.listdevices = _.map(this.data.devices, item => {
-                return item.device
-            });
-        }
-
-        console.log(this.listdevices);
+        this.ListDevice = _.map(this.data.groupDevices, item => {
+            return {
+                device: item,
+                serialNumber: item.serialNumber,
+                manager: item.userManager
+            }
+        });
+        this.listdevices = [...this.data.groupDevices];
 
         this.deviceService.getUsers().subscribe(users => {
             this.listManagers = _.map(users, user => {
