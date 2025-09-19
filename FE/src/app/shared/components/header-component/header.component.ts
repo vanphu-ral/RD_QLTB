@@ -46,7 +46,7 @@ export class AppHeaderComponent {
       ];
     } else {
       this.userMenuItems = [
-        { label: account.email, icon: 'pi pi-user' },
+        { label: account.fullName!, icon: 'pi pi-user' },
         { label: 'Thông tin cá nhân', icon: 'pi pi-user' },
         { label: 'Đăng xuất', icon: 'pi pi-sign-out', command: () => this.loginService.logout() }
       ];

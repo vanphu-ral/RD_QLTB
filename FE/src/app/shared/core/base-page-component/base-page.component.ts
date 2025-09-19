@@ -45,13 +45,13 @@ export abstract class BasePageComponent<T> implements OnInit {
     if (this.route.snapshot.data['data']) {
       this.model = this.route.snapshot.data['data'];
       if(this.isEditMode) {
-        _.set(this.model as any, 'updatedBy', this.accountService.getUser()?.email ?? 'unknown');
+        _.set(this.model as any, 'updatedBy', this.accountService.getUser()?.fullName ?? 'unknown');
       }
     }
 
     if (this.isAddMode) {
       this.initNewModel();
-      _.set(this.model as any, 'createdBy', this.accountService.getUser()?.email ?? 'unknown');
+      _.set(this.model as any, 'createdBy', this.accountService.getUser()?.fullName ?? 'unknown');
       _.set(this.model as any, 'status', 1);
     }
     this.cdr.detectChanges();
