@@ -60,7 +60,11 @@ export class ListDeviceComponent implements OnInit {
         this.ref.onClose.subscribe((result) => {
             if (result && result.length > 0) {
                 console.log(result);
-                this.model.devices = result
+                const existingDeviceIds = new Set(this.model.devices!.map(item => item.device!.id));
+                const newDevices = result.filter((item: any) => !existingDeviceIds.has(item.device.id));
+                this.model.devices = [...this.model.devices!, ...newDevices];
+                console.log(this.model.devices);
+                
                 this.cdr.detectChanges();
             }
         });

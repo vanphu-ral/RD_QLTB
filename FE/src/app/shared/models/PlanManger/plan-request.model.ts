@@ -5,5 +5,12 @@ import { Plan } from "./plan.model";
 export class PlanRequest {
     plan: Plan = new Plan();
     planDetails: PlanDetail[] = []
-    devices?: Device[] = []
+    devices?: DeviceDetail[] = []
+}
+
+export interface DeviceDetail {
+    planDetailId?: number
+    device?: Device
+    serialNumber?: string
+    manager?: string
 }
