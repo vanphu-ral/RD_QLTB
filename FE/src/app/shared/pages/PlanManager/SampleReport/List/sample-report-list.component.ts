@@ -4,6 +4,7 @@ import { SharedModule } from '../../../../../share.module';
 import { FormsModule } from '@angular/forms';
 import { SampleReportService } from '../Service/sample-report.service';
 import { Column } from '../../../../models/Core/column.model';
+import { ApprovalWorlflowService } from '../../../ApprovalManager/ApprovalWorkflow/Service/approval-workflow.service';
 
 @Component({
   selector: 'sample-report-list',
@@ -15,6 +16,7 @@ import { Column } from '../../../../models/Core/column.model';
 export class SampleReportListComponent {
   selectedStatus: string | null = null;
 
+
   columns: Column[] = [
     { Field: 'id', Header: 'ID', IsHide: true },
     { Field: 'code', Header: 'Mã mẫu biên bản', IsSearch: true, TypeSearch: 'text' },
@@ -24,11 +26,14 @@ export class SampleReportListComponent {
     { Field: 'updatedAt', Header: 'Ngày cập nhật', IsSearch: true, TypeSearch: 'date', style: { 'min-width': '150px' } },
   ];
 
-  constructor(public apiService: SampleReportService) {}
+  constructor(public apiService: SampleReportService, private approvalWorkflowService: ApprovalWorlflowService) {}
 
 
   approval(data: any) {
-    console.log(data);
-    
+    // console.log(data);
+    // this.approvalWorkflowService.getWorkflowDetails(data.approvalWorkflow.id).subscribe(res => {
+    //   console.log(res);
+      
+    // })
   }
 }

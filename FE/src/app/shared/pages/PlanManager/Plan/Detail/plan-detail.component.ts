@@ -84,6 +84,7 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
   // ...existing code...
   public override save(): void {
     if (this.model) {
+      this.model.plan = Util.prepareModel(this.model.plan)
       this.model = {
         plan: this.model.plan,
         planDetails: this.model.planDetails,
@@ -114,7 +115,7 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
           error: handleError
         }).add(() => this.navigationService.back());
       } else {
-        this.apiService.update(this.model.plan.id!, this.model).subscribe({
+        this.apiService.createPlanWithDetails(this.model).subscribe({
           next: () => {
             Util.ConfirmMessage('Cập nhật thành công', 'success');
           },
