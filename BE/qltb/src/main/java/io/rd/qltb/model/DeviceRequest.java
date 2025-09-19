@@ -10,4 +10,5 @@ public class DeviceRequest {
     private DeviceDTO device;
     private String manager;
     private String serialNumber;
+    private Long planDetailId;
 }

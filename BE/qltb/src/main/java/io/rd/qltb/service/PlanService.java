@@ -76,6 +76,16 @@ public class PlanService {
         mapToEntity(planDTO, plan);
         return planRepository.save(plan).getId();
     }
+    public void createPlan2(PlanRequest2 planRequest ){
+        Plan plan = mapToEntity(planRequest.getPlan(),new Plan());
+        plan = planRepository.save(plan);
+        List<PlanDetail> planDetails = new ArrayList<>();
+        for(PlanDetailDTO planDetailDTO: planRequest.getPlanDetails()){
+            PlanDetail planDetail = planDetailService.mapToEntity(planDetailDTO,new PlanDetail());
+            planDetail.setPlan(plan);
+            planDetails.add(planDetail);
+        }
+    }
     public PlanRequest getPlanDetail(final Long id) {
         PlanRequest planRequest = new PlanRequest();
          Plan plan = planRepository.findById(id).orElse( null );
@@ -111,6 +121,7 @@ public class PlanService {
                     deviceRequest.setDevice(deviceService.mapToDTO(planDetail.getDevice(), new DeviceDTO()));
                     deviceRequest.setSerialNumber(planDetail.getSerial());
                     deviceRequest.setManager(planDetail.getManager());
+                    deviceRequest.setPlanDetailId(planDetail.getId());
                     tempDeviceRequests.add(deviceRequest);
                 } else {
                     for (DeviceRequest deviceRequest : deviceRequests) {
@@ -119,6 +130,7 @@ public class PlanService {
                             newDeviceRequest.setDevice(deviceService.mapToDTO(planDetail.getDevice(), new DeviceDTO()));
                             newDeviceRequest.setSerialNumber(planDetail.getSerial());
                             newDeviceRequest.setManager(planDetail.getManager());
+                            newDeviceRequest.setPlanDetailId(planDetail.getId());
                             tempDeviceRequests.add(newDeviceRequest);
                         }
                     }
@@ -209,9 +221,9 @@ public class PlanService {
             plan.setStatus(planRequest.getPlan().getStatus());
             plan.setUpdatedBy(userName);
              planRepository.save(plan);
-//            List<PlanDetail> planDetailSend = new ArrayList<>();
-//            // Gán Plan đã lưu cho từng PlanDetail và lưu chúng
-//
+            List<PlanDetail> planDetailSend = new ArrayList<>();
+            // Gán Plan đã lưu cho từng PlanDetail và lưu chúng
+
 //            for (PLanDetailRequest detail : planRequest.getPlanDetails()) {
 //                for(DeviceRequest deviceRequest: planRequest.getDevices()){
 //                    if(deviceRequest.getDevice().getGroup().getId() == detail.getDeviceGroup().getId()){
@@ -385,4 +397,7 @@ public class PlanService {
         }
     }
 
+    public ApplicationEventPublisher getPublisher() {
+        return publisher;
+    }
 }

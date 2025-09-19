@@ -187,7 +187,7 @@ public class PlanDetailService {
     }
 
 
-    private PlanDetail mapToEntity(final PlanDetailDTO planDetailDTO, final PlanDetail planDetail) {
+    public PlanDetail mapToEntity(final PlanDetailDTO planDetailDTO, final PlanDetail planDetail) {
         planDetail.setSerial(planDetailDTO.getSerial());
         planDetail.setCreatedAt(planDetailDTO.getCreatedAt());
         planDetail.setUpdatedAt(planDetailDTO.getUpdatedAt());
