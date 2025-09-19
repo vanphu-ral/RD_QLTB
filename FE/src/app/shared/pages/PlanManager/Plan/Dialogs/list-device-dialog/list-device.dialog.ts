@@ -4,6 +4,7 @@ import { SharedModule } from "../../../../../../share.module";
 import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
 import { DeviceService } from "../../../../DeviceManager/Device/Service/device.service";
 import _ from "lodash";
+import { Util } from "../../../../../core/utils/utils-function";
 
 @Component({
     selector: 'app-list-device-dialog',
@@ -14,6 +15,7 @@ import _ from "lodash";
 export class ListDeviceDialog {
 
     data: any;
+    index: number = 0
     ListDevice: any[] = []
     listdevices: any[] = []
     listManagers: any[] = []
@@ -24,19 +26,28 @@ export class ListDeviceDialog {
         private cdr: ChangeDetectorRef,
         private deviceService: DeviceService
     ) {
-        this.data = config.data;
+        this.data = config.data.data;
+        this.index = config.data.index
     }
 
     ngOnInit() {
         console.log(this.data);
-        this.ListDevice = _.map(this.data.groupDevices, item => {
-            return {
-                device: item,
-                serialNumber: item.serialNumber,
-                manager: item.userManager
-            }
-        });
-        this.listdevices = [...this.data.groupDevices];
+        if (Util.isEmptyArray(this.data.devices)) {
+            this.ListDevice = this.data.planDetails[this.index].deviceGroup.groupDevices
+            this.listdevices = this.data.planDetails[this.index].deviceGroup.groupDevices.map((item: any) => {
+                return {
+                    device: item
+                }
+            })
+        } else {
+            this.ListDevice = this.data.devices
+            this.listdevices = _.map(this.data.devices, item => {
+                return item.device
+            });
+        }
+
+        console.log(this.listdevices);
+
         this.deviceService.getUsers().subscribe(users => {
             this.listManagers = _.map(users, user => {
                 const firstName = user.firstName ?? '';
@@ -67,7 +78,7 @@ export class ListDeviceDialog {
 
     submit() {
         this.ListDevice = _.forEach(this.ListDevice, item => {
-            item.device.group = {id: this.data.id}
+            item.device.group = { id: this.data.id }
         })
         this.ref.close(this.ListDevice);
     }
