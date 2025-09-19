@@ -8,10 +8,7 @@ import io.rd.qltb.repos.*;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
@@ -92,72 +89,60 @@ public class PlanService {
     public PlanRequest getPlanDetail(final Long id) {
         PlanRequest planRequest = new PlanRequest();
         Plan plan = planRepository.findById(id).orElse(null);
-        if (plan != null) {
-            Set<PlanDetail> planDetailsSet = plan.getPlanPlanDetails();
-            List<PlanDetail> planDetails = new ArrayList<>(planDetailsSet);
-            List<PLanDetailRequest> planDetailRequests = new ArrayList<>();
-            List<DeviceRequest> deviceRequests = new ArrayList<>();
-            List<PLanDetailRequest> tempPlanDetailRequests = new ArrayList<>();
-            List<DeviceRequest> tempDeviceRequests = new ArrayList<>();
-            for (PlanDetail planDetail : planDetails) {
-                if (planDetailRequests.isEmpty()) {
-                    PLanDetailRequest planDetailRequest = new PLanDetailRequest();
-                    planDetailRequest.setDeviceGroup(deviceGroupService.mapToDTO(planDetail.getDeviceGroup(), new DeviceGroupDTO()));
-                    planDetailRequest.setSampleReport(sampleReportService.mapToDTO(planDetail.getSampleReport(), new SampleReportDTO()));
-                    tempPlanDetailRequests.add(planDetailRequest);
-                } else {
-                    for (PLanDetailRequest pLanDetailRequest : planDetailRequests) {
-                        if ((!Objects.equals(pLanDetailRequest.getDeviceGroup().getId(), planDetail.getDeviceGroup().getId()) &&
-                                Objects.equals(pLanDetailRequest.getSampleReport().getId(), planDetail.getSampleReport().getId())) || (
-                                Objects.equals(pLanDetailRequest.getDeviceGroup().getId(), planDetail.getDeviceGroup().getId()) &&
-                                        !Objects.equals(pLanDetailRequest.getSampleReport().getId(), planDetail.getSampleReport().getId())
-                        )) {
-                            PLanDetailRequest planDetailRequest = new PLanDetailRequest();
-                            planDetailRequest.setDeviceGroup(deviceGroupService.mapToDTO(planDetail.getDeviceGroup(), new DeviceGroupDTO()));
-                            planDetailRequest.setSampleReport(sampleReportService.mapToDTO(planDetail.getSampleReport(), new SampleReportDTO()));
-                            tempPlanDetailRequests.add(planDetailRequest);
-                        }
-                    }
-                }
-                if (deviceRequests.isEmpty()) {
-                    DeviceRequest deviceRequest = new DeviceRequest();
-                    deviceRequest.setDevice(deviceService.mapToDTO(planDetail.getDevice(), new DeviceDTO()));
-                    deviceRequest.setSerialNumber(planDetail.getSerial());
-                    deviceRequest.setManager(planDetail.getManager());
-                    deviceRequest.setPlanDetailId(planDetail.getId());
-                    tempDeviceRequests.add(deviceRequest);
-                } else {
-                    for (DeviceRequest deviceRequest : deviceRequests) {
-                        if (!Objects.equals(deviceRequest.getDevice().getId(), planDetail.getDevice().getId())) {
-                            DeviceRequest newDeviceRequest = new DeviceRequest();
-                            newDeviceRequest.setDevice(deviceService.mapToDTO(planDetail.getDevice(), new DeviceDTO()));
-                            newDeviceRequest.setSerialNumber(planDetail.getSerial());
-                            newDeviceRequest.setManager(planDetail.getManager());
-                            newDeviceRequest.setPlanDetailId(planDetail.getId());
-                            tempDeviceRequests.add(newDeviceRequest);
-                        }
-                    }
-                }
+
+        if (plan == null) return planRequest;
+
+        Set<PlanDetail> planDetailsSet = plan.getPlanPlanDetails();
+        Map<String, PLanDetailRequest> uniquePlanDetails = new HashMap<>();
+        Map<Long, DeviceRequest> uniqueDevices = new HashMap<>();
+
+        for (PlanDetail planDetail : planDetailsSet) {
+            // Tạo key duy nhất cho PlanDetailRequest dựa trên deviceGroupId và sampleReportId
+            Long deviceGroupId = planDetail.getDeviceGroup() != null ? planDetail.getDeviceGroup().getId() : 0L;
+            Long sampleReportId = planDetail.getSampleReport() != null ? planDetail.getSampleReport().getId() : 0L;
+            String detailKey = deviceGroupId + "-" + sampleReportId;
+
+            if (!uniquePlanDetails.containsKey(detailKey)) {
+                PLanDetailRequest detailRequest = new PLanDetailRequest();
+                detailRequest.setDeviceGroup(deviceGroupService.mapToDTO(planDetail.getDeviceGroup(), new DeviceGroupDTO()));
+                detailRequest.setSampleReport(sampleReportService.mapToDTO(planDetail.getSampleReport(), new SampleReportDTO()));
+                uniquePlanDetails.put(detailKey, detailRequest);
             }
-            // Thêm các phần tử từ danh sách tạm thời vào danh sách chính
-            planDetailRequests.addAll(tempPlanDetailRequests);
-            deviceRequests.addAll(tempDeviceRequests);
-            planRequest.setDevices(deviceRequests);
-            planRequest.setPlanDetails(planDetailRequests);
+
+            // Tạo key duy nhất cho DeviceRequest dựa trên deviceId
+            Long deviceId = planDetail.getDevice() != null ? planDetail.getDevice().getId() : 0L;
+            if (!uniqueDevices.containsKey(deviceId)) {
+                DeviceRequest deviceRequest = new DeviceRequest();
+                deviceRequest.setDevice(deviceService.mapToDTO(planDetail.getDevice(), new DeviceDTO()));
+                deviceRequest.setSerialNumber(planDetail.getSerial());
+                deviceRequest.setManager(planDetail.getManager());
+                deviceRequest.setPlanDetailId(planDetail.getId());
+                uniqueDevices.put(deviceId, deviceRequest);
+            }
         }
-//         planDetails = null;
-        plan.getPlanType().setPlanTypePlans(null);
-        plan.getFactory().setFactoryBranches(null);
-        plan.getBranch().setFactory(null);
-        plan.getBranch().setBranchDevices(null);
-        plan.getBranch().setBranchTeams(null);
-        plan.getBranch().setSampleReports(null);
+
+        planRequest.setPlanDetails(new ArrayList<>(uniquePlanDetails.values()));
+        planRequest.setDevices(new ArrayList<>(uniqueDevices.values()));
+
+        // Làm sạch các quan hệ để tránh vòng lặp hoặc dữ liệu thừa
+        if (plan.getPlanType() != null) plan.getPlanType().setPlanTypePlans(null);
+        if (plan.getFactory() != null) plan.getFactory().setFactoryBranches(null);
+        if (plan.getBranch() != null) {
+            plan.getBranch().setFactory(null);
+            plan.getBranch().setBranchDevices(null);
+            plan.getBranch().setBranchTeams(null);
+            plan.getBranch().setSampleReports(null);
+        }
         plan.setPlanPlanDetails(null);
-        plan.getApprovalWorkflow().setWorkflowSampleReports(null);
-        plan.getApprovalWorkflow().setWorkflowApprovalGroups(null);
+        if (plan.getApprovalWorkflow() != null) {
+            plan.getApprovalWorkflow().setWorkflowSampleReports(null);
+            plan.getApprovalWorkflow().setWorkflowApprovalGroups(null);
+        }
+
         planRequest.setPlan(plan);
         return planRequest;
     }
+
 
     public void createPlanWithDetails(final PlanRequest planRequest, String userName) {
         // check plan
