@@ -250,7 +250,11 @@ public class PlanService {
         publisher.publishEvent(new BeforeDeletePlan(id));
         planRepository.delete(plan);
     }
-
+    public void deleteByPlanId(final Long planId) {
+        List<PlanDetail> plans = planDetailRepository.findAllByPlanId(planId);
+        planDetailRepository.deleteAll(plans);
+            planRepository.deleteById(planId);
+    }
     private PlanDTO mapToDTO(final Plan plan, final PlanDTO dto) {
         dto.setId(plan.getId());
         dto.setCode(plan.getCode());
