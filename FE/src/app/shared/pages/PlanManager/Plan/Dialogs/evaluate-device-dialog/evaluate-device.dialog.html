@@ -1,0 +1,109 @@
+<div class="p-1">
+    <div class="row my-3">
+        <div class="col-4">
+            <p-floatlabel variant="on">
+                <input pInputText id="device.code" name="device.code" [(ngModel)]="data.code" autocomplete="off"
+                    [disabled]="true" [fluid]="true" />
+                <label for="device.code">Mã thiết bị</label>
+            </p-floatlabel>
+        </div>
+        <div class="col-4">
+            <p-floatlabel variant="on">
+                <input pInputText id="name" name="name" [(ngModel)]="data.name"
+                    autocomplete="off" [disabled]="true" [fluid]="true" />
+                <label for="name">Tên thiết bị</label>
+            </p-floatlabel>
+        </div>
+        
+        <div class="col-4">
+            <p-floatlabel variant="on">
+                <input pInputText id="name" name="name" [(ngModel)]="data.a"
+                    autocomplete="off" [disabled]="true" [fluid]="true" />
+                <label for="name">Tên dây chuyền</label>
+            </p-floatlabel>
+        </div>
+    </div>
+
+    <div class="row my-3">
+        <div class="col-4">
+            <p-floatlabel variant="on">
+                <input pInputText id="plan.code" name="plan.code" [(ngModel)]="data.b" autocomplete="off"
+                    [disabled]="true" [fluid]="true" />
+                <label for="plan.code">Serial</label>
+            </p-floatlabel>
+        </div>
+        <div class="col-4">
+            <p-floatlabel variant="on">
+                <input pInputText id="name" name="name" [(ngModel)]="data.c"
+                    autocomplete="off" [disabled]="true" [fluid]="true" />
+                <label for="name">Ngày kiểm tra</label>
+            </p-floatlabel>
+        </div>
+        
+        <div class="col-4">
+            <p-floatlabel variant="on">
+                <input pInputText id="name" name="name" [(ngModel)]="data.d"
+                    autocomplete="off" [disabled]="true" [fluid]="true" />
+                <label for="name">Trạng thái</label>
+            </p-floatlabel>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end mt-2 mb-4">
+        <p-button label="Khai báo vật tư thay thế" icon="pi pi-plus" class="mx-1"></p-button>
+        <p-button label="Khai báo sự cố" icon="pi pi-plus" class="mx-1"></p-button>
+    </div>
+
+    <div class="table-responsive">
+        <p-table [value]="checkList" responsiveLayout="scroll">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>STT</th>
+                    <th>Nhóm tiêu chí</th>
+                    <th>Tên tiêu chí</th>
+                    <th>Tần suất</th>
+                    <th>Kết quả</th>
+                    <th>Mô tả</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-row let-i="rowIndex">
+                <tr>
+                    <td>{{ i + 1 }}</td>
+                    <!-- <td>
+                        <p-select [(ngModel)]="row.device" [options]="listDeviceOptions" optionLabel="name" [fluid]="true"
+                            [showClear]="true" [appendTo]="'body'" [disabled]="true"
+                            id="device-{{ i }}" name="device-{{ i }}" dataKey="id">
+                        </p-select>
+                    </td>
+                    <td>
+                        <input type="text" pInputText [(ngModel)]="row.serialNumber" />
+                    </td>
+                    <td>
+                        <p-select [(ngModel)]="row.manager" [options]="listManagers" optionLabel="name" optionValue="username" [fluid]="true"
+                            [showClear]="true" [appendTo]="'body'"
+                            id="manager-{{ i }}" name="manager-{{ i }}" dataKey="username">
+                        </p-select>
+                    </td> -->
+                    <td class="text-center">
+                        <p-button icon="pi pi-trash" severity="danger">
+                        </p-button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="99" class="text-center">Chưa có đợt kiểm tra nào</td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <p-button label="Lưu" severity="success" (onClick)="submit()"></p-button>
+        <p-button label="Đóng" (onClick)="close()"></p-button>
+    </div>
+</div>

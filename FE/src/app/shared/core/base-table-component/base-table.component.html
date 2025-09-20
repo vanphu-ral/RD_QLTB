@@ -2,20 +2,25 @@
   <h2>{{ title }}</h2>
   <p-button *ngIf="showAddButton" [label]="addButtonText" class="p-button-sm" (click)="addItem()" />
 </div>
-<p-table #dt [value]="data" [scrollable]="true" [paginator]="true" [rows]="10" [loading]="loading" [rowsPerPageOptions]="[5, 10, 20, 50]"
+<p-table #dt [value]="data" [columns]="selectedColumns" [scrollable]="true" [paginator]="true" [rows]="10" [loading]="loading" [rowsPerPageOptions]="[5, 10, 20, 50]"
   [showCurrentPageReport]="true" currentPageReportTemplate="Tổng: {totalRecords} bản ghi">
+  <ng-template #caption>
+    <p-multiSelect [options]="columns" [(ngModel)]="selectedColumns" optionLabel="Header" display="chip"
+      placeholder="Chọn cột hiển thị" styleClass="p-column-toggler">
+    </p-multiSelect>
+  </ng-template>
   <!-- Header -->
   <ng-template pTemplate="header">
     <tr>
       <th>STT</th>
-      <th *ngFor="let col of columns" [hidden]="col.IsHide" [ngStyle]="col.style">{{ col.Header }}</th>
+      <th *ngFor="let col of selectedColumns" [hidden]="col.IsHide" [ngStyle]="col.style">{{ col.Header }}</th>
       <th alignFrozen="right" pFrozenColumn [frozen]="true" style="min-width: 150px;">Chức năng</th>
     </tr>
 
     <!-- Filter -->
     <tr>
       <th></th>
-      <th *ngFor="let col of columns" [hidden]="col.IsHide">
+      <th *ngFor="let col of selectedColumns" [hidden]="col.IsHide">
         <ng-container *ngIf="getFilterTemplate(col.Field) as tpl; else defaultFilter">
           <!-- Custom filter từ cha -->
           <p-columnFilter [field]="col.Field" matchMode="equals" [showMenu]="false">
@@ -55,7 +60,7 @@
   <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
     <tr>
       <td>{{ rowIndex + 1 }}</td>
-      <td *ngFor="let col of columns" [hidden]="col.IsHide" [ngStyle]="col.style">
+      <td *ngFor="let col of selectedColumns" [hidden]="col.IsHide" [ngStyle]="col.style">
         <ng-container *ngIf="getColumnTemplate(col.Field) as tpl; else defaultValue">
           <ng-container *ngTemplateOutlet="tpl; context: { $implicit: row[col.Field] }"></ng-container>
         </ng-container>
@@ -64,14 +69,14 @@
         </ng-template>
       </td>
       <td alignFrozen="right" pFrozenColumn [frozen]="true">
-        <!-- base button -->
-        <p-button *ngIf="showEditButton" icon="pi pi-pencil" styleClass="p-button-sm p-button-rounded p-button-warn m-1" (onClick)="editItem(row)"></p-button>
-        <p-button *ngIf="showViewButton" icon="pi pi-eye" styleClass="p-button-sm p-button-rounded p-button-info m-1" (onClick)="viewItem(row)"></p-button>
-        <p-button *ngIf="showDeleteButton" icon="pi pi-trash" styleClass="p-button-sm p-button-rounded p-button-danger m-1" (onClick)="deleteItem(row, $event)"></p-button>
         <!-- button custom -->
         <ng-container *ngIf="actionTemplate">
           <ng-container *ngTemplateOutlet="actionTemplate; context: { $implicit: row }"></ng-container>
         </ng-container>
+        <!-- base button -->
+        <p-button *ngIf="showEditButton" icon="pi pi-pencil" styleClass="p-button-sm p-button-rounded p-button-warn m-1" (onClick)="editItem(row)"></p-button>
+        <p-button *ngIf="showViewButton" icon="pi pi-eye" styleClass="p-button-sm p-button-rounded p-button-info m-1" (onClick)="viewItem(row)"></p-button>
+        <p-button *ngIf="showDeleteButton" icon="pi pi-trash" styleClass="p-button-sm p-button-rounded p-button-danger m-1" (onClick)="deleteItem(row, $event)"></p-button>
       </td>
     </tr>
   </ng-template>

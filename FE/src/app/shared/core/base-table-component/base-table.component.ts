@@ -40,6 +40,7 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
 
   data: any[] = [];
   loading = false;
+  selectedColumns: any[] = [];
 
   constructor(private router: Router, private route: ActivatedRoute, private cdr: ChangeDetectorRef, private confirmationService: ConfirmationService, private messageService: MessageService) { }
 
@@ -49,6 +50,7 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
       IsSearch: c.IsSearch ?? false,
       IsHide: c.IsHide ?? false,
     }));
+    this.selectedColumns = [...this.columns];
     this.loadData();
   }
 
@@ -126,6 +128,7 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
     this.confirmationService.confirm({
       target: event.currentTarget as EventTarget,
       message: 'Bạn có muốn xóa bản ghi này?',
+      header: 'Xóa bản ghi',
       icon: 'pi pi-info-circle',
       rejectButtonProps: {
         label: 'Hủy',

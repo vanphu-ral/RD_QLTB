@@ -3,7 +3,8 @@
   [columns]="columns"
   [title]="'Dánh sách kế hoạch'"
   [showAddButton]="true"
-  [onDeleteItem]="onDeleteItem">
+  [onDeleteItem]="onDeleteItem"
+  [actionTemplate]="customActions">
   <ng-template appColumnTemplate="createdAt" let-rowData>
     {{ rowData | date: 'dd/MM/yyyy' }}
   </ng-template>
@@ -11,3 +12,7 @@
     {{ rowData | date: 'dd/MM/yyyy' }}
   </ng-template>
 </app-base-table>
+<ng-template #customActions let-row>
+  <p-button icon="pi pi-pen-to-square" styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="openDialogCheckList(row)"></p-button>
+  <p-button icon="pi pi-pen-to-square" styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="openEvaluateDialog(row)"></p-button>
+</ng-template>
