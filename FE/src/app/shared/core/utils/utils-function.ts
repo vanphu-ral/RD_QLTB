@@ -1,6 +1,7 @@
 import Swal from 'sweetalert2';
 import dayjs from 'dayjs';
 import * as _ from 'lodash';
+import { Observable } from 'rxjs';
 
 export class Util {
   /**
@@ -20,7 +21,7 @@ export class Util {
     const timestamp = dayjs().format('DDMMYYYYHHmm');
     return `${initials}-${timestamp}`;
   }
-  
+
 
   /**
    * Format ngày giờ theo pattern
@@ -107,7 +108,7 @@ export class Util {
   static isEmptyString(str: string | null | undefined): boolean {
     return _.isNil(str) || _.trim(str) === '';
   }
-  
+
 
   /**
    * Chuyển đổi string sang số an toàn, trả về defaultValue nếu không phải số
@@ -284,9 +285,9 @@ export class Util {
   }
 
 
-   /**
-   * Thêm item mới vào mảng, nếu mảng undefined thì sẽ khởi tạo
-   */
+  /**
+  * Thêm item mới vào mảng, nếu mảng undefined thì sẽ khởi tạo
+  */
   addItem<T>(arr: T[] | undefined, item: T, assignBack?: (newArr: T[]) => void): T[] {
     if (!arr) {
       arr = [];
@@ -326,4 +327,61 @@ export class Util {
     [arr[index], arr[index + 1]] = [arr[index + 1], arr[index]];
     return arr;
   }
+
+  static confirmAndExecute(
+    event: Event,
+    message: string,
+    action: () => Observable<any>,
+    successMessage: string,
+    errorMessage: string | undefined,
+    confirmationService: any,
+    messageService: any,
+    loadData?: () => void
+  ) {
+    confirmationService.confirm({
+      target: event.currentTarget as EventTarget,
+      message,
+      icon: 'pi pi-info-circle',
+      rejectButtonProps: {
+        label: 'Hủy',
+        severity: 'secondary',
+        outlined: true
+      },
+      acceptButtonProps: {
+        label: 'Đồng ý',
+        severity: 'danger'
+      },
+      accept: () => {
+        action().subscribe({
+          next: () => {
+            messageService.add({
+              severity: 'success',
+              summary: 'Thành công',
+              detail: successMessage,
+              life: 3000
+            });
+            loadData?.();
+          },
+          error: (error) => {
+            messageService.add({
+              severity: 'error',
+              summary: 'Lỗi',
+              detail: errorMessage || 'Có lỗi xảy ra!',
+              life: 3000
+            });
+            Util.handleApiError(error, messageService);
+          }
+        });
+      },
+      reject: () => {
+        messageService.add({
+          severity: 'info',
+          summary: 'Đã hủy',
+          detail: 'Thao tác bị hủy',
+          life: 3000
+        });
+      }
+    });
+  }
+
 }

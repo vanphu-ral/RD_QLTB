@@ -2,7 +2,8 @@
   [apiService]="apiService"
   [columns]="columns"
   [title]="'Dánh sách kế hoạch'"
-  [showAddButton]="true">
+  [showAddButton]="true"
+  [onDeleteItem]="onDeleteItem">
   <ng-template appColumnTemplate="createdAt" let-rowData>
     {{ rowData | date: 'dd/MM/yyyy' }}
   </ng-template>

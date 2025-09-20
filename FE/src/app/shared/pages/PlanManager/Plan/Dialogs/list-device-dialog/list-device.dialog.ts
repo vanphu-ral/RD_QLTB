@@ -15,9 +15,8 @@ import { Util } from "../../../../../core/utils/utils-function";
 export class ListDeviceDialog {
 
     data: any;
-    index: number = 0
     ListDevice: any[] = []
-    listdevices: any[] = []
+    listDeviceOptions: any[] = []
     listManagers: any[] = []
 
     constructor(
@@ -31,14 +30,8 @@ export class ListDeviceDialog {
 
     ngOnInit() {
         console.log(this.data);
-        this.ListDevice = _.map(this.data.groupDevices, item => {
-            return {
-                device: item,
-                serialNumber: item.serialNumber,
-                manager: item.userManager
-            }
-        });
-        this.listdevices = [...this.data.groupDevices];
+        this.ListDevice = _.map(this.data, device => { return { ...device, manager: device.manager ? device.manager : device.device.userManager, serialNumber: device.serialNumber ? device.serialNumber : device.device.serialNumber }})
+        this.listDeviceOptions = _.map(this.data, item => { return { ...item.device }});
 
         this.deviceService.getUsers().subscribe(users => {
             this.listManagers = _.map(users, user => {
@@ -69,9 +62,6 @@ export class ListDeviceDialog {
     }
 
     submit() {
-        this.ListDevice = _.forEach(this.ListDevice, item => {
-            item.device.group = { id: this.data.id }
-        })
         this.ref.close(this.ListDevice);
     }
 }

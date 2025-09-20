@@ -4,27 +4,25 @@ import { BaseApiService, CreateEntity } from '../../../../service/base-api.servi
 import { Plan } from '../../../../models/PlanManger/plan.model';
 import { Observable } from 'rxjs';
 import { PlanRequest } from '../../../../models/PlanManger/plan-request.model';
+import _ from 'lodash';
 
 @Injectable({ providedIn: 'root' })
 export class PlanService extends BaseApiService<PlanRequest> {
   constructor(http: HttpClient) {
-    super(http, 'api/plans'); 
+    super(http, 'api/plans');
   }
 
   createPlanWithDetails(entity: CreateEntity<PlanRequest>): Observable<PlanRequest> {
-    // const now = new Date();
-    // const isoLocalVN = now.getFullYear() + '-' +
-    //   String(now.getMonth() + 1).padStart(2, '0') + '-' +
-    //   String(now.getDate()).padStart(2, '0') + 'T' +
-    //   String(now.getHours()).padStart(2, '0') + ':' +
-    //   String(now.getMinutes()).padStart(2, '0') + ':' +
-    //   String(now.getSeconds()).padStart(2, '0');
-
-    // const newEntity = { ...entity, createdAt: isoLocalVN, updatedAt: isoLocalVN };
-    return this.http.post<PlanRequest>(`${this['fullBaseUrl']}/create`, entity, { withCredentials: true });
+    let newObj = _.omit(entity, ["status", "createdBy", "updatedBy"]);
+    return this.http.post<PlanRequest>(`${this['fullBaseUrl']}/create`, newObj, { withCredentials: true });
   }
 
   getByAllById(id: number | string): Observable<PlanRequest> {
     return this.http.get<PlanRequest>(`${this['fullBaseUrl']}/detail/${id}`, { withCredentials: true });
   }
+
+  deleteParent(id: number | string): Observable<void> {
+    return this.http.delete<void>(`${this['fullBaseUrl']}/delete/${id}`, { withCredentials: true });
+  }
+
 }

@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { ChangeDetectorRef, Component, Input, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, Input, NgZone, OnInit } from "@angular/core";
 import { SharedModule } from "../../../../../../share.module";
 import { SampleReportService } from "../../../SampleReport/Service/sample-report.service";
 import { DeviceGroupService } from "../../../../DeviceManager/DeviceGroup/Service/device-group.service";
@@ -8,7 +8,9 @@ import { ListDeviceDialog } from "../../Dialogs/list-device-dialog/list-device.d
 import { PlanDetail } from "../../../../../models/PlanManger/plan-detail.model";
 import { Plan } from "../../../../../models/PlanManger/plan.model";
 import { Util } from "../../../../../core/utils/utils-function";
-import { PlanRequest } from "../../../../../models/PlanManger/plan-request.model";
+import { DeviceDetail, PlanRequest } from "../../../../../models/PlanManger/plan-request.model";
+import Swal from "sweetalert2";
+import _ from "lodash";
 
 @Component({
     selector: 'list-device-group-component',
@@ -18,6 +20,7 @@ import { PlanRequest } from "../../../../../models/PlanManger/plan-request.model
     styleUrls: ['./list-device-group.component.scss']
 })
 export class ListDeviceComponent implements OnInit {
+    ref?: DynamicDialogRef;
 
     @Input() isAddMode: boolean = false
     @Input() isViewMode: boolean = false
@@ -26,11 +29,12 @@ export class ListDeviceComponent implements OnInit {
 
     listSampleReport: any[] = []
     listdeviceGroups: any[] = []
-    ref?: DynamicDialogRef;
     deviceUpdates: { deviceId: number, serial?: string, manager?: string }[] = [];
+    isDeviceGroupDuplicate: boolean[] = [];
+    listDeviceDetail: DeviceDetail[] = []
 
 
-    constructor(private sampleReportService: SampleReportService, private deviceGroupService: DeviceGroupService, private cdr: ChangeDetectorRef, private dialogService: DialogService) { }
+    constructor(private sampleReportService: SampleReportService, private deviceGroupService: DeviceGroupService, private cdr: ChangeDetectorRef, private dialogService: DialogService, private ngZone: NgZone) { }
 
     ngOnInit(): void {
         this.sampleReportService.getAll().subscribe(res => {
@@ -41,6 +45,68 @@ export class ListDeviceComponent implements OnInit {
             this.listdeviceGroups = res
             this.cdr.detectChanges()
         })
+        if (this.isEditMode) {
+            this.mapDevicesGroupOnEdit()
+            console.log(this.model.devices);
+
+        }
+    }
+
+    mapDevicesGroupOnEdit() {
+        if (!this.model?.devices || !this.model?.planDetails) return;
+        this.model.devices = this.model.devices.map((d: any) => {
+            const planDetail = this.model.planDetails.find((pd: any) =>
+                pd.deviceGroup?.groupDevices?.some((gd: any) => gd.id === d.device?.id)
+            );
+            if (planDetail?.deviceGroup) {
+                return {
+                    ...d,
+                    device: {
+                        ...d.device,
+                        group: { id: planDetail.deviceGroup.id }
+                    }
+                };
+            }
+            return d;
+        });
+    }
+
+
+
+    onDeviceGroupChange(row: any, currentIndex: number) {
+        if (!row.deviceGroup) {
+            row.isDuplicate = false;
+            return;
+        }
+        const hasDuplicate = this.model.planDetails.some((planDetail, index) => {
+            return index !== currentIndex && planDetail.deviceGroup?.id === row.deviceGroup.id;
+        });
+        if (hasDuplicate) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Thất bại',
+                text: 'Nhóm thiết bị đã tồn tại',
+                confirmButtonText: 'OK'
+            });
+            this.ngZone.runOutsideAngular(() => {
+                setTimeout(() => {
+                    row.deviceGroup = null;
+                    row.isDuplicate = true;
+                    this.cdr.detectChanges();
+                }, 0);
+            });
+        } else {
+            row.isDuplicate = false;
+            const newDevices: DeviceDetail[] = _.map(_.get(row, 'deviceGroup.groupDevices'), device => {
+                device.group = { id: _.get(row, 'deviceGroup.id') }
+                return {
+                    device: device,
+                    serialNumber: device.serialNumber,
+                    manager: device.userManager
+                }
+            });
+            this.model.devices = this.updateDeviceDetails(this.model.devices!, newDevices);
+        }
     }
 
     addRow() {
@@ -51,23 +117,36 @@ export class ListDeviceComponent implements OnInit {
     }
 
     editRow(index: number) {
+        const arrDeviceEdit = _.filter(this.model.devices, item => item.device?.group.id == this.model.planDetails[index].deviceGroup.id)
         this.ref = this.dialogService.open(ListDeviceDialog, {
             header: `Danh sách thiết bị thuộc nhóm ${this.model.planDetails[index].deviceGroup.name}`,
             width: 'auto',
             modal: true,
-            data: this.model.planDetails[index].deviceGroup,
+            data: arrDeviceEdit,
         });
         this.ref.onClose.subscribe((result) => {
             if (result && result.length > 0) {
-                console.log(result);
-                const existingDeviceIds = new Set(this.model.devices!.map(item => item.device!.id));
-                const newDevices = result.filter((item: any) => !existingDeviceIds.has(item.device.id));
-                this.model.devices = [...this.model.devices!, ...newDevices];
-                console.log(this.model.devices);
-                
+                this.model.devices = this.updateDeviceDetails(this.model.devices!, result)
                 this.cdr.detectChanges();
             }
         });
+    }
+
+
+    updateDeviceDetails(listDeviceDetail: DeviceDetail[], edited: DeviceDetail[]): DeviceDetail[] {
+        const map = new Map<number, DeviceDetail>();
+        listDeviceDetail.forEach(d => {
+            if (d.device?.id) {
+                map.set(d.device.id, d);
+            }
+        });
+        edited.forEach(e => {
+            if (e.device?.id) {
+                const old = map.get(e.device.id);
+                map.set(e.device.id, { ...old, ...e, device: e.device });
+            }
+        });
+        return Array.from(map.values());
     }
 
     deleteRow(index: number) {

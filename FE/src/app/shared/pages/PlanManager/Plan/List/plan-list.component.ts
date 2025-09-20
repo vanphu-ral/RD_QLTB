@@ -4,6 +4,7 @@ import { SharedModule } from '../../../../../share.module';
 import { FormsModule } from '@angular/forms';
 import { PlanService } from '../Service/plan.service';
 import { Column } from '../../../../models/Core/column.model';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'plan-list',
@@ -24,5 +25,9 @@ export class PlanListComponent {
     { Field: 'updatedAt', Header: 'Ngày cập nhật', IsSearch: true, TypeSearch: 'date', style: { 'min-width': '150px' } },
   ];
 
-  constructor(public apiService: PlanService) {}
+  constructor(public apiService: PlanService) { }
+
+  onDeleteItem = (item: any, event: Event): Observable<any> => {
+    return this.apiService.deleteParent(item.id); 
+  };
 }
