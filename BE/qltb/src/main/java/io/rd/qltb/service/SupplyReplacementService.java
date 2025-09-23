@@ -64,7 +64,7 @@ public class SupplyReplacementService {
         supplyReplacementRepository.delete(supplyReplacement);
     }
 
-    private SupplyReplacementDTO mapToDTO(final SupplyReplacement supplyReplacement,
+    public SupplyReplacementDTO mapToDTO(final SupplyReplacement supplyReplacement,
                                           final SupplyReplacementDTO dto) {
         dto.setId(supplyReplacement.getId());
         dto.setQuantity(supplyReplacement.getQuantity());
@@ -130,7 +130,7 @@ public class SupplyReplacementService {
         return dto;
     }
 
-    private SupplyReplacement mapToEntity(final SupplyReplacementDTO supplyReplacementDTO,
+    public SupplyReplacement mapToEntity(final SupplyReplacementDTO supplyReplacementDTO,
             final SupplyReplacement supplyReplacement) {
         supplyReplacement.setQuantity(supplyReplacementDTO.getQuantity());
         supplyReplacement.setCode(supplyReplacementDTO.getCode());

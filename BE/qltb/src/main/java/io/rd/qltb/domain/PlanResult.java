@@ -1,12 +1,8 @@
 package io.rd.qltb.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,8 +24,6 @@ public class PlanResult {
     @Column
     private String code;
 
-    @Column(nullable = false)
-    private Long planResultDetailId;
 
     @Column(columnDefinition = "longtext")
     private String note;
@@ -63,5 +57,8 @@ public class PlanResult {
 
     @OneToMany(mappedBy = "planResult")
     private Set<SupplyReplacement> planResultSupplyReplacements = new HashSet<>();
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "plan_detail_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private PlanDetail planDetail;
 }

@@ -50,7 +50,7 @@ public class PlanSupplieService {
         planSupplieRepository.delete(planSupplie);
     }
 
-    private PlanSupplieDTO mapToDTO(final PlanSupplie planSupplie,
+    public PlanSupplieDTO mapToDTO(final PlanSupplie planSupplie,
             final PlanSupplieDTO planSupplieDTO) {
         planSupplieDTO.setId(planSupplie.getId());
         planSupplieDTO.setCode(planSupplie.getCode());
@@ -68,7 +68,7 @@ public class PlanSupplieService {
         return planSupplieDTO;
     }
 
-    private PlanSupplie mapToEntity(final PlanSupplieDTO planSupplieDTO,
+    public PlanSupplie mapToEntity(final PlanSupplieDTO planSupplieDTO,
             final PlanSupplie planSupplie) {
         planSupplie.setCode(planSupplieDTO.getCode());
         planSupplie.setName(planSupplieDTO.getName());

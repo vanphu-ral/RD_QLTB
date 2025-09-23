@@ -1,5 +1,6 @@
 package io.rd.qltb.rest;
 
+import io.rd.qltb.model.PlanCheckDTO;
 import io.rd.qltb.model.PlanResultDTO;
 import io.rd.qltb.service.PlanResultService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -8,6 +9,8 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,7 +48,13 @@ public class PlanResultResource {
         final Long createdId = planResultService.create(planResultDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
-
+    @PostMapping("/create-update")
+    @ApiResponse(responseCode = "201")
+    public ResponseEntity createUpdate(@AuthenticationPrincipal OidcUser oidcUser,
+            @RequestBody @Valid final PlanCheckDTO planCheckDTO) {
+        planResultService.createUpdate(planCheckDTO,oidcUser.getName());
+        return new ResponseEntity<>( HttpStatus.CREATED);
+    }
     @PutMapping("/{id}")
     public ResponseEntity<Long> updatePlanResult(@PathVariable(name = "id") final Long id,
             @RequestBody @Valid final PlanResultDTO planResultDTO) {

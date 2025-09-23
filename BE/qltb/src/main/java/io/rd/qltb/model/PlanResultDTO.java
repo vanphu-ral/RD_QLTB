@@ -1,5 +1,6 @@
 package io.rd.qltb.model;
 
+import io.rd.qltb.domain.PlanDetail;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -17,7 +18,6 @@ public class PlanResultDTO {
     private String code;
 
     @NotNull
-    private Long planResultDetailId;
 
     private String note;
 
@@ -38,5 +38,6 @@ public class PlanResultDTO {
 
     @Size(max = 255)
     private String statusRepair;
+    private PlanDetail planDetail;
 
 }

@@ -64,7 +64,7 @@ public class ErrorReportService {
         errorReportRepository.delete(errorReport);
     }
 
-    private ErrorReportDTO mapToDTO(final ErrorReport errorReport,
+    public ErrorReportDTO mapToDTO(final ErrorReport errorReport,
                                     final ErrorReportDTO errorReportDTO) {
         errorReportDTO.setId(errorReport.getId());
         errorReportDTO.setCode(errorReport.getCode());
@@ -110,7 +110,7 @@ public class ErrorReportService {
     }
 
 
-    private ErrorReport mapToEntity(final ErrorReportDTO errorReportDTO,
+    public ErrorReport mapToEntity(final ErrorReportDTO errorReportDTO,
             final ErrorReport errorReport) {
         errorReport.setCode(errorReportDTO.getCode());
         errorReport.setSeverity(errorReportDTO.getSeverity());

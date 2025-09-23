@@ -58,7 +58,7 @@ public class PlanResultDetailService {
         planResultDetailRepository.delete(planResultDetail);
     }
 
-    private PlanResultDetailDTO mapToDTO(final PlanResultDetail planResultDetail,
+    public PlanResultDetailDTO mapToDTO(final PlanResultDetail planResultDetail,
                                          final PlanResultDetailDTO dto) {
         dto.setId(planResultDetail.getId());
         dto.setCriticalCode(planResultDetail.getCriticalCode());
@@ -104,7 +104,7 @@ public class PlanResultDetailService {
     }
 
 
-    private PlanResultDetail mapToEntity(final PlanResultDetailDTO planResultDetailDTO,
+    public PlanResultDetail mapToEntity(final PlanResultDetailDTO planResultDetailDTO,
             final PlanResultDetail planResultDetail) {
         planResultDetail.setCriticalCode(planResultDetailDTO.getCriticalCode());
         planResultDetail.setCriticalName(planResultDetailDTO.getCriticalName());
