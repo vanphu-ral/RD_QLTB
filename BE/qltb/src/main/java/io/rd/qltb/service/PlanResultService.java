@@ -25,9 +25,10 @@ public class PlanResultService {
     private final SupplyReplacementService supplyReplacementService;
     private final SupplyReplacementRepository supplyReplacementRepository;
     private final ErrorReportRepository errorReportRepository;
+    private final PlanDetailRepository planDetailRepository;
 
     public PlanResultService(final PlanResultRepository planResultRepository,
-                             final ApplicationEventPublisher publisher, PlanResultDetailService planResultDetailService, ErrorReportService errorReportService, PlanResultDetailRepository planResultDetailRepository, SupplyReplacementService supplyReplacementService, SupplyReplacementRepository supplyReplacementRepository, ErrorReportRepository errorReportRepository) {
+                             final ApplicationEventPublisher publisher, PlanResultDetailService planResultDetailService, ErrorReportService errorReportService, PlanResultDetailRepository planResultDetailRepository, SupplyReplacementService supplyReplacementService, SupplyReplacementRepository supplyReplacementRepository, ErrorReportRepository errorReportRepository, PlanDetailRepository planDetailRepository) {
         this.planResultRepository = planResultRepository;
         this.publisher = publisher;
         this.planResultDetailService = planResultDetailService;
@@ -36,6 +37,7 @@ public class PlanResultService {
         this.supplyReplacementService = supplyReplacementService;
         this.supplyReplacementRepository = supplyReplacementRepository;
         this.errorReportRepository = errorReportRepository;
+        this.planDetailRepository = planDetailRepository;
     }
 
     public List<PlanResultDTO> findAll() {
@@ -153,6 +155,9 @@ public class PlanResultService {
         planResult.setUpdatedBy(planResultDTO.getUpdatedBy());
         planResult.setStatus(planResultDTO.getStatus());
         planResult.setStatusRepair(planResultDTO.getStatusRepair());
+        final PlanDetail planDetail = planResultDTO.getPlanDetail() == null ? null : planDetailRepository.findById(planResultDTO.getPlanDetail().getId())
+                .orElseThrow(() -> new NotFoundException("planDetail not found"));
+        planResult.setPlanDetail(planDetail);
         return planResult;
     }
 
