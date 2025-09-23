@@ -1,9 +1,6 @@
 package io.rd.qltb.rest;
 
-import io.rd.qltb.model.DeviceRequest;
-import io.rd.qltb.model.PlanDTO;
-import io.rd.qltb.model.PlanRequest;
-import io.rd.qltb.model.PlanRequest2;
+import io.rd.qltb.model.*;
 import io.rd.qltb.service.PlanService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
@@ -89,5 +86,10 @@ public class PlanResource {
     public ResponseEntity<Void> deleteByPlanId(@PathVariable(name = "id") final Long id) {
         planService.deleteByPlanId(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/with-details")
+    public ResponseEntity<List<PlanWithDetailsDTO>> getAllPlansWithDetails() {
+        return ResponseEntity.ok(planService.findAllWithDetails());
     }
 }

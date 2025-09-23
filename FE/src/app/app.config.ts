@@ -21,6 +21,7 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     providePrimeNG({
       translation: {
+        // filter
         startsWith: 'Bắt đầu với',
         endsWith: 'Kết thúc với',
         contains: 'Chứa',
@@ -34,6 +35,8 @@ export const appConfig: ApplicationConfig = {
         dateAfter: 'Sau ngày',
         matchAll: 'Khớp tất cả',
         matchAny: 'Khớp bất kỳ',
+
+        // calendar
         dayNamesMin: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
         monthNames: [
           'Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',
@@ -44,6 +47,9 @@ export const appConfig: ApplicationConfig = {
         clear: 'Xóa',
         dateFormat: 'dd/mm/yy',
         firstDayOfWeek: 1,
+
+        // multi select
+        selectionMessage: '{0} cột được chọn'
       }
     }),
     {

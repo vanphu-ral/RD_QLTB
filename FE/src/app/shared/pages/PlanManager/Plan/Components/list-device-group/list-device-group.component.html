@@ -26,7 +26,7 @@
                 <td>
                     <p-select [(ngModel)]="row.deviceGroup" [options]="listdeviceGroups" optionLabel="name" [fluid]="true"
                         [disabled]="isViewMode" [showClear]="true" [appendTo]="'body'" id="deviceGroup-{{ i }}"
-                        name="deviceGroup-{{ i }}" dataKey="id">
+                        name="deviceGroup-{{ i }}" dataKey="id" (ngModelChange)="onDeviceGroupChange(row, i)">
                     </p-select>
                 </td>
                 <td class="text-center" *ngIf="!isViewMode">

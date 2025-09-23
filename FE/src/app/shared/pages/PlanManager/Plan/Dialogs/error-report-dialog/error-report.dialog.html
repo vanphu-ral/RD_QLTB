@@ -1,0 +1,45 @@
+<div class="p-1">
+
+  <div class="row my-3">
+    <div class="col-12">
+      <p-floatlabel variant="on">
+        <input pInputText id="name" name="name" [(ngModel)]="data.name" autocomplete="off"
+          [fluid]="true" autofocus />
+        <label for="name">Tên lỗi</label>
+      </p-floatlabel>
+    </div>
+  </div>
+
+  <div class="row my-3">
+    <div class="col-12">
+      <p-fieldset legend="Mô tả" class="custom-fieldset">
+        <p-editor [(ngModel)]="data.errorDescription" name="description" [style]="{ height: '150px' }"
+          ></p-editor>
+      </p-fieldset>
+    </div>
+  </div>
+
+  <div class="row my-3">
+    <div class="col-6">
+      <p-floatlabel variant="on">
+        <p-datepicker [(ngModel)]="data.timeReported" appDateConvert [iconDisplay]="'input'" [showIcon]="true"
+          name="timeReported" [dateFormat]="'dd-mm-yy'" appendTo="body" [inputSize]="100" />
+        <label for="timeReported">Ngày gặp sự cố</label>
+      </p-floatlabel>
+    </div>
+
+    <div class="col-6">
+      <p-floatlabel variant="on">
+        <p-select [(ngModel)]="data.severity" [options]="listSeverity" optionLabel="label" [fluid]="true" 
+            optionValue="value" [showClear]="true" [appendTo]="'body'" id="severity" name="severity" required>
+          </p-select>
+        <label for="severity">Loại sự cố</label>
+      </p-floatlabel>
+  </div>
+
+
+  <div class="d-flex justify-content-end gap-2 mt-4">
+    <p-button label="Lưu" severity="success" (onClick)="submit()"></p-button>
+    <p-button label="Đóng" (onClick)="close()"></p-button>
+  </div>
+</div>

@@ -111,6 +111,8 @@ public class PlanResultService {
         planResultDTO.setId(planResult.getId());
         planResultDTO.setCode(planResult.getCode());
         planResultDTO.setNote(planResult.getNote());
+        planResultDTO.setDateTest(planResult.getDateTest());
+        planResultDTO.setUserTest(planResult.getUserTest());
         planResultDTO.setCreatedAt(planResult.getCreatedAt());
         planResultDTO.setUpdatedAt(planResult.getUpdatedAt());
         planResultDTO.setCreatedBy(planResult.getCreatedBy());
@@ -143,6 +145,8 @@ public class PlanResultService {
     private PlanResult mapToEntity(final PlanResultDTO planResultDTO, final PlanResult planResult) {
         planResult.setCode(planResultDTO.getCode());
         planResult.setNote(planResultDTO.getNote());
+        planResult.setDateTest(planResultDTO.getDateTest());
+        planResult.setUserTest(planResultDTO.getUserTest());
         planResult.setCreatedAt(planResultDTO.getCreatedAt());
         planResult.setUpdatedAt(planResultDTO.getUpdatedAt());
         planResult.setCreatedBy(planResultDTO.getCreatedBy());

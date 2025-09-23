@@ -66,6 +66,7 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
       this.listCriterialGroup = result.criterialGroups;
       this.listCriterial = result.criterials;
       this.listTypes = result.planTypes;
+      this.cdr.detectChanges();
       if (!this.isAddMode) {
         this.keyMappingService.getBySampleReport(this.model.id!).subscribe(res => {
           this.listCriterialBySample = res.map(x => {
@@ -80,7 +81,6 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
               criterials: criterials
             };
           });
-          console.log(this.listCriterialBySample);
           this.cdr.detectChanges();
         });
       }

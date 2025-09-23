@@ -15,7 +15,7 @@ import _ from 'lodash';
 import { FactoryService } from '../../../Categories/Factory/Service/factory.service';
 import { ListDeviceComponent } from '../Components/list-device-group/list-device-group.component';
 import { PlanDetail } from '../../../../models/PlanManger/plan-detail.model';
-import { PlanRequest } from '../../../../models/PlanManger/plan-request.model';
+import { DeviceDetail, PlanRequest } from '../../../../models/PlanManger/plan-request.model';
 
 @Component({
   selector: 'app-plan-detail',
@@ -80,17 +80,26 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
     _.set(this.model as any, 'plan.status', 1);
   }
 
+  cleanPlanRequest(planRequest: any) {
+    if (!planRequest) return planRequest;
+    const planDetails = planRequest.planDetails || [];
+    const devices = planRequest.devices || [];
+    const validGroupIds = planDetails.map((pd: any) => pd.deviceGroup?.id);
+    planRequest.devices = devices.filter(
+      (d: any) => d.device?.group?.id && validGroupIds.includes(d.device.group.id)
+    );
+    planRequest.planDetails = planDetails.map((pd: any) => {
+      const { isDuplicate, ...rest } = pd;
+      return rest;
+    });
+    return planRequest;
+  }
 
-  // ...existing code...
+
   public override save(): void {
     if (this.model) {
       this.model.plan = Util.prepareModel(this.model.plan)
-      this.model = {
-        plan: this.model.plan,
-        planDetails: this.model.planDetails,
-        devices: this.model.devices
-      }
-
+      this.model = this.cleanPlanRequest(this.model)
       const handleError = (error: any) => {
         let message = 'Thêm mới thất bại';
         if (error?.error?.message) {
@@ -100,7 +109,6 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
         } else if (typeof error === 'string') {
           message = error;
         }
-        // Kiểm tra lỗi JSON parse
         if (message.includes('No _valueDeserializer assigned')) {
           message = 'Lỗi dữ liệu trả về từ máy chủ. Vui lòng kiểm tra lại thông tin hoặc liên hệ quản trị hệ thống.';
         }

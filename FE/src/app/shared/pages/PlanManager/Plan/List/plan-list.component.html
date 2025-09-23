@@ -1,12 +1,122 @@
-<app-base-table 
-  [apiService]="apiService"
-  [columns]="columns"
-  [title]="'Dánh sách kế hoạch'"
-  [showAddButton]="true">
-  <ng-template appColumnTemplate="createdAt" let-rowData>
-    {{ rowData | date: 'dd/MM/yyyy' }}
+<!-- Tree Table -->
+<div class="base-table-header my-3">
+  <h2>Danh sách kế hoạch</h2>
+  <p-button [label]="'Thêm mới'" class="p-button-sm" (click)="addItem()" />
+</div>
+<div class="card">
+  <p-toast />
+  <p-table [value]="plans" dataKey="id" [tableStyle]="{ 'min-width': '60rem' }" [expandedRowKeys]="expandedRows"
+    (onRowExpand)="onRowExpand($event)" (onRowCollapse)="onRowCollapse($event)" [responsiveLayout]="'scroll'" [scrollable]="true" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 20, 50]"
+  [showCurrentPageReport]="true" currentPageReportTemplate="Tổng: {totalRecords} bản ghi">
+    <ng-template #header>
+      <tr>
+        <th></th>
+        <th>STT</th>
+        <th>Mã kế hoạch</th>
+        <th style="min-width: 150px;">Tên kế hoạch</th>
+        <th style="min-width: 150px;">Tần suất</th>
+        <th style="min-width: 150px;">Số hiệu</th>
+        <th style="min-width: 150px;">Người thực hiện</th>
+        <th style="min-width: 150px;">Loại kế hoạch</th>
+        <th style="min-width: 150px;">Xưởng</th>
+        <th style="min-width: 150px;">Ban</th>
+        <th style="min-width: 150px;">Quy trình duyệt</th>
+        <th style="min-width: 150px;">Người tạo</th>
+        <th style="min-width: 150px;">Người cập nhật</th>
+        <th style="min-width: 150px;">Ngày tạo</th>
+        <th style="min-width: 150px;">Ngày cập nhật</th>
+        <th style="min-width: 150px;">Trạng thái</th>
+        <th style="min-width: 150px;">Thao tác</th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-row let-expanded="expanded" let-index="rowIndex">
+      <tr>
+        <td>
+          <p-button type="button" pRipple [pRowToggler]="row" [text]="true" severity="secondary" [rounded]="true"
+            [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" />
+        </td>
+        <td>{{ index + 1 }}</td>
+        <td>{{ row.code }}</td>
+        <td>{{ row.name }}</td>
+        <td>{{ row.frequency }}</td>
+        <td>{{ row.planNumber }}</td>
+        <td>{{ row.userPerformer }}</td>
+        <td>{{ row.planTypeName }}</td>
+        <td>{{ row.factoryName }}</td>
+        <td>{{ row.branchName }}</td>
+        <td>{{ row.approvalWorkflowName }}</td>
+        <td>{{ row.createdBy }}</td>
+        <td>{{ row.updatedBy }}</td>
+        <td>{{ row.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+        <td>{{ row.updatedAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+        <td>
+          <p-tag [value]="getValue(row.status)" [severity]="getSeverity(row.status)" />
+        </td>
+        <td>
+          <p-button icon="pi pi-pencil" styleClass="p-button-sm p-button-rounded p-button-warn m-1"
+            (onClick)="editItem(row)"></p-button>
+          <p-button icon="pi pi-eye" styleClass="p-button-sm p-button-rounded p-button-info m-1"
+            (onClick)="viewItem(row)"></p-button>
+          <p-button icon="pi pi-trash" styleClass="p-button-sm p-button-rounded p-button-danger m-1"
+            (onClick)="deleteItem(row, $event)"></p-button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template #expandedrow let-row>
+      <tr>
+        <td colspan="99">
+          <p-table [value]="row.details" dataKey="id">
+            <ng-template #header>
+      <tr>
+        <th></th>
+        <th>STT</th>
+        <th>Nhóm thiết bị</th>
+        <th>Tên thiết bị</th>
+        <th>Mẫu biên bản</th>
+        <th>Serial</th>
+        <th>Người thực hiện</th>
+        <th>Người tạo</th>
+        <th>Người cập nhật</th>
+        <th>Ngày tạo</th>
+        <th>Ngày cập nhật</th>
+        <th>Trạng thái</th>
+        <th>Thao tác</th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-detail let-i="rowIndex">
+      <tr>
+        <th></th>
+        <td>{{ i + 1 }}</td>
+        <td>{{ detail.deviceGroupName }}</td>
+        <td>{{ detail.deviceName }}</td>
+        <td>{{ detail.sampleReportName }}</td>
+        <td>{{ detail.serial }}</td>
+        <td>{{ detail.manager }}</td>
+        <td>{{ detail.createdBy }}</td>
+        <td>{{ detail.updatedBy }}</td>
+        <td>{{ detail.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+        <td>{{ detail.updatedAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+        <td>
+          <p-tag [value]="getValue(detail.status)" [severity]="getSeverity(detail.status)" />
+        </td>
+        <td>
+          <p-button icon="pi pi-check-square" styleClass="p-button-sm p-button-rounded p-button-success m-1"
+            (onClick)="deviceDateCheckList(detail)"></p-button>
+          <p-button icon="pi pi-eye" styleClass="p-button-sm p-button-rounded p-button-info m-1"
+            (onClick)="viewItem(row)"></p-button>
+          <p-button icon="pi pi-trash" styleClass="p-button-sm p-button-rounded p-button-danger m-1"
+            (onClick)="deleteItem(row, $event)"></p-button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="6">There are no order for this product yet.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+  </td>
+  </tr>
   </ng-template>
-  <ng-template appColumnTemplate="updatedAt" let-rowData>
-    {{ rowData | date: 'dd/MM/yyyy' }}
-  </ng-template>
-</app-base-table>
+  </p-table>
+</div>

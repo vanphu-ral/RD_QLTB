@@ -32,6 +32,7 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
   @Input() showDeleteButton = true;
   @Input() addButtonText = 'Thêm mới';
   @Input() actionTemplate?: TemplateRef<any>;
+  @Input() onDeleteItem?: (row: any, event: Event) => void;
   @ContentChildren(CustomFilterDirective) customFilters!: QueryList<CustomFilterDirective>;
   @ContentChildren(CustomColumnDirective) columnTemplates!: QueryList<CustomColumnDirective>;
   private filterTpls = new Map<string, TemplateRef<any>>();
@@ -39,6 +40,7 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
 
   data: any[] = [];
   loading = false;
+  selectedColumns: any[] = [];
 
   constructor(private router: Router, private route: ActivatedRoute, private cdr: ChangeDetectorRef, private confirmationService: ConfirmationService, private messageService: MessageService) { }
 
@@ -48,6 +50,7 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
       IsSearch: c.IsSearch ?? false,
       IsHide: c.IsHide ?? false,
     }));
+    this.selectedColumns = [...this.columns];
     this.loadData();
   }
 
@@ -122,24 +125,48 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
   }
 
   deleteItem(item: T & { id: number | string }, event: Event) {
-    if (this.apiService) {
-      this.confirmationService.confirm({
-        target: event.currentTarget as EventTarget,
-        message: 'Bạn có muốn xóa bản ghi này?',
-        icon: 'pi pi-info-circle',
-        rejectButtonProps: {
-          label: 'Hủy',
-          severity: 'secondary',
-          outlined: true
-        },
-        acceptButtonProps: {
-          label: 'Xóa',
-          severity: 'danger'
-        },
-        accept: () => {
+    this.confirmationService.confirm({
+      target: event.currentTarget as EventTarget,
+      message: 'Bạn có muốn xóa bản ghi này?',
+      header: 'Xóa bản ghi',
+      icon: 'pi pi-info-circle',
+      rejectButtonProps: {
+        label: 'Hủy',
+        severity: 'secondary',
+        outlined: true
+      },
+      acceptButtonProps: {
+        label: 'Xóa',
+        severity: 'danger'
+      },
+      accept: () => {
+        if (this.onDeleteItem) {
+          const result: any = this.onDeleteItem(item, event);
+          if (result && 'subscribe' in result) {
+            result.subscribe({
+              next: () => {
+                this.messageService.add({
+                  severity: 'info',
+                  summary: 'Đã xác nhận',
+                  detail: 'Xóa thành công!',
+                  life: 3000
+                });
+              },
+              error: () => this.loadData(),
+              complete: () => this.loadData()
+            });
+          } else {
+            this.loadData();
+          }
+        } else if (this.apiService) {
           this.apiService.delete(item.id).subscribe({
             next: () => {
-              this.messageService.add({ severity: 'info', summary: 'Đã xác nhận', detail: 'Xóa thành công!', life: 3000 });
+              this.messageService.add({
+                severity: 'info',
+                summary: 'Đã xác nhận',
+                detail: 'Xóa thành công!',
+                life: 3000
+              });
             },
             error: (error) => {
               Util.handleApiError(error, this.messageService);
@@ -148,13 +175,20 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
               this.loadData();
             }
           });
-        },
-        reject: () => {
-          this.messageService.add({ severity: 'error', summary: 'Từ chối', detail: 'Từ chối xóa bản ghi', life: 3000 });
+        } else {
+          this.data = this.data.filter(d => d !== item);
+          this.loadData();
         }
-      });
-    } else {
-      this.data = this.data.filter(d => d !== item);
-    }
+      },
+      reject: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Từ chối',
+          detail: 'Từ chối xóa bản ghi',
+          life: 3000
+        });
+      }
+    });
   }
+
 }
