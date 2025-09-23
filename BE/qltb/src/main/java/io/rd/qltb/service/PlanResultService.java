@@ -4,6 +4,7 @@ import io.rd.qltb.domain.*;
 import io.rd.qltb.events.BeforeDeletePlanResult;
 import io.rd.qltb.model.PlanCheckDTO;
 import io.rd.qltb.model.PlanResultDTO;
+import io.rd.qltb.model.SupplyReplacementDTO;
 import io.rd.qltb.repos.*;
 import io.rd.qltb.util.NotFoundException;
 
@@ -62,36 +63,59 @@ public class PlanResultService {
         PlanResult planResult = planResultRepository.findById(planCheckDTO.getPlanResult().getId()).orElse(new PlanResult());
         if (planCheckDTO.getPlanResultDetail() != null && planCheckDTO.getPlanResultDetail().size() > 0) {
             planCheckDTO.getPlanResultDetail().forEach(item -> {
-//                if(item.getId() != null){
-//                    PlanResultDetail existingDetail = planResultDetailService.mapToEntity(item, planResultDetailRepository.findById(item.getId()).orElse(new PlanResultDetail()));
-//                }else{
+                if(item.getId() != null){
+                    PlanResultDetail existingDetail = planResultDetailService.mapToEntity(item, planResultDetailRepository.findById(item.getId()).orElse(new PlanResultDetail()));
+                    item.setPlanResult(existingDetail.getPlanResult());
+                    item.setUpdatedAt(java.time.LocalDateTime.now());
+                    item.setUpdatedBy(userName);
+                    PlanResultDetail planResultDetail = planResultDetailService.mapToEntity(item, existingDetail);
+                    planResultDetailRepository.save(planResultDetail);
+                }else{
                 item.setPlanResult(planResult);
                 item.setCreatedBy(userName);
                 item.setCreatedAt(java.time.LocalDateTime.now());
                 item.setUpdatedAt(java.time.LocalDateTime.now());
                 PlanResultDetail planResultDetail = planResultDetailService.mapToEntity(item, new PlanResultDetail());
                 planResultDetailRepository.save(planResultDetail);
-//                }
+                }
             });
         }
         if(planCheckDTO.getSupplyReplacement() != null && planCheckDTO.getSupplyReplacement().size() > 0){
             planCheckDTO.getSupplyReplacement().forEach(item -> {
-                item.setCreatedBy(userName);
-                item.setCreatedAt(java.time.LocalDateTime.now());
-                item.setUpdatedAt(java.time.LocalDateTime.now());
-                item.setPlanResult(planResult);
-                SupplyReplacement supplyReplacement = supplyReplacementService.mapToEntity(item, new SupplyReplacement());
-                supplyReplacementRepository.save(supplyReplacement);
+                if(item.getId() != null){
+                    SupplyReplacement supplyReplacement = supplyReplacementService.mapToEntity(item, supplyReplacementRepository.findById(item.getId()).orElse(new SupplyReplacement()));
+                    item.setPlanResult(supplyReplacement.getPlanResult());
+                    item.setUpdatedAt(java.time.LocalDateTime.now());
+                    item.setUpdatedBy(userName);
+                    SupplyReplacement supplyReplacementSave = supplyReplacementService.mapToEntity(item, new SupplyReplacement());
+                    supplyReplacementRepository.save(supplyReplacementSave);
+                }else {
+                    item.setCreatedBy(userName);
+                    item.setCreatedAt(java.time.LocalDateTime.now());
+                    item.setUpdatedAt(java.time.LocalDateTime.now());
+                    item.setPlanResult(planResult);
+                    SupplyReplacement supplyReplacement = supplyReplacementService.mapToEntity(item, new SupplyReplacement());
+                    supplyReplacementRepository.save(supplyReplacement);
+                }
             });
         }
         if(planCheckDTO.getErrorReport() != null && planCheckDTO.getErrorReport().size() > 0){
             planCheckDTO.getErrorReport().forEach(item -> {
-                item.setCreatedBy(userName);
-                item.setCreatedAt(java.time.LocalDateTime.now());
-                item.setUpdatedAt(java.time.LocalDateTime.now());
-                item.setPlanResult(planResult);
-                ErrorReport errorReport = errorReportService.mapToEntity(item, new  ErrorReport());
-                errorReportRepository.save(errorReport);
+                if(item.getId() != null){
+                    ErrorReport errorReport = errorReportService.mapToEntity(item, errorReportRepository.findById(item.getId()).orElse(new ErrorReport()));
+                    item.setPlanResult(errorReport.getPlanResult());
+                    item.setUpdatedAt(java.time.LocalDateTime.now());
+                    item.setUpdatedBy(userName);
+                    ErrorReport errorReportSave = errorReportService.mapToEntity(item, new ErrorReport());
+                    errorReportRepository.save(errorReportSave);
+                }else {
+                    item.setCreatedBy(userName);
+                    item.setCreatedAt(java.time.LocalDateTime.now());
+                    item.setUpdatedAt(java.time.LocalDateTime.now());
+                    item.setPlanResult(planResult);
+                    ErrorReport errorReport = errorReportService.mapToEntity(item, new ErrorReport());
+                    errorReportRepository.save(errorReport);
+                }
             });
         }
     }
