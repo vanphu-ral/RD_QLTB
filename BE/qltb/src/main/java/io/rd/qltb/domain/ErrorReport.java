@@ -30,6 +30,8 @@ public class ErrorReport {
 
     @Column
     private String code;
+    @Column
+    private String name;
 
     @Column(nullable = false)
     private Integer severity;

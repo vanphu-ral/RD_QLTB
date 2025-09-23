@@ -68,6 +68,7 @@ public class ErrorReportService {
                                     final ErrorReportDTO errorReportDTO) {
         errorReportDTO.setId(errorReport.getId());
         errorReportDTO.setCode(errorReport.getCode());
+        errorReportDTO.setName(errorReport.getName());
         errorReportDTO.setSeverity(errorReport.getSeverity());
         errorReportDTO.setErrorDescription(errorReport.getErrorDescription());
         errorReportDTO.setReportedBy(errorReport.getReportedBy());
@@ -113,6 +114,7 @@ public class ErrorReportService {
     public ErrorReport mapToEntity(final ErrorReportDTO errorReportDTO,
             final ErrorReport errorReport) {
         errorReport.setCode(errorReportDTO.getCode());
+        errorReport.setName(errorReportDTO.getName());
         errorReport.setSeverity(errorReportDTO.getSeverity());
         errorReport.setErrorDescription(errorReportDTO.getErrorDescription());
         errorReport.setReportedBy(errorReportDTO.getReportedBy());
