@@ -59,9 +59,9 @@ public class PlanResultService {
         return planResultRepository.save(planResult).getId();
     }
     public  void createUpdate(PlanCheckDTO planCheckDTO, String userName){
-        PlanResult planResult = planResultRepository.findById(planCheckDTO.getPlanResultDTO().getId()).orElse(new PlanResult());
-        if (planCheckDTO.getPlanResultDetailDTOS() != null && planCheckDTO.getPlanResultDetailDTOS().size() > 0) {
-            planCheckDTO.getPlanResultDetailDTOS().forEach(item -> {
+        PlanResult planResult = planResultRepository.findById(planCheckDTO.getPlanResult().getId()).orElse(new PlanResult());
+        if (planCheckDTO.getPlanResultDetail() != null && planCheckDTO.getPlanResultDetail().size() > 0) {
+            planCheckDTO.getPlanResultDetail().forEach(item -> {
 //                if(item.getId() != null){
 //                    PlanResultDetail existingDetail = planResultDetailService.mapToEntity(item, planResultDetailRepository.findById(item.getId()).orElse(new PlanResultDetail()));
 //                }else{
@@ -74,8 +74,8 @@ public class PlanResultService {
 //                }
             });
         }
-        if(planCheckDTO.getSupplyReplacementDTOS() != null && planCheckDTO.getSupplyReplacementDTOS().size() > 0){
-            planCheckDTO.getSupplyReplacementDTOS().forEach(item -> {
+        if(planCheckDTO.getSupplyReplacement() != null && planCheckDTO.getSupplyReplacement().size() > 0){
+            planCheckDTO.getSupplyReplacement().forEach(item -> {
                 item.setCreatedBy(userName);
                 item.setCreatedAt(java.time.LocalDateTime.now());
                 item.setUpdatedAt(java.time.LocalDateTime.now());
@@ -84,8 +84,8 @@ public class PlanResultService {
                 supplyReplacementRepository.save(supplyReplacement);
             });
         }
-        if(planCheckDTO.getErrorReportDTOS() != null && planCheckDTO.getErrorReportDTOS().size() > 0){
-            planCheckDTO.getErrorReportDTOS().forEach(item -> {
+        if(planCheckDTO.getErrorReport() != null && planCheckDTO.getErrorReport().size() > 0){
+            planCheckDTO.getErrorReport().forEach(item -> {
                 item.setCreatedBy(userName);
                 item.setCreatedAt(java.time.LocalDateTime.now());
                 item.setUpdatedAt(java.time.LocalDateTime.now());

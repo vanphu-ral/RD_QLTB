@@ -9,8 +9,8 @@ import java.util.List;
 @Getter
 @Setter
 public class PlanCheckDTO {
-    private PlanResultDTO planResultDTO;
-    private List<PlanResultDetailDTO> planResultDetailDTOS;
-    private List<ErrorReportDTO> errorReportDTOS;
-    private  List<SupplyReplacementDTO> supplyReplacementDTOS;
+    private PlanResultDTO planResult;
+    private List<PlanResultDetailDTO> planResultDetail;
+    private List<ErrorReportDTO> errorReport;
+    private  List<SupplyReplacementDTO> supplyReplacement;
 }
