@@ -255,6 +255,75 @@ public class PlanService {
         planDetailRepository.deleteAll(plans);
             planRepository.deleteById(planId);
     }
+
+
+    public List<PlanWithDetailsDTO> findAllWithDetails() {
+        List<Plan> plans = planRepository.findAll();
+
+        return plans.stream().map(plan -> {
+            PlanWithDetailsDTO dto = new PlanWithDetailsDTO();
+            dto.setId(plan.getId());
+            dto.setCode(plan.getCode());
+            dto.setName(plan.getName());
+            dto.setFrequency(plan.getFrequency());
+            dto.setPlanNumber(plan.getPlanNumber());
+            dto.setUserPerformer(plan.getUserPerformer());
+            dto.setDescription(plan.getDescription());
+            dto.setCreatedBy(plan.getCreatedBy());
+            dto.setCreatedAt(plan.getCreatedAt());
+            dto.setUpdatedAt(plan.getUpdatedAt());
+            dto.setUpdatedBy(plan.getUpdatedBy());
+            dto.setStatus(plan.getStatus());
+
+            if (plan.getPlanType() != null) {
+                dto.setPlanTypeName(plan.getPlanType().getName());
+            }
+            if (plan.getFactory() != null) {
+                dto.setFactoryName(plan.getFactory().getName());
+            }
+            if (plan.getBranch() != null) {
+                dto.setBranchName(plan.getBranch().getName());
+            }
+            if (plan.getApprovalWorkflow() != null) {
+                dto.setApprovalWorkflowName(plan.getApprovalWorkflow().getName());
+            }
+
+            // Map children (PlanDetail → PlanDetailDTO)
+            List<PlanDetailListDTO> details = plan.getPlanPlanDetails().stream().map(detail -> {
+                PlanDetailListDTO d = new PlanDetailListDTO();
+                d.setId(detail.getId());
+                d.setSerial(detail.getSerial());
+                d.setManager(detail.getManager());
+                d.setStatus(detail.getStatus());
+                d.setCreatedBy(detail.getCreatedBy());
+                d.setUpdatedBy(detail.getUpdatedBy());
+                d.setCreatedAt(detail.getCreatedAt());
+                d.setUpdatedAt(detail.getUpdatedAt());
+
+                if (detail.getDevice() != null) {
+                    d.setDeviceId(detail.getDevice().getId());
+                    d.setDeviceCode(detail.getDevice().getCode());
+                    d.setDeviceName(detail.getDevice().getName());
+                }
+                if (detail.getDeviceGroup() != null) {
+                    d.setDeviceGroupId(detail.getDeviceGroup().getId());
+                    d.setDeviceGroupCode(detail.getDeviceGroup().getCode());
+                    d.setDeviceGroupName(detail.getDeviceGroup().getName());
+                }
+                if (detail.getSampleReport() != null) {
+                    d.setSampleReportId(detail.getSampleReport().getId());
+                    d.setSampleReportCode(detail.getSampleReport().getCode());
+                    d.setSampleReportName(detail.getSampleReport().getName());
+                }
+
+                return d;
+            }).toList();
+
+            dto.setDetails(details);
+            return dto;
+        }).toList();
+    }
+
     private PlanDTO mapToDTO(final Plan plan, final PlanDTO dto) {
         dto.setId(plan.getId());
         dto.setCode(plan.getCode());

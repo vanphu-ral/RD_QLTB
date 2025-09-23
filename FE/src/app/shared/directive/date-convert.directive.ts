@@ -1,116 +1,103 @@
-import { Directive, OnInit, OnDestroy, Optional, Host, AfterViewInit } from '@angular/core';
+import { Directive, OnInit, OnDestroy, Optional, Host } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 @Directive({
   selector: '[appDateConvert]'
 })
-export class DateConvertDirective implements OnInit, AfterViewInit, OnDestroy {
-  private modelChangeSubscription: Subscription | null = null;
-  private viewChangeSubscription: Subscription | null = null;
-  private updating = false;
-  private initialValueProcessed = false;
+export class DateConvertDirective implements OnInit, OnDestroy {
+  private sub?: Subscription;
+  private writing = false;
 
   constructor(@Optional() @Host() private ngModel: NgModel) {}
 
   ngOnInit(): void {
     if (!this.ngModel) return;
 
-    this.modelChangeSubscription = this.ngModel.update.subscribe((value: any) => {
-      if (this.updating) return;
-      
-      if (value && typeof value === 'string') {
-        this.updating = true;
-        this.updateView(value);
-        this.updating = false;
+    // nếu model ban đầu là string (ví dụ "2025-09-19" hoặc "2025-09-19T00:00:00"), convert sang Date để hiển thị picker
+    const initial = (this.ngModel as any).model;
+    if (typeof initial === 'string') {
+      const parsed = this.parseDateString(initial);
+      if (parsed) {
+        this.writing = true;
+        // set view (datepicker) là Date
+        this.ngModel.valueAccessor!.writeValue(parsed);
+        // set model (form control) là string (giữ nguyên chuỗi)
+        this.ngModel.control.setValue(this.normalizeToLocalDateTimeStringFromString(initial), { emitEvent: false });
+        this.writing = false;
       }
-    });
-
-    if (this.ngModel.valueChanges) {
-      this.viewChangeSubscription = this.ngModel.valueChanges.subscribe((value: any) => {
-        if (this.updating) return;
-        
-        if (value instanceof Date) {
-          this.updating = true;
-          this.updateModel(value);
-          this.updating = false;
-        }
-      });
     }
-  }
 
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      if (this.ngModel && this.ngModel.model && !this.initialValueProcessed) {
-        this.processInitialValue(this.ngModel.model);
+    // Subscribe valueChanges: khi picker trả về Date => convert thành string yyyy-MM-ddT00:00:00 và đặt vào model
+    this.sub = this.ngModel.control.valueChanges?.subscribe((v: any) => {
+      if (this.writing) return;
+
+      // nếu picker trả về Date object
+      if (v instanceof Date) {
+        this.writing = true;
+        const str = this.toLocalDateTimeString(v); // yyyy-MM-ddT00:00:00
+        // đặt value của form control thành string (server-friendly)
+        this.ngModel.control.setValue(str, { emitEvent: false });
+        // báo cho ngModel two-way binding (ngModelChange)
+        this.ngModel.viewToModelUpdate(str);
+        // giữ picker hiển thị là Date (đảm bảo valueAccessor nhận lại Date)
+        this.ngModel.valueAccessor!.writeValue(v);
+        this.writing = false;
+        return;
+      }
+
+      // nếu value là string (ví dụ set từ code khác) -> cập nhật view sang Date
+      if (typeof v === 'string') {
+        const parsed = this.parseDateString(v);
+        if (parsed) {
+          this.writing = true;
+          this.ngModel.valueAccessor!.writeValue(parsed);
+          this.writing = false;
+        }
       }
     });
   }
 
   ngOnDestroy(): void {
-    if (this.modelChangeSubscription) {
-      this.modelChangeSubscription.unsubscribe();
-    }
-    if (this.viewChangeSubscription) {
-      this.viewChangeSubscription.unsubscribe();
-    }
+    if (this.sub) this.sub.unsubscribe();
   }
 
-  private processInitialValue(value: any): void {
-    if (value && typeof value === 'string') {
-      const date = this.parseDate(value);
-      if (date) {
-        this.updating = true;
-        this.ngModel.valueAccessor!.writeValue(date);
-        this.ngModel.control.setValue(date, { emitEvent: false });
-        this.updating = false;
-        this.initialValueProcessed = true;
-      }
-    }
-  }
-
-  private updateView(value: string): void {
-    const date = this.parseDate(value);
-    if (date) {
-      this.ngModel.valueAccessor!.writeValue(date);
-      this.ngModel.control.setValue(date, { emitEvent: false });
-    }
-  }
-
-  private updateModel(value: Date): void {
-    const isoString = this.formatDate(value);
-    if (isoString) {
-      this.ngModel.control.setValue(isoString, { emitEvent: false });
-      this.ngModel.viewToModelUpdate(isoString);
-    }
-  }
-
-  private parseDate(value: string): Date | null {
+  private parseDateString(value: string): Date | null {
     if (!value) return null;
+
+    // nếu dạng yyyy-mm-dd
+    const ymd = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (ymd) {
+      const year = +ymd[1], month = +ymd[2] - 1, day = +ymd[3];
+      return new Date(year, month, day);
+    }
+
+    // nếu dạng yyyy-mm-ddTHH:MM:SS hoặc ISO without Z -> lấy phần date
+    const ymdt = value.match(/^(\d{4})-(\d{2})-(\d{2})T/);
+    if (ymdt) {
+      const year = +ymdt[1], month = +ymdt[2] - 1, day = +ymdt[3];
+      return new Date(year, month, day);
+    }
+
+    // fallback: thử new Date() (kém ưu tiên)
     const parsed = new Date(value);
     if (!isNaN(parsed.getTime())) {
-      return parsed;
+      return new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
     }
-    const dateParts = value.split('-');
-    if (dateParts.length === 3) {
-      const year = parseInt(dateParts[0], 10);
-      const month = parseInt(dateParts[1], 10) - 1; 
-      const day = parseInt(dateParts[2], 10);
-      
-      const date = new Date(year, month, day);
-      if (!isNaN(date.getTime())) {
-        return date;
-      }
-    }
-    
+
     return null;
   }
 
-  private formatDate(value: Date): string | null {
-    if (!value || !(value instanceof Date) || isNaN(value.getTime())) {
-      return null;
-    }
-    
-    return value.toISOString().split('.')[0];
+  private toLocalDateTimeString(value: Date): string {
+    const y = value.getFullYear();
+    const m = String(value.getMonth() + 1).padStart(2, '0');
+    const d = String(value.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}T00:00:00`;
+  }
+
+  private normalizeToLocalDateTimeStringFromString(v: string): string {
+    if (/^\d{4}-\d{2}-\d{2}$/.test(v)) return `${v}T00:00:00`;
+    if (/^\d{4}-\d{2}-\d{2}T/.test(v)) return v.split('.')[0];
+    return v;
   }
 }

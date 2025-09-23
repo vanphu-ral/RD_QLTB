@@ -25,4 +25,8 @@ export class PlanService extends BaseApiService<PlanRequest> {
     return this.http.delete<void>(`${this['fullBaseUrl']}/delete/${id}`, { withCredentials: true });
   }
 
+  getAllWithDetails(): Observable<any[]> {
+    return this.http.get<any[]>(`${this['fullBaseUrl']}/with-details`, { withCredentials: true });
+  }
+
 }

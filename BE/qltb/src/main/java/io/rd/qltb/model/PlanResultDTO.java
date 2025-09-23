@@ -21,6 +21,10 @@ public class PlanResultDTO {
 
     private String note;
 
+    private LocalDateTime dateTest;
+
+    private String userTest;
+
     @NotNull
     private LocalDateTime createdAt;
 

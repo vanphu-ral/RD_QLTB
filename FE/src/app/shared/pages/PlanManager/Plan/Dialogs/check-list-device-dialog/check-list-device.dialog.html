@@ -1,6 +1,6 @@
 <div class="p-1">
-    <div class="d-flex justify-content-between mt-2 mb-4">
-        <p-button label="Thêm ngày kiểm tra" icon="pi pi-plus"></p-button>
+    <div class="d-flex justify-content-end mt-2 mb-4">
+        <p-button label="Thêm ngày kiểm tra" icon="pi pi-plus" (onClick)="addNewRow()"></p-button>
     </div>
 
     <div class="table-responsive">
@@ -11,9 +11,9 @@
                     <th>Mã thiết bị</th>
                     <th>Tên thiết bị</th>
                     <th>Mã serial</th>
-                    <th>Người kiểm tra</th>
-                    <th>Trạng thái</th>
+                    <th>Người thực hiện</th>
                     <th>Ngày kiểm tra</th>
+                    <th>Trạng thái</th>
                     <th>Thao tác</th>
                 </tr>
             </ng-template>
@@ -21,23 +21,22 @@
             <ng-template pTemplate="body" let-row let-i="rowIndex">
                 <tr>
                     <td>{{ i + 1 }}</td>
-                    <!-- <td>
-                        <p-select [(ngModel)]="row.device" [options]="listDeviceOptions" optionLabel="name" [fluid]="true"
-                            [showClear]="true" [appendTo]="'body'" [disabled]="true"
-                            id="device-{{ i }}" name="device-{{ i }}" dataKey="id">
-                        </p-select>
-                    </td>
+                    <td>{{ data.deviceCode }}</td>
+                    <td>{{ data.deviceName }}</td>
+                    <td>{{ data.serial }}</td>
+                    <td>{{ row.userTest }}</td>
                     <td>
-                        <input type="text" pInputText [(ngModel)]="row.serialNumber" />
+                        <p-datepicker [(ngModel)]="row.dateTest" appDateConvert [iconDisplay]="'input'" [showIcon]="true"
+                            name="dateTest" inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body" />
                     </td>
-                    <td>
-                        <p-select [(ngModel)]="row.manager" [options]="listManagers" optionLabel="name" optionValue="username" [fluid]="true"
-                            [showClear]="true" [appendTo]="'body'"
-                            id="manager-{{ i }}" name="manager-{{ i }}" dataKey="username">
-                        </p-select>
-                    </td> -->
+                    <td>{{ row.status }}</td>
                     <td class="text-center">
-                        <p-button icon="pi pi-trash" severity="danger">
+                        <p-button icon="pi pi-save" styleClass="m-1"
+                            (onClick)="saveDeviceCheckDate(row)" [disabled]="!row.dateTest"></p-button>
+                        <p-button icon="pi pi-check-circle" styleClass="m-1" severity="info"
+                            (onClick)="checkDevice(row)" [disabled]="!row.dateTest"></p-button>
+                        <p-button icon="pi pi-trash" severity="danger"
+                            (onClick)="deleteRow(i)">
                         </p-button>
                     </td>
                 </tr>
@@ -52,7 +51,6 @@
     </div>
 
     <div class="d-flex justify-content-end gap-2 mt-4">
-        <p-button label="Lưu" severity="success" (onClick)="submit()"></p-button>
         <p-button label="Đóng" (onClick)="close()"></p-button>
     </div>
 </div>

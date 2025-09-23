@@ -61,6 +61,8 @@ public class PlanResultService {
         planResultDTO.setCode(planResult.getCode());
         planResultDTO.setPlanResultDetailId(planResult.getPlanResultDetailId());
         planResultDTO.setNote(planResult.getNote());
+        planResultDTO.setDateTest(planResult.getDateTest());
+        planResultDTO.setUserTest(planResult.getUserTest());
         planResultDTO.setCreatedAt(planResult.getCreatedAt());
         planResultDTO.setUpdatedAt(planResult.getUpdatedAt());
         planResultDTO.setCreatedBy(planResult.getCreatedBy());
@@ -74,6 +76,8 @@ public class PlanResultService {
         planResult.setCode(planResultDTO.getCode());
         planResult.setPlanResultDetailId(planResultDTO.getPlanResultDetailId());
         planResult.setNote(planResultDTO.getNote());
+        planResult.setDateTest(planResultDTO.getDateTest());
+        planResult.setUserTest(planResultDTO.getUserTest());
         planResult.setCreatedAt(planResultDTO.getCreatedAt());
         planResult.setUpdatedAt(planResultDTO.getUpdatedAt());
         planResult.setCreatedBy(planResultDTO.getCreatedBy());

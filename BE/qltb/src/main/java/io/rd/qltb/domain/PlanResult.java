@@ -34,6 +34,12 @@ public class PlanResult {
     @Column(columnDefinition = "longtext")
     private String note;
 
+    @Column
+    private LocalDateTime dateTest;
+
+    @Column
+    private String userTest;
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
 

@@ -1,0 +1,86 @@
+<div class="p-1">
+
+    <div class="table-responsive">
+        <p-table [value]="listSupplys" responsiveLayout="scroll">
+            <ng-template #caption>
+                <div class="flex items-center justify-between">
+                    <span class="text-xl font-bold">Danh sách vật tư thiết bị</span>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>STT</th>
+                    <th>Tên vật tư</th>
+                    <th>Serial</th>
+                    <th>Số lượng sử dụng</th>
+                    <th>Trạng thái</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-row let-i="rowIndex">
+                <tr>
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ row.supply.name }}</td>
+                    <td>{{ row.serial }}</td>
+                    <td>{{ row.quantityUsed }}</td>
+                    <td>{{ row.status }}</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="99" class="text-center">Chưa có vật tư nào thuộc thiết bị</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    
+    <div class="d-flex justify-content-end mt-2 mb-4">
+        <p-button label="Lịch sử thay thế vật tư" icon="pi pi-history" (onClick)="addNewRow()"></p-button>
+    </div>
+
+    <div class="table-responsive">
+        <p-table [value]="checkList" responsiveLayout="scroll">
+            <ng-template #caption>
+                <div class="flex items-center justify-between">
+                    <span class="text-xl font-bold">Danh sách vật tư hiện tại</span>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>STT</th>
+                    <th>Tên vật tư</th>
+                    <th>Serial</th>
+                    <th>Số lượng sử dụng</th>
+                    <th>Trạng thái</th>
+                    <th>Tùy chọn</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-row let-i="rowIndex">
+                <tr>
+                    <!-- <td>{{ i + 1 }}</td>
+                    <td>{{ data.deviceCode }}</td>
+                    <td>{{ data.deviceName }}</td>
+                    <td>{{ data.serial }}</td>
+                    <td>{{ row.userTest }}</td>
+                    <td>
+                        <p-datepicker [(ngModel)]="row.dateTest" appDateConvert [iconDisplay]="'input'" [showIcon]="true"
+                            name="dateTest" inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body" />
+                    </td>
+                    <td>{{ row.status }}</td> -->
+                    
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="99" class="text-center">Chưa có vật tư nào thuộc thiết bị</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <p-button label="Đóng" (onClick)="close()"></p-button>
+    </div>
+</div>
