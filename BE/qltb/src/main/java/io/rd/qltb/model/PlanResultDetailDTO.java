@@ -14,7 +14,7 @@ public class PlanResultDetailDTO {
 
     private Long id;
 
-    @NotNull
+
     @Size(max = 50)
     private String criticalCode;
 

@@ -20,19 +20,15 @@ public class ErrorReportDTO {
     @Size(max = 255)
     private String name;
 
-    @NotNull
     private Integer severity;
 
     private String errorDescription;
 
-    @NotNull
     @Size(max = 200)
     private String reportedBy;
 
-    @NotNull
     private LocalDateTime timeReported;
 
-    @NotNull
     @JsonProperty("isRepaired")
     private Boolean isRepaired;
 
@@ -61,7 +57,6 @@ public class ErrorReportDTO {
     @Size(max = 255)
     private Integer status;
 
-    @NotNull
     private PlanResult planResult;
 
 }

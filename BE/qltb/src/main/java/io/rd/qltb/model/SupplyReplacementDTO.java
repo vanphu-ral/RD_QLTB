@@ -15,7 +15,6 @@ public class SupplyReplacementDTO {
 
     private Long id;
 
-    @NotNull
     private Integer quantity;
 
     @Size(max = 255)
@@ -26,10 +25,8 @@ public class SupplyReplacementDTO {
 
     private String note;
 
-    @NotNull
     private LocalDateTime createdAt;
 
-    @NotNull
     private LocalDateTime updatedAt;
 
     @Size(max = 255)
@@ -38,10 +35,8 @@ public class SupplyReplacementDTO {
     @Size(max = 255)
     private String createdBy;
 
-    @NotNull
     private PlanResult planResult;
 
-    @NotNull
     private Supply supply;
 
 }
