@@ -73,7 +73,6 @@ export class AppHeaderComponent {
   }
 
   openNotification(noti: any) {
-    console.log('Mở thông báo:', noti);
     noti.read = true;
     // this.router.navigate(['/notifications', noti.id]);
   }

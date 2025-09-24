@@ -21,6 +21,7 @@ export class MaterialListManagerDialogComponent {
     listSupply: any[] = []
     listSerial: any[] = []
     serial: any
+    serialOptions: { [key: number]: any[] } = {}
 
     constructor(
         public ref: DynamicDialogRef,
@@ -34,55 +35,60 @@ export class MaterialListManagerDialogComponent {
     }
 
     ngOnInit() {
-       this.loadData();
+        this.loadData();
     }
 
     loadData() {
         this.deviceSupplyUseService.getBySupplyId(_.get(this.data, 'id')).subscribe({
             next: (res) => {
-                if(Util.isEmptyArray(res)) {
-                    this.listMaterial.push({status: 1})
-                }else {
-                    this.listMaterial = res
-                    this.cdr.detectChanges();
+                if (Util.isEmptyArray(res)) {
+                    this.listMaterial.push({ status: 1 });
+                } else {
+                    this.listMaterial = res;
+                    this.listMaterial.forEach((item, index) => {
+                        if (item.id) {
+                            this.supplyDetailService.getBySupplyId(item.id).subscribe({
+                                next: (serialList) => {
+                                    console.log(serialList);
+                                    
+                                    this.serialOptions[index] = serialList;
+                                    const serialObj: any = serialList.find(s => s.serial === item.serial);
+                                    console.log(serialObj);
+                                    if (serialObj) {
+                                        
+                                        this.listMaterial[index].serial = serialObj;
+                                    }
+                                    this.cdr.detectChanges();
+                                }
+                            });
+                        }
+                    });
                 }
-            }
-        })
-        this.supplyService.getAll().subscribe({
-            next: (res) => {
-                this.listSupply = res
                 this.cdr.detectChanges();
             }
         });
-        this.supplyDetailService.getAll().subscribe({
+
+        this.supplyService.getAll().subscribe({
             next: (res) => {
-                setTimeout(() => {
-                    this.listSerial = res;
-                    this.listMaterial = this.listMaterial.map(item => {
-                        const serialObj = this.listSerial.find(seri => seri.serial === item.serial)
-                            || item.serial; 
-                        return {
-                            ...item,
-                            serial: serialObj
-                        };
-                    });
-                });
+                this.listSupply = res;
+                this.cdr.detectChanges();
             }
         });
     }
+
 
     onChangeSupply(event: any, index: number) {
         const supplyId = event.value.id;
         this.supplyDetailService.getBySupplyId(supplyId).subscribe({
             next: (res) => {
-                this.listSerial = res;
+                this.serialOptions[index] = res;
                 this.cdr.detectChanges();
             }
         });
     }
 
     addNewRow() {
-        this.listMaterial.push({status: 1});
+        this.listMaterial.push({ status: 1 });
     }
 
     deleteRow(index: number) {
@@ -97,7 +103,7 @@ export class MaterialListManagerDialogComponent {
             this.listMaterial.splice(index, 1);
         }
     }
-   
+
 
     close() {
         this.ref.close();

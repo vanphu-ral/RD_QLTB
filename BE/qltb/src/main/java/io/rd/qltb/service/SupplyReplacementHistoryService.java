@@ -46,6 +46,16 @@ public class SupplyReplacementHistoryService {
         return supplyReplacementHistoryRepository.save(supplyReplacementHistory).getId();
     }
 
+    public List<Long> createList(List<SupplyReplacementHistoryDTO> dtos) {
+        return dtos.stream()
+                .map(dto -> {
+                    SupplyReplacementHistory entity = new SupplyReplacementHistory();
+                    mapToEntity(dto, entity);
+                    return supplyReplacementHistoryRepository.save(entity).getId();
+                })
+                .toList();
+    }
+
     public void update(final Long id,
             final SupplyReplacementHistoryDTO supplyReplacementHistoryDTO) {
         final SupplyReplacementHistory supplyReplacementHistory = supplyReplacementHistoryRepository.findById(id)

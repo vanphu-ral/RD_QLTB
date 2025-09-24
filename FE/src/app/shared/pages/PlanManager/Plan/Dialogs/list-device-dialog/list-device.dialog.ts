@@ -29,7 +29,6 @@ export class ListDeviceDialog {
     }
 
     ngOnInit() {
-        console.log(this.data);
         this.ListDevice = _.map(this.data, device => { return { ...device, manager: device.manager ? device.manager : device.device.userManager, serialNumber: device.serialNumber ? device.serialNumber : device.device.serialNumber }})
         this.listDeviceOptions = _.map(this.data, item => { return { ...item.device }});
 

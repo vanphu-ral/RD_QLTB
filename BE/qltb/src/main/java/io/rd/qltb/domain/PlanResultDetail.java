@@ -28,6 +28,8 @@ public class PlanResultDetail {
     private String criticalGroup;
     @Column(nullable = false, length = 50)
     private String criticalCode;
+    @Column
+    private String criticalGroup;
 
     @Column(length = 200)
     private String criticalName;

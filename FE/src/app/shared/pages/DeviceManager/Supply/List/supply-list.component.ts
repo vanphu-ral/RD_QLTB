@@ -42,7 +42,6 @@ export class SupplyListComponent {
     // Lắng nghe dữ liệu trả về
     this.ref.onClose.subscribe((result) => {
       if (result) {
-        console.log('Data trả về:', result);
       }
     });
 

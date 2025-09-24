@@ -90,7 +90,6 @@ export class ApprovalWorkflowDetailComponent extends BasePageComponent<ApprovalW
     ).subscribe({
       next: (groupsWithUsers) => {
         this.model.approvalGroups = groupsWithUsers;
-        console.log("Workflow sau khi merge:", this.model);
         this.cdr.detectChanges();
       },
       error: (err) => {

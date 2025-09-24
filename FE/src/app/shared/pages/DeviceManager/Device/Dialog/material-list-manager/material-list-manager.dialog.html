@@ -28,7 +28,7 @@
                         </p-select>
                     </td>
                     <td>
-                        <p-select [(ngModel)]="row.serial" [options]="listSerial" optionLabel="serial" [fluid]="true"
+                        <p-select [(ngModel)]="row.serial" [options]="serialOptions[i] || []" optionLabel="serial" [fluid]="true"
                             [showClear]="true" [appendTo]="'body'" (onChange)="serial = $event.value"
                             id="serial-{{ i }}" name="serial-{{ i }}" dataKey="serial">
                         </p-select>

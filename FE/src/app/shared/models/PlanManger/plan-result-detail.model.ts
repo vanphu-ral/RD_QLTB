@@ -1,7 +1,8 @@
 export class PlanResultDetail {
     id?: number;
-    criterialCode?: string;
-    criterialName?: string;
+    criticalGroup?: string;
+    criticalName?: string;
+    criticalCode?: string;
     frequency?: string;
     type?: string;
     result?: string;

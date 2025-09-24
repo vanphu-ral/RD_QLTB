@@ -8,6 +8,8 @@ import { PlanResult } from "../../../../../models/PlanManger/plan-result.model";
 import { SampleReportService } from "../../../SampleReport/Service/sample-report.service";
 import { KeyMappingService } from "../../../SampleReport/Service/key-mapping.service";
 import { PlanResultDetail } from "../../../../../models/PlanManger/plan-result-detail.model";
+import { ErrorReport } from "../../../../../models/PlanManger/error-report.model";
+import { AccountService } from "../../../../../core/auth/account/account.service";
 
 @Component({
     selector: 'app-error-report-dialog',
@@ -17,14 +19,15 @@ import { PlanResultDetail } from "../../../../../models/PlanManger/plan-result-d
 })
 export class ErrorReportDialog {
 
-    data: any;
-    listSeverity: any[] = [ { label: 'Nghiêm trọng', value: 'Nghiêm trọng' }, { label: 'Bất thường', value: 'Bất thường' }, { label: 'Nhẹ', value: 'Nhẹ' } ];
-
+    data: ErrorReport = new ErrorReport();
+    listSeverity: any[] = [ { label: 'Nghiêm trọng', value: 0 }, { label: 'Bất thường', value: 1 }, { label: 'Nhẹ', value: 2 } ];
+    listError: ErrorReport[] = []
     constructor(
         public ref: DynamicDialogRef,
-        public config: DynamicDialogConfig
+        public config: DynamicDialogConfig,
+        private accountService: AccountService,
     ) {
-        this.data = config.data;
+        this.listError = config.data || [];
     }
 
     ngOnInit() {
@@ -32,13 +35,20 @@ export class ErrorReportDialog {
 
 
 
-    addNewRow() {
+    editRow(index: number) {
+        this.data = this.listError[index];
+        this.listError.splice(index, 1);
     }
 
     deleteRow(index: number) {
+        this.listError.splice(index, 1);
     }
 
     submit() {
+        this.data.isRepaired = false;
+        this.data.reportedBy = this.accountService.getUser()?.fullName || '';
+        this.listError.push(this.data);
+        this.ref.close(this.listError);
     }
 
     close() {

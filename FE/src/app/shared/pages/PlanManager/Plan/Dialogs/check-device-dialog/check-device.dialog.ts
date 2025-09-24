@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { ChangeDetectorRef, Component } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { SharedModule } from "../../../../../../share.module";
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
@@ -12,6 +12,7 @@ import { ErrorReportDialog } from "../error-report-dialog/error-report.dialog";
 import { SupplyReplacementDialog } from "../supply-replacement-dialog/supply-replacement.dialog";
 import { PlanCheck } from "../../../../../models/PlanManger/plan-check.model";
 import { PlanResultService } from "../../Service/plan-result.service";
+import { SupplyReplacementHistoryService } from "../../Service/supply-replace-history.service";
 
 @Component({
     selector: 'app-check-device-dialog',
@@ -27,50 +28,41 @@ export class CheckDeviceDialog {
     listFrequencies: any[] = ["Ngày", "Tuần", "Tháng", "Quỹ", "6 Tháng", "Năm"];
     listResult: any[] = ["OK", "Đã điều chỉnh", "Có bất thường"];
     listStatus: any[] = [{ label: 'Đã kiểm tra', value: 1 }, { label: 'Chưa kiểm tra', value: 2 }, { label: 'Không kiểm tra', value: 3 }];
+    listSupplyReplaceHistory: any[] = [];
 
     constructor(
         public ref: DynamicDialogRef,
         public config: DynamicDialogConfig,
-        private sampleReportService: SampleReportService,
+        private cdr: ChangeDetectorRef,
         private keyMappingService: KeyMappingService,
         private dialogService: DialogService,
         private planResultService: PlanResultService,
+        private supplyReplaceHistoryService: SupplyReplacementHistoryService
     ) {
         this.data = config.data;
     }
 
     ngOnInit() {
-        console.log(this.data);
-        this.planResultService.getEvaluationByPlanDetailId(this.data.planResult.planDetail.id).subscribe(res => {
-            console.log(res);
-            
-        });
-        this.keyMappingService.getBySampleReport(this.data.device.sampleReportId).subscribe(res => {
-          this.listCriterial = res.map(x => {
-            return {
-                criterialGroupName: x.criterial.criterialGroup.name || null,
-                criterialCode: x.criterial?.code || null,
-                criterialName: x.criterial?.name || null,
-                frequency: x.frequency,
-            };
-          });
-        });
-    }
-
-    prepareModel() {
-        this.model.planResult = this.data.planResult || new PlanResult();
-        this.model.planResultDetail = this.listCriterial.map(x => {
-            return {
-                criterialCode: x.criterialCode,
-                criterialName: x.criterialName,
-                frequency: x.frequency,
-                result: x.result,
-                note: x.note,
-                status: x.status,
+        this.planResultService.getEvaluationByPlanDetailId(this.data.planResult.id).subscribe(res => {
+            if(Util.isEmptyArray(res.planResultDetail)) {
+                this.keyMappingService.getBySampleReport(this.data.device.sampleReportId).subscribe(res => {
+                    this.model.planResultDetail = res.map(x => {
+                        return {
+                            criticalGroup: x.criterial.criterialGroup.name || null,
+                            criticalCode: x.criterial?.code || null,
+                            criticalName: x.criterial?.name || null,
+                            frequency: x.frequency,
+                        };
+                    });
+                    this.cdr.detectChanges();
+                });
+            }else {
+                this.model = res;
+                this.cdr.detectChanges();
             }
         });
+        
     }
-
 
 
     addNewRow() {
@@ -84,11 +76,13 @@ export class CheckDeviceDialog {
             header: `Khai báo vật tư thay thế`,
             width: '100%',
             modal: true,
-            data: this.model.supplyReplacement,
+            data: { device: this.data.device , supplyReplacement: this.model.supplyReplacement},
         });
         supplyReplacmentDialog.onClose.subscribe(result => {
             if (result) {
-                this.model.supplyReplacement = result;
+                this.model.supplyReplacement = result.listSupplyReplace;
+                this.listSupplyReplaceHistory = result.listSupplyReplaceHistory;
+                this.cdr.detectChanges();
             }
         });
     }
@@ -112,11 +106,23 @@ export class CheckDeviceDialog {
 
 
     submit() {
-        this.prepareModel();
-        console.log(this.model);
+        // this.prepareModel();
+        this.model.planResult = this.data.planResult;
+        this.listSupplyReplaceHistory = this.listSupplyReplaceHistory.map(x => {
+            return {
+                ...x,
+                planResult: this.data.planResult
+            }
+        });
         this.planResultService.saveEvaluation(this.model).subscribe({
             next: (res) => {
                 Util.showSuccessMessage("Lưu kết quả kiểm tra thành công");
+                this.ref.close(true);
+            }
+        });
+        this.supplyReplaceHistoryService.createList(this.listSupplyReplaceHistory).subscribe({
+            next: (res) => {
+                Util.showSuccessMessage("Lưu lịch sử thay thế vật tư thành công");
             }
         });
     }
