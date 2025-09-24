@@ -80,6 +80,7 @@ public class PlanResultService {
         if (planCheckDTO.getPlanResultDetail() != null && planCheckDTO.getPlanResultDetail().size() > 0) {
             planCheckDTO.getPlanResultDetail().forEach(item -> {
                 if(item.getId() != null){
+                    System.out.println("Update PlanResultDetail ID: " + item.getId());
                     PlanResultDetail existingDetail = planResultDetailService.mapToEntity(item, planResultDetailRepository.findById(item.getId()).orElse(new PlanResultDetail()));
                     item.setPlanResult(existingDetail.getPlanResult());
                     item.setUpdatedAt(java.time.LocalDateTime.now());
@@ -87,6 +88,7 @@ public class PlanResultService {
                     PlanResultDetail planResultDetail = planResultDetailService.mapToEntity(item, existingDetail);
                     planResultDetailRepository.save(planResultDetail);
                 }else{
+                    System.out.println("Insert PlanResultDetail " );
                 item.setPlanResult(planResult);
                 item.setCreatedBy(userName);
                 item.setCreatedAt(java.time.LocalDateTime.now());
@@ -99,6 +101,7 @@ public class PlanResultService {
         if(planCheckDTO.getSupplyReplacement() != null && planCheckDTO.getSupplyReplacement().size() > 0){
             planCheckDTO.getSupplyReplacement().forEach(item -> {
                 if(item.getId() != null){
+                    System.out.println("Update SupplyReplacement ID: " + item.getId());
                     SupplyReplacement supplyReplacement = supplyReplacementService.mapToEntity(item, supplyReplacementRepository.findById(item.getId()).orElse(new SupplyReplacement()));
                     item.setPlanResult(supplyReplacement.getPlanResult());
                     item.setUpdatedAt(java.time.LocalDateTime.now());
@@ -106,6 +109,7 @@ public class PlanResultService {
                     SupplyReplacement supplyReplacementSave = supplyReplacementService.mapToEntity(item, new SupplyReplacement());
                     supplyReplacementRepository.save(supplyReplacementSave);
                 }else {
+                    System.out.println("Insert SupplyReplacement " );
                     item.setCreatedBy(userName);
                     item.setCreatedAt(java.time.LocalDateTime.now());
                     item.setUpdatedAt(java.time.LocalDateTime.now());
@@ -118,6 +122,7 @@ public class PlanResultService {
         if(planCheckDTO.getErrorReport() != null && planCheckDTO.getErrorReport().size() > 0){
             planCheckDTO.getErrorReport().forEach(item -> {
                 if(item.getId() != null){
+                    System.out.println("Update ErrorReport ID: " + item.getId());
                     ErrorReport errorReport = errorReportService.mapToEntity(item, errorReportRepository.findById(item.getId()).orElse(new ErrorReport()));
                     item.setPlanResult(errorReport.getPlanResult());
                     item.setUpdatedAt(java.time.LocalDateTime.now());
@@ -125,6 +130,7 @@ public class PlanResultService {
                     ErrorReport errorReportSave = errorReportService.mapToEntity(item, new ErrorReport());
                     errorReportRepository.save(errorReportSave);
                 }else {
+                    System.out.println("Insert ErrorReport " );
                     item.setCreatedBy(userName);
                     item.setCreatedAt(java.time.LocalDateTime.now());
                     item.setUpdatedAt(java.time.LocalDateTime.now());
