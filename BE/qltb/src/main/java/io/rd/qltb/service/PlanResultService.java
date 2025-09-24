@@ -108,6 +108,7 @@ public class PlanResultService {
                     item.setUpdatedBy(userName);
                     SupplyReplacement supplyReplacementSave = supplyReplacementService.mapToEntity(item, new SupplyReplacement());
                     supplyReplacementRepository.save(supplyReplacementSave);
+                    System.out.println("");
                 }else {
                     System.out.println("Insert SupplyReplacement " );
                     item.setCreatedBy(userName);
