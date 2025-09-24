@@ -9,16 +9,24 @@ import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
 
 import java.util.*;
+import java.util.function.Predicate;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 
 @Service
 public class PlanService {
-
+    @PersistenceContext
+    private EntityManager entityManager;
     private final PlanRepository planRepository;
     private final PlanTypeRepository planTypeRepository;
     private final FactoryRepository factoryRepository;
@@ -56,6 +64,46 @@ public class PlanService {
         this.planDetailService = planDetailService;
     }
 
+    @Transactional
+    public Page<PlanDTO> findPlansPaged(Map<String, Object> filters, int page) {
+        var cb = entityManager.getCriteriaBuilder();
+        var cq = cb.createQuery(Plan.class);
+        var root = cq.from(Plan.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+        filters.forEach((key, value) -> {
+            if (value != null) {
+                switch (key) {
+                    case "code", "name", "frequency", "planNumber", "userPerformer", "description", "createdBy", "updatedBy" ->
+                            predicates.add((Predicate) cb.like(root.get(key), "%" + value + "%"));
+                    case "status" ->
+                            predicates.add((Predicate) cb.equal(root.get(key), value));
+                    case "planTypeId" ->
+                            predicates.add((Predicate) cb.equal(root.get("planType").get("id"), value));
+                    case "factoryId" ->
+                            predicates.add((Predicate) cb.equal(root.get("factory").get("id"), value));
+                    case "branchId" ->
+                            predicates.add((Predicate) cb.equal(root.get("branch").get("id"), value));
+                    case "approvalWorkflowId" ->
+                            predicates.add((Predicate) cb.equal(root.get("approvalWorkflow").get("id"), value));
+                    // Thêm các trường khác nếu cần
+                }
+            }
+        });
+
+        cq.where(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
+        var query = entityManager.createQuery(cq);
+        query.setFirstResult(page * 10);
+        query.setMaxResults(10);
+
+        List<Plan> plans = query.getResultList();
+        List<PlanDTO> dtos = plans.stream()
+                .map(plan -> mapToDTO(plan, new PlanDTO()))
+                .toList();
+
+        // Nếu cần tổng số bản ghi để phân trang, hãy query count riêng
+        return new PageImpl<>(dtos, PageRequest.of(page, 10), dtos.size());
+    }
     public List<PlanDTO> findAll() {
         final List<Plan> plans = planRepository.findAll(Sort.by("id"));
         return plans.stream()

@@ -1,21 +1,18 @@
 package io.rd.qltb.rest;
 
+import io.rd.qltb.model.PlanDTO;
 import io.rd.qltb.model.SupplyDTO;
 import io.rd.qltb.service.SupplyService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Map;
+
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -37,7 +34,14 @@ public class SupplyResource {
     public ResponseEntity<SupplyDTO> getSupply(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(supplyService.get(id));
     }
+    @GetMapping("/paged")
+    public ResponseEntity<Page<SupplyDTO>> getDevices(
+            @RequestParam Map<String, Object> filters,
+            @RequestParam(defaultValue = "0") int page) {
 
+        Page<SupplyDTO> result = supplyService.findSuppliesPaged(filters, page);
+        return ResponseEntity.ok(result);
+    }
     @PostMapping
     @ApiResponse(responseCode = "201")
     public ResponseEntity<Long> createSupply(@RequestBody @Valid final SupplyDTO supplyDTO) {

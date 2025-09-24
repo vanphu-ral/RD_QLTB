@@ -5,19 +5,15 @@ import io.rd.qltb.service.PlanService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Map;
+
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -34,7 +30,14 @@ public class PlanResource {
     public ResponseEntity<List<PlanDTO>> getAllPlans() {
         return ResponseEntity.ok(planService.findAll());
     }
+    @GetMapping("/paged")
+    public ResponseEntity<Page<PlanDTO>> getDevices(
+            @RequestParam Map<String, Object> filters,
+            @RequestParam(defaultValue = "0") int page) {
 
+        Page<PlanDTO> result = planService.findPlansPaged(filters, page);
+        return ResponseEntity.ok(result);
+    }
     @GetMapping("/{id}")
     public ResponseEntity<PlanDTO> getPlan(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(planService.get(id));

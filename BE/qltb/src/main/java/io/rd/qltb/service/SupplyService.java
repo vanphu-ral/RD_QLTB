@@ -9,16 +9,28 @@ import io.rd.qltb.repos.SupplyGroupRepository;
 import io.rd.qltb.repos.SupplyRepository;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 
 @Service
 public class SupplyService {
-
+    @PersistenceContext
+    private EntityManager entityManager;
     private final SupplyRepository supplyRepository;
     private final SupplyGroupRepository supplyGroupRepository;
     private final ApplicationEventPublisher publisher;
@@ -36,6 +48,40 @@ public class SupplyService {
         return supplies.stream()
                 .map(supply -> mapToDTO(supply, new SupplyDTO()))
                 .toList();
+    }
+    @Transactional
+    public Page<SupplyDTO> findSuppliesPaged(Map<String, Object> filters, int page) {
+        var cb = entityManager.getCriteriaBuilder();
+        var cq = cb.createQuery(Supply.class);
+        var root = cq.from(Supply.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+        filters.forEach((key, value) -> {
+            if (value != null) {
+                switch (key) {
+                    case "code", "name", "description", "source", "createdBy", "updatedBy" ->
+                            predicates.add((Predicate) cb.like(root.get(key), "%" + value + "%"));
+                    case "status" ->
+                            predicates.add((Predicate) cb.equal(root.get(key), value));
+                    case "groupId" ->
+                            predicates.add((Predicate) cb.equal(root.get("group").get("id"), value));
+                    // Thêm các trường khác nếu cần
+                }
+            }
+        });
+
+        cq.where(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
+        var query = entityManager.createQuery(cq);
+        query.setFirstResult(page * 10);
+        query.setMaxResults(10);
+
+        List<Supply> supplies = query.getResultList();
+        List<SupplyDTO> dtos = supplies.stream()
+                .map(supply -> mapToDTO(supply, new SupplyDTO()))
+                .toList();
+
+        // Nếu cần tổng số bản ghi để phân trang, hãy query count riêng
+        return new PageImpl<>(dtos, PageRequest.of(page, 10), dtos.size());
     }
 
     public SupplyDTO get(final Long id) {
