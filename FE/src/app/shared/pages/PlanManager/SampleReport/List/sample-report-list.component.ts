@@ -30,10 +30,6 @@ export class SampleReportListComponent {
 
 
   approval(data: any) {
-    // console.log(data);
-    // this.approvalWorkflowService.getWorkflowDetails(data.approvalWorkflow.id).subscribe(res => {
-    //   console.log(res);
-      
-    // })
+
   }
 }

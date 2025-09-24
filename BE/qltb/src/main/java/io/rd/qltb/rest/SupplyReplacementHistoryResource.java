@@ -64,4 +64,10 @@ public class SupplyReplacementHistoryResource {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/create-list")
+    public ResponseEntity<List<Long>> createBatch(
+            @RequestBody List<SupplyReplacementHistoryDTO> dtos) {
+        List<Long> ids = supplyReplacementHistoryService.createList(dtos);
+        return ResponseEntity.ok(ids);
+    }
 }

@@ -6,6 +6,7 @@ export class ErrorReport {
     errorDescription?: string;
     reportedBy?: string;
     timeReported?: Date;
+    isRepaired?: boolean;
     repairDescription?: string;
     repairedBy?: string;
     timeRepaired?: Date;

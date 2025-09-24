@@ -22,8 +22,6 @@ export class HomeComponent {
 
     ngOnInit(): void {
         this.accountService.identity().subscribe(account => this.account.set(account));
-        // console.log(this.account.fullName);
-        
     }
 
     login(): void {

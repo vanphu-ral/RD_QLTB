@@ -9,6 +9,9 @@ import { CheckDeviceDialog } from "../check-device-dialog/check-device.dialog";
 import { SupplyDetailService } from "../../../../DeviceManager/Supply/Service/supply-detail.service";
 import { Device } from "../../../../../models/DeviceManager/device.model";
 import { DeviceSupplyUseService } from "../../../../DeviceManager/Device/Service/device-supply-use.service";
+import { ReplaceSupplyDialog } from "../replace-supply-dialog/replace-supply.dialog";
+import { SupplyReplacement } from "../../../../../models/PlanManger/supply-replacement.model";
+import { SupplyReplacementHistory } from "../../../../../models/PlanManger/supply-replace-history.model";
 
 @Component({
     selector: 'app-supply-replacement-dialog',
@@ -19,8 +22,11 @@ import { DeviceSupplyUseService } from "../../../../DeviceManager/Device/Service
 export class SupplyReplacementDialog {
 
     data: any;
-    checkList: PlanResult[] = [];
+    checkList: any[] = [];
     listSupplys: any[] = [];
+    listSupplyReplace: SupplyReplacement[] = [];
+    supplyReplaceHistory: SupplyReplacementHistory = new SupplyReplacementHistory();
+    listSupplyReplaceHistory: SupplyReplacementHistory[] = [];
 
     constructor(
         public ref: DynamicDialogRef,
@@ -34,6 +40,7 @@ export class SupplyReplacementDialog {
 
     ngOnInit() {
         console.log(this.data);
+
         this.loadData();
     }
 
@@ -41,8 +48,9 @@ export class SupplyReplacementDialog {
         this.deviceSupplyUseService.getBySupplyId(_.get(this.data, 'device.deviceId')).subscribe({
             next: (res) => {
                 this.listSupplys = res
-                console.log(this.listSupplys);
-                
+                if (Util.isEmptyArray(this.checkList)) {
+                    this.checkList = _.cloneDeep(res);
+                }
                 this.cdr.detectChanges();
             }
         })
@@ -53,7 +61,44 @@ export class SupplyReplacementDialog {
     addNewRow() {
     }
 
-    deleteRow(index: number) {
+    replaceSupply(index: number) {
+        this.supplyReplaceHistory = {
+            quantityOld: this.checkList[index].quantityUsed,
+            oldSupply: this.checkList[index].supply,
+        }
+        const ref = this.dialogService.open(ReplaceSupplyDialog, {
+            header: 'Chọn thiết bị thay thế',
+            width: '70%',
+            modal: true,
+            data: {
+                supply: this.checkList[index],
+                device: this.data.device
+            }
+        });
+        ref.onClose.subscribe((result: any) => {
+            if (result) {
+                this.checkList[index] = result;
+                this.listSupplyReplace.push({
+                    supply: result.supply,
+                    quantity: result.quantityUsed,
+                    note: result.description,
+                    planResult: this.data.planResult
+                });
+                this.supplyReplaceHistory.quantityChange = result.quantityUsed;
+                this.supplyReplaceHistory.newSupply = result.supply;
+                this.supplyReplaceHistory.reason = result.description;
+                this.listSupplyReplaceHistory.push(this.supplyReplaceHistory);
+                console.log(this.listSupplyReplace);
+                this.cdr.detectChanges();
+            }
+        });
+    }
+
+    submit() {
+        this.ref.close({
+            listSupplyReplace: this.listSupplyReplace,
+            listSupplyReplaceHistory: this.listSupplyReplaceHistory
+        });
     }
 
     close() {

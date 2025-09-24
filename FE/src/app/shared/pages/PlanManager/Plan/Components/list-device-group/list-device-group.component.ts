@@ -47,8 +47,6 @@ export class ListDeviceComponent implements OnInit {
         })
         if (this.isEditMode) {
             this.mapDevicesGroupOnEdit()
-            console.log(this.model.devices);
-
         }
     }
 
