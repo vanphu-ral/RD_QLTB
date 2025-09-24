@@ -15,7 +15,6 @@ public class PlanResultDetailDTO {
     private Long id;
     private String criticalGroup;
 
-    private String criticalGroup;
     private String criticalCode;
 
     private String criticalName;

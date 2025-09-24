@@ -25,8 +25,6 @@ public class PlanResultDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false, length = 50)
-    private String criticalGroup;
-    @Column(nullable = false, length = 50)
     private String criticalCode;
     @Column
     private String criticalGroup;
