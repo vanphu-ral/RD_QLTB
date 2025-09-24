@@ -40,7 +40,10 @@ public class PlanResultResource {
     public ResponseEntity<PlanResultDTO> getPlanResult(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(planResultService.get(id));
     }
-
+    @GetMapping("/plan-result/{id}")
+    public ResponseEntity<PlanCheckDTO> getDetail(@PathVariable(name = "id") final Long id) {
+        return ResponseEntity.ok(planResultService.getDetail(id));
+    }
     @PostMapping
     @ApiResponse(responseCode = "201")
     public ResponseEntity<Long> createPlanResult(

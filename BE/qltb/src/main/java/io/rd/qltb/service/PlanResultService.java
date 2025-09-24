@@ -47,7 +47,23 @@ public class PlanResultService {
                 .map(planResult -> mapToDTO(planResult, new PlanResultDTO()))
                 .toList();
     }
-
+    public PlanCheckDTO getDetail(Long planResultId){
+        PlanCheckDTO planCheckDTO = new PlanCheckDTO();
+        planCheckDTO.setPlanResult(get(planResultId));
+        List<PlanResultDetail> planResultDetails = planResultDetailRepository.findByPlanResultId(planResultId);
+        if(planResultDetails != null && planResultDetails.size() > 0){
+            planCheckDTO.setPlanResultDetail(planResultDetails.stream().map(item -> planResultDetailService.mapToDTO(item, new io.rd.qltb.model.PlanResultDetailDTO())).toList());
+        }
+        List<ErrorReport> errorReports = errorReportRepository.findByPlanResultId(planResultId);
+        if(errorReports != null && errorReports.size() > 0){
+            planCheckDTO.setErrorReport(errorReports.stream().map(item -> errorReportService.mapToDTO(item, new io.rd.qltb.model.ErrorReportDTO())).toList());
+        }
+        List<SupplyReplacement> supplyReplacements = supplyReplacementRepository.findByPlanResultId(planResultId);
+        if(supplyReplacements != null && supplyReplacements.size() > 0){
+            planCheckDTO.setSupplyReplacement(supplyReplacements.stream().map(item -> supplyReplacementService.mapToDTO(item, new SupplyReplacementDTO())).toList());
+        }
+        return planCheckDTO;
+    }
     public PlanResultDTO get(final Long id) {
         return planResultRepository.findById(id)
                 .map(planResult -> mapToDTO(planResult, new PlanResultDTO()))
