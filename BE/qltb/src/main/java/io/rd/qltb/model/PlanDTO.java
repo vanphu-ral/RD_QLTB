@@ -17,15 +17,10 @@ public class PlanDTO {
 
     private Long id;
 
-    @NotNull
-    @Size(max = 50)
     private String code;
 
-    @NotNull
-    @Size(max = 200)
     private String name;
 
-    @Size(max = 50)
     private String frequency;
 
     private String planNumber;
@@ -34,7 +29,6 @@ public class PlanDTO {
 
     private String description;
 
-    @NotNull
     @Size(max = 200)
     private String createdBy;
 
@@ -47,7 +41,6 @@ public class PlanDTO {
     @Size(max = 255)
     private String updatedBy;
 
-    @Size(max = 255)
     private Integer status;
 
     @NotNull

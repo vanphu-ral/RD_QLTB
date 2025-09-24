@@ -17,10 +17,8 @@ public class DeviceSupplyUsageDTO {
 
     private Long id;
 
-    @NotNull
     private LocalDateTime usageDate;
 
-    @Size(max = 255)
     private String serial;
 
     private Integer quantityUsed;
@@ -29,10 +27,8 @@ public class DeviceSupplyUsageDTO {
 
     private Integer status;
 
-    @NotNull
     private Device device;
 
-    @NotNull
     private Supply supply;
 
 }

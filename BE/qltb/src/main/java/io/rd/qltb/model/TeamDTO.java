@@ -14,24 +14,16 @@ public class TeamDTO {
 
     private Long id;
 
-    @NotNull
-    @Size(max = 50)
     private String code;
 
-    @NotNull
-    @Size(max = 200)
     private String name;
 
-    @Size(max = 500)
     private String description;
 
-    @Size(max = 255)
     private String manager;
 
-    @NotNull
     private LocalDateTime createdAt;
 
-    @NotNull
     private LocalDateTime updatedAt;
 
     @Size(max = 255)
@@ -42,7 +34,6 @@ public class TeamDTO {
 
     private Integer status;
 
-    @NotNull
     private Branch branch;
 
 }

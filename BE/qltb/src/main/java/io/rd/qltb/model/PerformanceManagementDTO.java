@@ -13,13 +13,10 @@ public class PerformanceManagementDTO {
 
     private Long id;
 
-    @Size(max = 255)
     private String code;
 
-    @Size(max = 255)
     private String name;
 
-    @Size(max = 255)
     private String performance;
 
     private Long deviceId;

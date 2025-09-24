@@ -13,30 +13,22 @@ public class DayOffDTO {
 
     private Long id;
 
-    @NotNull
-    @Size(max = 50)
     private String code;
 
-    @Size(max = 200)
     private String name;
 
-    @Size(max = 255)
     private String listBranchId;
 
-    @Size(max = 255)
     private String listTeamId;
 
-    @Size(max = 255)
     private String day;
 
-    @Size(max = 255)
     private String frequency;
 
     private LocalDateTime fromDate;
 
     private LocalDateTime toDate;
 
-    @Size(max = 255)
     private String description;
 
 

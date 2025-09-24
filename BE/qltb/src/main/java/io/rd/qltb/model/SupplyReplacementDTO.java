@@ -17,10 +17,8 @@ public class SupplyReplacementDTO {
 
     private Integer quantity;
 
-    @Size(max = 255)
     private String code;
 
-    @Size(max = 255)
     private String name;
 
     private String note;

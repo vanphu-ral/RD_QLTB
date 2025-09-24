@@ -17,8 +17,6 @@ public class AssetHistoryDTO {
 
     private Long assetId;
 
-    @NotNull
-    @Size(max = 50)
     private String eventType;
 
     private String description;

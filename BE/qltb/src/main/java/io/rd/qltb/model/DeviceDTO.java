@@ -22,20 +22,14 @@ public class DeviceDTO {
 
     private Long id;
 
-    @NotNull
-    @Size(max = 50)
     private String code;
 
-    @NotNull
-    @Size(max = 150)
     private String name;
 
     private Integer numMaterialUse;
 
-    @Size(max = 100)
     private String serialNumber;
 
-    @Size(max = 255)
     private String source;
 
     private LocalDate installationDate;
@@ -44,8 +38,6 @@ public class DeviceDTO {
 
     private LocalDateTime dateManufacture;
 
-    @NotNull
-    @Size(max = 50)
     private String unit;
 
     @Digits(integer = 12, fraction = 2)
@@ -53,19 +45,14 @@ public class DeviceDTO {
     @Schema(type = "string", example = "75.08")
     private BigDecimal price;
 
-    @NotNull
     private Integer status;
 
-    @Size(max = 100)
     private String qrcode;
 
-    @Size(max = 255)
     private String img;
 
-    @Size(max = 255)
     private String userManager;
 
-    @Size(max = 255)
     private String description;
 
 
@@ -80,16 +67,12 @@ public class DeviceDTO {
     @Size(max = 255)
     private String updatedBy;
 
-    @Size(max = 255)
     private String supplier;
 
-    @NotNull
     private DeviceGroup group;
 
-    @NotNull
     private Line line;
 
-    @NotNull
     private Branch branch;
 
     private Team team;

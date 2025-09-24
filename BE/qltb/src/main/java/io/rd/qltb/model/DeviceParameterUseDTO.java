@@ -24,7 +24,6 @@ public class DeviceParameterUseDTO {
 
     private String unit;
 
-    @Size(max = 255)
     private String description;
 
     private Integer status;

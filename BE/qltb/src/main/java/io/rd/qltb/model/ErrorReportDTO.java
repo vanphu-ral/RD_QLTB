@@ -15,9 +15,7 @@ public class ErrorReportDTO {
 
     private Long id;
 
-    @Size(max = 255)
     private String code;
-    @Size(max = 255)
     private String name;
 
     private Integer severity;

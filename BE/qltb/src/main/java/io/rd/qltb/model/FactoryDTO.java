@@ -13,15 +13,10 @@ public class FactoryDTO {
 
     private Long id;
 
-    @NotNull
-    @Size(max = 50)
     private String code;
 
-    @NotNull
-    @Size(max = 200)
     private String name;
 
-    @Size(max = 500)
     private String description;
 
 

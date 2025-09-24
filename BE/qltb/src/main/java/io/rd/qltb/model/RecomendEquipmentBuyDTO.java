@@ -13,20 +13,16 @@ public class RecomendEquipmentBuyDTO {
 
     private Long id;
 
-    @Size(max = 255)
     private String code;
 
-    @Size(max = 255)
     private String name;
 
     private Double price;
 
     private Integer quantity;
 
-    @NotNull
     private LocalDateTime createdAt;
 
-    @NotNull
     private LocalDateTime updatedAt;
 
     @Size(max = 255)

@@ -14,24 +14,18 @@ public class UserDTO {
 
     private Long id;
 
-    @Size(max = 255)
     private String code;
 
-    @Size(max = 255)
     private String name;
 
-    @Size(max = 255)
     private String img;
 
-    @Size(max = 255)
     private String signature;
 
     private Integer isActiveNotification;
 
-    @NotNull
     private LocalDateTime createdAt;
 
-    @NotNull
     private LocalDateTime updatedAt;
 
     @Size(max = 255)

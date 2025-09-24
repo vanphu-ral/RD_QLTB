@@ -16,7 +16,6 @@ public class SupplyDetailDTO {
 
     private Long id;
 
-    @Size(max = 255)
     private String serial;
 
     private LocalDateTime importDate;
@@ -34,7 +33,6 @@ public class SupplyDetailDTO {
 
     private Integer status;
 
-    @NotNull
     private Supply supply;
 
 }

@@ -16,24 +16,16 @@ public class ApprovalDTO {
 
     private Long id;
 
-    @NotNull
-    @Size(max = 50)
     private String entityType;
 
-    @NotNull
     private Long entityId;
 
-    @NotNull
-    @Size(max = 450)
     private ApprovalGroupUser userApproval;
 
-    @NotNull
     private ApprovalWorkflow workflow;
 
-    @NotNull
     private ApprovalGroup group;
 
-    @NotNull
     private Integer status;
 
     private LocalDateTime signedAt;

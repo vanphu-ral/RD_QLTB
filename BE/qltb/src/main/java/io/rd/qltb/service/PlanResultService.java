@@ -132,7 +132,21 @@ public class PlanResultService {
         publisher.publishEvent(new BeforeDeletePlanResult(id));
         planResultRepository.delete(planResult);
     }
-
+    public void deleteAll(Long planResultId){
+        List<PlanResultDetail> planResultDetails = planResultDetailRepository.findByPlanResultId(planResultId);
+        if(planResultDetails != null && planResultDetails.size() > 0){
+            planResultDetailRepository.deleteAll(planResultDetails);
+        }
+        List<ErrorReport> errorReports = errorReportRepository.findByPlanResultId(planResultId);
+        if(errorReports != null && errorReports.size() > 0){
+            errorReportRepository.deleteAll(errorReports);
+        }
+        List<SupplyReplacement> supplyReplacements = supplyReplacementRepository.findByPlanResultId(planResultId);
+        if(supplyReplacements != null && supplyReplacements.size() > 0){
+            supplyReplacementRepository.deleteAll(supplyReplacements);
+        }
+        planDetailRepository.deleteById(planResultId);
+    }
     private PlanResultDTO mapToDTO(final PlanResult planResult, final PlanResultDTO planResultDTO) {
         planResultDTO.setId(planResult.getId());
         planResultDTO.setCode(planResult.getCode());

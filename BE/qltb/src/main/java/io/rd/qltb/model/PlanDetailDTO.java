@@ -20,7 +20,6 @@ public class PlanDetailDTO {
 
     private String serial;
 
-    @NotNull
     private LocalDateTime createdAt;
 
 
@@ -35,19 +34,14 @@ public class PlanDetailDTO {
     @Size(max = 255)
     private String manager;
 
-    @Size(max = 255)
     private Integer status;
 
-    @NotNull
     private Plan plan;
 
-    @NotNull
     private Device device;
 
-    @NotNull
     private DeviceGroup deviceGroup;
 
-    @NotNull
     private SampleReport sampleReport;
 
 }

@@ -14,10 +14,8 @@ public class PlanResultDTO {
 
     private Long id;
 
-    @Size(max = 255)
     private String code;
 
-    @NotNull
 
     private String note;
 
@@ -25,10 +23,8 @@ public class PlanResultDTO {
 
     private String userTest;
 
-    @NotNull
     private LocalDateTime createdAt;
 
-    @NotNull
     private LocalDateTime updatedAt;
 
     @Size(max = 255)
@@ -40,7 +36,6 @@ public class PlanResultDTO {
     @Size(max = 255)
     private Integer status;
 
-    @Size(max = 255)
     private String statusRepair;
     private PlanDetail planDetail;
 

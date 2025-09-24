@@ -13,20 +13,14 @@ public class PrameterGroupDTO {
 
     private Long id;
 
-    @NotNull
-    @Size(max = 50)
     private String code;
 
-    @Size(max = 200)
     private String name;
 
-    @Size(max = 255)
     private String description;
 
-    @NotNull
     private LocalDateTime createdAt;
 
-    @NotNull
     private LocalDateTime updatedAt;
 
     @Size(max = 255)

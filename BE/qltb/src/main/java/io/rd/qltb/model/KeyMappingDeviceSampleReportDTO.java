@@ -13,10 +13,8 @@ public class KeyMappingDeviceSampleReportDTO {
 
     private Long id;
 
-    @NotNull
     private SampleReport sampleReport;
 
-    @NotNull
     private DeviceGroup deviceGroup;
 
 }

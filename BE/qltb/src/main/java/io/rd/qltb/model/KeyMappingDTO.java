@@ -13,10 +13,8 @@ public class KeyMappingDTO {
 
     private Long id;
 
-    @NotNull
     private SampleReport sampleReport;
 
-    @NotNull
     private Criterial criterial;
 
 }

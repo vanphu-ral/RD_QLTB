@@ -14,16 +14,12 @@ public class PlanTargetResultDTO {
 
     private Long id;
 
-    @Size(max = 255)
     private String result;
 
-    @Size(max = 255)
     private String note;
 
-    @NotNull
     private LocalDateTime createdAt;
 
-    @NotNull
     private LocalDateTime updatedAt;
 
     @Size(max = 255)

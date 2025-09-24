@@ -13,19 +13,14 @@ public class FormDTO {
 
     private Long id;
 
-    @Size(max = 150)
     private String code;
 
-    @Size(max = 150)
     private String name;
 
-    @Size(max = 250)
     private String description;
 
-    @Size(max = 150)
     private String fileName;
 
-    @Size(max = 150)
     private String filePath;
 
     private Long factoryId;
@@ -38,7 +33,6 @@ public class FormDTO {
 
     private LocalDateTime publishDate;
 
-    @Size(max = 150)
     private String publishNum;
 
 

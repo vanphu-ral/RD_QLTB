@@ -15,15 +15,12 @@ public class AcceptanceDTO {
 
     private Long id;
 
-    @Size(max = 255)
     private String code;
 
-    @Size(max = 255)
     private String name;
 
     private String note;
 
-    @Size(max = 255)
     private String user;
 
     private LocalDateTime timeAcceptance;

@@ -15,7 +15,6 @@ public class ApprovalGroupUserDTO {
 
     private Long id;
 
-    @NotNull
     private String username;
 
 
@@ -27,7 +26,6 @@ public class ApprovalGroupUserDTO {
 
     private LocalDateTime updatedAt;
 
-    @NotNull
     private ApprovalGroup group;
 
 }

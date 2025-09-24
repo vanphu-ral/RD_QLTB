@@ -32,10 +32,8 @@ public class DeviceRelocationHistoryDTO {
 
     private String reason;
 
-    @NotNull
     private LocalDateTime movedAt;
 
-    @Size(max = 255)
     private String movedBy;
 
 
@@ -50,7 +48,6 @@ public class DeviceRelocationHistoryDTO {
     @Size(max = 255)
     private String updatedBy;
 
-    @NotNull
     private Device device;
 
 }

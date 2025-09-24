@@ -15,13 +15,10 @@ public class PlanTargetDTO {
 
     private Long branchId;
 
-    @Size(max = 500)
     private String targetDescription;
 
-    @Size(max = 100)
     private String targetValue;
 
-    @Size(max = 255)
     private String critical;
 
     @NotNull

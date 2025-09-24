@@ -16,27 +16,18 @@ public class SupplyDTO {
 
     private Long id;
 
-    @NotNull
-    @Size(max = 50)
     private String code;
 
-    @NotNull
-    @Size(max = 150)
     private String name;
 
-    @Size(max = 255)
     private String description;
 
-    @Size(max = 255)
     private String source;
 
-    @NotNull
     private LocalDateTime createdAt;
 
-    @NotNull
     private LocalDateTime updatedAt;
 
-    @Size(max = 255)
     private String createdBy;
 
     @Size(max = 255)
@@ -44,7 +35,6 @@ public class SupplyDTO {
 
     private Integer status;
 
-    @NotNull
     private SupplyGroup group;
 
 }

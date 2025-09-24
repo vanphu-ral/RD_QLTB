@@ -13,15 +13,12 @@ public class NotificationDTO {
 
     private Long id;
 
-    @Size(max = 50)
     private String type;
 
-    @Size(max = 200)
     private String title;
 
     private String message;
 
-    @Size(max = 50)
     private String entityType;
 
     private Long entityId;
