@@ -27,6 +27,8 @@ public class PlanResultDetail {
 
     @Column(nullable = false, length = 50)
     private String criticalCode;
+    @Column
+    private String group;
 
     @Column(length = 200)
     private String criticalName;

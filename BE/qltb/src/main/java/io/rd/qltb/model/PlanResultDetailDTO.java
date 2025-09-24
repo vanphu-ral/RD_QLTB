@@ -13,6 +13,7 @@ import lombok.Setter;
 public class PlanResultDetailDTO {
 
     private Long id;
+    private String group;
 
     private String criticalCode;
 

@@ -62,6 +62,7 @@ public class PlanResultDetailService {
                                          final PlanResultDetailDTO dto) {
         dto.setId(planResultDetail.getId());
         dto.setCriticalCode(planResultDetail.getCriticalCode());
+        dto.setGroup(planResultDetail.getGroup());
         dto.setCriticalName(planResultDetail.getCriticalName());
         dto.setFrequency(planResultDetail.getFrequency());
         dto.setType(planResultDetail.getType());
@@ -106,6 +107,7 @@ public class PlanResultDetailService {
     public PlanResultDetail mapToEntity(final PlanResultDetailDTO planResultDetailDTO,
             final PlanResultDetail planResultDetail) {
         planResultDetail.setCriticalCode(planResultDetailDTO.getCriticalCode());
+        planResultDetail.setGroup(planResultDetailDTO.getGroup());
         planResultDetail.setCriticalName(planResultDetailDTO.getCriticalName());
         planResultDetail.setFrequency(planResultDetailDTO.getFrequency());
         planResultDetail.setType(planResultDetailDTO.getType());
