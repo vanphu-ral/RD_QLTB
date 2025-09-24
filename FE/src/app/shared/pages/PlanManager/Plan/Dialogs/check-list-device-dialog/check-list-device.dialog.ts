@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { ChangeDetectorRef, Component } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { SharedModule } from "../../../../../../share.module";
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
@@ -6,6 +6,7 @@ import _ from "lodash";
 import { Util } from "../../../../../core/utils/utils-function";
 import { PlanResult } from "../../../../../models/PlanManger/plan-result.model";
 import { CheckDeviceDialog } from "../check-device-dialog/check-device.dialog";
+import { PlanResultService } from "../../Service/plan-result.service";
 
 @Component({
     selector: 'app-check-list-device-dialog',
@@ -22,22 +23,27 @@ export class CheckListDeviceDialog {
         public ref: DynamicDialogRef,
         public config: DynamicDialogConfig,
         private dialogService: DialogService,
+        private planResultService: PlanResultService,
+        private cdr: ChangeDetectorRef,
     ) {
         this.data = config.data;
     }
 
     ngOnInit() {
-        if(Util.isEmptyArray(this.checkList)) {
-            console.log(this.data);
-            
-            this.checkList = [{ planResultDetailId: this.data.id, dateTest: new Date(), userTest: this.data.manager, status: 1 }];
-        }
+        this.loadDeviceCheckList();
+    }
+
+    loadDeviceCheckList() {
+        this.planResultService.getByPlanDetailId(this.data.id).subscribe((res) => {
+            this.checkList = res;
+            this.cdr.detectChanges();
+        });
     }
 
 
 
     addNewRow() {
-        this.checkList.push({ userTest: this.data.manager, status: 1 });
+        this.checkList.push({ userTest: this.data.manager, status: 1, planDetail: this.data, dateTest: new Date(), statusRepair: 1 });
     }
 
     deleteRow(index: number) {
@@ -45,14 +51,23 @@ export class CheckListDeviceDialog {
     }
 
     saveDeviceCheckDate(row: any) {
-        console.log(row);
-        
+        if(Util.isEmpty(row.id)) {
+            this.planResultService.create(row).subscribe((res) => {
+                Object.assign(row, res);
+                this.loadDeviceCheckList();
+            });
+        } else {
+            this.planResultService.update(row.id, row).subscribe((res) => {
+                Object.assign(row, res);
+                this.loadDeviceCheckList();
+            });
+        }
     }
 
     checkDevice(data: any) {
         const childRef = this.dialogService.open(CheckDeviceDialog, {
             header: `Kiểm tra thiết bị`,
-            width: 'auto',
+            width: '100%',
             modal: true,
             data: { planResult: data, device: this.data },
         });

@@ -78,7 +78,8 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
               id: x.id,
               group: group,
               criterial: x.criterial || null,
-              criterials: criterials
+              criterials: criterials,
+              frequency: x.frequency || null
             };
           });
           this.cdr.detectChanges();
@@ -106,7 +107,20 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
   }
 
   deleteRow(index: number) {
-    this.listCriterialBySample.splice(index, 1)
+    if (!this.isAddMode && this.listCriterialBySample[index].id) {
+      this.keyMappingService.delete(this.listCriterialBySample[index].id).subscribe({
+        next: () => {
+          this.listCriterialBySample.splice(index, 1)
+          this.cdr.detectChanges();
+        },
+        error: () => {
+          Util.ConfirmMessage('Xóa thất bại', 'error');
+        }
+      });
+    } else {
+      this.listCriterialBySample.splice(index, 1)
+      this.cdr.detectChanges();
+    }
   }
 
   public override save(): void {
@@ -117,7 +131,8 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
         next: (id) => {
           const keyMappings: keyMapping[] = this.listCriterialBySample.map(item => ({
             sampleReport: { id: id },       
-            criterial: { id: item.criterial?.id }  
+            criterial: { id: item.criterial?.id },
+            frequency: item.frequency  
           }));
           if (keyMappings.length > 0) {
             this.keyMappingService.createList(keyMappings).subscribe({
@@ -145,7 +160,8 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
           const keyMappings: keyMapping[] = this.listCriterialBySample.map(item => ({
             id: item.id,                         
             sampleReport: { id: id },      
-            criterial: { id: item.criterial?.id }  
+            criterial: { id: item.criterial?.id },
+            frequency: item.frequency  
           }));
           if (keyMappings.length > 0) {
             this.keyMappingService.createList(keyMappings).subscribe({

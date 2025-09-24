@@ -163,9 +163,18 @@ public class PlanResultService {
         }
         planDetailRepository.deleteById(planResultId);
     }
+
+
+    public List<PlanResultDTO> findAllByPlanDetailId(Long planDetailId) {
+        List<PlanResult> planResults = planResultRepository.findByPlanDetailId(planDetailId);
+        return planResults.stream()
+                .map(planResult -> mapToDTO(planResult, new PlanResultDTO()))
+                .toList();
+    }
+
+
     private PlanResultDTO mapToDTO(final PlanResult planResult, final PlanResultDTO planResultDTO) {
         planResultDTO.setId(planResult.getId());
-        planResultDTO.setCode(planResult.getCode());
         planResultDTO.setNote(planResult.getNote());
         planResultDTO.setDateTest(planResult.getDateTest());
         planResultDTO.setUserTest(planResult.getUserTest());
@@ -199,7 +208,6 @@ public class PlanResultService {
     }
 
     private PlanResult mapToEntity(final PlanResultDTO planResultDTO, final PlanResult planResult) {
-        planResult.setCode(planResultDTO.getCode());
         planResult.setNote(planResultDTO.getNote());
         planResult.setDateTest(planResultDTO.getDateTest());
         planResult.setUserTest(planResultDTO.getUserTest());

@@ -288,7 +288,7 @@ export class Util {
   /**
   * Thêm item mới vào mảng, nếu mảng undefined thì sẽ khởi tạo
   */
-  addItem<T>(arr: T[] | undefined, item: T, assignBack?: (newArr: T[]) => void): T[] {
+  static addItem<T>(arr: T[] | undefined, item: T, assignBack?: (newArr: T[]) => void): T[] {
     if (!arr) {
       arr = [];
       if (assignBack) {
@@ -302,7 +302,7 @@ export class Util {
   /**
    * Xóa item theo index
    */
-  removeItem<T>(arr: T[] | undefined, index: number): T[] {
+  static removeItem<T>(arr: T[] | undefined, index: number): T[] {
     if (!arr) return [];
     if (index >= 0 && index < arr.length) {
       arr.splice(index, 1);
@@ -313,7 +313,7 @@ export class Util {
   /**
    * Di chuyển item lên trên
    */
-  moveUp<T>(arr: T[] | undefined, index: number): T[] {
+  static moveUp<T>(arr: T[] | undefined, index: number): T[] {
     if (!arr || index <= 0 || index >= arr.length) return arr || [];
     [arr[index - 1], arr[index]] = [arr[index], arr[index - 1]];
     return arr;
@@ -322,7 +322,7 @@ export class Util {
   /**
    * Di chuyển item xuống dưới
    */
-  moveDown<T>(arr: T[] | undefined, index: number): T[] {
+  static moveDown<T>(arr: T[] | undefined, index: number): T[] {
     if (!arr || index < 0 || index >= arr.length - 1) return arr || [];
     [arr[index], arr[index + 1]] = [arr[index + 1], arr[index]];
     return arr;
@@ -384,4 +384,18 @@ export class Util {
     });
   }
 
+  static isEmpty(value: any): boolean {
+    return _.isNil(value) || (_.isString(value) && _.trim(value) === '');
+  }
+
+  static showSuccessMessage(message: string): void {
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'success',
+      title: message,
+      showConfirmButton: false,
+      timer: 3000
+    });
+  }
 }

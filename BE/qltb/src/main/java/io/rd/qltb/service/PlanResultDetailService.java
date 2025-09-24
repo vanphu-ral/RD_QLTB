@@ -80,7 +80,6 @@ public class PlanResultDetailService {
         if (planResultDetail.getPlanResult() != null) {
             PlanResult planResultCopy = new PlanResult();
             planResultCopy.setId(planResultDetail.getPlanResult().getId());
-            planResultCopy.setCode(planResultDetail.getPlanResult().getCode());
             planResultCopy.setNote(planResultDetail.getPlanResult().getNote());
             planResultCopy.setStatus(planResultDetail.getPlanResult().getStatus());
             planResultCopy.setStatusRepair(planResultDetail.getPlanResult().getStatusRepair());

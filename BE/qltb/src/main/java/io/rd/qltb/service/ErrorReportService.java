@@ -88,7 +88,6 @@ public class ErrorReportService {
         if (errorReport.getPlanResult() != null) {
             PlanResult planResultCopy = new PlanResult();
             planResultCopy.setId(errorReport.getPlanResult().getId());
-            planResultCopy.setCode(errorReport.getPlanResult().getCode());
             planResultCopy.setStatus(errorReport.getPlanResult().getStatus());
             planResultCopy.setStatusRepair(errorReport.getPlanResult().getStatusRepair());
             planResultCopy.setCreatedAt(errorReport.getPlanResult().getCreatedAt());

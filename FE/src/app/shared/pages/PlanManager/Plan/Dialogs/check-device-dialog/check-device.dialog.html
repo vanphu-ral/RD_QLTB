@@ -3,21 +3,21 @@
     <div class="row my-3">
       <div class="col-4">
         <p-floatlabel variant="on">
-          <input pInputText id="deviceCode" name="deviceCode" [(ngModel)]="parentData.deviceCode" autocomplete="off" [fluid]="true" [disabled]="true"/>
+          <input pInputText id="deviceCode" name="deviceCode" [(ngModel)]="data.device.deviceCode" autocomplete="off" [fluid]="true" [disabled]="true"/>
           <label for="deviceCode">Mã thiết bị</label>
         </p-floatlabel>
       </div>
 
       <div class="col-4">
         <p-floatlabel variant="on">
-          <input pInputText id="deviceName" name="deviceName" [(ngModel)]="parentData.deviceName" autocomplete="off" [fluid]="true" [disabled]="true"/>
+          <input pInputText id="deviceName" name="deviceName" [(ngModel)]="data.device.deviceName" autocomplete="off" [fluid]="true" [disabled]="true"/>
           <label for="deviceName">Tên thiết bị</label>
         </p-floatlabel>
       </div>
 
       <div class="col-4">
         <p-floatlabel variant="on">
-          <input pInputText id="serial" name="serial" [(ngModel)]="parentData.serial" autocomplete="off" [fluid]="true" [disabled]="true"/>
+          <input pInputText id="serial" name="serial" [(ngModel)]="data.device.serial" autocomplete="off" [fluid]="true" [disabled]="true"/>
           <label for="serial">Serial</label>
         </p-floatlabel>
       </div>
@@ -26,7 +26,7 @@
     <div class="row my-3">
         <div class="col-4">
             <p-floatlabel variant="on">
-                <input pInputText id="sampleReportName" name="sampleReportName" [(ngModel)]="parentData.sampleReportName" autocomplete="off" [fluid]="true"
+                <input pInputText id="sampleReportName" name="sampleReportName" [(ngModel)]="data.device.sampleReportName" autocomplete="off" [fluid]="true"
                     [disabled]="true" />
                 <label for="sampleReportName">Mẫu biên bản</label>
             </p-floatlabel>
@@ -34,7 +34,7 @@
     
         <div class="col-4">
             <p-floatlabel variant="on">
-                <p-datepicker [(ngModel)]="data.dateTest" appDateConvert [iconDisplay]="'input'" [showIcon]="true"
+                <p-datepicker [(ngModel)]="data.planResult.dateTest" appDateConvert [iconDisplay]="'input'" [showIcon]="true"
                     name="dateTest" inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body" [inputSize]="100"
                     [disabled]="true" />
                 <label for="dateTest">Ngày đánh giá</label>
@@ -43,7 +43,7 @@
     
         <div class="col-4">
             <p-floatlabel variant="on">
-                <input pInputText id="userTest" name="userTest" [(ngModel)]="data.userTest" autocomplete="off"
+                <input pInputText id="userTest" name="userTest" [(ngModel)]="data.planResult.userTest" autocomplete="off"
                     [fluid]="true" [disabled]="true" />
                 <label for="userTest">Người đánh giá</label>
             </p-floatlabel>
@@ -63,7 +63,7 @@
                     <th>Nhóm tiêu trí</th>
                     <th>Tên tiêu trí</th>
                     <th>Tần suất</th>
-                    <th>Mô tả</th>
+                    <th style="min-width: 600px !important;">Mô tả</th>
                     <th>Kết quả đánh giá</th>
                     <th>Trạng thái</th>
                     <th>Thao tác</th>
@@ -91,7 +91,7 @@
                     </td>
                     <td>
                         <p-select [(ngModel)]="row.status" [options]="listStatus" [fluid]="true"
-                            [showClear]="true" [appendTo]="'body'" id="status" name="status">
+                            [showClear]="true" [appendTo]="'body'" id="status" name="status" optionLabel="label" optionValue="value">
                         </p-select>
                     </td>
                     <td class="text-center">

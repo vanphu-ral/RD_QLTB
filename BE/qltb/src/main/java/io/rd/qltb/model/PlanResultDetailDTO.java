@@ -14,7 +14,6 @@ public class PlanResultDetailDTO {
 
     private Long id;
 
-
     private String criticalCode;
 
     private String criticalName;

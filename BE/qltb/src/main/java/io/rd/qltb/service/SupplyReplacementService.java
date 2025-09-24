@@ -107,7 +107,6 @@ public class SupplyReplacementService {
         if (supplyReplacement.getPlanResult() != null) {
             PlanResult resultCopy = new PlanResult();
             resultCopy.setId(supplyReplacement.getPlanResult().getId());
-            resultCopy.setCode(supplyReplacement.getPlanResult().getCode());
             resultCopy.setNote(supplyReplacement.getPlanResult().getNote());
             resultCopy.setStatus(supplyReplacement.getPlanResult().getStatus());
             resultCopy.setStatusRepair(supplyReplacement.getPlanResult().getStatusRepair());

@@ -1,6 +1,5 @@
 export class PlanResultDetail {
     id?: number;
-    planResultId?: number;
     criterialCode?: string;
     criterialName?: string;
     frequency?: string;
@@ -15,4 +14,5 @@ export class PlanResultDetail {
     createdAt?: Date;
     updatedBy?: string;
     updatedAt?: Date;
+    planResult?: any;
 }

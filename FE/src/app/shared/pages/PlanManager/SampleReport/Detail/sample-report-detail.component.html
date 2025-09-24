@@ -91,6 +91,7 @@
             <th>STT</th>
             <th>Nhóm tiêu trí</th>
             <th>Tiêu trí</th>
+            <th>Tần suất</th>
             <th *ngIf="!isViewMode">Thao tác</th>
           </tr>
         </ng-template>
@@ -106,6 +107,11 @@
             <td>
               <p-select [(ngModel)]="row.criterial" [options]="row.criterials" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
                 [showClear]="true" [appendTo]="'body'" id="criterial-{{ i }}" name="criterial-{{ i }}" dataKey="id">
+              </p-select>
+            </td>
+            <td>
+              <p-select [(ngModel)]="row.frequency" [options]="listFrequencies" [fluid]="true" [disabled]="isViewMode"
+                [showClear]="true" [appendTo]="'body'" id="frequency-{{ i }}" name="frequency-{{ i }}">
               </p-select>
             </td>
             <td class="text-center" *ngIf="!isViewMode">

@@ -21,10 +21,6 @@ public class PlanResult {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private String code;
-
-
     @Column(columnDefinition = "longtext")
     private String note;
 

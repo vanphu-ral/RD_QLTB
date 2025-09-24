@@ -81,7 +81,6 @@ public class AcceptanceService {
         if (acceptance.getPlanResult() != null) {
             PlanResult planResultCopy = new PlanResult();
             planResultCopy.setId(acceptance.getPlanResult().getId());
-            planResultCopy.setCode(acceptance.getPlanResult().getCode());
             planResultCopy.setStatus(acceptance.getPlanResult().getStatus());
             planResultCopy.setCreatedAt(acceptance.getPlanResult().getCreatedAt());
             planResultCopy.setUpdatedAt(acceptance.getPlanResult().getUpdatedAt());

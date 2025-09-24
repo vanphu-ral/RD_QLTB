@@ -10,6 +10,8 @@ import { KeyMappingService } from "../../../SampleReport/Service/key-mapping.ser
 import { PlanResultDetail } from "../../../../../models/PlanManger/plan-result-detail.model";
 import { ErrorReportDialog } from "../error-report-dialog/error-report.dialog";
 import { SupplyReplacementDialog } from "../supply-replacement-dialog/supply-replacement.dialog";
+import { PlanCheck } from "../../../../../models/PlanManger/plan-check.model";
+import { PlanResultService } from "../../Service/plan-result.service";
 
 @Component({
     selector: 'app-check-device-dialog',
@@ -20,11 +22,11 @@ import { SupplyReplacementDialog } from "../supply-replacement-dialog/supply-rep
 export class CheckDeviceDialog {
 
     data: any;
-    parentData: any;
+    model: PlanCheck = new PlanCheck();
     listCriterial: PlanResultDetail[] = [];
     listFrequencies: any[] = ["Ngày", "Tuần", "Tháng", "Quỹ", "6 Tháng", "Năm"];
-    listResult: any[] = ["Đạt", "Không đạt", "N/A"];
-    listStatus: any[] = [{ label: 'Chưa kiểm tra', value: 1 }, { label: 'Đã kiểm tra', value: 2 }];
+    listResult: any[] = ["OK", "Đã điều chỉnh", "Có bất thường"];
+    listStatus: any[] = [{ label: 'Đã kiểm tra', value: 1 }, { label: 'Chưa kiểm tra', value: 2 }, { label: 'Không kiểm tra', value: 3 }];
 
     constructor(
         public ref: DynamicDialogRef,
@@ -32,23 +34,40 @@ export class CheckDeviceDialog {
         private sampleReportService: SampleReportService,
         private keyMappingService: KeyMappingService,
         private dialogService: DialogService,
+        private planResultService: PlanResultService,
     ) {
-        this.data = config.data.planResult;
-        this.parentData = config.data.device;
+        this.data = config.data;
     }
 
     ngOnInit() {
         console.log(this.data);
-        console.log(this.parentData);
-        this.keyMappingService.getBySampleReport(this.parentData.sampleReportId).subscribe(res => {
+        this.planResultService.getEvaluationByPlanDetailId(this.data.planResult.planDetail.id).subscribe(res => {
+            console.log(res);
+            
+        });
+        this.keyMappingService.getBySampleReport(this.data.device.sampleReportId).subscribe(res => {
           this.listCriterial = res.map(x => {
             return {
                 criterialGroupName: x.criterial.criterialGroup.name || null,
                 criterialCode: x.criterial?.code || null,
                 criterialName: x.criterial?.name || null,
+                frequency: x.frequency,
             };
           });
-          console.log(this.listCriterial);
+        });
+    }
+
+    prepareModel() {
+        this.model.planResult = this.data.planResult || new PlanResult();
+        this.model.planResultDetail = this.listCriterial.map(x => {
+            return {
+                criterialCode: x.criterialCode,
+                criterialName: x.criterialName,
+                frequency: x.frequency,
+                result: x.result,
+                note: x.note,
+                status: x.status,
+            }
         });
     }
 
@@ -65,11 +84,11 @@ export class CheckDeviceDialog {
             header: `Khai báo vật tư thay thế`,
             width: '100%',
             modal: true,
-            data: { planResult: this.data, device: this.parentData },
+            data: this.model.supplyReplacement,
         });
         supplyReplacmentDialog.onClose.subscribe(result => {
             if (result) {
-                // this.loadData();
+                this.model.supplyReplacement = result;
             }
         });
     }
@@ -80,11 +99,11 @@ export class CheckDeviceDialog {
             header: `Khai báo sự cố`,
             width: 'auto',
             modal: true,
-            data: { planResult: this.data, device: this.parentData },
+            data: this.model.errorReport,
         });
         reportDialog.onClose.subscribe(result => {
             if (result) {
-                // this.loadData();
+                this.model.errorReport = result;
             }
         });
     }
@@ -93,7 +112,13 @@ export class CheckDeviceDialog {
 
 
     submit() {
-        // this.ref.close(this.ListDevice);
+        this.prepareModel();
+        console.log(this.model);
+        this.planResultService.saveEvaluation(this.model).subscribe({
+            next: (res) => {
+                Util.showSuccessMessage("Lưu kết quả kiểm tra thành công");
+            }
+        });
     }
 
     close() {

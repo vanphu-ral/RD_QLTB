@@ -34,7 +34,7 @@
                         <p-button icon="pi pi-save" styleClass="m-1"
                             (onClick)="saveDeviceCheckDate(row)" [disabled]="!row.dateTest"></p-button>
                         <p-button icon="pi pi-check-circle" styleClass="m-1" severity="info"
-                            (onClick)="checkDevice(row)" [disabled]="!row.dateTest"></p-button>
+                            (onClick)="checkDevice(row)" [disabled]="!row.id"></p-button>
                         <p-button icon="pi pi-trash" severity="danger"
                             (onClick)="deleteRow(i)">
                         </p-button>

@@ -77,4 +77,11 @@ public class PlanResultResource {
         planResultService.deleteAll(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/plan-detail/{planDetailId}")
+    public ResponseEntity<List<PlanResultDTO>> getByPlanDetailId(@PathVariable Long planDetailId) {
+        List<PlanResultDTO> results = planResultService.findAllByPlanDetailId(planDetailId);
+        return ResponseEntity.ok(results);
+    }
+
 }
