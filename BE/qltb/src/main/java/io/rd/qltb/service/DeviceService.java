@@ -18,15 +18,24 @@ import io.rd.qltb.util.ReferencedException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 
 @Service
 public class DeviceService {
-
+    @PersistenceContext
+    private EntityManager entityManager;
     private final DeviceRepository deviceRepository;
     private final DeviceGroupRepository deviceGroupRepository;
     private final LineRepository lineRepository;
@@ -45,7 +54,32 @@ public class DeviceService {
         this.teamRepository = teamRepository;
         this.publisher = publisher;
     }
+    @Transactional
+    public Page<DeviceDTO> findDevicesPaged(Map<String, Object> filters, int page) {
+        var cb = entityManager.getCriteriaBuilder();
+        var cq = cb.createQuery(Device.class);
+        var root = cq.from(Device.class);
 
+        List<Predicate> predicates = new ArrayList<>();
+        filters.forEach((key, value) -> {
+            if (value != null) {
+                predicates.add((Predicate) cb.equal(root.get(key), value));
+            }
+        });
+
+        cq.where(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
+        var query = entityManager.createQuery(cq);
+        query.setFirstResult(page * 10);
+        query.setMaxResults(10);
+
+        List<Device> devices = query.getResultList();
+        List<DeviceDTO> dtos = devices.stream()
+                .map(device -> mapToDTO(device, new DeviceDTO()))
+                .toList();
+
+        // Không có tổng số trang, nếu cần thì phải query count riêng
+        return new org.springframework.data.domain.PageImpl<>(dtos, PageRequest.of(page, 10), dtos.size());
+    }
     public List<DeviceDTO> findAll() {
         final List<Device> devices = deviceRepository.findAll(Sort.by("id"));
         return devices.stream()

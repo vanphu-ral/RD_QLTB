@@ -24,11 +24,10 @@ public class PlanResultDetail {
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column(nullable = false, length = 50)
+    private String criticalGroup;
     @Column(nullable = false, length = 50)
     private String criticalCode;
-    @Column
-    private String group;
 
     @Column(length = 200)
     private String criticalName;
