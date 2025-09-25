@@ -18,4 +18,5 @@ export class Plan {
     factory?: any;
     branch?: any;
     approvalWorkflow?: any;
+    planDetails: any
 }

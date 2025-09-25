@@ -1,15 +1,39 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { BaseApiService, CreateEntity } from '../../../../service/base-api.service';
 import { Plan } from '../../../../models/PlanManger/plan.model';
 import { Observable } from 'rxjs';
 import { PlanRequest } from '../../../../models/PlanManger/plan-request.model';
 import _ from 'lodash';
 
+export interface Page<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  number: number;   // số trang hiện tại (0-based)
+  size: number;     // số bản ghi mỗi trang
+  first: boolean;
+  last: boolean;
+  numberOfElements: number;
+  empty: boolean;
+}
+
 @Injectable({ providedIn: 'root' })
 export class PlanService extends BaseApiService<PlanRequest> {
   constructor(http: HttpClient) {
     super(http, 'api/plans');
+  }
+
+  getPlans(filters: any, page: number): Observable<any> {
+    let params = new HttpParams().set('page', page.toString());
+
+    Object.keys(filters).forEach(key => {
+      if (filters[key] !== null && filters[key] !== undefined) {
+        params = params.set(key, filters[key]);
+      }
+    });
+
+    return this.http.get<Page<Plan>>(`${this['fullBaseUrl']}/paged`, { params, withCredentials: true });
   }
 
   createPlanWithDetails(entity: CreateEntity<PlanRequest>): Observable<PlanRequest> {
