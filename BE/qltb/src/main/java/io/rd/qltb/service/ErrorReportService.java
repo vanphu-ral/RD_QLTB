@@ -77,6 +77,7 @@ public class ErrorReportService {
         errorReportDTO.setSeverity(errorReport.getSeverity());
         errorReportDTO.setErrorDescription(errorReport.getErrorDescription());
         errorReportDTO.setReportedBy(errorReport.getReportedBy());
+        errorReportDTO.setResult(errorReport.getResult());
         errorReportDTO.setTimeReported(errorReport.getTimeReported());
         errorReportDTO.setIsRepaired(errorReport.getIsRepaired());
         errorReportDTO.setRepairDescription(errorReport.getRepairDescription());
@@ -122,6 +123,7 @@ public class ErrorReportService {
         errorReport.setSeverity(errorReportDTO.getSeverity());
         errorReport.setErrorDescription(errorReportDTO.getErrorDescription());
         errorReport.setReportedBy(errorReportDTO.getReportedBy());
+        errorReport.setResult(errorReportDTO.getResult());
         errorReport.setTimeReported(errorReportDTO.getTimeReported());
         errorReport.setIsRepaired(errorReportDTO.getIsRepaired());
         errorReport.setRepairDescription(errorReportDTO.getRepairDescription());

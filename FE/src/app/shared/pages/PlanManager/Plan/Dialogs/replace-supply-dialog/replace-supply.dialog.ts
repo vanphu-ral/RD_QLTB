@@ -31,8 +31,6 @@ export class ReplaceSupplyDialog {
     }
 
     ngOnInit() {
-        console.log(this.data);
-        
         this.loadData();
     }
 

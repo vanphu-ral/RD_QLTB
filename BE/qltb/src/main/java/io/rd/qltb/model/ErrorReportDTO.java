@@ -35,6 +35,8 @@ public class ErrorReportDTO {
     @Size(max = 200)
     private String repairedBy;
 
+    private String result;
+
     private LocalDateTime timeRepaired;
 
     @Size(max = 255)
@@ -52,7 +54,6 @@ public class ErrorReportDTO {
     @Size(max = 255)
     private String updatedBy;
 
-    @Size(max = 255)
     private Integer status;
 
     private PlanResult planResult;

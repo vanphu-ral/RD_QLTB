@@ -20,7 +20,7 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
 import { EditorModule } from 'primeng/editor';
 import { FieldsetModule } from 'primeng/fieldset';
 import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { Dialog } from 'primeng/dialog';
 import { DatePickerModule } from 'primeng/datepicker';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -111,6 +111,6 @@ import { DisableIfInvalidDirective } from './shared/directive/disable-invalid.di
     BadgeModule,
     DisableIfInvalidDirective
   ],
-  providers: [DialogService, MessageService]
+  providers: [DialogService, MessageService, ConfirmationService]
 })
 export class SharedModule {}

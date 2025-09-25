@@ -39,8 +39,6 @@ export class SupplyReplacementDialog {
     }
 
     ngOnInit() {
-        console.log(this.data);
-
         this.loadData();
     }
 
@@ -88,7 +86,6 @@ export class SupplyReplacementDialog {
                 this.supplyReplaceHistory.newSupply = result.supply;
                 this.supplyReplaceHistory.reason = result.description;
                 this.listSupplyReplaceHistory.push(this.supplyReplaceHistory);
-                console.log(this.listSupplyReplace);
                 this.cdr.detectChanges();
             }
         });

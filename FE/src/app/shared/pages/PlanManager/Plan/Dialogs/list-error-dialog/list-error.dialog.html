@@ -1,0 +1,50 @@
+<div class="p-1">
+    <div class="table-responsive">
+        <p-table [value]="listError" responsiveLayout="scroll">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>STT</th>
+                    <th>Tên lỗi</th>
+                    <th>Ngày gặp sự cố</th>
+                    <th>Loại sự cố</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-row let-i="rowIndex">
+                <tr>
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ row.name }}</td>
+                    <td>{{ row.timeReported | date: 'dd-MM-yyyy' }}</td>
+                    <td>{{ getSeverity(row.severity) }}</td>
+                    <td>{{ row.isRepaired ? 'Đã sửa' : 'Chưa sửa' }}</td>
+                    <td class="text-center">
+                        <p-button icon="pi pi-check" severity="success" class="m-1"
+                            (onClick)="confirmError($event, row)" *ngIf="!row.isRepaired">
+                        </p-button>
+                        <p-button icon="fa-solid fa-hammer" severity="warn" class="m-1"
+                            (onClick)="repairError(row)" *ngIf="!row.isRepaired">
+                        </p-button>
+                        <p-button icon="pi pi-trash" severity="danger" class="m-1"
+                            (onClick)="deleteRow(i)">
+                        </p-button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="99" class="text-center">Chưa có đợt kiểm tra nào</td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <p-button label="Đóng" (onClick)="close()"></p-button>
+    </div>
+</div>
+
+<p-confirmDialog></p-confirmDialog>
+<p-toast></p-toast>

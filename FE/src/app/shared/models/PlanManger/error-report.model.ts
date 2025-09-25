@@ -9,6 +9,7 @@ export class ErrorReport {
     isRepaired?: boolean;
     repairDescription?: string;
     repairedBy?: string;
+    result?: string;
     timeRepaired?: Date;
     user?: string;
     status?: number;

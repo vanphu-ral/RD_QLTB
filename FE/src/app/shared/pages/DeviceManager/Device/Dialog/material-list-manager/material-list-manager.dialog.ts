@@ -49,13 +49,9 @@ export class MaterialListManagerDialogComponent {
                         if (item.id) {
                             this.supplyDetailService.getBySupplyId(item.id).subscribe({
                                 next: (serialList) => {
-                                    console.log(serialList);
-                                    
                                     this.serialOptions[index] = serialList;
                                     const serialObj: any = serialList.find(s => s.serial === item.serial);
-                                    console.log(serialObj);
                                     if (serialObj) {
-                                        
                                         this.listMaterial[index].serial = serialObj;
                                     }
                                     this.cdr.detectChanges();
