@@ -37,7 +37,12 @@ public class ErrorReportService {
                 .map(errorReport -> mapToDTO(errorReport, new ErrorReportDTO()))
                 .toList();
     }
-
+    public List<ErrorReportDTO> findByPlanDetailId(final Long id) {
+        final List<ErrorReport> errorReports = errorReportRepository.findByPlanDetailId(id);
+        return errorReports.stream()
+                .map(errorReport -> mapToDTO(errorReport, new ErrorReportDTO()))
+                .toList();
+    }
     public ErrorReportDTO get(final Long id) {
         return errorReportRepository.findById(id)
                 .map(errorReport -> mapToDTO(errorReport, new ErrorReportDTO()))

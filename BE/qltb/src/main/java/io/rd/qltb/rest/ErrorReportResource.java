@@ -37,7 +37,10 @@ public class ErrorReportResource {
     public ResponseEntity<ErrorReportDTO> getErrorReport(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(errorReportService.get(id));
     }
-
+    @GetMapping("/plan-detail/{id}")
+    public ResponseEntity<List<ErrorReportDTO>> findByPlanDetailId(@PathVariable(name = "id") final Long id) {
+        return ResponseEntity.ok(errorReportService.findByPlanDetailId(id));
+    }
     @PostMapping
     @ApiResponse(responseCode = "201")
     public ResponseEntity<Long> createErrorReport(
