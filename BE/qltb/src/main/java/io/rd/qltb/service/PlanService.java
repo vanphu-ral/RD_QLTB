@@ -100,7 +100,12 @@ public class PlanService {
         List<PlanDTO> dtos = plans.stream()
                 .map(plan -> mapToDTO(plan, new PlanDTO()))
                 .toList();
-
+        for (PlanDTO dto : dtos) {
+            List<PlanDetail> details = planDetailRepository.findAllByPlanId(dto.getId());
+            dto.setPlanDetails(details.stream()
+                    .map(detail -> planDetailService.mapToDTO(detail, new PlanDetailDTO()))
+                    .toList());
+        }
         // Nếu cần tổng số bản ghi để phân trang, hãy query count riêng
         return new PageImpl<>(dtos, PageRequest.of(page, 10), dtos.size());
     }

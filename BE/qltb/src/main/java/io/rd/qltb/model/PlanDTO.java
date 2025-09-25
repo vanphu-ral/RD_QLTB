@@ -1,12 +1,11 @@
 package io.rd.qltb.model;
 
-import io.rd.qltb.domain.ApprovalWorkflow;
-import io.rd.qltb.domain.Branch;
-import io.rd.qltb.domain.Factory;
-import io.rd.qltb.domain.PlanType;
+import io.rd.qltb.domain.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -51,5 +50,6 @@ public class PlanDTO {
     private Branch branch;
 
     private ApprovalWorkflow approvalWorkflow;
+    private List<PlanDetailDTO> planDetails;
 
 }
