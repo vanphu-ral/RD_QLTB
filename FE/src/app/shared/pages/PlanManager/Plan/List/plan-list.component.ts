@@ -11,6 +11,7 @@ import { TableRowCollapseEvent, TableRowExpandEvent } from 'primeng/table';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Util } from '../../../../core/utils/utils-function';
+import { ListErrorDialog } from '../Dialogs/list-error-dialog/list-error.dialog';
 
 @Component({
   selector: 'plan-list',
@@ -156,5 +157,22 @@ export class PlanListComponent {
       if (result && result.length > 0) {
       }
     });
+  }
+
+  repairDevice(item: any) {
+    this.ref = this.dialogService.open(ListErrorDialog, {
+      header: `Danh sách lỗi thiết bị`,
+      width: 'auto',
+      modal: true,
+      data: item,
+    });
+    this.ref.onClose.subscribe((result) => {
+      if (result && result.length > 0) {
+      }
+    });
+  }
+
+  viewEvaluateDevice(item: any) {
+    
   }
 }

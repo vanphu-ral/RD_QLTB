@@ -55,6 +55,9 @@ public class ErrorReport {
     private String repairedBy;
 
     @Column
+    private String result;
+
+    @Column
     private LocalDateTime timeRepaired;
 
     @Column
