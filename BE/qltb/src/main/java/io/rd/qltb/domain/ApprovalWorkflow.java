@@ -1,7 +1,12 @@
 package io.rd.qltb.domain;
 
-import jakarta.persistence.*;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -43,11 +48,9 @@ public class ApprovalWorkflow {
 
     @Column
     private Integer status;
-//    @OneToMany(mappedBy = "workflow")
-//    private Set<ApprovalGroup> workflowApprovalGroups = new HashSet<>();
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "approval_group_id")
-    private ApprovalGroup workflowApprovalGroups;
+
+    @OneToMany(mappedBy = "workflow")
+    private Set<ApprovalGroup> workflowApprovalGroups = new HashSet<>();
 
     @OneToMany(mappedBy = "approvalWorkflow")
     private Set<SampleReport> workflowSampleReports = new HashSet<>();

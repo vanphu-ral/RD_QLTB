@@ -41,14 +41,14 @@ public class PlanDetailResource {
     public ResponseEntity<PlanDetailDTO> getPlanDetail(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(planDetailService.get(id));
     }
-    @PostMapping("/approval")
-    public ResponseEntity createScriptApproval(
-            @AuthenticationPrincipal OidcUser oidcUser,
-            @RequestBody Plan plan,
-            @RequestParam("entityType") String entityType) {
-         planDetailService.createScriptApproval(plan, entityType,oidcUser.getName());
-        return ResponseEntity.ok().build();
-    }
+//    @PostMapping("/approval")
+//    public ResponseEntity createScriptApproval(
+//            @AuthenticationPrincipal OidcUser oidcUser,
+//            @RequestBody Plan plan,
+//            @RequestParam("entityType") String entityType) {
+//         planDetailService.createScriptApproval(plan, entityType,oidcUser.getName());
+//        return ResponseEntity.ok().build();
+//    }
     @PostMapping
     @ApiResponse(responseCode = "201")
     public ResponseEntity<Long> createPlanDetail(

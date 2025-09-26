@@ -52,22 +52,22 @@ public class PlanDetailService {
         this.approvalWorkflowRepository = approvalWorkflowRepository;
     }
 
-    public void createScriptApproval(Plan plan,String entityType,String userName){
-        ApprovalWorkflow approvalWorkflow = approvalWorkflowRepository.findById(plan.getApprovalWorkflow().getId()).orElseThrow(()-> new NotFoundException("approvalWorkflow not found"));
-        for(ApprovalGroupUser approvalGroupUser: approvalWorkflow.getWorkflowApprovalGroups().getGroupApprovalGroupUsers()){
-            Approval approval = new Approval();
-            approval.setEntityId(plan.getId());
-            approval.setEntityType(entityType);
-            approval.setUserApproval(approvalGroupUser);
-            approval.setStatus(1);
-            approval.setCreatedAt(LocalDateTime.now());
-            approval.setUpdatedAt(LocalDateTime.now());
-            approval.setCreatedBy(userName);
-            approval.setGroup(approvalWorkflow.getWorkflowApprovalGroups());
-            approval.setWorkflow(approvalWorkflow);
-            approvalRepository.save(approval);
-        }
-    }
+//    public void createScriptApproval(Plan plan,String entityType,String userName){
+//        ApprovalWorkflow approvalWorkflow = approvalWorkflowRepository.findById(plan.getApprovalWorkflow().getId()).orElseThrow(()-> new NotFoundException("approvalWorkflow not found"));
+//        for(ApprovalGroupUser approvalGroupUser: approvalWorkflow.getApprovalGroup().getGroupApprovalGroupUsers()){
+//            Approval approval = new Approval();
+//            approval.setEntityId(plan.getId());
+//            approval.setEntityType(entityType);
+//            approval.setUserApproval(approvalGroupUser);
+//            approval.setStatus(1);
+//            approval.setCreatedAt(LocalDateTime.now());
+//            approval.setUpdatedAt(LocalDateTime.now());
+//            approval.setCreatedBy(userName);
+//            approval.setGroup(approvalWorkflow.getApprovalGroup());
+//            approval.setWorkflow(approvalWorkflow);
+//            approvalRepository.save(approval);
+//        }
+//    }
     public PlanCheckDTO getPlanCheckDetail(final Long id,String entityType) {
         // Lấy thông tin PlanDetail
         final PlanDetail planDetail = planDetailRepository.findById(id)
