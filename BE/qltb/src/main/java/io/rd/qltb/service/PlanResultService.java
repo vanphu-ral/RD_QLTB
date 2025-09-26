@@ -180,7 +180,7 @@ public class PlanResultService {
     }
 
 
-    private PlanResultDTO mapToDTO(final PlanResult planResult, final PlanResultDTO planResultDTO) {
+    public PlanResultDTO mapToDTO(final PlanResult planResult, final PlanResultDTO planResultDTO) {
         planResultDTO.setId(planResult.getId());
         planResultDTO.setNote(planResult.getNote());
         planResultDTO.setDateTest(planResult.getDateTest());
@@ -214,7 +214,7 @@ public class PlanResultService {
         return planResultDTO;
     }
 
-    private PlanResult mapToEntity(final PlanResultDTO planResultDTO, final PlanResult planResult) {
+    public PlanResult mapToEntity(final PlanResultDTO planResultDTO, final PlanResult planResult) {
         planResult.setNote(planResultDTO.getNote());
         planResult.setDateTest(planResultDTO.getDateTest());
         planResult.setUserTest(planResultDTO.getUserTest());

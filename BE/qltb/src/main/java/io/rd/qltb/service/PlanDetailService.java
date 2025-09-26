@@ -4,8 +4,10 @@ import io.rd.qltb.domain.*;
 import io.rd.qltb.events.BeforeDeleteDevice;
 import io.rd.qltb.events.BeforeDeleteDeviceGroup;
 import io.rd.qltb.events.BeforeDeletePlan;
-import io.rd.qltb.model.DeviceSupplyUsageDTO;
+import io.rd.qltb.model.ApprovalDTO;
+import io.rd.qltb.model.PlanCheckDTO;
 import io.rd.qltb.model.PlanDetailDTO;
+import io.rd.qltb.model.PlanResultDetailDTO;
 import io.rd.qltb.repos.*;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
@@ -25,18 +27,47 @@ public class PlanDetailService {
     private final DeviceRepository deviceRepository;
     private final SampleReportRepository sampleReportRepository;
     private final DeviceGroupRepository deviceGroupRepository;
+    private final ApprovalRepository approvalRepository;
+    private final ApprovalService approvalService;
+    private final PlanResultDetailRepository planResultDetailRepository;
+    private final PlanResultService planResultService;
+    private final PlanResultDetailService planResultDetailService;
 
     public PlanDetailService(final PlanDetailRepository planDetailRepository,
-            final PlanRepository planRepository, final DeviceRepository deviceRepository,
-            final SampleReportRepository sampleReportRepository,
-            final DeviceGroupRepository deviceGroupRepository) {
+                             final PlanRepository planRepository, final DeviceRepository deviceRepository,
+                             final SampleReportRepository sampleReportRepository,
+                             final DeviceGroupRepository deviceGroupRepository, ApprovalRepository approvalRepository, ApprovalService approvalService, PlanResultDetailRepository planResultDetailRepository, PlanResultService planResultService, PlanResultDetailService planResultDetailService) {
         this.planDetailRepository = planDetailRepository;
         this.planRepository = planRepository;
         this.deviceRepository = deviceRepository;
         this.deviceGroupRepository = deviceGroupRepository;
         this.sampleReportRepository = sampleReportRepository;
+        this.approvalRepository = approvalRepository;
+        this.approvalService = approvalService;
+        this.planResultDetailRepository = planResultDetailRepository;
+        this.planResultService = planResultService;
+        this.planResultDetailService = planResultDetailService;
     }
-
+    public PlanCheckDTO getPlanCheckDetail(final Long id,String entityType) {
+        // Lấy thông tin PlanDetail
+        final PlanDetail planDetail = planDetailRepository.findById(id)
+                .orElseThrow(NotFoundException::new);
+        PlanCheckDTO planCheckDTO = new PlanCheckDTO();
+        planCheckDTO.setPlanDetail(mapToDTO(planDetail, new PlanDetailDTO()));
+        //  Lấy thông tin Approval dựa trên entityType và entityId
+        final List<Approval> approvals = approvalRepository.findByEntityTypeAndEntityId(entityType, id);
+        List<ApprovalDTO> approvalDTOS = approvals.stream()
+                .map(approval -> approvalService.mapToDTO(approval, new ApprovalDTO()))
+                .toList();
+        planCheckDTO.setApprovals(approvalDTOS);
+        // Lấy thông tin PlanResultDetail dựa trên planDetailId
+        List<PlanResultDetail> planResultDetails = planResultDetailRepository.getByPlanDetailId(id);
+        List<PlanResultDetailDTO> planResultDetailDTOS = planResultDetails.stream()
+                .map(planResultDetail -> planResultDetailService.mapToDTO(planResultDetail, new PlanResultDetailDTO()))
+                .toList();
+        planCheckDTO.setPlanResultDetail(planResultDetailDTOS);
+        return planCheckDTO;
+    }
     public List<PlanDetailDTO> findAll() {
         final List<PlanDetail> planDetails = planDetailRepository.findAll(Sort.by("id"));
         return planDetails.stream()

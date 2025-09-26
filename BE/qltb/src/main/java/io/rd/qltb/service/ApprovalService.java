@@ -53,7 +53,7 @@ public class ApprovalService {
         approvalRepository.delete(approval);
     }
 
-    private ApprovalDTO mapToDTO(final Approval approval, final ApprovalDTO approvalDTO) {
+    public ApprovalDTO mapToDTO(final Approval approval, final ApprovalDTO approvalDTO) {
         approvalDTO.setId(approval.getId());
         approvalDTO.setEntityType(approval.getEntityType());
         approvalDTO.setEntityId(approval.getEntityId());
@@ -125,7 +125,7 @@ public class ApprovalService {
         return approvalDTO;
     }
 
-    private Approval mapToEntity(final ApprovalDTO approvalDTO, final Approval approval) {
+    public Approval mapToEntity(final ApprovalDTO approvalDTO, final Approval approval) {
         approval.setEntityType(approvalDTO.getEntityType());
         approval.setEntityId(approvalDTO.getEntityId());
         approval.setEntityId(approvalDTO.getEntityId());
