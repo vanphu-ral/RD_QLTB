@@ -1,6 +1,7 @@
 package io.rd.qltb.rest;
 
 import io.rd.qltb.model.DeviceSupplyUsageDTO;
+import io.rd.qltb.model.PlanCheckDTO;
 import io.rd.qltb.model.PlanDetailDTO;
 import io.rd.qltb.service.PlanDetailService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -9,14 +10,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -33,7 +27,13 @@ public class PlanDetailResource {
     public ResponseEntity<List<PlanDetailDTO>> getAllPlanDetails() {
         return ResponseEntity.ok(planDetailService.findAll());
     }
-
+    @GetMapping("/summary/{id}")
+    public ResponseEntity<PlanCheckDTO> getPlanCheckDetail(
+            @PathVariable("id") Long id,
+            @RequestParam("entityType") String entityType) {
+        PlanCheckDTO planCheckDTO = planDetailService.getPlanCheckDetail(id, entityType);
+        return ResponseEntity.ok(planCheckDTO);
+    }
     @GetMapping("/{id}")
     public ResponseEntity<PlanDetailDTO> getPlanDetail(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(planDetailService.get(id));

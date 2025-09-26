@@ -9,8 +9,10 @@ import java.util.List;
 @Getter
 @Setter
 public class PlanCheckDTO {
-    private PlanResultDTO planResult;
-    private List<PlanResultDetailDTO> planResultDetail;
-    private List<ErrorReportDTO> errorReport;
-    private  List<SupplyReplacementDTO> supplyReplacement;
+    private PlanResultDTO planResult; // thông tin chung kết quả kiểm tra
+    private List<PlanResultDetailDTO> planResultDetail; // chi tiết kết quả kiểm tra
+    private List<ErrorReportDTO> errorReport; // thông tin báo lỗi
+    private  List<SupplyReplacementDTO> supplyReplacement;// thông tin thay thế vật tư
+    private List<ApprovalDTO> approvals; // thông tin ký duyệt của mau bien ban
+    private PlanDetailDTO planDetail; // thông tin kế hoạch kiểm tra
 }
