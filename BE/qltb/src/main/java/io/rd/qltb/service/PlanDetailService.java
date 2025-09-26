@@ -12,6 +12,7 @@ import io.rd.qltb.repos.*;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.context.event.EventListener;
@@ -32,11 +33,12 @@ public class PlanDetailService {
     private final PlanResultDetailRepository planResultDetailRepository;
     private final PlanResultService planResultService;
     private final PlanResultDetailService planResultDetailService;
+    private final ApprovalWorkflowRepository approvalWorkflowRepository;
 
     public PlanDetailService(final PlanDetailRepository planDetailRepository,
                              final PlanRepository planRepository, final DeviceRepository deviceRepository,
                              final SampleReportRepository sampleReportRepository,
-                             final DeviceGroupRepository deviceGroupRepository, ApprovalRepository approvalRepository, ApprovalService approvalService, PlanResultDetailRepository planResultDetailRepository, PlanResultService planResultService, PlanResultDetailService planResultDetailService) {
+                             final DeviceGroupRepository deviceGroupRepository, ApprovalRepository approvalRepository, ApprovalService approvalService, PlanResultDetailRepository planResultDetailRepository, PlanResultService planResultService, PlanResultDetailService planResultDetailService, ApprovalWorkflowRepository approvalWorkflowRepository) {
         this.planDetailRepository = planDetailRepository;
         this.planRepository = planRepository;
         this.deviceRepository = deviceRepository;
@@ -47,6 +49,24 @@ public class PlanDetailService {
         this.planResultDetailRepository = planResultDetailRepository;
         this.planResultService = planResultService;
         this.planResultDetailService = planResultDetailService;
+        this.approvalWorkflowRepository = approvalWorkflowRepository;
+    }
+
+    public void createScriptApproval(Plan plan,String entityType,String userName){
+        ApprovalWorkflow approvalWorkflow = approvalWorkflowRepository.findById(plan.getApprovalWorkflow().getId()).orElseThrow(()-> new NotFoundException("approvalWorkflow not found"));
+        for(ApprovalGroupUser approvalGroupUser: approvalWorkflow.getWorkflowApprovalGroups().getGroupApprovalGroupUsers()){
+            Approval approval = new Approval();
+            approval.setEntityId(plan.getId());
+            approval.setEntityType(entityType);
+            approval.setUserApproval(approvalGroupUser);
+            approval.setStatus(1);
+            approval.setCreatedAt(LocalDateTime.now());
+            approval.setUpdatedAt(LocalDateTime.now());
+            approval.setCreatedBy(userName);
+            approval.setGroup(approvalWorkflow.getWorkflowApprovalGroups());
+            approval.setWorkflow(approvalWorkflow);
+            approvalRepository.save(approval);
+        }
     }
     public PlanCheckDTO getPlanCheckDetail(final Long id,String entityType) {
         // Lấy thông tin PlanDetail

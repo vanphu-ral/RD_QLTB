@@ -1,5 +1,6 @@
 package io.rd.qltb.rest;
 
+import io.rd.qltb.domain.Plan;
 import io.rd.qltb.model.DeviceSupplyUsageDTO;
 import io.rd.qltb.model.PlanCheckDTO;
 import io.rd.qltb.model.PlanDetailDTO;
@@ -10,6 +11,8 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -38,7 +41,14 @@ public class PlanDetailResource {
     public ResponseEntity<PlanDetailDTO> getPlanDetail(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(planDetailService.get(id));
     }
-
+    @PostMapping("/approval")
+    public ResponseEntity createScriptApproval(
+            @AuthenticationPrincipal OidcUser oidcUser,
+            @RequestBody Plan plan,
+            @RequestParam("entityType") String entityType) {
+         planDetailService.createScriptApproval(plan, entityType,oidcUser.getName());
+        return ResponseEntity.ok().build();
+    }
     @PostMapping
     @ApiResponse(responseCode = "201")
     public ResponseEntity<Long> createPlanDetail(

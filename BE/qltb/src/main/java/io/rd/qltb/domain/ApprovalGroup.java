@@ -49,9 +49,11 @@ public class ApprovalGroup {
     @Column
     private Integer status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "workflow_id")
-    private ApprovalWorkflow workflow;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "workflow_id")
+//    private ApprovalWorkflow workflow;
+    @OneToMany(mappedBy = "workflow")
+    private Set<ApprovalWorkflow> workflowApprovalWorkflows = new HashSet<>();
 
     @ManyToOne(fetch =  FetchType.LAZY)
     @JoinColumn(name = "group_appr_name_id")
