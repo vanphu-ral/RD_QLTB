@@ -1,43 +1,36 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component } from '@angular/core';
 import { SharedModule } from '../../../../../share.module';
 import { CommonModule } from '@angular/common';
 import { BasePageComponent } from '../../../../core/base-page-component/base-page.component';
-import { LineService } from '../Service/line.service';
+import { SignatureService } from '../Service/signature.service';
 import { Util } from '../../../../core/utils/utils-function';
-import { AccountService } from '../../../../core/auth/account/account.service';
-import { NavigationService } from '../../../../service/navigation.service';
-import { FactoryService } from '../../Factory/Service/factory.service';
+import { CriterialGroup } from '../../../../models/PlanManger/criterial-group.model';
+import { Signature } from '../../../../models/SystemManager/signature.model';
 import _ from 'lodash';
-import { Team } from '../../../../models/Catogories/team.model';
-import { Line } from '../../../../models/Catogories/line.model';
-import { TeamService } from '../../Team/Service/team.service';
 
 @Component({
-  selector: 'app-line-detail',
+  selector: 'app-signature-detail',
   standalone: true,
   imports: [SharedModule, CommonModule],
-  templateUrl: './line-detail.component.html',
-  styleUrls: ['./line-detail.component.scss']
+  templateUrl: './signature-detail.component.html',
+  styleUrls: ['./signature-detail.component.scss']
 })
-export class LineDetailComponent extends BasePageComponent<Line> {
+export class SignatureDetailComponent extends BasePageComponent<Signature> {
 
-  listTeams: any[] = [];
   listUsers: any[] = []
 
   constructor(
-    protected override apiService: LineService,
-    private teamApi: TeamService,
+    protected override apiService: SignatureService,
   ) {
     super(apiService);
   }
 
   override ngOnInit(): void {
     super.ngOnInit();
-    this.teamApi.getAll().subscribe((teams) => {
-      this.listTeams = teams;
-      this.cdr.detectChanges();
-    });
+    this.loadListUser();
+  }
+
+  loadListUser() {
     this.apiService.getUsers().subscribe(users => {
       this.listUsers = _.map(users, user => {
         const firstName = user.firstName ?? '';
@@ -52,10 +45,27 @@ export class LineDetailComponent extends BasePageComponent<Line> {
     })
   }
 
+  onFileSelect(event: any) {
+    const file: File = event.files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (this.model) {
+        this.model.imageLink = reader.result as string; // gán ngay
+      }
+    };
+
+    reader.readAsDataURL(file);
+  }
+
+
+
   public override save(): void {
     if (this.model) {
+
+      this.model = Util.prepareModel(this.model);
+      console.log(this.model);
+
       if (this.isAddMode) {
-        this.model = Util.prepareModel(this.model);
         this.apiService.create(this.model).subscribe({
           next: () => {
             Util.ConfirmMessage('Thêm mới thành công', 'success');

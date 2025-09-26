@@ -37,7 +37,16 @@
     </div>
 
     <div class="row my-3">
-      <div class="col-12">
+      <div class="col-6">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.manager" [options]="listUsers" optionLabel="name" optionValue="username"
+            [fluid]="true" [disabled]="isViewMode" [showClear]="true" [filter]="true" [appendTo]="'body'" id="manager" name="manager"
+            dataKey="username">
+          </p-select>
+          <label for="manager">Người quản lý</label>
+        </p-floatlabel>
+      </div>
+      <div class="col-6">
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.status" [options]="listStatus" optionLabel="label" [fluid]="true" [disabled]="isViewMode"
             optionValue="value" [showClear]="true" [appendTo]="'body'" id="status" name="status" required [invalid]="!model.status">

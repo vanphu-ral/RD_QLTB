@@ -115,5 +115,12 @@ export const routes: Routes = [
         path: 'ApprovalWorkflows',
         component: AppLayout,
         loadChildren: () => import('./shared/pages/ApprovalManager/ApprovalWorkflow/approval-workflow.routes').then(m => m.default)
+    },
+
+    // System Manager
+    {
+        path: 'Signatures',
+        component: AppLayout,
+        loadChildren: () => import('./shared/pages/SystemManager/Signature/signature.routes').then(m => m.default)
     }
 ];

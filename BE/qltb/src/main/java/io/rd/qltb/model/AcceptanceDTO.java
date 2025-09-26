@@ -1,5 +1,6 @@
 package io.rd.qltb.model;
 
+import io.rd.qltb.domain.ApprovalWorkflow;
 import io.rd.qltb.domain.ErrorReport;
 import io.rd.qltb.domain.PlanResult;
 import jakarta.validation.constraints.NotNull;
@@ -42,5 +43,7 @@ public class AcceptanceDTO {
     private PlanResult planResult;
 
     private ErrorReport errorReport;
+
+    private ApprovalWorkflow approvalWorkflow;
 
 }

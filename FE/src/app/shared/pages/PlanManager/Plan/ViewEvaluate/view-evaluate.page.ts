@@ -11,6 +11,10 @@ import { TableRowCollapseEvent, TableRowExpandEvent } from 'primeng/table';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Util } from '../../../../core/utils/utils-function';
+import { BasePageComponent } from '../../../../core/base-page-component/base-page.component';
+import { PlanRequest } from '../../../../models/PlanManger/plan-request.model';
+import { PlanDetailService } from '../Service/plan-detail.service';
+import { PlanDetail } from '../../../../models/PlanManger/plan-detail.model';
 
 @Component({
   selector: 'view-evaluate',
@@ -20,18 +24,24 @@ import { Util } from '../../../../core/utils/utils-function';
   templateUrl: './view-evaluate.page.html',
   styleUrls: ['./view-evaluate.page.scss'],
 })
-export class ViewEvaluatePage {
+export class ViewEvaluatePage extends BasePageComponent<PlanDetail> {
+  
+  constructor(
+    protected override apiService: PlanDetailService
+  ) {
+    super(apiService);
+  }
 
-
-  constructor(public apiService: PlanService, private router: Router, private route: ActivatedRoute, private dialogService: DialogService, private cdr: ChangeDetectorRef, private messageService: MessageService, private confirmationService: ConfirmationService) { }
-
-  ngOnInit(): void {
-    this.loadData();
+  override ngOnInit(): void {
+    super.ngOnInit()
   }
 
   loadData() {
    
   }
 
+  public override save(): void {
+    throw new Error('Method not implemented.');
+  }
  
 }

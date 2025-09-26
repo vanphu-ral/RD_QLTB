@@ -60,6 +60,7 @@ export const MENU_ITEMS: MenuItem[] = [
                 label: 'Quản trị hệ thống',
                 icon: 'fa-brands fa-windows',
                 items: [
+                    { label: 'Quản lý chữ ký số', icon: 'fa-solid fa-signature', routerLink: ['/Signatures'] },
                     { label: 'Nhóm người dùng', icon: 'fa-solid fa-users', routerLink: ['/Role'] },
                     { label: 'Người dùng', icon: 'fa-solid fa-user-gear', routerLink: ['/User'] },
                     { label: 'Lịch sử đăng nhập', icon: 'fa-solid fa-clock-rotate-left', routerLink: ['/UserLogin'] },

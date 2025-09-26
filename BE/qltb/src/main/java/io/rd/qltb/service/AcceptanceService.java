@@ -1,6 +1,7 @@
 package io.rd.qltb.service;
 
 import io.rd.qltb.domain.Acceptance;
+import io.rd.qltb.domain.ApprovalWorkflow;
 import io.rd.qltb.domain.ErrorReport;
 import io.rd.qltb.domain.PlanResult;
 import io.rd.qltb.events.BeforeDeleteErrorReport;
@@ -116,6 +117,13 @@ public class AcceptanceService {
             acceptanceDTO.setErrorReport(errorReportCopy);
         } else {
             acceptanceDTO.setErrorReport(null);
+        }
+        if(acceptance.getApprovalWorkflow() != null) {
+            ApprovalWorkflow approvalWorkflowCopy = new ApprovalWorkflow();
+            approvalWorkflowCopy.setId(acceptance.getApprovalWorkflow().getId());
+            approvalWorkflowCopy.setCode(acceptance.getApprovalWorkflow().getCode());
+            approvalWorkflowCopy.setName(acceptance.getApprovalWorkflow().getName());
+            approvalWorkflowCopy.setStatus(acceptance.getApprovalWorkflow().getStatus());
         }
 
         return acceptanceDTO;

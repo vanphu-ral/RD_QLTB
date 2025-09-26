@@ -21,6 +21,7 @@ import { BranchService } from '../../Branch/Service/branch.service';
 export class TeamDetailComponent extends BasePageComponent<Team> {
 
   listBranches: any[] = [];
+  listUsers: any[] = []
 
   constructor(
     protected override apiService: TeamService,
@@ -35,6 +36,18 @@ export class TeamDetailComponent extends BasePageComponent<Team> {
       this.listBranches = branches;
       this.cdr.detectChanges();
     });
+    this.apiService.getUsers().subscribe(users => {
+      this.listUsers = _.map(users, user => {
+        const firstName = user.firstName ?? '';
+        const lastName = user.lastName ?? '';
+        const fullName = [firstName, lastName].filter(Boolean).join(' ').trim();
+        return {
+          name: fullName ? `${user.username} - ${fullName}` : user.username,
+          username: user.username,
+        };
+      })
+      this.cdr.detectChanges();
+    })
   }
 
   public override save(): void {

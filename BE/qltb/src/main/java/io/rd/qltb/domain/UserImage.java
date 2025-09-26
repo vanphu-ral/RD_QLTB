@@ -18,7 +18,8 @@ public class UserImage {
     @Column
     private String username;
 
-    @Column(length = 500)
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String imageLink;
 
 }
