@@ -63,4 +63,8 @@ public class Acceptance {
     @JoinColumn(name = "error_report_id")
     private ErrorReport errorReport;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "approval_workflow_id")
+    private ApprovalWorkflow approvalWorkflow;
+
 }

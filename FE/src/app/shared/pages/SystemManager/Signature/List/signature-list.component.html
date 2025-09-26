@@ -1,0 +1,15 @@
+<app-base-table 
+  [apiService]="apiService"
+  [columns]="columns"
+  [title]="'Danh sách chữ ký số'"
+  [showAddButton]="true">
+  <!-- <ng-template appColumnTemplate="createdAt" let-rowData>
+    {{ rowData | date: 'dd/MM/yyyy' }}
+  </ng-template>
+  <ng-template appColumnTemplate="updatedAt" let-rowData>
+    {{ rowData | date: 'dd/MM/yyyy' }}
+  </ng-template> -->
+  <ng-template appColumnTemplate="imageLink" let-rowData>
+    {{ rowData ? 'Có' : 'Chưa có' }}
+  </ng-template>
+</app-base-table>

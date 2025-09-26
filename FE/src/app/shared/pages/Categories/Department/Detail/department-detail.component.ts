@@ -9,6 +9,7 @@ import { AccountService } from '../../../../core/auth/account/account.service';
 import { NavigationService } from '../../../../service/navigation.service';
 import { Department } from '../../../../models/Catogories/department.model';
 import { FactoryService } from '../../Factory/Service/factory.service';
+import _ from 'lodash';
 
 @Component({
   selector: 'app-department-detail',
@@ -20,6 +21,7 @@ import { FactoryService } from '../../Factory/Service/factory.service';
 export class DepartmentDetailComponent extends BasePageComponent<Department> {
 
   listFactories: any[] = [];
+  listUsers: any[] = []
 
   constructor(
     protected override apiService: DepartmentService,
@@ -33,6 +35,18 @@ export class DepartmentDetailComponent extends BasePageComponent<Department> {
     this.factoryApi.getAll().subscribe((factories) => {
       this.listFactories = factories;
     });
+    this.apiService.getUsers().subscribe(users => {
+      this.listUsers = _.map(users, user => {
+        const firstName = user.firstName ?? '';
+        const lastName = user.lastName ?? '';
+        const fullName = [firstName, lastName].filter(Boolean).join(' ').trim();
+        return {
+          name: fullName ? `${user.username} - ${fullName}` : user.username,
+          username: user.username,
+        };
+      })
+      this.cdr.detectChanges();
+    })
   }
 
 

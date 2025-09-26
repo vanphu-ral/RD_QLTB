@@ -12,6 +12,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Util } from '../../../../core/utils/utils-function';
 import { ListErrorDialog } from '../Dialogs/list-error-dialog/list-error.dialog';
+import { AcceptanceDialog } from '../Dialogs/acceptance-dialog/acceptance.dialog';
 
 @Component({
   selector: 'plan-list',
@@ -176,7 +177,20 @@ export class PlanListComponent {
     });
   }
 
-  viewEvaluateDevice(item: any) {
-    
+  acceptance(row: any) {
+    this.ref = this.dialogService.open(AcceptanceDialog, {
+      header: `Biên bản nghiệm thu thiết bị`,
+      width: '70%',
+      modal: true,
+      data: row,
+    })
+    this.ref.onClose.subscribe((result) => {
+      if (result && result.length > 0) {
+      }
+    });
+  }
+
+  viewEvaluateDevice(row: any) {
+    this.router.navigate([row.id, 'summary'], { relativeTo: this.route });
   }
 }

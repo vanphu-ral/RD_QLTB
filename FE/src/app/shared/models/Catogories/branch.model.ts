@@ -8,5 +8,6 @@ export class Branch {
     updatedBy?: string;
     createdAt?: Date;
     updatedAt?: Date;
+    manager?: string;
     status?: number;
 }

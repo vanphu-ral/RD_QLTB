@@ -35,6 +35,7 @@ import { OverlayBadgeModule } from 'primeng/overlaybadge';
 import { PopoverModule } from 'primeng/popover';
 import { BadgeModule } from 'primeng/badge';
 import { DisableIfInvalidDirective } from './shared/directive/disable-invalid.directive';
+import { RadioButtonModule } from 'primeng/radiobutton';
 
 @NgModule({
   imports: [
@@ -72,7 +73,8 @@ import { DisableIfInvalidDirective } from './shared/directive/disable-invalid.di
     OverlayBadgeModule,
     PopoverModule,
     BadgeModule,
-    DisableIfInvalidDirective
+    DisableIfInvalidDirective,
+    RadioButtonModule
   ],
   exports: [
     CommonModule,
@@ -109,7 +111,8 @@ import { DisableIfInvalidDirective } from './shared/directive/disable-invalid.di
     OverlayBadgeModule,
     PopoverModule,
     BadgeModule,
-    DisableIfInvalidDirective
+    DisableIfInvalidDirective,
+    RadioButtonModule
   ],
   providers: [DialogService, MessageService, ConfirmationService]
 })

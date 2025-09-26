@@ -21,6 +21,7 @@ import _ from 'lodash';
 export class BranchDetailComponent extends BasePageComponent<Branch> {
 
   listFactories: any[] = [];
+  listUsers: any[] = []
 
   constructor(
     protected override apiService: BranchService,
@@ -35,6 +36,18 @@ export class BranchDetailComponent extends BasePageComponent<Branch> {
       this.listFactories = factories;
       this.cdr.detectChanges();
     });
+    this.apiService.getUsers().subscribe(users => {
+      this.listUsers = _.map(users, user => {
+        const firstName = user.firstName ?? '';
+        const lastName = user.lastName ?? '';
+        const fullName = [firstName, lastName].filter(Boolean).join(' ').trim();
+        return {
+          name: fullName ? `${user.username} - ${fullName}` : user.username,
+          username: user.username,
+        };
+      })
+      this.cdr.detectChanges();
+    })
   }
 
   public override save(): void {

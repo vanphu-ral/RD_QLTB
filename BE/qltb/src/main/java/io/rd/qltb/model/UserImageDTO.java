@@ -14,7 +14,6 @@ public class UserImageDTO {
     @Size(max = 255)
     private String username;
 
-    @Size(max = 500)
     private String imageLink;
 
 }
