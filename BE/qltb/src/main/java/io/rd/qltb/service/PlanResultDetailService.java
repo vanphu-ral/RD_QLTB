@@ -82,6 +82,7 @@ public class PlanResultDetailService {
             PlanResult planResultCopy = new PlanResult();
             planResultCopy.setId(planResultDetail.getPlanResult().getId());
             planResultCopy.setDateTest(planResultDetail.getPlanResult().getDateTest());
+            planResultCopy.setUserTest(planResultDetail.getPlanResult().getUserTest());
             planResultCopy.setNote(planResultDetail.getPlanResult().getNote());
             planResultCopy.setStatus(planResultDetail.getPlanResult().getStatus());
             planResultCopy.setStatusRepair(planResultDetail.getPlanResult().getStatusRepair());
