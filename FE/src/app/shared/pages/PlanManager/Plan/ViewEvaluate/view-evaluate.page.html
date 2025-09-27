@@ -1,5 +1,5 @@
 <div class="summary-table">
-    <div class="card">
+    <div class="card mt-3">
         <div class="table-responsive">
             <table class="table table-bordered table-hover">
                 <thead>
@@ -45,40 +45,39 @@
                         <th colspan="31">Ngày trong tháng</th>
                     </tr>
                     <tr>
-                        <th>1</th>
-                        <th>2</th>
-                        <th>3</th>
-                        <th>4</th>
-                        <th>5</th>
-                        <th>6</th>
-                        <th>7</th>
-                        <th>8</th>
-                        <th>9</th>
-                        <th>10</th>
-                        <th>11</th>
-                        <th>12</th>
-                        <th>13</th>
-                        <th>14</th>
-                        <th>15</th>
-                        <th>16</th>
-                        <th>17</th>
-                        <th>18</th>
-                        <th>19</th>
-                        <th>20</th>
-                        <th>21</th>
-                        <th>22</th>
-                        <th>23</th>
-                        <th>24</th>
-                        <th>25</th>
-                        <th>26</th>
-                        <th>27</th>
-                        <th>28</th>
-                        <th>29</th>
-                        <th>30</th>
-                        <th>31</th>
+                        <th *ngFor="let day of getDaysArray()">{{ day }}</th>
+                        <ng-container *ngIf="getDaysArray().length < 31">
+                            <th *ngFor="let i of [].constructor(31 - getDaysArray().length)"></th>
+                        </ng-container>
                     </tr>
                 </thead>
                 <tbody>
+                    <ng-container *ngFor="let group of groupedDetails; let groupIndex = index">
+                        <ng-container *ngFor="let detail of group.details; let detailIndex = index">
+                            <tr>
+                                <td>{{ detail.tt }}</td>
+
+                                <td *ngIf="detailIndex === 0" [attr.rowspan]="group.rowspan" colspan="2">
+                                    {{ group.criticalGroup }}
+                                </td>
+
+                                <td>
+                                    {{ detail.criticalName }}
+                                    <p style="font-size: small; margin-top: 5px;">*Tần suất: {{ detail.frequency }}</p>
+                                </td>
+
+                                <td>{{ detail.userTest }}</td>
+
+                                <td *ngFor="let day of getDaysArray()">
+                                    <span [innerHTML]="getDailyResult(detail, day)"></span>
+                                </td>
+
+                                <ng-container *ngIf="getDaysArray().length < 31">
+                                    <td *ngFor="let i of [].constructor(31 - getDaysArray().length)"></td>
+                                </ng-container>
+                            </tr>
+                        </ng-container>
+                    </ng-container>
                 </tbody>
                 <tfoot>
                     <tr>
@@ -140,5 +139,9 @@
                 </tfoot>
             </table>
         </div>
+    </div>
+
+    <div class="d-flex justify-content-end mt-3">
+      <p-button label="Quay lại" severity="info" (click)="onBack()" icon="pi pi-arrow-left" class="me-2"></p-button>
     </div>
 </div>
