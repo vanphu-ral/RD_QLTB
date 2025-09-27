@@ -4,7 +4,6 @@
   <p-button [label]="'Thêm mới'" class="p-button-sm" (click)="addItem()" />
 </div>
 <div class="card">
-  <p-toast />
   <p-table [value]="plans" dataKey="id" [tableStyle]="{ 'min-width': '60rem' }" [expandedRowKeys]="expandedRows"
     (onRowExpand)="onRowExpand($event)" (onRowCollapse)="onRowCollapse($event)" [responsiveLayout]="'scroll'" [scrollable]="true" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 20, 50]"
   [showCurrentPageReport]="true" currentPageReportTemplate="Tổng: {totalRecords} bản ghi">

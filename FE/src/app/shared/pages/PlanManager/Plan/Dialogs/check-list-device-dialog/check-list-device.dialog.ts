@@ -51,6 +51,17 @@ export class CheckListDeviceDialog {
     }
 
     saveDeviceCheckDate(row: any) {
+        const isDuplicate = this.checkList.some(
+            (item) =>
+                item !== row &&
+                item.dateTest &&
+                new Date(item.dateTest).toDateString() === new Date(row.dateTest).toDateString()
+        );
+
+        if (isDuplicate) {
+            Util.toastMessage('Ngày kiểm tra bị trùng', 'error');
+            return;
+        }
         if(Util.isEmpty(row.id)) {
             this.planResultService.create(row).subscribe((res) => {
                 Object.assign(row, res);

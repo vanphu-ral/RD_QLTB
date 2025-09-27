@@ -34,10 +34,8 @@ export class PlanListComponent {
 
   ngOnInit(): void {
     this.loadData();
-    this.apiService.getPlans({}, 0).subscribe(res => {
-      console.log(res);
-      
-    })
+    // this.apiService.getPlans({}, 0).subscribe(res => {
+    // })
   }
 
   loadData() {
