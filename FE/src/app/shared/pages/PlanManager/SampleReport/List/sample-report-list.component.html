@@ -3,6 +3,9 @@
   [columns]="columns"
   [title]="'Dánh sách mẫu biên bản'"
   [showAddButton]="true" [actionTemplate]="customActions">
+  <ng-template appColumnTemplate="status" let-rowData>
+    <p-tag [value]="statusToString(rowData)" [severity]="statusToSeverity(rowData)"></p-tag>
+  </ng-template>
   <ng-template appColumnTemplate="createdAt" let-rowData>
     {{ rowData | date: 'dd/MM/yyyy' }}
   </ng-template>
@@ -11,5 +14,5 @@
   </ng-template>
 </app-base-table>
 <ng-template #customActions let-row>
-  <p-button icon="pi pi-file-check" styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="approval(row)"></p-button>
+  <p-button icon="pi pi-file-check" *ngIf="row.status == 1" styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="approval(row)"></p-button>
 </ng-template>

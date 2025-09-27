@@ -398,4 +398,42 @@ export class Util {
       timer: 3000
     });
   }
+
+  static statusToString(status: number): string {
+    switch (status) {
+      case 1:
+        return 'Mới tạo';
+      case 2:
+        return 'Chờ duyệt';
+      case 3:
+        return 'Đã duyệt';
+      case 4:
+        return 'Đang thực hiện';
+      case 5:
+        return 'Đã hoàn thành';
+      case 0:
+        return 'Bị từ chối';
+      default:
+        return '';
+    }
+  }
+
+  static statusToSeverity(status: number): string {
+    switch (status) {
+      case 1:
+        return 'info';
+      case 2:
+        return 'warning';
+      case 3:
+        return 'success';
+      case 4:
+        return 'info';
+      case 5:
+        return 'success';
+      case 0:
+        return 'danger';
+      default:
+        return '';
+    }
+  }
 }

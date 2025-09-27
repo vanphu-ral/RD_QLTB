@@ -5,8 +5,12 @@ import io.rd.qltb.domain.ApprovalGroup;
 import io.rd.qltb.domain.ApprovalGroupUser;
 import io.rd.qltb.domain.ApprovalWorkflow;
 import io.rd.qltb.model.ApprovalDTO;
+import io.rd.qltb.model.ApprovalRequestDTO;
 import io.rd.qltb.repos.ApprovalRepository;
+import io.rd.qltb.repos.ApprovalWorkflowRepository;
 import io.rd.qltb.util.NotFoundException;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -16,9 +20,11 @@ import org.springframework.stereotype.Service;
 public class ApprovalService {
 
     private final ApprovalRepository approvalRepository;
+    private final ApprovalWorkflowRepository approvalWorkflowRepository;
 
-    public ApprovalService(final ApprovalRepository approvalRepository) {
+    public ApprovalService(final ApprovalRepository approvalRepository, final ApprovalWorkflowRepository approvalWorkflowRepository) {
         this.approvalRepository = approvalRepository;
+        this.approvalWorkflowRepository = approvalWorkflowRepository;
     }
 
     public List<ApprovalDTO> findAll() {
@@ -51,6 +57,25 @@ public class ApprovalService {
         final Approval approval = approvalRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         approvalRepository.delete(approval);
+    }
+
+    public void createScriptApproval(ApprovalRequestDTO approvalRequestDTO, String entityType, String userName){
+        ApprovalWorkflow approvalWorkflow = approvalWorkflowRepository.findById(approvalRequestDTO.getWorkflowId()).orElseThrow(()-> new NotFoundException("approvalWorkflow not found"));
+        for(ApprovalGroup approvalGroup: approvalWorkflow.getWorkflowApprovalGroups()){
+            for (ApprovalGroupUser approvalGroupUser:approvalGroup.getGroupApprovalGroupUsers()){
+                Approval approval = new Approval();
+                approval.setEntityId(approvalRequestDTO.getEntityId());
+                approval.setEntityType(entityType);
+                approval.setUserApproval(approvalGroupUser);
+                approval.setStatus(1);
+                approval.setCreatedAt(LocalDateTime.now());
+                approval.setUpdatedAt(LocalDateTime.now());
+                approval.setCreatedBy(userName);
+                approval.setGroup(approvalGroup);
+                approval.setWorkflow(approvalWorkflow);
+                approvalRepository.save(approval);
+            }
+        }
     }
 
     public ApprovalDTO mapToDTO(final Approval approval, final ApprovalDTO approvalDTO) {

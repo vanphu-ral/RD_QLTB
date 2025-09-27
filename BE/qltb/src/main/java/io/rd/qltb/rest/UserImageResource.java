@@ -1,6 +1,7 @@
 package io.rd.qltb.rest;
 
 
+import io.rd.qltb.domain.UserImage;
 import io.rd.qltb.model.UserImageDTO;
 import io.rd.qltb.service.UserImageService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -55,4 +56,8 @@ public class UserImageResource {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/by-username/{username}")
+    public ResponseEntity<UserImageDTO> getByUsername(@PathVariable String username) {
+        return ResponseEntity.ok(userImageService.getByUsername(username));
+    }
 }

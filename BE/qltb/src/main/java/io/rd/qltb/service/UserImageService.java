@@ -52,6 +52,12 @@ public class UserImageService {
         userImageRepository.delete(userImage);
     }
 
+    public UserImageDTO getByUsername(final String username) {
+        return userImageRepository.findByUsername(username)
+                .map(userImage -> mapToDTO(userImage, new UserImageDTO()))
+                .orElseThrow(NotFoundException::new);
+    }
+
     private UserImageDTO mapToDTO(final UserImage userImage, final UserImageDTO userImageDTO) {
         userImageDTO.setId(userImage.getId());
         userImageDTO.setUsername(userImage.getUsername());

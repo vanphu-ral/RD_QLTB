@@ -9,5 +9,5 @@ import lombok.Setter;
 @Setter
 public class ApprovalRequestDTO {
     private Long entityId;
-    private Long WorkflowId;
+    private Long workflowId;
 }

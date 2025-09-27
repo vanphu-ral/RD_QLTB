@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { SampleReportService } from '../Service/sample-report.service';
 import { Column } from '../../../../models/Core/column.model';
 import { ApprovalWorlflowService } from '../../../ApprovalManager/ApprovalWorkflow/Service/approval-workflow.service';
+import { Util } from '../../../../core/utils/utils-function';
 
 @Component({
   selector: 'sample-report-list',
@@ -21,6 +22,7 @@ export class SampleReportListComponent {
     { Field: 'id', Header: 'ID', IsHide: true },
     { Field: 'code', Header: 'Mã mẫu biên bản', IsSearch: true, TypeSearch: 'text' },
     { Field: 'name', Header: 'Tên mẫu biên bản', IsSearch: true, TypeSearch: 'text' },
+    { Field: 'status', Header: 'Trạng thái', IsSearch: true, TypeSearch: 'text' },
     { Field: 'createdBy', Header: 'Người tạo', IsSearch: true, TypeSearch: 'text' },
     { Field: 'createdAt', Header: 'Ngày tạo', IsSearch: true, TypeSearch: 'date' },
     { Field: 'updatedAt', Header: 'Ngày cập nhật', IsSearch: true, TypeSearch: 'date', style: { 'min-width': '150px' } },
@@ -28,8 +30,29 @@ export class SampleReportListComponent {
 
   constructor(public apiService: SampleReportService, private approvalWorkflowService: ApprovalWorlflowService) {}
 
+  statusToString(status: number) {
+    return Util.statusToString(status);
+  }
+
+  statusToSeverity(status: number) {
+    return Util.statusToSeverity(status);
+  }
 
   approval(data: any) {
-
+    const approvalModel = {
+      entityId: data.id,
+      workflowId: data.approvalWorkflow.id,
+    }
+    this.apiService.approvalEntity(approvalModel, 'sampleReport').subscribe({
+      next: () => {
+        data.status = 2;
+        this.apiService.update(data.id, data).subscribe({
+          next: (res) => {
+            Object.assign(data, res);
+            Util.ConfirmMessage('Duyệt mẫu biên bản', 'success');
+          },
+        });
+      },
+    });
   }
 }

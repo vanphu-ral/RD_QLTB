@@ -24,7 +24,7 @@
                         <th rowspan="3" colspan="4" style="text-align:center;">789</th>
                     </tr>
                     <tr>
-                        <th colspan="4">Tên máy: <span id="spanDeviceName"></span></th>
+                        <th colspan="4">Tên máy: <span id="spanDeviceName">{{ model.planDetail.device.name }}</span></th>
                         <th colspan="9">Dây chuyền: <span id="spanLineName"></span></th>
                     </tr>
                     <tr>
@@ -90,44 +90,23 @@
                             <p>2. Khi có bất thường, liên lạc với Tổ trưởng hoặc nhóm kỹ thuật, cơ khí Ngành.</p>
                             <p>
                                 3. Tổ trưởng hoặc nhóm kỹ thuật, sửa chữa ghi nội dung, ngày tháng, chữ kí vào
-                                phần &#60;Ghi chép khi có bất thường, sự cố&#62;.
+                                phần &lt;Ghi chép khi có bất thường, sự cố&gt;.
                             </p>
                             <p>4. Gạch chéo ( // ) vào ngày không sử dụng.</p>
                             <p>5. Mục hàng tuần: Ghi rõ ngày thực hiện.</p>
                         </td>
+                
                         <td>Người thực hiện ký</td>
-                        <td id="sign_day_01" style="padding:0px !important;"></td>
-                        <td id="sign_day_02" style="padding:0px !important;"></td>
-                        <td id="sign_day_03" style="padding:0px !important;"></td>
-                        <td id="sign_day_04" style="padding:0px !important;"></td>
-                        <td id="sign_day_05" style="padding:0px !important;"></td>
-                        <td id="sign_day_06" style="padding:0px !important;"></td>
-                        <td id="sign_day_07" style="padding:0px !important;"></td>
-                        <td id="sign_day_08" style="padding:0px !important;"></td>
-                        <td id="sign_day_09" style="padding:0px !important;"></td>
-                        <td id="sign_day_10" style="padding:0px !important;"></td>
-                        <td id="sign_day_11" style="padding:0px !important;"></td>
-                        <td id="sign_day_12" style="padding:0px !important;"></td>
-                        <td id="sign_day_13" style="padding:0px !important;"></td>
-                        <td id="sign_day_14" style="padding:0px !important;"></td>
-                        <td id="sign_day_15" style="padding:0px !important;"></td>
-                        <td id="sign_day_16" style="padding:0px !important;"></td>
-                        <td id="sign_day_17" style="padding:0px !important;"></td>
-                        <td id="sign_day_18" style="padding:0px !important;"></td>
-                        <td id="sign_day_19" style="padding:0px !important;"></td>
-                        <td id="sign_day_20" style="padding:0px !important;"></td>
-                        <td id="sign_day_21" style="padding:0px !important;"></td>
-                        <td id="sign_day_22" style="padding:0px !important;"></td>
-                        <td id="sign_day_23" style="padding:0px !important;"></td>
-                        <td id="sign_day_24" style="padding:0px !important;"></td>
-                        <td id="sign_day_25" style="padding:0px !important;"></td>
-                        <td id="sign_day_26" style="padding:0px !important;"></td>
-                        <td id="sign_day_27" style="padding:0px !important;"></td>
-                        <td id="sign_day_28" style="padding:0px !important;"></td>
-                        <td id="sign_day_29" style="padding:0px !important;"></td>
-                        <td id="sign_day_30" style="padding:0px !important;"></td>
-                        <td id="sign_day_31" style="padding:0px !important;"></td>
+                
+                        <td *ngFor="let day of getDaysArray()" style="padding:0px !important;">
+                            <span [innerHTML]="hasResultForDay(day)"></span>
+                        </td>
+                
+                        <ng-container *ngIf="getDaysArray().length < 31">
+                            <td *ngFor="let i of [].constructor(31 - getDaysArray().length)"></td>
+                        </ng-container>
                     </tr>
+                
                     <tr>
                         <td>Tổ trưởng xác nhận ký (1 tuần/lần)</td>
                         <td colspan="7" id="sign_week_01"></td>

@@ -4,7 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { BasePageComponent } from '../../../../core/base-page-component/base-page.component';
 import { PlanDetailService } from '../Service/plan-detail.service';
-
+import { SignatureService } from '../../../SystemManager/Signature/Service/signature.service';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 interface DailyResult {
   day: number;
   result: string; // O, A, X, //
@@ -40,19 +41,23 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
 
   public groupedDetails: GroupedCritical[] = [];
   public planInfo: any = {};
+  public signature: any = {};
 
   constructor(
-    protected override apiService: PlanDetailService
+    protected override apiService: PlanDetailService,
+    private signatureService: SignatureService,
+    private sanitizer: DomSanitizer
   ) {
     super(apiService);
   }
 
   override ngOnInit(): void {
     super.ngOnInit()
-    console.log(this.model);
-
-    this.groupPlanDetails();
-
+    this.signatureService.getByUsername('admin').subscribe((data) => {
+      this.signature = data;
+      console.log(this.signature);
+      this.groupPlanDetails();
+    });
   }
 
   /**
@@ -126,8 +131,40 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
         rowspan: groupDetails.length,
       };
     });
-
+    console.log(this.groupedDetails);
+    
     this.cdr.detectChanges();
+  }
+
+  /**
+     * Kiểm tra xem có bất kỳ chi tiết công việc nào có kết quả khác '//' trong ngày cụ thể.
+     * Dùng cho phần ký xác nhận của Người thực hiện.
+     * @param day Số ngày trong tháng (1-31)
+     * @returns HTML icon nếu có kết quả, hoặc rỗng nếu không có.
+     */
+  hasResultForDay(day: number): any {
+    if (!this.groupedDetails || this.groupedDetails.length === 0) {
+      return '';
+    }
+
+    // Lặp qua tất cả các chi tiết công việc
+    const found = this.groupedDetails.some(group => {
+      return group.details.some(detail => {
+        // Kiểm tra kết quả cho ngày đó
+        const result = detail.dailyResults.find(d => d.day === day);
+        // Nếu tìm thấy và kết quả KHÁC '//' (nghĩa là O, A, hoặc X)
+        return result && result.result !== '//';
+      });
+    });
+
+    // Nếu có ít nhất một công việc được thực hiện (kết quả khác '//')
+    if (found) {
+      return this.sanitizer.bypassSecurityTrustHtml(
+        `<img src="${this.signature.imageLink}" style="width: 30px; height: 16px; transform: rotate(90deg);">`
+      );
+    }
+
+    return ''; // Không có công việc nào được thực hiện
   }
 
   /**

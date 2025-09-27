@@ -49,24 +49,6 @@ public class PlanDetailService {
         this.approvalWorkflowRepository = approvalWorkflowRepository;
     }
 
-    public void createScriptApproval(ApprovalRequestDTO approvalRequestDTO, String entityType, String userName){
-        ApprovalWorkflow approvalWorkflow = approvalWorkflowRepository.findById(approvalRequestDTO.getWorkflowId()).orElseThrow(()-> new NotFoundException("approvalWorkflow not found"));
-        for(ApprovalGroup approvalGroup: approvalWorkflow.getWorkflowApprovalGroups()){
-            for (ApprovalGroupUser approvalGroupUser:approvalGroup.getGroupApprovalGroupUsers()){
-            Approval approval = new Approval();
-            approval.setEntityId(approvalRequestDTO.getEntityId());
-            approval.setEntityType(entityType);
-            approval.setUserApproval(approvalGroupUser);
-            approval.setStatus(1);
-            approval.setCreatedAt(LocalDateTime.now());
-            approval.setUpdatedAt(LocalDateTime.now());
-            approval.setCreatedBy(userName);
-            approval.setGroup(approvalGroup);
-            approval.setWorkflow(approvalWorkflow);
-            approvalRepository.save(approval);
-            }
-        }
-    }
     public PlanCheckDTO getPlanCheckDetail(final Long id,String entityType) {
         // Lấy thông tin PlanDetail
         final PlanDetail planDetail = planDetailRepository.findById(id)

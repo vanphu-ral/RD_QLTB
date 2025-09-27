@@ -10,6 +10,7 @@ export abstract class BaseApiService<T> {
   protected accountService = inject(AccountService);
   private tokenUrl = 'http://192.168.68.90:8080/auth/realms/QLSX/protocol/openid-connect/token';
   private usersUrl = 'http://192.168.68.90:8080/auth/admin/realms/QLSX/users?first=0&max=2000';
+  private approvalUrl = `http://localhost:8081/api/approvals`;
   constructor(protected http: HttpClient, protected baseUrl: string) {
     this.fullBaseUrl = `http://localhost:8081/${this.baseUrl}`;
   }
@@ -74,5 +75,9 @@ export abstract class BaseApiService<T> {
         }),
       ),
     );
+  }
+
+  approvalEntity(dto: any, entityType: string): Observable<any> {
+    return this.http.post(`${this.approvalUrl}/approval?entityType=${entityType}`, dto, { withCredentials: true });
   }
 }
