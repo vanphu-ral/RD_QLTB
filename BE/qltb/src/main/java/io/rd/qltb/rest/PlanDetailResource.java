@@ -1,6 +1,7 @@
 package io.rd.qltb.rest;
 
 import io.rd.qltb.domain.Plan;
+import io.rd.qltb.model.ApprovalRequestDTO;
 import io.rd.qltb.model.DeviceSupplyUsageDTO;
 import io.rd.qltb.model.PlanCheckDTO;
 import io.rd.qltb.model.PlanDetailDTO;
@@ -41,14 +42,14 @@ public class PlanDetailResource {
     public ResponseEntity<PlanDetailDTO> getPlanDetail(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(planDetailService.get(id));
     }
-//    @PostMapping("/approval")
-//    public ResponseEntity createScriptApproval(
-//            @AuthenticationPrincipal OidcUser oidcUser,
-//            @RequestBody Plan plan,
-//            @RequestParam("entityType") String entityType) {
-//         planDetailService.createScriptApproval(plan, entityType,oidcUser.getName());
-//        return ResponseEntity.ok().build();
-//    }
+    @PostMapping("/approval")
+    public ResponseEntity createScriptApproval(
+            @AuthenticationPrincipal OidcUser oidcUser,
+            @RequestBody ApprovalRequestDTO approvalRequestDTO,
+            @RequestParam("entityType") String entityType) {
+         planDetailService.createScriptApproval(approvalRequestDTO, entityType,oidcUser.getName());
+        return ResponseEntity.ok().build();
+    }
     @PostMapping
     @ApiResponse(responseCode = "201")
     public ResponseEntity<Long> createPlanDetail(
