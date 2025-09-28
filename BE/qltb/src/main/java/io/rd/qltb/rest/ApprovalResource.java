@@ -2,6 +2,7 @@ package io.rd.qltb.rest;
 
 import io.rd.qltb.model.ApprovalDTO;
 import io.rd.qltb.model.ApprovalRequestDTO;
+import io.rd.qltb.model.ApprovalResponseDTO;
 import io.rd.qltb.service.ApprovalService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
@@ -62,6 +63,11 @@ public class ApprovalResource {
             @RequestParam("entityType") String entityType) {
         approvalService.createScriptApproval(approvalRequestDTO, entityType,oidcUser.getName());
         return ResponseEntity.ok().build();
+    }
+    @GetMapping("/by-user")
+    public ResponseEntity<List<ApprovalResponseDTO>> getApprovalsByUser(@AuthenticationPrincipal OidcUser oidcUser) {
+        List<ApprovalResponseDTO> responseList = approvalService.getAllFromTable(oidcUser.getName());
+        return ResponseEntity.ok(responseList);
     }
 
 }

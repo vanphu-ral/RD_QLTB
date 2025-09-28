@@ -18,4 +18,5 @@ public interface ApprovalGroupUserRepository extends JpaRepository<ApprovalGroup
     @Modifying
     @Query(value = "delete from approval_group_users agu where agu.group_id = ?1",nativeQuery = true)
     void deleteItemByGroupId(Long id);
+    List<ApprovalGroupUser> findByUsername(String username);
 }

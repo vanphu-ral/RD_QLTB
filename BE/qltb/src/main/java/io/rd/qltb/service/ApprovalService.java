@@ -6,27 +6,61 @@ import io.rd.qltb.domain.ApprovalGroupUser;
 import io.rd.qltb.domain.ApprovalWorkflow;
 import io.rd.qltb.model.ApprovalDTO;
 import io.rd.qltb.model.ApprovalRequestDTO;
+import io.rd.qltb.model.ApprovalResponseDTO;
+import io.rd.qltb.repos.ApprovalGroupUserRepository;
 import io.rd.qltb.repos.ApprovalRepository;
 import io.rd.qltb.repos.ApprovalWorkflowRepository;
 import io.rd.qltb.util.NotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 
 @Service
 public class ApprovalService {
-
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
     private final ApprovalRepository approvalRepository;
     private final ApprovalWorkflowRepository approvalWorkflowRepository;
+    private final ApprovalGroupUserRepository approvalGroupUserRepository;
 
-    public ApprovalService(final ApprovalRepository approvalRepository, final ApprovalWorkflowRepository approvalWorkflowRepository) {
+    public ApprovalService(JdbcTemplate jdbcTemplate, final ApprovalRepository approvalRepository, final ApprovalWorkflowRepository approvalWorkflowRepository, ApprovalGroupUserRepository approvalGroupUserRepository) {
+        this.jdbcTemplate = jdbcTemplate;
         this.approvalRepository = approvalRepository;
         this.approvalWorkflowRepository = approvalWorkflowRepository;
+        this.approvalGroupUserRepository = approvalGroupUserRepository;
     }
-
+    public List<ApprovalResponseDTO> getAllFromTable(String userName) {
+    //
+        List<ApprovalGroupUser> approvalGroupUsers = approvalGroupUserRepository.findByUsername(userName);
+        if(approvalGroupUsers.isEmpty()){
+            throw new NotFoundException("User not found in any approval group");
+        }else{
+            List<Long> userIds = approvalGroupUsers.stream().map(ApprovalGroupUser::getId).toList();
+            List<Approval> approvals = approvalRepository.findApprovalsByUserIds(userIds);
+            return approvals.stream().map(approval -> {
+                ApprovalResponseDTO responseDTO = new ApprovalResponseDTO();
+                responseDTO.setApproval(mapToDTO(approval, new ApprovalDTO()));
+                String entityType = approval.getEntityType();
+                Long entityId = approval.getEntityId();
+                String tableName = entityType;
+                String sql = "SELECT * FROM " + tableName + " WHERE id = ?";
+                List<Map<String, Object>> data = jdbcTemplate.queryForList(sql, entityId);
+                if (!data.isEmpty()) {
+                    responseDTO.setData(data.get(0));
+                } else {
+                    responseDTO.setData(null);
+                }
+                return responseDTO;
+            }).toList();
+        }
+    }
     public List<ApprovalDTO> findAll() {
         final List<Approval> approvals = approvalRepository.findAll(Sort.by("id"));
         return approvals.stream()
