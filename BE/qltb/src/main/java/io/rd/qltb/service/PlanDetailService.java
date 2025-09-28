@@ -55,6 +55,12 @@ public class PlanDetailService {
                 .orElseThrow(NotFoundException::new);
         PlanDetailDTO planDetailDTO = mapToDTO(planDetail, new PlanDetailDTO());
         // Set thêm thông tin liên quan
+        planDetailDTO.setSampleReport(planDetail.getSampleReport());
+        planDetailDTO.getSampleReport().setDeviceGroup(null);
+        planDetailDTO.getSampleReport().setBranch(null);
+        planDetailDTO.getSampleReport().setApprovalWorkflow(null);
+        planDetailDTO.getSampleReport().setSampleReportKeyMappingDeviceSampleReports(null);
+        planDetailDTO.getSampleReport().setSampleReportKeyMappings(null);
         planDetailDTO.getDevice().setBranch(planDetail.getDevice().getBranch());
         planDetailDTO.getDevice().getBranch().getFactory().setFactoryBranches(null);
         planDetailDTO.getDevice().getBranch().setBranchTeams(null);
