@@ -53,8 +53,22 @@ public class PlanDetailService {
         // Lấy thông tin PlanDetail
         final PlanDetail planDetail = planDetailRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
+        PlanDetailDTO planDetailDTO = mapToDTO(planDetail, new PlanDetailDTO());
+        // Set thêm thông tin liên quan
+        planDetailDTO.getDevice().setBranch(planDetail.getDevice().getBranch());
+        planDetailDTO.getDevice().getBranch().getFactory().setFactoryBranches(null);
+        planDetailDTO.getDevice().getBranch().setBranchTeams(null);
+        planDetailDTO.getDevice().getBranch().setBranchDevices(null);
+        planDetailDTO.getDevice().getBranch().setSampleReports(null);
+        planDetailDTO.getDevice().setLine(planDetail.getDevice().getLine());
+        planDetailDTO.getDevice().getLine().setTeam(null);
+        planDetailDTO.getDevice().getLine().setLineDevices(null);
+        planDetailDTO.getDevice().setTeam(planDetail.getDevice().getTeam());
+        planDetailDTO.getDevice().getTeam().setBranch(null);
+        planDetailDTO.getDevice().getTeam().setTeamDevices(null);
+        planDetailDTO.getDevice().getTeam().setTeamLines(null);
         PlanCheckDTO planCheckDTO = new PlanCheckDTO();
-        planCheckDTO.setPlanDetail(mapToDTO(planDetail, new PlanDetailDTO()));
+        planCheckDTO.setPlanDetail(planDetailDTO);
         //  Lấy thông tin Approval dựa trên entityType và entityId
         final List<Approval> approvals = approvalRepository.findByEntityTypeAndEntityId(entityType, id);
         List<ApprovalDTO> approvalDTOS = approvals.stream()

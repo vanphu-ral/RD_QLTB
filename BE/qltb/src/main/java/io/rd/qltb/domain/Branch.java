@@ -1,5 +1,6 @@
 package io.rd.qltb.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -57,15 +58,19 @@ public class Branch {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "factory_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Factory factory;
 
     @OneToMany(mappedBy = "branch")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Set<Team> branchTeams = new HashSet<>();
 
     @OneToMany(mappedBy = "branch")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Set<Device> branchDevices = new HashSet<>();
 
     @OneToMany(mappedBy = "branch")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Set<SampleReport> sampleReports = new HashSet<>();
 
 }
