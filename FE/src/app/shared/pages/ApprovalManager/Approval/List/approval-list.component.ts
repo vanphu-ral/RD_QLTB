@@ -49,17 +49,16 @@ export class ApprovalListComponent {
   }
 
   statusToString(status: any) {
-    console.log(status);
-    // switch (status) {
-    //   case '1':
-    //     return 'Chưa duyệt';
-    //   case '2':
-    //     return 'Đã duyệt';
-    //   case '3':
-    //     return 'Bị từ chối';
-    //   default:
-    //     return '';
-    // }
+    switch (status) {
+      case 1:
+        return 'Chưa duyệt';
+      case 2:
+        return 'Đã duyệt';
+      case 3:
+        return 'Bị từ chối';
+      default:
+        return '';
+    }
   }
 
   statusToSeverity(status: any) {
