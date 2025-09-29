@@ -66,7 +66,12 @@ public class ApprovalResource {
     }
     @GetMapping("/by-user")
     public ResponseEntity<List<ApprovalResponseDTO>> getApprovalsByUser(@AuthenticationPrincipal OidcUser oidcUser) {
-        List<ApprovalResponseDTO> responseList = approvalService.getAllFromTable(oidcUser.getName());
+        List<ApprovalResponseDTO> responseList = approvalService.getAllFromTableByUserName(oidcUser.getName());
+        return ResponseEntity.ok(responseList);
+    }
+    @GetMapping("/all")
+    public ResponseEntity<List<ApprovalResponseDTO>> getApprovalsByUser() {
+        List<ApprovalResponseDTO> responseList = approvalService.getAllFromTable();
         return ResponseEntity.ok(responseList);
     }
 

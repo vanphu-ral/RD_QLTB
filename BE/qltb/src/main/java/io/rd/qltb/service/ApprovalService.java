@@ -36,7 +36,23 @@ public class ApprovalService {
         this.approvalWorkflowRepository = approvalWorkflowRepository;
         this.approvalGroupUserRepository = approvalGroupUserRepository;
     }
-    public List<ApprovalResponseDTO> getAllFromTable(String userName) {
+    public List<ApprovalResponseDTO> getAllFromTable() {
+        List<Approval> approvals = approvalRepository.findAll();
+        return approvals.stream().map(approval -> {
+            ApprovalResponseDTO responseDTO = new ApprovalResponseDTO();
+            responseDTO.setApproval(mapToDTO(approval, new ApprovalDTO()));
+            String tableName =  approval.getEntityType() ;
+            String sql = "SELECT * FROM " + tableName + " WHERE id = ? ";
+            List<Map<String, Object>> data = jdbcTemplate.queryForList(sql, approval.getEntityId());
+            if (!data.isEmpty()) {
+                responseDTO.setData(data.get(0));
+            } else {
+                responseDTO.setData(null);
+            }
+            return responseDTO;
+        }).toList();
+    }
+    public List<ApprovalResponseDTO> getAllFromTableByUserName(String userName) {
     //
         List<ApprovalGroupUser> approvalGroupUsers = approvalGroupUserRepository.findByUsername(userName);
         if(approvalGroupUsers.isEmpty()){
