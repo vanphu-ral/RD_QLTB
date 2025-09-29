@@ -6,17 +6,17 @@
                     <tr>
                         <th colspan="3"><img src="/assets/imgs/logo-rang-dong.png" style="width:150px;" /></th>
                         <th colspan="15"><b>BẢNG KIỂM TRA, BẢO DƯỠNG MÁY HÀNG NGÀY, HÀNG TUẦN</b></th>
-                        <th colspan="6">Số hiệu:<span id="spanPlanNumber"></span><span id="SpanDieuChinh"></span></th>
+                        <th colspan="6">Số hiệu:<span id="spanPlanNumber"></span><span id="SpanDieuChinh">{{ model.planDetail.sampleReport.documentNumber }}</span></th>
                         <th colspan="4">Biên soạn</th>
                         <th colspan="4">Soát xét</th>
                         <th colspan="4">Phê duyệt</th>
                     </tr>
                     <tr>
-                        <th colspan="4">Tên đơn vị: <span id="SpanPlanDonVi"></span></th>
-                        <th colspan="9">Số hiệu máy: <span id="spanDeviceCode"></span></th>
+                        <th colspan="4">Tên đơn vị: <span id="SpanPlanDonVi">{{ model.planDetail.device.branch.factory.name }} - {{ model.planDetail.device.branch.name }}</span></th>
+                        <th colspan="9">Số hiệu máy: <span id="spanDeviceCode">{{ model.planDetail.device.code }}</span></th>
                         <th rowspan="3" colspan="5">
-                            <p><span id="SpanPlanMonth">9</span></p>
-                            <p><span id="SpanPlanYear">2025</span></p>
+                            <p>Tháng: <span id="SpanPlanMonth">{{ model.planDetail.createdAt | date:'M' }}</span></p>
+                            <p>Năm: <span id="SpanPlanYear">{{ model.planDetail.createdAt | date:'yyyy' }}</span></p>
                         </th>
                         <th rowspan="2" colspan="6"><span id="spanMainDatePlan">Ngày / tháng / năm</span></th>
                         <th rowspan="3" colspan="4" style="text-align:center;" id="idBranch">123</th>
@@ -25,7 +25,7 @@
                     </tr>
                     <tr>
                         <th colspan="4">Tên máy: <span id="spanDeviceName">{{ model.planDetail.device.name }}</span></th>
-                        <th colspan="9">Dây chuyền: <span id="spanLineName"></span></th>
+                        <th colspan="9">Dây chuyền: <span id="spanLineName"> {{ model.planDetail.device.line.name }} </span></th>
                     </tr>
                     <tr>
                         <th colspan="4">
@@ -34,8 +34,8 @@
                             <i class="fa-solid fa-circle-half-stroke fa-rotate-180"></i>Cuối giờ
                             <i class="fa-solid fa-circle"></i>Hàng tuần
                         </th>
-                        <th colspan="9">Tổ: <span id="spanTeamName">AFFG</span></th>
-                        <th colspan="6"><span id="spanLanbanhanh_1">BBBB</span></th>
+                        <th colspan="9">Tổ: <span id="spanTeamName">{{ model.planDetail.device.team.name }}</span></th>
+                        <th colspan="6"><span id="spanLanbanhanh_1">Ban hành lần 1</span></th>
                     </tr>
                     <tr>
                         <th rowspan="2">TT</th>

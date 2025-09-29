@@ -30,6 +30,14 @@ const sampleReportRoute: Routes = [
       data: SampleReportResolve,
     },
   },
+  {
+    path: ':id/approval',
+    component: SampleReportDetailComponent,
+    data: { mode: 'approval' },
+    resolve: {
+      data: SampleReportResolve,
+    },
+  }
 ];
 
 export default sampleReportRoute;

@@ -107,6 +107,11 @@ export const routes: Routes = [
     },
     // Approval Manager
     {
+        path: 'Approvals',
+        component: AppLayout,
+        loadChildren: () => import('./shared/pages/ApprovalManager/Approval/approval.routes').then(m => m.default)
+    },
+    {
         path: 'ApprovalGroupUsers',
         component: AppLayout,
         loadChildren: () => import('./shared/pages/ApprovalManager/GroupApprovalName/group-approval-name.routes').then(m => m.default)

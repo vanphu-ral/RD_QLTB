@@ -43,7 +43,7 @@ export class SampleReportListComponent {
       entityId: data.id,
       workflowId: data.approvalWorkflow.id,
     }
-    this.apiService.approvalEntity(approvalModel, 'sampleReport').subscribe({
+    this.apiService.approvalEntity(approvalModel, 'sample_reports').subscribe({
       next: () => {
         data.status = 2;
         this.apiService.update(data.id, data).subscribe({

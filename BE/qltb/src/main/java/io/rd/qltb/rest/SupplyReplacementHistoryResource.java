@@ -70,4 +70,14 @@ public class SupplyReplacementHistoryResource {
         List<Long> ids = supplyReplacementHistoryService.createList(dtos);
         return ResponseEntity.ok(ids);
     }
+
+    /**
+     * Lấy danh sách SupplyReplacementHistory theo planResultId (sắp xếp theo createdAt asc).
+     * Ví dụ: GET /api/supplyReplacementHistories/plan-result/123
+     */
+    @GetMapping("/plan-result/{planResultId}")
+    public ResponseEntity<List<SupplyReplacementHistoryDTO>> getByPlanResultId(
+            @PathVariable(name = "planResultId") final Long planResultId) {
+        return ResponseEntity.ok(supplyReplacementHistoryService.getByPlanResultId(planResultId));
+    }
 }

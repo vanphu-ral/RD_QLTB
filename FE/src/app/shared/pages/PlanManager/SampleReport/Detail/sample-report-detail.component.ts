@@ -51,7 +51,6 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
 
   override ngOnInit(): void {
     super.ngOnInit();
-
     forkJoin({
       branchs: this.branchService.getAll(),
       workflows: this.approvalWorkflowService.getAll(),
@@ -86,6 +85,20 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
         });
       }
     });
+
+    if (this.isAddMode) {
+      this.apiService.getAll().subscribe(res => {
+        const currentYear = new Date().getFullYear();
+        const recordsThisYear = res.filter((item: any) => {
+          const year = new Date(item.createdAt).getFullYear();
+          return year === currentYear;
+        });
+        const count = recordsThisYear.length + 1; 
+        const countFormatted = count.toString().padStart(2, '0');
+        const yearShort = currentYear.toString().slice(-2);
+        this.model.documentNumber = `${countFormatted}.${yearShort}`;
+      })
+    }
   }
 
   addRow() {
@@ -130,9 +143,9 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
       this.apiService.create(this.model).subscribe({
         next: (id) => {
           const keyMappings: keyMapping[] = this.listCriterialBySample.map(item => ({
-            sampleReport: { id: id },       
+            sampleReport: { id: id },
             criterial: { id: item.criterial?.id },
-            frequency: item.frequency  
+            frequency: item.frequency
           }));
           if (keyMappings.length > 0) {
             this.keyMappingService.createList(keyMappings).subscribe({
@@ -158,10 +171,10 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
       this.apiService.update(this.model.id!, this.model).subscribe({
         next: (id) => {
           const keyMappings: keyMapping[] = this.listCriterialBySample.map(item => ({
-            id: item.id,                         
-            sampleReport: { id: id },      
+            id: item.id,
+            sampleReport: { id: id },
             criterial: { id: item.criterial?.id },
-            frequency: item.frequency  
+            frequency: item.frequency
           }));
           if (keyMappings.length > 0) {
             this.keyMappingService.createList(keyMappings).subscribe({

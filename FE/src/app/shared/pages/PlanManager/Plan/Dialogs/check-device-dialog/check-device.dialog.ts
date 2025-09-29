@@ -111,7 +111,7 @@ export class CheckDeviceDialog {
         this.listSupplyReplaceHistory = this.listSupplyReplaceHistory.map(x => {
             return {
                 ...x,
-                planResult: this.data.planResult
+                planResultId: this.data.planResult.id
             }
         });
         this.planResultService.saveEvaluation(this.model).subscribe({

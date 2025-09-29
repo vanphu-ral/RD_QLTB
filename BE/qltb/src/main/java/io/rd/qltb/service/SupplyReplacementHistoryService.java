@@ -8,6 +8,8 @@ import io.rd.qltb.repos.SupplyReplacementHistoryRepository;
 import io.rd.qltb.repos.SupplyRepository;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
+
+import java.util.Collections;
 import java.util.List;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
@@ -68,6 +70,16 @@ public class SupplyReplacementHistoryService {
         final SupplyReplacementHistory supplyReplacementHistory = supplyReplacementHistoryRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         supplyReplacementHistoryRepository.delete(supplyReplacementHistory);
+    }
+
+    public List<SupplyReplacementHistoryDTO> getByPlanResultId(final Long planResultId) {
+        if (planResultId == null) {
+            return Collections.emptyList();
+        }
+        final List<SupplyReplacementHistory> histories = supplyReplacementHistoryRepository.findByPlanResultIdOrderByCreatedAtAsc(planResultId);
+        return histories.stream()
+                .map(h -> mapToDTO(h, new SupplyReplacementHistoryDTO()))
+                .toList();
     }
 
     private SupplyReplacementHistoryDTO mapToDTO(

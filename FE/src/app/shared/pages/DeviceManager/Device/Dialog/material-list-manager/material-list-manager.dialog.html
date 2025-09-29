@@ -29,8 +29,8 @@
                     </td>
                     <td>
                         <p-select [(ngModel)]="row.serial" [options]="serialOptions[i] || []" optionLabel="serial" [fluid]="true"
-                            [showClear]="true" [appendTo]="'body'" (onChange)="serial = $event.value"
-                            id="serial-{{ i }}" name="serial-{{ i }}" dataKey="serial">
+                            [showClear]="true" [appendTo]="'body'" (onChange)="onSerialChange($event, i)" id="serial-{{ i }}"
+                            name="serial-{{ i }}" dataKey="serial">
                         </p-select>
                     </td>
                     <td>
@@ -40,8 +40,8 @@
                         </p-datepicker>
                     </td>
                     <td>
-                        <p-inputnumber [(ngModel)]="row.quantityUsed" name="quantityUsed-{{ i }}" mode="decimal"
-                            inputId="quantityUsed-{{ i }}" [useGrouping]="false" [min]="0" [max]="serial?.quantity">
+                        <p-inputnumber [(ngModel)]="row.quantityUsed" name="quantityUsed-{{ i }}" mode="decimal" inputId="quantityUsed-{{ i }}"
+                            [useGrouping]="false" [min]="0" [max]="row.serial?.quantity">
                         </p-inputnumber>
                     </td>
                     <td>

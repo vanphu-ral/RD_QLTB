@@ -42,16 +42,21 @@ export class MaterialListManagerDialogComponent {
         this.deviceSupplyUseService.getBySupplyId(_.get(this.data, 'id')).subscribe({
             next: (res) => {
                 if (Util.isEmptyArray(res)) {
-                    this.listMaterial.push({ status: 1 });
+                    this.listMaterial = [{ status: 1 }];
                 } else {
                     this.listMaterial = res;
                     this.listMaterial.forEach((item, index) => {
-                        if (item.id) {
-                            this.supplyDetailService.getBySupplyId(item.id).subscribe({
+                        // lấy supplyId một cách an toàn (item.supply có thể là object hoặc id)
+                        const supplyId = _.get(item, 'supply.id') ?? _.get(item, 'supply') ?? null;
+                        if (supplyId) {
+                            this.supplyDetailService.getBySupplyId(supplyId).subscribe({
                                 next: (serialList) => {
                                     this.serialOptions[index] = serialList;
+
+                                    // nếu item.serial là primitive (serial string), tìm object tương ứng trong serialList
                                     const serialObj: any = serialList.find(s => s.serial === item.serial);
                                     if (serialObj) {
+                                        // gán chính object từ options để p-select hiển thị đúng
                                         this.listMaterial[index].serial = serialObj;
                                     }
                                     this.cdr.detectChanges();
@@ -74,13 +79,30 @@ export class MaterialListManagerDialogComponent {
 
 
     onChangeSupply(event: any, index: number) {
-        const supplyId = event.value.id;
+        const supplyId = _.get(event, 'value.id') ?? event.value;
+        if (!supplyId) return;
+
         this.supplyDetailService.getBySupplyId(supplyId).subscribe({
             next: (res) => {
                 this.serialOptions[index] = res;
+
+                // Nếu row đã có serial (string), map lại sang object từ res
+                const currentSerial = this.listMaterial[index]?.serial;
+                if (currentSerial && typeof currentSerial === 'string') {
+                    const serialObj: any = res.find(s => s.serial === currentSerial);
+                    if (serialObj) {
+                        this.listMaterial[index].serial = serialObj;
+                    }
+                }
+
                 this.cdr.detectChanges();
             }
         });
+    }
+
+    onSerialChange(event: any, index: number) {
+        this.listMaterial[index].serial = event.value;
+        this.cdr.detectChanges();
     }
 
     addNewRow() {
