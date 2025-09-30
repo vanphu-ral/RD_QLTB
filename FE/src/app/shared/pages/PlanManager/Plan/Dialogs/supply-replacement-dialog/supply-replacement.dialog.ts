@@ -49,7 +49,7 @@ export class SupplyReplacementDialog {
 
     loadData() {
         const deviceId = _.get(this.data, 'device.deviceId') ?? _.get(this.data, 'device.id') ?? this.data.device;
-        const planResultId = _.get(this.data.supplyReplacement[0], 'planResult.id') ?? _.get(this.data, 'planResultId') ?? null;
+        const planResultId = this.data?.supplyReplacement?.[0]?.planResult?.id ?? this.data?.planResultId ?? null;
 
         // gọi API vật tư thiết bị và lịch sử thay thế (nếu có planResultId)
         const obs1 = this.deviceSupplyUseService.getBySupplyId(deviceId);
@@ -169,17 +169,19 @@ export class SupplyReplacementDialog {
         });
         ref.onClose.subscribe((result: any) => {
             if (result) {
-                this.checkList[index] = result;
+                console.log(result);
                 this.listSupplyReplace.push({
-                    supply: result.supply,
+                    supply: result.serial,
                     quantity: result.quantityUsed,
                     note: result.description,
                     planResult: this.data.planResult
                 });
                 this.supplyReplaceHistory.quantityChange = result.quantityUsed;
-                this.supplyReplaceHistory.newSupply = result.supply;
+                this.supplyReplaceHistory.newSupply = result.serial;
                 this.supplyReplaceHistory.reason = result.description;
                 this.listSupplyReplaceHistory.push(this.supplyReplaceHistory);
+                this.checkList[index] = result
+                this.checkList[index].serial = result.serial.serial;
                 this.cdr.detectChanges();
             }
         });

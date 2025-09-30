@@ -55,6 +55,8 @@ export class ReplaceSupplyDialog {
 
     submit() {
         this.model.status = 1;
+        console.log(this.model);
+        
         this.ref.close(this.model);
     }
 
