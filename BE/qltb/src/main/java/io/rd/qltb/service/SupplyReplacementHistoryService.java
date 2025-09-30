@@ -113,11 +113,11 @@ public class SupplyReplacementHistoryService {
             oldSupplyCopy.setCurrency(supplyReplacementHistory.getOldSupply().getCurrency());
             oldSupplyCopy.setQuantity(supplyReplacementHistory.getOldSupply().getQuantity());
             oldSupplyCopy.setStatus(supplyReplacementHistory.getOldSupply().getStatus());
-
+            oldSupplyCopy.setSupply(supplyReplacementHistory.getOldSupply().getSupply());
             // Xóa các quan hệ con
-//            oldSupplyCopy.getSupply().setGroup(null);
-//            oldSupplyCopy.getSupply().setSupplySupplyDetails(null);
-//            oldSupplyCopy.getSupply().setSupplyDeviceSupplyUsages(null);
+            oldSupplyCopy.getSupply().setGroup(null);
+            oldSupplyCopy.getSupply().setSupplySupplyDetails(null);
+            oldSupplyCopy.getSupply().setSupplyDeviceSupplyUsages(null);
 
 
             dto.setOldSupply(oldSupplyCopy);
@@ -138,11 +138,11 @@ public class SupplyReplacementHistoryService {
             newSupplyCopy.setCurrency(supplyReplacementHistory.getOldSupply().getCurrency());
             newSupplyCopy.setQuantity(supplyReplacementHistory.getOldSupply().getQuantity());
             newSupplyCopy.setStatus(supplyReplacementHistory.getOldSupply().getStatus());
-
+            newSupplyCopy.setSupply(supplyReplacementHistory.getNewSupply().getSupply());
             // Xóa các quan hệ con
-//            newSupplyCopy.getSupply().setGroup(null);
-//            newSupplyCopy.getSupply().setSupplySupplyDetails(null);
-//            newSupplyCopy.getSupply().setSupplyDeviceSupplyUsages(null);
+            newSupplyCopy.getSupply().setGroup(null);
+            newSupplyCopy.getSupply().setSupplySupplyDetails(null);
+            newSupplyCopy.getSupply().setSupplyDeviceSupplyUsages(null);
 
 
             dto.setNewSupply(newSupplyCopy);

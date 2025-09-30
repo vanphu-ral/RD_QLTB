@@ -93,10 +93,11 @@ public class SupplyReplacementService {
             supplyCopy.setQuantity(supplyReplacement.getSupply().getQuantity());
             supplyCopy.setStatus(supplyReplacement.getSupply().getStatus());
             supplyCopy.setStatus(supplyReplacement.getSupply().getStatus());
-
-//             supplyCopy.getSupply().setGroup(null);
-//             supplyCopy.getSupply().setSupplySupplyDetails(null);
-//             supplyCopy.getSupply().setSupplyDeviceSupplyUsages(null);
+            supplyCopy.setSupply(supplyReplacement.getSupply().getSupply());
+            // Xóa các quan hệ con để tránh vòng lặp
+             supplyCopy.getSupply().setGroup(null);
+             supplyCopy.getSupply().setSupplySupplyDetails(null);
+             supplyCopy.getSupply().setSupplyDeviceSupplyUsages(null);
 
 
             dto.setSupply(supplyCopy);
