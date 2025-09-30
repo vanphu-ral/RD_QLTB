@@ -141,9 +141,6 @@ public class DeviceSupplyUsageService {
             supplyCopy.setGroup(null);
             supplyCopy.setSupplySupplyDetails(null);
             supplyCopy.setSupplyDeviceSupplyUsages(null);
-            supplyCopy.setSupplySupplyReplacements(null);
-            supplyCopy.setOldSupplySupplyReplacementHistories(null);
-            supplyCopy.setNewSupplySupplyReplacementHistories(null);
 
             deviceSupplyUsageDTO.setSupply(supplyCopy);
         } else {

@@ -65,14 +65,4 @@ public class Supply {
 
     @OneToMany(mappedBy = "supply")
     private Set<DeviceSupplyUsage> supplyDeviceSupplyUsages = new HashSet<>();
-
-    @OneToMany(mappedBy = "supply")
-    private Set<SupplyReplacement> supplySupplyReplacements = new HashSet<>();
-
-    @OneToMany(mappedBy = "oldSupply")
-    private Set<SupplyReplacementHistory> oldSupplySupplyReplacementHistories = new HashSet<>();
-
-    @OneToMany(mappedBy = "newSupply")
-    private Set<SupplyReplacementHistory> newSupplySupplyReplacementHistories = new HashSet<>();
-
 }

@@ -114,9 +114,7 @@ public class SupplyDetailService {
             supplyCopy.setGroup(null);
             supplyCopy.setSupplySupplyDetails(null);
             supplyCopy.setSupplyDeviceSupplyUsages(null);
-            supplyCopy.setSupplySupplyReplacements(null);
-            supplyCopy.setOldSupplySupplyReplacementHistories(null);
-            supplyCopy.setNewSupplySupplyReplacementHistories(null);
+
 
             dto.setSupply(supplyCopy);
         } else {

@@ -118,9 +118,7 @@ public class SupplyReplacementHistoryService {
             oldSupplyCopy.getSupply().setGroup(null);
             oldSupplyCopy.getSupply().setSupplySupplyDetails(null);
             oldSupplyCopy.getSupply().setSupplyDeviceSupplyUsages(null);
-            oldSupplyCopy.getSupply().setSupplySupplyReplacements(null);
-            oldSupplyCopy.getSupply().setOldSupplySupplyReplacementHistories(null);
-            oldSupplyCopy.getSupply().setNewSupplySupplyReplacementHistories(null);
+
 
             dto.setOldSupply(oldSupplyCopy);
         } else {
@@ -145,9 +143,7 @@ public class SupplyReplacementHistoryService {
             newSupplyCopy.getSupply().setGroup(null);
             newSupplyCopy.getSupply().setSupplySupplyDetails(null);
             newSupplyCopy.getSupply().setSupplyDeviceSupplyUsages(null);
-            newSupplyCopy.getSupply().setSupplySupplyReplacements(null);
-            newSupplyCopy.getSupply().setOldSupplySupplyReplacementHistories(null);
-            newSupplyCopy.getSupply().setNewSupplySupplyReplacementHistories(null);
+
 
             dto.setNewSupply(newSupplyCopy);
         } else {

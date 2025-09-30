@@ -97,9 +97,7 @@ public class SupplyReplacementService {
              supplyCopy.getSupply().setGroup(null);
              supplyCopy.getSupply().setSupplySupplyDetails(null);
              supplyCopy.getSupply().setSupplyDeviceSupplyUsages(null);
-             supplyCopy.getSupply().setSupplySupplyReplacements(null);
-             supplyCopy.getSupply().setOldSupplySupplyReplacementHistories(null);
-             supplyCopy.getSupply().setNewSupplySupplyReplacementHistories(null);
+
 
             dto.setSupply(supplyCopy);
         } else {
