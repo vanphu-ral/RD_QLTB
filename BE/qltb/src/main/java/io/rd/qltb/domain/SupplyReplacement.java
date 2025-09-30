@@ -1,5 +1,6 @@
 package io.rd.qltb.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -55,6 +56,7 @@ public class SupplyReplacement {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "supply_detail_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private SupplyDetail supply;
 
 }
