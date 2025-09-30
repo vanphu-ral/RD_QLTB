@@ -60,8 +60,8 @@
             <ng-template pTemplate="body" let-row let-i="rowIndex">
                 <tr>
                     <td>{{ i + 1 }}</td>
-                    <td>{{ row.supply.name }}</td>
-                    <td>{{ row.serial }}</td>
+                    <td>{{ row.supply.supply.name }}</td>
+                    <td>{{ row.supply.serial }}</td>
                     <td>{{ row.quantityUsed }}</td>
                     <td>{{ row.status }}</td>
                     <td>

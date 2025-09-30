@@ -9,5 +9,5 @@ export class SupplyReplacement {
     updatedBy?: string;
     updatedAt?: Date;
     planResult?: any;
-    supply?: any;
+    supplyDetail?: any;
 }

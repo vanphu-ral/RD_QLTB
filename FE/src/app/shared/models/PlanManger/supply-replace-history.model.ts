@@ -7,6 +7,6 @@ export class SupplyReplacementHistory {
     planResult?: number;
     createdBy?: string;
     createdAt?: Date;
-    oldSupply?: any;
-    newSupply?: any;
+    oldSupplyDetail?: any;
+    newSupplyDetail?: any;
 }

@@ -59,7 +59,9 @@ export class SupplyReplacementDialog {
             forkJoin([obs1, obs2]).subscribe({
                 next: ([deviceSupplies, replaceHistories]: any) => {
                     this.listSupplys = deviceSupplies || [];
-                    this.checkList = this.mergeSuppliesWithHistory(_.cloneDeep(this.listSupplys), replaceHistories || []);
+                    this.checkList = this.mergeSuppliesWithHistory(_.cloneDeep(this.listSupplys), replaceHistories || []);                    
+                    console.log(this.checkList);
+                    
                     this.cdr.detectChanges();
                 },
                 error: (err) => { console.error(err); }
@@ -71,6 +73,15 @@ export class SupplyReplacementDialog {
                     this.listSupplys = deviceSupplies || [];
                     // nếu chưa có lịch sử thì checkList = listSupplys
                     this.checkList = _.cloneDeep(this.listSupplys);
+                    this.checkList = _.map(this.listSupplys, item => {
+                        return {
+                            supply: item,
+                            quantityUsed: item.quantityUsed,
+                            serial: item.serial,
+                            status: item.status
+                        }
+                    })
+                    console.log(this.checkList);
                     this.cdr.detectChanges();
                 }
             });
@@ -156,7 +167,7 @@ export class SupplyReplacementDialog {
     replaceSupply(index: number) {
         this.supplyReplaceHistory = {
             quantityOld: this.checkList[index].quantityUsed,
-            oldSupply: this.checkList[index].supply,
+            oldSupplyDetail: this.checkList[index].supply,
         }
         const ref = this.dialogService.open(ReplaceSupplyDialog, {
             header: 'Chọn thiết bị thay thế',
@@ -171,17 +182,20 @@ export class SupplyReplacementDialog {
             if (result) {
                 console.log(result);
                 this.listSupplyReplace.push({
-                    supply: result.serial,
+                    supplyDetail: result.serial,
                     quantity: result.quantityUsed,
                     note: result.description,
                     planResult: this.data.planResult
                 });
                 this.supplyReplaceHistory.quantityChange = result.quantityUsed;
-                this.supplyReplaceHistory.newSupply = result.serial;
+                this.supplyReplaceHistory.newSupplyDetail = result.serial;
                 this.supplyReplaceHistory.reason = result.description;
                 this.listSupplyReplaceHistory.push(this.supplyReplaceHistory);
-                this.checkList[index] = result
-                this.checkList[index].serial = result.serial.serial;
+                this.checkList[index].supply = result
+                this.checkList[index].quantityUsed = result.quantityUsed
+                this.checkList[index].supply.serial = result.serial.serial
+                console.log(this.checkList[index]);
+                
                 this.cdr.detectChanges();
             }
         });

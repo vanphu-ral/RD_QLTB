@@ -11,6 +11,10 @@ export class PlanResultService extends BaseApiService<PlanResult> {
     super(http, 'api/planResults');
   }
 
+  override delete(id: number | string): Observable<void> {
+    return this.http.delete<void>(`${this['fullBaseUrl']}/delete-all/${id}`, { withCredentials: true });
+  }
+
   saveEvaluation(model: PlanCheck): Observable<PlanCheck> {
     return this.http.post<PlanCheck>(`${this['fullBaseUrl']}/create-update`, model, { withCredentials: true });
   }

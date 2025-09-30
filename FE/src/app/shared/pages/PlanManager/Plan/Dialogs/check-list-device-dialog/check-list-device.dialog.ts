@@ -47,7 +47,11 @@ export class CheckListDeviceDialog {
     }
 
     deleteRow(index: number) {
-        this.checkList.splice(index, 1);
+        if(this.checkList[index].id) {
+            this.planResultService.delete(this.checkList[index].id).subscribe(() => { this.loadDeviceCheckList(); });
+        }else {
+            this.checkList.splice(index, 1);
+        }
     }
 
     saveDeviceCheckDate(row: any) {
