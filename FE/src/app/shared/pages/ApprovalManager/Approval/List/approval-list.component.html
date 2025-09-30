@@ -1,8 +1,9 @@
 <!-- device-list.component.html -->
 <app-base-table [apiService]="apiService" [columns]="columns" [title]="'Danh sách tài liệu cần phê duyệt'"
   [showAddButton]="true" [showEditButton]="false" [showViewButton]="false" [actionTemplate]="customActions">
-  <ng-template appColumnTemplate="approval.status" let-rowData>
-    {{ statusToString(rowData?.approval?.status) }}
+  <ng-template appColumnTemplate="approval.status" let-status>
+    <!-- {{ statusToString(status) }} -->
+    <p-tag [value]="statusToString(status)" [severity]="statusToSeverity(status)"></p-tag>
   </ng-template>
 
   <ng-template appColumnTemplate="approval" let-rowData>

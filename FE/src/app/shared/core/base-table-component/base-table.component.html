@@ -62,7 +62,7 @@
       <td>{{ rowIndex + 1 }}</td>
       <td *ngFor="let col of selectedColumns" [hidden]="col.IsHide" [ngStyle]="col.style">
         <ng-container *ngIf="getColumnTemplate(col.Field) as tpl; else defaultValue">
-          <ng-container *ngTemplateOutlet="tpl; context: { $implicit: row[col.Field] }"></ng-container>
+          <ng-container *ngTemplateOutlet="tpl; context: { $implicit: getValueByPath(row, col.Field) }"></ng-container>
         </ng-container>
         <ng-template #defaultValue>
           {{ getValueByPath(row, col.Field) }}
