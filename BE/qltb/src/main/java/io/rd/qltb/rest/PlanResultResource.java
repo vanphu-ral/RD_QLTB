@@ -71,7 +71,7 @@ public class PlanResultResource {
         planResultService.delete(id);
         return ResponseEntity.noContent().build();
     }
-    @DeleteMapping("/plandetail/{id}")
+    @DeleteMapping("/delete-all/{id}")
     @ApiResponse(responseCode = "204")
     public ResponseEntity<Void> deleteAll(@PathVariable(name = "id") final Long id) {
         planResultService.deleteAll(id);
