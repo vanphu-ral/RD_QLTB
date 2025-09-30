@@ -36,6 +36,6 @@ public class SupplyReplacementDTO {
 
     private PlanResult planResult;
 
-    private SupplyDetail supply;
+    private SupplyDetail supplyDetail;
 
 }

@@ -48,10 +48,10 @@ public class SupplyReplacementHistory {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "old_supply_detail_id")
-    private SupplyDetail oldSupply;
+    private SupplyDetail oldSupplyDetail;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "new_supply_detail_id")
-    private SupplyDetail newSupply;
+    private SupplyDetail newSupplyDetail;
 
 }

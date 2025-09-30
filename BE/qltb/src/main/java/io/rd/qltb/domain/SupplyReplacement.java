@@ -57,6 +57,6 @@ public class SupplyReplacement {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "supply_detail_id", nullable = false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private SupplyDetail supply;
+    private SupplyDetail supplyDetail;
 
 }

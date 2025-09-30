@@ -29,8 +29,8 @@ public class SupplyReplacementHistoryDTO {
     @Size(max = 100)
     private String createdBy;
 
-    private SupplyDetail oldSupply;
+    private SupplyDetail oldSupplyDetail;
 
-    private SupplyDetail newSupply;
+    private SupplyDetail newSupplyDetail;
 
 }

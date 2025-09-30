@@ -81,28 +81,28 @@ public class SupplyReplacementService {
         dto.setUpdatedBy(supplyReplacement.getUpdatedBy());
 
         // Sao chép Supply có kiểm soát
-        if (supplyReplacement.getSupply() != null) {
+        if (supplyReplacement.getSupplyDetail() != null) {
             SupplyDetail supplyCopy = new SupplyDetail();
-            supplyCopy.setId(supplyReplacement.getSupply().getId());
-            supplyCopy.setSerial(supplyReplacement.getSupply().getSerial());
-            supplyCopy.setImportDate(supplyReplacement.getSupply().getImportDate());
-            supplyCopy.setSupplier(supplyReplacement.getSupply().getSupplier());
-            supplyCopy.setPrice(supplyReplacement.getSupply().getPrice());
-            supplyCopy.setUnit(supplyReplacement.getSupply().getUnit());
-            supplyCopy.setCurrency(supplyReplacement.getSupply().getCurrency());
-            supplyCopy.setQuantity(supplyReplacement.getSupply().getQuantity());
-            supplyCopy.setStatus(supplyReplacement.getSupply().getStatus());
-            supplyCopy.setStatus(supplyReplacement.getSupply().getStatus());
-            supplyCopy.setSupply(supplyReplacement.getSupply().getSupply());
+            supplyCopy.setId(supplyReplacement.getSupplyDetail().getId());
+            supplyCopy.setSerial(supplyReplacement.getSupplyDetail().getSerial());
+            supplyCopy.setImportDate(supplyReplacement.getSupplyDetail().getImportDate());
+            supplyCopy.setSupplier(supplyReplacement.getSupplyDetail().getSupplier());
+            supplyCopy.setPrice(supplyReplacement.getSupplyDetail().getPrice());
+            supplyCopy.setUnit(supplyReplacement.getSupplyDetail().getUnit());
+            supplyCopy.setCurrency(supplyReplacement.getSupplyDetail().getCurrency());
+            supplyCopy.setQuantity(supplyReplacement.getSupplyDetail().getQuantity());
+            supplyCopy.setStatus(supplyReplacement.getSupplyDetail().getStatus());
+            supplyCopy.setStatus(supplyReplacement.getSupplyDetail().getStatus());
+            supplyCopy.setSupply(supplyReplacement.getSupplyDetail().getSupply()); // Tránh vòng lặp vô hạn
             // Xóa các quan hệ con để tránh vòng lặp
              supplyCopy.getSupply().setGroup(null);
              supplyCopy.getSupply().setSupplySupplyDetails(null);
              supplyCopy.getSupply().setSupplyDeviceSupplyUsages(null);
 
 
-            dto.setSupply(supplyCopy);
+            dto.setSupplyDetail(supplyCopy);
         } else {
-            dto.setSupply(null);
+            dto.setSupplyDetail(null);
         }
 
         // Sao chép PlanResult có kiểm soát
@@ -144,9 +144,9 @@ public class SupplyReplacementService {
         final PlanResult planResult = supplyReplacementDTO.getPlanResult() == null ? null : planResultRepository.findById(supplyReplacementDTO.getPlanResult().getId())
                 .orElseThrow(() -> new NotFoundException("planResult not found"));
         supplyReplacement.setPlanResult(planResult);
-        final SupplyDetail supply = supplyReplacementDTO.getSupply() == null ? null : supplyDetailRepository.findById(supplyReplacementDTO.getSupply().getId())
+        final SupplyDetail supply = supplyReplacementDTO.getSupplyDetail() == null ? null : supplyDetailRepository.findById(supplyReplacementDTO.getSupplyDetail().getId())
                 .orElseThrow(() -> new NotFoundException("supply not found"));
-        supplyReplacement.setSupply(supply);
+        supplyReplacement.setSupplyDetail(supply);
         return supplyReplacement;
     }
 
@@ -164,7 +164,7 @@ public class SupplyReplacementService {
     @EventListener(BeforeDeleteSupply.class)
     public void on(final BeforeDeleteSupply event) {
         final ReferencedException referencedException = new ReferencedException();
-        final SupplyReplacement supplySupplyReplacement = supplyReplacementRepository.findFirstBySupplyId(event.getId());
+        final SupplyReplacement supplySupplyReplacement = supplyReplacementRepository.findFirstBySupplyDetailId(event.getId());
         if (supplySupplyReplacement != null) {
             referencedException.setKey("supply.supplyReplacement.supply.referenced");
             referencedException.addParam(supplySupplyReplacement.getId());

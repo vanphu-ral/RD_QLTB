@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface SupplyReplacementHistoryRepository extends JpaRepository<SupplyReplacementHistory, Long> {
 
-    SupplyReplacementHistory findFirstByOldSupplyId(Long id);
+    SupplyReplacementHistory findFirstByOldSupplyDetailId(Long id);
 
-    SupplyReplacementHistory findFirstByNewSupplyId(Long id);
+    SupplyReplacementHistory findFirstByNewSupplyDetailId(Long id);
 
     // Lấy theo planResultId, sắp xếp theo createdAt tăng dần
     List<SupplyReplacementHistory> findByPlanResultIdOrderByCreatedAtAsc(Long planResultId);
