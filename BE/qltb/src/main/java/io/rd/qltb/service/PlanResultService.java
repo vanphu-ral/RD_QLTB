@@ -168,7 +168,7 @@ public class PlanResultService {
         if(supplyReplacements != null && supplyReplacements.size() > 0){
             supplyReplacementRepository.deleteAll(supplyReplacements);
         }
-        planDetailRepository.deleteById(planResultId);
+        planResultRepository.deleteById(planResultId);
     }
 
 
