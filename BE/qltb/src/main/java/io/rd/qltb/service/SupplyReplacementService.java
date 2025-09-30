@@ -2,11 +2,13 @@ package io.rd.qltb.service;
 
 import io.rd.qltb.domain.PlanResult;
 import io.rd.qltb.domain.Supply;
+import io.rd.qltb.domain.SupplyDetail;
 import io.rd.qltb.domain.SupplyReplacement;
 import io.rd.qltb.events.BeforeDeletePlanResult;
 import io.rd.qltb.events.BeforeDeleteSupply;
 import io.rd.qltb.model.SupplyReplacementDTO;
 import io.rd.qltb.repos.PlanResultRepository;
+import io.rd.qltb.repos.SupplyDetailRepository;
 import io.rd.qltb.repos.SupplyReplacementRepository;
 import io.rd.qltb.repos.SupplyRepository;
 import io.rd.qltb.util.NotFoundException;
@@ -23,13 +25,15 @@ public class SupplyReplacementService {
     private final SupplyReplacementRepository supplyReplacementRepository;
     private final PlanResultRepository planResultRepository;
     private final SupplyRepository supplyRepository;
+    private final SupplyDetailRepository supplyDetailRepository;
 
     public SupplyReplacementService(final SupplyReplacementRepository supplyReplacementRepository,
-            final PlanResultRepository planResultRepository,
-            final SupplyRepository supplyRepository) {
+                                    final PlanResultRepository planResultRepository,
+                                    final SupplyRepository supplyRepository, SupplyDetailRepository supplyDetailRepository) {
         this.supplyReplacementRepository = supplyReplacementRepository;
         this.planResultRepository = planResultRepository;
         this.supplyRepository = supplyRepository;
+        this.supplyDetailRepository = supplyDetailRepository;
     }
 
     public List<SupplyReplacementDTO> findAll() {
@@ -78,25 +82,24 @@ public class SupplyReplacementService {
 
         // Sao chép Supply có kiểm soát
         if (supplyReplacement.getSupply() != null) {
-            Supply supplyCopy = new Supply();
+            SupplyDetail supplyCopy = new SupplyDetail();
             supplyCopy.setId(supplyReplacement.getSupply().getId());
-            supplyCopy.setCode(supplyReplacement.getSupply().getCode());
-            supplyCopy.setName(supplyReplacement.getSupply().getName());
-            supplyCopy.setDescription(supplyReplacement.getSupply().getDescription());
-            supplyCopy.setSource(supplyReplacement.getSupply().getSource());
-            supplyCopy.setCreatedAt(supplyReplacement.getSupply().getCreatedAt());
-            supplyCopy.setUpdatedAt(supplyReplacement.getSupply().getUpdatedAt());
-            supplyCopy.setCreatedBy(supplyReplacement.getSupply().getCreatedBy());
-            supplyCopy.setUpdatedBy(supplyReplacement.getSupply().getUpdatedBy());
+            supplyCopy.setSerial(supplyReplacement.getSupply().getSerial());
+            supplyCopy.setImportDate(supplyReplacement.getSupply().getImportDate());
+            supplyCopy.setSupplier(supplyReplacement.getSupply().getSupplier());
+            supplyCopy.setPrice(supplyReplacement.getSupply().getPrice());
+            supplyCopy.setUnit(supplyReplacement.getSupply().getUnit());
+            supplyCopy.setCurrency(supplyReplacement.getSupply().getCurrency());
+            supplyCopy.setQuantity(supplyReplacement.getSupply().getQuantity());
+            supplyCopy.setStatus(supplyReplacement.getSupply().getStatus());
             supplyCopy.setStatus(supplyReplacement.getSupply().getStatus());
 
-            // Xóa các quan hệ con để tránh vòng lặp
-            supplyCopy.setGroup(null);
-            supplyCopy.setSupplySupplyDetails(null);
-            supplyCopy.setSupplyDeviceSupplyUsages(null);
-            supplyCopy.setSupplySupplyReplacements(null);
-            supplyCopy.setOldSupplySupplyReplacementHistories(null);
-            supplyCopy.setNewSupplySupplyReplacementHistories(null);
+             supplyCopy.getSupply().setGroup(null);
+             supplyCopy.getSupply().setSupplySupplyDetails(null);
+             supplyCopy.getSupply().setSupplyDeviceSupplyUsages(null);
+             supplyCopy.getSupply().setSupplySupplyReplacements(null);
+             supplyCopy.getSupply().setOldSupplySupplyReplacementHistories(null);
+             supplyCopy.getSupply().setNewSupplySupplyReplacementHistories(null);
 
             dto.setSupply(supplyCopy);
         } else {
@@ -142,7 +145,7 @@ public class SupplyReplacementService {
         final PlanResult planResult = supplyReplacementDTO.getPlanResult() == null ? null : planResultRepository.findById(supplyReplacementDTO.getPlanResult().getId())
                 .orElseThrow(() -> new NotFoundException("planResult not found"));
         supplyReplacement.setPlanResult(planResult);
-        final Supply supply = supplyReplacementDTO.getSupply() == null ? null : supplyRepository.findById(supplyReplacementDTO.getSupply().getId())
+        final SupplyDetail supply = supplyReplacementDTO.getSupply() == null ? null : supplyDetailRepository.findById(supplyReplacementDTO.getSupply().getId())
                 .orElseThrow(() -> new NotFoundException("supply not found"));
         supplyReplacement.setSupply(supply);
         return supplyReplacement;

@@ -54,7 +54,7 @@ public class SupplyReplacement {
     private PlanResult planResult;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "supply_id", nullable = false)
-    private Supply supply;
+    @JoinColumn(name = "supply_detail_id", nullable = false)
+    private SupplyDetail supply;
 
 }
