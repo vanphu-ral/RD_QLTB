@@ -1,12 +1,10 @@
 package io.rd.qltb.service;
 
-import io.rd.qltb.domain.SupplyDetail;
+import io.rd.qltb.domain.Supply;
 import io.rd.qltb.domain.SupplyReplacementHistory;
 import io.rd.qltb.events.BeforeDeleteSupply;
 import io.rd.qltb.model.SupplyReplacementHistoryDTO;
-import io.rd.qltb.repos.SupplyDetailRepository;
 import io.rd.qltb.repos.SupplyReplacementHistoryRepository;
-import io.rd.qltb.repos.SupplyReplacementRepository;
 import io.rd.qltb.repos.SupplyRepository;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
@@ -23,16 +21,12 @@ public class SupplyReplacementHistoryService {
 
     private final SupplyReplacementHistoryRepository supplyReplacementHistoryRepository;
     private final SupplyRepository supplyRepository;
-    private final SupplyReplacementRepository supplyReplacementRepository;
-    private final SupplyDetailRepository supplyDetailRepository;
 
     public SupplyReplacementHistoryService(
             final SupplyReplacementHistoryRepository supplyReplacementHistoryRepository,
-            final SupplyRepository supplyRepository, SupplyReplacementRepository supplyReplacementRepository, SupplyDetailRepository supplyDetailRepository) {
+            final SupplyRepository supplyRepository) {
         this.supplyReplacementHistoryRepository = supplyReplacementHistoryRepository;
         this.supplyRepository = supplyRepository;
-        this.supplyReplacementRepository = supplyReplacementRepository;
-        this.supplyDetailRepository = supplyDetailRepository;
     }
 
     public List<SupplyReplacementHistoryDTO> findAll() {
@@ -103,24 +97,25 @@ public class SupplyReplacementHistoryService {
 
         // Sao chép oldSupply có kiểm soát
         if (supplyReplacementHistory.getOldSupply() != null) {
-            SupplyDetail oldSupplyCopy = new SupplyDetail();
+            Supply oldSupplyCopy = new Supply();
             oldSupplyCopy.setId(supplyReplacementHistory.getOldSupply().getId());
-            oldSupplyCopy.setSerial(supplyReplacementHistory.getOldSupply().getSerial());
-            oldSupplyCopy.setImportDate(supplyReplacementHistory.getOldSupply().getImportDate());
-            oldSupplyCopy.setSupplier(supplyReplacementHistory.getOldSupply().getSupplier());
-            oldSupplyCopy.setUnit(supplyReplacementHistory.getOldSupply().getUnit());
-            oldSupplyCopy.setPrice(supplyReplacementHistory.getOldSupply().getPrice());
-            oldSupplyCopy.setCurrency(supplyReplacementHistory.getOldSupply().getCurrency());
-            oldSupplyCopy.setQuantity(supplyReplacementHistory.getOldSupply().getQuantity());
+            oldSupplyCopy.setCode(supplyReplacementHistory.getOldSupply().getCode());
+            oldSupplyCopy.setName(supplyReplacementHistory.getOldSupply().getName());
+            oldSupplyCopy.setDescription(supplyReplacementHistory.getOldSupply().getDescription());
+            oldSupplyCopy.setSource(supplyReplacementHistory.getOldSupply().getSource());
+            oldSupplyCopy.setCreatedAt(supplyReplacementHistory.getOldSupply().getCreatedAt());
+            oldSupplyCopy.setUpdatedAt(supplyReplacementHistory.getOldSupply().getUpdatedAt());
+            oldSupplyCopy.setCreatedBy(supplyReplacementHistory.getOldSupply().getCreatedBy());
+            oldSupplyCopy.setUpdatedBy(supplyReplacementHistory.getOldSupply().getUpdatedBy());
             oldSupplyCopy.setStatus(supplyReplacementHistory.getOldSupply().getStatus());
 
             // Xóa các quan hệ con
-            oldSupplyCopy.getSupply().setGroup(null);
-            oldSupplyCopy.getSupply().setSupplySupplyDetails(null);
-            oldSupplyCopy.getSupply().setSupplyDeviceSupplyUsages(null);
-            oldSupplyCopy.getSupply().setSupplySupplyReplacements(null);
-            oldSupplyCopy.getSupply().setOldSupplySupplyReplacementHistories(null);
-            oldSupplyCopy.getSupply().setNewSupplySupplyReplacementHistories(null);
+            oldSupplyCopy.setGroup(null);
+            oldSupplyCopy.setSupplySupplyDetails(null);
+            oldSupplyCopy.setSupplyDeviceSupplyUsages(null);
+            oldSupplyCopy.setSupplySupplyReplacements(null);
+            oldSupplyCopy.setOldSupplySupplyReplacementHistories(null);
+            oldSupplyCopy.setNewSupplySupplyReplacementHistories(null);
 
             dto.setOldSupply(oldSupplyCopy);
         } else {
@@ -129,25 +124,25 @@ public class SupplyReplacementHistoryService {
 
         // Sao chép newSupply có kiểm soát
         if (supplyReplacementHistory.getNewSupply() != null) {
-            SupplyDetail newSupplyCopy = new SupplyDetail();
+            Supply newSupplyCopy = new Supply();
             newSupplyCopy.setId(supplyReplacementHistory.getNewSupply().getId());
-            newSupplyCopy.setId(supplyReplacementHistory.getOldSupply().getId());
-            newSupplyCopy.setSerial(supplyReplacementHistory.getOldSupply().getSerial());
-            newSupplyCopy.setImportDate(supplyReplacementHistory.getOldSupply().getImportDate());
-            newSupplyCopy.setSupplier(supplyReplacementHistory.getOldSupply().getSupplier());
-            newSupplyCopy.setUnit(supplyReplacementHistory.getOldSupply().getUnit());
-            newSupplyCopy.setPrice(supplyReplacementHistory.getOldSupply().getPrice());
-            newSupplyCopy.setCurrency(supplyReplacementHistory.getOldSupply().getCurrency());
-            newSupplyCopy.setQuantity(supplyReplacementHistory.getOldSupply().getQuantity());
-            newSupplyCopy.setStatus(supplyReplacementHistory.getOldSupply().getStatus());
+            newSupplyCopy.setCode(supplyReplacementHistory.getNewSupply().getCode());
+            newSupplyCopy.setName(supplyReplacementHistory.getNewSupply().getName());
+            newSupplyCopy.setDescription(supplyReplacementHistory.getNewSupply().getDescription());
+            newSupplyCopy.setSource(supplyReplacementHistory.getNewSupply().getSource());
+            newSupplyCopy.setCreatedAt(supplyReplacementHistory.getNewSupply().getCreatedAt());
+            newSupplyCopy.setUpdatedAt(supplyReplacementHistory.getNewSupply().getUpdatedAt());
+            newSupplyCopy.setCreatedBy(supplyReplacementHistory.getNewSupply().getCreatedBy());
+            newSupplyCopy.setUpdatedBy(supplyReplacementHistory.getNewSupply().getUpdatedBy());
+            newSupplyCopy.setStatus(supplyReplacementHistory.getNewSupply().getStatus());
 
             // Xóa các quan hệ con
-            newSupplyCopy.getSupply().setGroup(null);
-            newSupplyCopy.getSupply().setSupplySupplyDetails(null);
-            newSupplyCopy.getSupply().setSupplyDeviceSupplyUsages(null);
-            newSupplyCopy.getSupply().setSupplySupplyReplacements(null);
-            newSupplyCopy.getSupply().setOldSupplySupplyReplacementHistories(null);
-            newSupplyCopy.getSupply().setNewSupplySupplyReplacementHistories(null);
+            newSupplyCopy.setGroup(null);
+            newSupplyCopy.setSupplySupplyDetails(null);
+            newSupplyCopy.setSupplyDeviceSupplyUsages(null);
+            newSupplyCopy.setSupplySupplyReplacements(null);
+            newSupplyCopy.setOldSupplySupplyReplacementHistories(null);
+            newSupplyCopy.setNewSupplySupplyReplacementHistories(null);
 
             dto.setNewSupply(newSupplyCopy);
         } else {
@@ -168,10 +163,10 @@ public class SupplyReplacementHistoryService {
         supplyReplacementHistory.setPlanResultId(supplyReplacementHistoryDTO.getPlanResultId());
         supplyReplacementHistory.setCreatedAt(supplyReplacementHistoryDTO.getCreatedAt());
         supplyReplacementHistory.setCreatedBy(supplyReplacementHistoryDTO.getCreatedBy());
-        final SupplyDetail oldSupply = supplyReplacementHistoryDTO.getOldSupply() == null ? null : supplyDetailRepository.findById(supplyReplacementHistoryDTO.getOldSupply().getId())
+        final Supply oldSupply = supplyReplacementHistoryDTO.getOldSupply() == null ? null : supplyRepository.findById(supplyReplacementHistoryDTO.getOldSupply().getId())
                 .orElseThrow(() -> new NotFoundException("oldSupply not found"));
         supplyReplacementHistory.setOldSupply(oldSupply);
-        final SupplyDetail newSupply = supplyReplacementHistoryDTO.getNewSupply() == null ? null : supplyDetailRepository.findById(supplyReplacementHistoryDTO.getNewSupply().getId())
+        final Supply newSupply = supplyReplacementHistoryDTO.getNewSupply() == null ? null : supplyRepository.findById(supplyReplacementHistoryDTO.getNewSupply().getId())
                 .orElseThrow(() -> new NotFoundException("newSupply not found"));
         supplyReplacementHistory.setNewSupply(newSupply);
         return supplyReplacementHistory;

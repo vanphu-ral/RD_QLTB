@@ -1,7 +1,6 @@
 package io.rd.qltb.model;
 
 import io.rd.qltb.domain.Supply;
-import io.rd.qltb.domain.SupplyDetail;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import lombok.Getter;
@@ -29,8 +28,8 @@ public class SupplyReplacementHistoryDTO {
     @Size(max = 100)
     private String createdBy;
 
-    private SupplyDetail oldSupply;
+    private Supply oldSupply;
 
-    private SupplyDetail newSupply;
+    private Supply newSupply;
 
 }
