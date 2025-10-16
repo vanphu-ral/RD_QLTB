@@ -3,10 +3,12 @@ package io.rd.qltb.service;
 
 import io.rd.qltb.domain.Device;
 import io.rd.qltb.domain.DeviceCurrentSupply;
+import io.rd.qltb.domain.DeviceSupplyUsage;
 import io.rd.qltb.domain.SupplyDetail;
 import io.rd.qltb.events.BeforeDeleteDevice;
 import io.rd.qltb.events.BeforeDeleteSupplyDetail;
 import io.rd.qltb.model.DeviceCurrentSupplyDTO;
+import io.rd.qltb.model.DeviceSupplyUsageDTO;
 import io.rd.qltb.repos.DeviceCurrentSupplyRepository;
 import io.rd.qltb.repos.DeviceRepository;
 import io.rd.qltb.repos.SupplyDetailRepository;
@@ -16,6 +18,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -53,7 +56,21 @@ public class DeviceCurrentSupplyService {
         mapToEntity(deviceCurrentSupplyDTO, deviceCurrentSupply);
         return deviceCurrentSupplyRepository.save(deviceCurrentSupply).getId();
     }
-
+    public List<Long> creates(final List<DeviceCurrentSupplyDTO> deviceSupplyUsageDTOS) {
+        List<Long> createdIds = new ArrayList<>();
+        for (DeviceCurrentSupplyDTO dto : deviceSupplyUsageDTOS) {
+            DeviceCurrentSupply entity;
+            if (dto.getId() != null) {
+                entity = deviceCurrentSupplyRepository.findById(dto.getId()).orElse(new DeviceCurrentSupply());
+            } else {
+                entity = new DeviceCurrentSupply();
+            }
+            mapToEntity(dto, entity);
+            DeviceCurrentSupply saved = deviceCurrentSupplyRepository.save(entity);
+            createdIds.add(saved.getId());
+        }
+        return createdIds;
+    }
     public void update(final Long id, final DeviceCurrentSupplyDTO deviceCurrentSupplyDTO) {
         final DeviceCurrentSupply deviceCurrentSupply = deviceCurrentSupplyRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
