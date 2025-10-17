@@ -13,6 +13,7 @@ import { SupplyReplacementDialog } from "../supply-replacement-dialog/supply-rep
 import { PlanCheck } from "../../../../../models/PlanManger/plan-check.model";
 import { PlanResultService } from "../../Service/plan-result.service";
 import { SupplyReplacementHistoryService } from "../../Service/supply-replace-history.service";
+import { SupplyReplacementHistory } from "../../../../../models/PlanManger/supply-replace-history.model";
 
 @Component({
     selector: 'app-check-device-dialog',
@@ -28,7 +29,7 @@ export class CheckDeviceDialog {
     listFrequencies: any[] = ["Ngày", "Tuần", "Tháng", "Quỹ", "6 Tháng", "Năm"];
     listResult: any[] = ["OK", "Đã điều chỉnh", "Có bất thường"];
     listStatus: any[] = [{ label: 'Đã kiểm tra', value: 1 }, { label: 'Chưa kiểm tra', value: 2 }, { label: 'Không kiểm tra', value: 3 }];
-    listSupplyReplaceHistory: any[] = [];
+    listSupplyReplaceHistory: SupplyReplacementHistory[] = [];
 
     constructor(
         public ref: DynamicDialogRef,
@@ -111,7 +112,8 @@ export class CheckDeviceDialog {
         this.listSupplyReplaceHistory = this.listSupplyReplaceHistory.map(x => {
             return {
                 ...x,
-                planResultId: this.data.planResult.id
+                planResultId: this.data.planResult.id,
+                planId: 1
             }
         });
         this.planResultService.saveEvaluation(this.model).subscribe({

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 
@@ -24,10 +25,10 @@ public class DeviceCurrentSupply {
     private Integer status;
 
     @Column
-    private OffsetDateTime lastReplacementDate;
+    private LocalDateTime lastReplacementDate;
 
     @Column(nullable = false)
-    private OffsetDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
     @Column(length = 100)
     private String updatedBy;

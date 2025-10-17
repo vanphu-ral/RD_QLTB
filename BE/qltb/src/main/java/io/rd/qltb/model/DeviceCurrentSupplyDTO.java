@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 
@@ -20,10 +21,10 @@ public class DeviceCurrentSupplyDTO {
 
     private Integer status;
 
-    private OffsetDateTime lastReplacementDate;
+    private LocalDateTime lastReplacementDate;
 
     @NotNull
-    private OffsetDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
     @Size(max = 100)
     private String updatedBy;

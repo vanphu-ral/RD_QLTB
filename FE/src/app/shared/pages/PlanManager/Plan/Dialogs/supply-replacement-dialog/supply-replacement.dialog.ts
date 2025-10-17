@@ -44,7 +44,7 @@ export class SupplyReplacementDialog {
     ngOnInit() {
         this.loadData();
         console.log(this.data);
-        
+
     }
 
     loadData() {
@@ -59,9 +59,9 @@ export class SupplyReplacementDialog {
             forkJoin([obs1, obs2]).subscribe({
                 next: ([deviceSupplies, replaceHistories]: any) => {
                     this.listSupplys = deviceSupplies || [];
-                    this.checkList = this.mergeSuppliesWithHistory(_.cloneDeep(this.listSupplys), replaceHistories || []);                    
+                    this.checkList = this.mergeSuppliesWithHistory(_.cloneDeep(this.listSupplys), replaceHistories || []);
                     console.log(this.checkList);
-                    
+
                     this.cdr.detectChanges();
                 },
                 error: (err) => { console.error(err); }
@@ -75,7 +75,7 @@ export class SupplyReplacementDialog {
                     this.checkList = _.cloneDeep(this.listSupplys);
                     this.checkList = _.map(this.listSupplys, item => {
                         return {
-                            supply: item,
+                            supplyDetail: item,
                             quantityUsed: item.quantityUsed,
                             serial: item.serial,
                             status: item.status
@@ -103,13 +103,15 @@ export class SupplyReplacementDialog {
             h => _.get(h, 'dateCheck') ?? _.get(h, 'date_check') ?? _.get(h, 'created_at')
         ], ['asc']);
 
-        // map hiện tại theo supplyId
+        // map hiện tại theo supplyId (bên trong supplyDetail.supply)
         const map: { [supplyId: string]: any } = {};
 
         deviceSupplies.forEach(item => {
-            const sid = _.get(item, 'supply.id') ?? _.get(item, 'supply') ?? null;
+            const sid = _.get(item, 'supplyDetail.supply.id')
+                ?? _.get(item, 'supplyDetail.id')
+                ?? null;
             if (!sid) return;
-            // nếu tồn tại nhiều mục cùng supply id, ta cộng dồn quantityUsed
+
             if (!map[sid]) {
                 map[sid] = _.cloneDeep(item);
             } else {
@@ -119,32 +121,32 @@ export class SupplyReplacementDialog {
 
         // áp dụng từng lịch sử
         sortedHist.forEach(h => {
-            const oldId = _.get(h, 'oldSupply.id') ?? _.get(h, 'old_supply_id') ?? _.get(h, 'old_supply') ?? null;
-            const newId = _.get(h, 'newSupply.id') ?? _.get(h, 'new_supply_id') ?? _.get(h, 'new_supply') ?? null;
+            const oldId = _.get(h, 'oldSupplyDetail.supply.id')
+                ?? _.get(h, 'old_supply_detail_id')
+                ?? null;
+            const newId = _.get(h, 'newSupplyDetail.supply.id')
+                ?? _.get(h, 'new_supply_detail_id')
+                ?? null;
+
             const qtyOld = _.get(h, 'quantityOld') ?? _.get(h, 'quantity_old') ?? 0;
             const qtyChange = _.get(h, 'quantityChange') ?? _.get(h, 'quantity_change') ?? 0;
 
-            if (oldId) {
-                if (map[oldId]) {
-                    map[oldId].quantityUsed = (map[oldId].quantityUsed || 0) - qtyOld;
-                    if ((map[oldId].quantityUsed || 0) <= 0) {
-                        // remove nếu <= 0
-                        delete map[oldId];
-                    }
-                } else {
-                    // nếu bản ghi old không có trong map (có thể đã bị remove trước) — ignore hoặc log
+            // trừ vật tư cũ
+            if (oldId && map[oldId]) {
+                map[oldId].quantityUsed = (map[oldId].quantityUsed || 0) - qtyOld;
+                if ((map[oldId].quantityUsed || 0) <= 0) {
+                    delete map[oldId];
                 }
             }
 
+            // cộng vật tư mới
             if (newId) {
                 if (map[newId]) {
-                    // cộng thêm số lượng mới
                     map[newId].quantityUsed = (map[newId].quantityUsed || 0) + qtyChange;
                 } else {
-                    // tạo mới mục cho new supply — lấy object supply từ history nếu có, nếu không có chỉ tạo skeleton
-                    const supplyObj = _.get(h, 'newSupply') ?? { id: newId, name: _.get(h, 'newSupplyName') ?? 'Unknown' };
+                    const supplyObj = _.get(h, 'newSupplyDetail') ?? { supply: { id: newId, name: 'Unknown' } };
                     map[newId] = {
-                        supply: supplyObj,
+                        supplyDetail: supplyObj,
                         serial: null,
                         quantityUsed: qtyChange,
                         status: 1
@@ -153,11 +155,11 @@ export class SupplyReplacementDialog {
             }
         });
 
-        // convert map -> array sắp xếp theo tên supply hoặc tùy bạn
+        // convert map -> array, sắp xếp theo tên supply
         const result = Object.values(map);
-        // nếu muốn sắp xếp
-        return _.orderBy(result, [r => _.get(r, 'supply.name', '')], ['asc']);
+        return _.orderBy(result, [r => _.get(r, 'supplyDetail.supply.name', '')], ['asc']);
     }
+
 
 
 
@@ -191,11 +193,11 @@ export class SupplyReplacementDialog {
                 this.supplyReplaceHistory.newSupplyDetail = result.serial;
                 this.supplyReplaceHistory.reason = result.description;
                 this.listSupplyReplaceHistory.push(this.supplyReplaceHistory);
-                this.checkList[index].supply = result
+                this.checkList[index].supplyDetail = result
                 this.checkList[index].quantityUsed = result.quantityUsed
-                this.checkList[index].supply.serial = result.serial.serial
+                this.checkList[index].serial = result.serial.serial
                 console.log(this.checkList[index]);
-                
+
                 this.cdr.detectChanges();
             }
         });

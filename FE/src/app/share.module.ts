@@ -36,6 +36,9 @@ import { PopoverModule } from 'primeng/popover';
 import { BadgeModule } from 'primeng/badge';
 import { DisableIfInvalidDirective } from './shared/directive/disable-invalid.directive';
 import { RadioButtonModule } from 'primeng/radiobutton';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { TabsModule } from 'primeng/tabs';
 
 @NgModule({
   imports: [
@@ -74,7 +77,10 @@ import { RadioButtonModule } from 'primeng/radiobutton';
     PopoverModule,
     BadgeModule,
     DisableIfInvalidDirective,
-    RadioButtonModule
+    RadioButtonModule,
+    InputGroupModule,
+    InputGroupAddonModule,
+    TabsModule
   ],
   exports: [
     CommonModule,
@@ -112,7 +118,10 @@ import { RadioButtonModule } from 'primeng/radiobutton';
     PopoverModule,
     BadgeModule,
     DisableIfInvalidDirective,
-    RadioButtonModule
+    RadioButtonModule,
+    InputGroupModule,
+    InputGroupAddonModule,
+    TabsModule
   ],
   providers: [DialogService, MessageService, ConfirmationService]
 })

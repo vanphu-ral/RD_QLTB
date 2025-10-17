@@ -3,10 +3,10 @@ export class SupplyReplacementHistory {
     quantityOld?: number;
     quantityChange?: number;
     reason?: string;
-    plan?: number;
-    planResult?: number;
+    planId?: number;
+    planResultId?: number;
     createdBy?: string;
     createdAt?: Date;
     oldSupplyDetail?: any;
     newSupplyDetail?: any;
-}
+}   
