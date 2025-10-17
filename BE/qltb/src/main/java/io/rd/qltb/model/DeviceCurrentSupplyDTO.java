@@ -25,9 +25,11 @@ public class DeviceCurrentSupplyDTO {
 
     @NotNull
     private LocalDateTime updatedAt;
+    private LocalDateTime createdAt;
 
     @Size(max = 100)
     private String updatedBy;
+    private String createdBy;
 
     @NotNull
     private Device device;

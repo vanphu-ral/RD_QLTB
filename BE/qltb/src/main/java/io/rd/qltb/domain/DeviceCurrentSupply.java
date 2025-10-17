@@ -29,9 +29,14 @@ public class DeviceCurrentSupply {
 
     @Column(nullable = false)
     private LocalDateTime updatedAt;
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
 
     @Column(length = 100)
     private String updatedBy;
+
+    @Column(length = 100)
+    private String createdBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "device_id", nullable = false)

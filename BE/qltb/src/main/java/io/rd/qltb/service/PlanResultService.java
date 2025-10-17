@@ -27,9 +27,11 @@ public class PlanResultService {
     private final SupplyReplacementRepository supplyReplacementRepository;
     private final ErrorReportRepository errorReportRepository;
     private final PlanDetailRepository planDetailRepository;
+    private final DeviceCurrentSupplyService deviceCurrentSupplyService;
+    private final DeviceCurrentSupplyRepository deviceCurrentSupplyRepository;
 
     public PlanResultService(final PlanResultRepository planResultRepository,
-                             final ApplicationEventPublisher publisher, PlanResultDetailService planResultDetailService, ErrorReportService errorReportService, PlanResultDetailRepository planResultDetailRepository, SupplyReplacementService supplyReplacementService, SupplyReplacementRepository supplyReplacementRepository, ErrorReportRepository errorReportRepository, PlanDetailRepository planDetailRepository) {
+                             final ApplicationEventPublisher publisher, PlanResultDetailService planResultDetailService, ErrorReportService errorReportService, PlanResultDetailRepository planResultDetailRepository, SupplyReplacementService supplyReplacementService, SupplyReplacementRepository supplyReplacementRepository, ErrorReportRepository errorReportRepository, PlanDetailRepository planDetailRepository, DeviceCurrentSupplyService deviceCurrentSupplyService, DeviceCurrentSupplyRepository deviceCurrentSupplyRepository) {
         this.planResultRepository = planResultRepository;
         this.publisher = publisher;
         this.planResultDetailService = planResultDetailService;
@@ -39,6 +41,8 @@ public class PlanResultService {
         this.supplyReplacementRepository = supplyReplacementRepository;
         this.errorReportRepository = errorReportRepository;
         this.planDetailRepository = planDetailRepository;
+        this.deviceCurrentSupplyService = deviceCurrentSupplyService;
+        this.deviceCurrentSupplyRepository = deviceCurrentSupplyRepository;
     }
 
     public List<PlanResultDTO> findAll() {
@@ -141,6 +145,25 @@ public class PlanResultService {
                 }
             });
         }
+        if (planCheckDTO.getDeviceCurrentSupplies()!=null && planCheckDTO.getDeviceCurrentSupplies().size() > 0) {
+            planCheckDTO.getDeviceCurrentSupplies().forEach(item -> {
+                if(item.getId() != null){
+                    System.out.println("Update DeviceCurrentSupply ID: " + item.getId());
+                    DeviceCurrentSupply existingDetail = deviceCurrentSupplyService.mapToEntity(item, deviceCurrentSupplyRepository.findById(item.getId()).orElse(new DeviceCurrentSupply()));
+                    item.setUpdatedAt(java.time.LocalDateTime.now());
+                    item.setUpdatedBy(userName);
+                    DeviceCurrentSupply deviceCurrentSupply = deviceCurrentSupplyService.mapToEntity(item, existingDetail);
+                    deviceCurrentSupplyRepository.save(deviceCurrentSupply);
+                }else{
+                    item.setCreatedBy(userName);
+                    item.setCreatedAt(java.time.LocalDateTime.now());
+                    item.setUpdatedAt(java.time.LocalDateTime.now());
+                    DeviceCurrentSupply deviceCurrentSupply = deviceCurrentSupplyService.mapToEntity(item, new DeviceCurrentSupply());
+                    deviceCurrentSupplyRepository.save(deviceCurrentSupply);
+                    System.out.println("Insert DeviceCurrentSupply " );
+                }
+            });
+            }
     }
     public void update(final Long id, final PlanResultDTO planResultDTO) {
         final PlanResult planResult = planResultRepository.findById(id)

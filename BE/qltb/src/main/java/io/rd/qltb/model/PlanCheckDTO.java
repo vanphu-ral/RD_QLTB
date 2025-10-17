@@ -15,4 +15,5 @@ public class PlanCheckDTO {
     private  List<SupplyReplacementDTO> supplyReplacement;// thông tin thay thế vật tư
     private List<ApprovalDTO> approvals; // thông tin ký duyệt của mau bien ban
     private PlanDetailDTO planDetail; // thông tin kế hoạch kiểm tra
+    private List<DeviceCurrentSupplyDTO> deviceCurrentSupplies; // thông tin vật tư hiện có của thiết bị
 }

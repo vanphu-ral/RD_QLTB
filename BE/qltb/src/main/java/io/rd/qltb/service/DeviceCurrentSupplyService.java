@@ -84,11 +84,13 @@ public class DeviceCurrentSupplyService {
         deviceCurrentSupplyRepository.delete(deviceCurrentSupply);
     }
 
-    private DeviceCurrentSupplyDTO mapToDTO(final DeviceCurrentSupply deviceCurrentSupply,
+    public DeviceCurrentSupplyDTO mapToDTO(final DeviceCurrentSupply deviceCurrentSupply,
             final DeviceCurrentSupplyDTO deviceCurrentSupplyDTO) {
         deviceCurrentSupplyDTO.setId(deviceCurrentSupply.getId());
         deviceCurrentSupplyDTO.setQuantity(deviceCurrentSupply.getQuantity());
         deviceCurrentSupplyDTO.setStatus(deviceCurrentSupply.getStatus());
+        deviceCurrentSupplyDTO.setCreatedAt(deviceCurrentSupply.getCreatedAt());
+        deviceCurrentSupplyDTO.setCreatedBy(deviceCurrentSupply.getCreatedBy());
         deviceCurrentSupplyDTO.setLastReplacementDate(deviceCurrentSupply.getLastReplacementDate());
         deviceCurrentSupplyDTO.setUpdatedAt(deviceCurrentSupply.getUpdatedAt());
         deviceCurrentSupplyDTO.setUpdatedBy(deviceCurrentSupply.getUpdatedBy());
@@ -143,12 +145,14 @@ public class DeviceCurrentSupplyService {
         return deviceCurrentSupplyDTO;
     }
 
-    private DeviceCurrentSupply mapToEntity(final DeviceCurrentSupplyDTO deviceCurrentSupplyDTO,
+    public DeviceCurrentSupply mapToEntity(final DeviceCurrentSupplyDTO deviceCurrentSupplyDTO,
             final DeviceCurrentSupply deviceCurrentSupply) {
         deviceCurrentSupply.setQuantity(deviceCurrentSupplyDTO.getQuantity());
         deviceCurrentSupply.setStatus(deviceCurrentSupplyDTO.getStatus());
         deviceCurrentSupply.setLastReplacementDate(deviceCurrentSupplyDTO.getLastReplacementDate());
         deviceCurrentSupply.setUpdatedAt(deviceCurrentSupplyDTO.getUpdatedAt());
+        deviceCurrentSupply.setCreatedAt(deviceCurrentSupplyDTO.getCreatedAt());
+        deviceCurrentSupply.setCreatedBy(deviceCurrentSupplyDTO.getCreatedBy());
         deviceCurrentSupply.setUpdatedBy(deviceCurrentSupplyDTO.getUpdatedBy());
         final Device device = deviceCurrentSupplyDTO.getDevice() == null ? null : deviceRepository.findById(deviceCurrentSupplyDTO.getDevice().getId())
                 .orElseThrow(() -> new NotFoundException("device not found"));
