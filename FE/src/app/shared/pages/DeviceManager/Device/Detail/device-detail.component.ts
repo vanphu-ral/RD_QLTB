@@ -22,6 +22,7 @@ import _ from 'lodash';
 import { DeviceParameterUse } from '../../../../models/DeviceManager/device-parameter-use.model';
 import { DeviceParameterUseService } from '../Service/device-parameter-use.service';
 import { forkJoin } from 'rxjs';
+import { DeviceCurrentSupplyService } from '../Service/device-current-supply.service';
 
 @Component({
   selector: 'app-device-detail',
@@ -43,7 +44,8 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
     { name: "Quý", code: "Quý" },
     { name: "Năm", code: "Năm" }
   ];
-  listMaterial: DeviceSupplyUse[] = [];
+  listMaterialInit: DeviceSupplyUse[] = [];
+  listMaterialCurrent: DeviceSupplyUse[] = [];
   listParameter: DeviceParameterUse[] = [];
   listUsers: any[] = [];
   ref?: DynamicDialogRef;
@@ -57,7 +59,8 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
     private teamService: TeamService,
     private dialogService: DialogService,
     private deviceSupplyUseService: DeviceSupplyUseService,
-    private deviceParameterUseService: DeviceParameterUseService
+    private deviceParameterUseService: DeviceParameterUseService,
+    private deviceCurrentSupplyService: DeviceCurrentSupplyService,
   ) {
     super(apiService);
   }
@@ -106,7 +109,16 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
     });
     this.ref.onClose.subscribe((result) => {
       if (result) {
-        this.listMaterial = result
+        this.listMaterialInit = result
+        this.listMaterialCurrent = _.map(result, item => {
+          return {
+            ...item,
+            lastReplacementDate: item.usageDate
+          }
+        });
+        console.log(this.listMaterialInit);
+        console.log(this.listMaterialCurrent);
+        
       }
     });
   }
@@ -137,11 +149,15 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
       );
     }
     const updateRelations = () => {
-      this.listMaterial = _.map(this.listMaterial, item => ({ ...item, device: this.model }));
+      this.listMaterialInit = _.map(this.listMaterialInit, item => ({ ...item, device: this.model }));
+      this.listMaterialCurrent = _.map(this.listMaterialCurrent, item => ({ ...item, device: this.model }));
+      console.log(this.listMaterialCurrent);
+      
       this.listParameter = _.map(this.listParameter, para => ({ ...para, device: this.model }));
       forkJoin([
         this.deviceParameterUseService.createList(this.listParameter),
-        this.deviceSupplyUseService.createList(this.listMaterial)
+        this.deviceSupplyUseService.createList(this.listMaterialInit),
+        this.deviceCurrentSupplyService.createList(this.listMaterialCurrent),
       ]).subscribe({
         next: () => Util.ConfirmMessage('Thao tác thành công', 'success'),
         error: () => Util.ConfirmMessage('Có lỗi xảy ra khi lưu dữ liệu', 'error')

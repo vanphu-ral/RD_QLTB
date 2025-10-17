@@ -10,5 +10,5 @@ export class DeviceSupplyUse {
     updatedBy?: string;
     status?: number;
     device?: any;
-    supply?: any;
+    supplyDetail?: any;
 }
