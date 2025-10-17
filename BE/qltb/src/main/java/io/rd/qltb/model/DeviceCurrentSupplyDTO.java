@@ -23,7 +23,6 @@ public class DeviceCurrentSupplyDTO {
 
     private LocalDateTime lastReplacementDate;
 
-    @NotNull
     private LocalDateTime updatedAt;
     private LocalDateTime createdAt;
 
@@ -31,10 +30,9 @@ public class DeviceCurrentSupplyDTO {
     private String updatedBy;
     private String createdBy;
 
-    @NotNull
     private Device device;
 
-    @NotNull
+
     private SupplyDetail supplyDetail;
 
 }
