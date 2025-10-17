@@ -20,7 +20,6 @@ public class DeviceSupplyUsageDTO {
 
     private LocalDateTime usageDate;
 
-    private String serial;
 
     private Integer quantityUsed;
     private LocalDateTime updatedAt;
