@@ -89,7 +89,11 @@ public class DeviceCurrentSupplyService {
         deviceCurrentSupplyDTO.setId(deviceCurrentSupply.getId());
         deviceCurrentSupplyDTO.setQuantity(deviceCurrentSupply.getQuantity());
         deviceCurrentSupplyDTO.setStatus(deviceCurrentSupply.getStatus());
+        deviceCurrentSupplyDTO.setCreatedAt(deviceCurrentSupply.getCreatedAt());
+        deviceCurrentSupplyDTO.setCreatedBy(deviceCurrentSupply.getCreatedBy());
         deviceCurrentSupplyDTO.setLastReplacementDate(deviceCurrentSupply.getLastReplacementDate());
+        deviceCurrentSupplyDTO.setUpdatedAt(deviceCurrentSupply.getUpdatedAt());
+        deviceCurrentSupplyDTO.setUpdatedBy(deviceCurrentSupply.getUpdatedBy());
         deviceCurrentSupplyDTO.setDevice(deviceCurrentSupply.getDevice() == null ? null : deviceCurrentSupply.getDevice());
         deviceCurrentSupplyDTO.setSupplyDetail(deviceCurrentSupply.getSupplyDetail() == null ? null : deviceCurrentSupply.getSupplyDetail());
         // Sao chép Device có kiểm soát
@@ -146,6 +150,10 @@ public class DeviceCurrentSupplyService {
         deviceCurrentSupply.setQuantity(deviceCurrentSupplyDTO.getQuantity());
         deviceCurrentSupply.setStatus(deviceCurrentSupplyDTO.getStatus());
         deviceCurrentSupply.setLastReplacementDate(deviceCurrentSupplyDTO.getLastReplacementDate());
+        deviceCurrentSupply.setUpdatedAt(deviceCurrentSupplyDTO.getUpdatedAt());
+        deviceCurrentSupply.setCreatedAt(deviceCurrentSupplyDTO.getCreatedAt());
+        deviceCurrentSupply.setCreatedBy(deviceCurrentSupplyDTO.getCreatedBy());
+        deviceCurrentSupply.setUpdatedBy(deviceCurrentSupplyDTO.getUpdatedBy());
         final Device device = deviceCurrentSupplyDTO.getDevice() == null ? null : deviceRepository.findById(deviceCurrentSupplyDTO.getDevice().getId())
                 .orElseThrow(() -> new NotFoundException("device not found"));
         deviceCurrentSupply.setDevice(device);

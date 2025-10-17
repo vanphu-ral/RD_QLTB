@@ -150,9 +150,14 @@ public class PlanResultService {
                 if(item.getId() != null){
                     System.out.println("Update DeviceCurrentSupply ID: " + item.getId());
                     DeviceCurrentSupply existingDetail = deviceCurrentSupplyService.mapToEntity(item, deviceCurrentSupplyRepository.findById(item.getId()).orElse(new DeviceCurrentSupply()));
+                    item.setUpdatedAt(java.time.LocalDateTime.now());
+                    item.setUpdatedBy(userName);
                     DeviceCurrentSupply deviceCurrentSupply = deviceCurrentSupplyService.mapToEntity(item, existingDetail);
                     deviceCurrentSupplyRepository.save(deviceCurrentSupply);
                 }else{
+                    item.setCreatedBy(userName);
+                    item.setCreatedAt(java.time.LocalDateTime.now());
+                    item.setUpdatedAt(java.time.LocalDateTime.now());
                     DeviceCurrentSupply deviceCurrentSupply = deviceCurrentSupplyService.mapToEntity(item, new DeviceCurrentSupply());
                     deviceCurrentSupplyRepository.save(deviceCurrentSupply);
                     System.out.println("Insert DeviceCurrentSupply " );

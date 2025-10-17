@@ -31,6 +31,9 @@ public class DeviceSupplyUsage {
     private LocalDateTime usageDate;
 
     @Column
+    private String serial;
+
+    @Column
     private Integer quantityUsed;
 
     @Column(columnDefinition = "longtext")
