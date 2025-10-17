@@ -15,7 +15,7 @@ public class KeyMappingDTO {
 
     private String frequency;
 
-    @NotNull
+
     private SampleReport sampleReport;
 
     private Criterial criterial;

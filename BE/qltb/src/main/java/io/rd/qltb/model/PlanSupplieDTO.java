@@ -27,10 +27,9 @@ public class PlanSupplieDTO {
 
     private String fileScan;
 
-    @NotNull
+
     private LocalDateTime createdAt;
 
-    @NotNull
     private LocalDateTime updatedAt;
 
     @Size(max = 255)

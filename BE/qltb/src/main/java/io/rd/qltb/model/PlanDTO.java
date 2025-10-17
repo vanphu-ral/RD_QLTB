@@ -42,7 +42,6 @@ public class PlanDTO {
 
     private Integer status;
 
-    @NotNull
     private PlanType planType;
 
     private Factory factory;

@@ -21,10 +21,9 @@ public class PlanTargetDTO {
 
     private String critical;
 
-    @NotNull
     private LocalDateTime createdAt;
 
-    @NotNull
+
     private LocalDateTime updatedAt;
 
     @Size(max = 255)
