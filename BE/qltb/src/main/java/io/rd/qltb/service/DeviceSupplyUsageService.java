@@ -98,8 +98,11 @@ public class DeviceSupplyUsageService {
     private DeviceSupplyUsageDTO mapToDTO(final DeviceSupplyUsage deviceSupplyUsage,
                                           final DeviceSupplyUsageDTO deviceSupplyUsageDTO) {
         deviceSupplyUsageDTO.setId(deviceSupplyUsage.getId());
+        deviceSupplyUsageDTO.setCreatedAt(deviceSupplyUsage.getCreatedAt());
+        deviceSupplyUsageDTO.setUpdatedAt(deviceSupplyUsage.getUpdatedAt());
+        deviceSupplyUsageDTO.setCreatedBy(deviceSupplyUsage.getCreatedBy());
+        deviceSupplyUsageDTO.setUpdatedBy(deviceSupplyUsage.getUpdatedBy());
         deviceSupplyUsageDTO.setUsageDate(deviceSupplyUsage.getUsageDate());
-        deviceSupplyUsageDTO.setSerial(deviceSupplyUsage.getSerial());
         deviceSupplyUsageDTO.setDescription(deviceSupplyUsage.getDescription());
         deviceSupplyUsageDTO.setQuantityUsed(deviceSupplyUsage.getQuantityUsed());
         deviceSupplyUsageDTO.setStatus(deviceSupplyUsage.getStatus());
@@ -159,7 +162,10 @@ public class DeviceSupplyUsageService {
     private DeviceSupplyUsage mapToEntity(final DeviceSupplyUsageDTO deviceSupplyUsageDTO,
             final DeviceSupplyUsage deviceSupplyUsage) {
         deviceSupplyUsage.setUsageDate(deviceSupplyUsageDTO.getUsageDate());
-        deviceSupplyUsage.setSerial(deviceSupplyUsageDTO.getSerial());
+        deviceSupplyUsage.setUpdatedBy(deviceSupplyUsageDTO.getUpdatedBy());
+        deviceSupplyUsage.setCreatedBy(deviceSupplyUsageDTO.getCreatedBy());
+        deviceSupplyUsage.setCreatedAt(deviceSupplyUsageDTO.getCreatedAt());
+        deviceSupplyUsage.setUpdatedAt(deviceSupplyUsageDTO.getUpdatedAt());
         deviceSupplyUsage.setDescription(deviceSupplyUsageDTO.getDescription());
         deviceSupplyUsage.setQuantityUsed(deviceSupplyUsageDTO.getQuantityUsed());
         deviceSupplyUsage.setStatus(deviceSupplyUsageDTO.getStatus());

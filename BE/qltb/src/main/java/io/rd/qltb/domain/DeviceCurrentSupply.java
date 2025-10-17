@@ -27,9 +27,9 @@ public class DeviceCurrentSupply {
     @Column
     private LocalDateTime lastReplacementDate;
 
-    @Column(nullable = false)
+    @Column
     private LocalDateTime updatedAt;
-    @Column(nullable = false)
+    @Column
     private LocalDateTime createdAt;
 
     @Column(length = 100)

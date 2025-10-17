@@ -40,7 +40,8 @@ public class DeviceSupplyUsageResource {
     }
     @PostMapping("/creates")
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<List<Long>> creates(@RequestBody @Valid List<DeviceSupplyUsageDTO> deviceSupplyUsageDTOS) {
+    public ResponseEntity<List<Long>> creates(@RequestBody @Valid List<DeviceSupplyUsageDTO> deviceSupplyUsageDTOS
+    ) {
         List<Long> createdIds = deviceSupplyUsageService.creates(deviceSupplyUsageDTOS);
         return new ResponseEntity<>(createdIds, HttpStatus.CREATED);
     }

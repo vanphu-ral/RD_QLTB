@@ -31,7 +31,15 @@ public class DeviceSupplyUsage {
     private LocalDateTime usageDate;
 
     @Column
-    private String serial;
+    private LocalDateTime updatedAt;
+    @Column
+    private LocalDateTime createdAt;
+
+    @Column(length = 100)
+    private String updatedBy;
+
+    @Column(length = 100)
+    private String createdBy;
 
     @Column
     private Integer quantityUsed;
