@@ -23,16 +23,7 @@ public class DeviceCurrentSupplyDTO {
 
     private LocalDateTime lastReplacementDate;
 
-    private LocalDateTime updatedAt;
-    private LocalDateTime createdAt;
-
-    @Size(max = 100)
-    private String updatedBy;
-    private String createdBy;
-
     private Device device;
-
-
     private SupplyDetail supplyDetail;
 
 }

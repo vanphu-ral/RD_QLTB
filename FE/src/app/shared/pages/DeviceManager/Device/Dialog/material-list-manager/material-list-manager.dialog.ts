@@ -54,11 +54,10 @@ export class MaterialListManagerDialogComponent {
                                     this.serialOptions[index] = serialList;
 
                                     // nếu item.serial là primitive (serial string), tìm object tương ứng trong serialList
-                                    const serialObj: any = serialList.find(s => s.serial === item.serial);
-                                    if (serialObj) {
-                                        // gán chính object từ options để p-select hiển thị đúng
-                                        this.listMaterial[index].serial = serialObj;
-                                    }
+                                    // const serialObj: any = serialList.find(s => s.serial === item.serial);
+                                    // if (serialObj) {
+                                    //     this.listMaterial[index].serial = serialObj;
+                                    // }
                                     this.cdr.detectChanges();
                                 }
                             });
@@ -85,24 +84,12 @@ export class MaterialListManagerDialogComponent {
         this.supplyDetailService.getBySupplyId(supplyId).subscribe({
             next: (res) => {
                 this.serialOptions[index] = res;
-
-                // Nếu row đã có serial (string), map lại sang object từ res
-                const currentSerial = this.listMaterial[index]?.serial;
-                if (currentSerial && typeof currentSerial === 'string') {
-                    const serialObj: any = res.find(s => s.serial === currentSerial);
-                    if (serialObj) {
-                        this.listMaterial[index].serial = serialObj;
-                    }
-                }
+                console.log(this.serialOptions);
+                
 
                 this.cdr.detectChanges();
             }
         });
-    }
-
-    onSerialChange(event: any, index: number) {
-        this.listMaterial[index].serial = event.value;
-        this.cdr.detectChanges();
     }
 
     addNewRow() {
@@ -128,11 +115,18 @@ export class MaterialListManagerDialogComponent {
     }
 
     submit() {
-        this.listMaterial = this.listMaterial.map(item => ({
-            ...item,
-            serial: _.get(item.serial, 'serial'),
-        }));
-        this.ref.close(this.listMaterial);
+        console.log(this.listMaterial);
+        const serialList = this.listMaterial.map(item => {
+            return {
+                id: item.id || null,
+                usageDate: _.get(item, 'usageDate'),
+                quantityUsed: _.get(item, 'quantityUsed'),
+                description: _.get(item, 'description'),
+                status: _.get(item, 'status'),
+                supplyDetail: _.get(item, 'serial'),
+            }
+        });
+        this.ref.close(serialList);
     }
 
 }
