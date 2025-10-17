@@ -97,7 +97,6 @@ public class SupplyReplacementService {
             // Xóa các quan hệ con để tránh vòng lặp
              supplyCopy.getSupply().setGroup(null);
              supplyCopy.getSupply().setSupplySupplyDetails(null);
-             supplyCopy.getSupply().setSupplyDeviceSupplyUsages(null);
 
 
             dto.setSupplyDetail(supplyCopy);

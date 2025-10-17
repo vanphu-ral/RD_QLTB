@@ -117,7 +117,7 @@ public class SupplyReplacementHistoryService {
             // Xóa các quan hệ con
             oldSupplyCopy.getSupply().setGroup(null);
             oldSupplyCopy.getSupply().setSupplySupplyDetails(null);
-            oldSupplyCopy.getSupply().setSupplyDeviceSupplyUsages(null);
+
 
 
             dto.setOldSupplyDetail(oldSupplyCopy);
@@ -142,7 +142,6 @@ public class SupplyReplacementHistoryService {
             // Xóa các quan hệ con
             newSupplyCopy.getSupply().setGroup(null);
             newSupplyCopy.getSupply().setSupplySupplyDetails(null);
-            newSupplyCopy.getSupply().setSupplyDeviceSupplyUsages(null);
 
 
             dto.setNewSupplyDetail(newSupplyCopy);

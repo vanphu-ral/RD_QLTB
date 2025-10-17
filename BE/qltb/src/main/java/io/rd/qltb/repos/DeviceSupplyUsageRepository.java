@@ -11,7 +11,7 @@ public interface DeviceSupplyUsageRepository extends JpaRepository<DeviceSupplyU
 
     DeviceSupplyUsage findFirstByDeviceId(Long id);
 
-    DeviceSupplyUsage findFirstBySupplyId(Long id);
+//    DeviceSupplyUsage findFirstBySupplyId(Long id);
 
     List<DeviceSupplyUsage> findByDeviceId(Long deviceId);
 

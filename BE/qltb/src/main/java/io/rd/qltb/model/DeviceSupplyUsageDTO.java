@@ -2,6 +2,7 @@ package io.rd.qltb.model;
 
 import io.rd.qltb.domain.Device;
 import io.rd.qltb.domain.Supply;
+import io.rd.qltb.domain.SupplyDetail;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -29,6 +30,6 @@ public class DeviceSupplyUsageDTO {
 
     private Device device;
 
-    private Supply supply;
+    private SupplyDetail supplyDetail;
 
 }

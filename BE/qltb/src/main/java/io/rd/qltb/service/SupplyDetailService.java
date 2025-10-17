@@ -113,7 +113,6 @@ public class SupplyDetailService {
             // Xóa các quan hệ con để tránh vòng lặp
             supplyCopy.setGroup(null);
             supplyCopy.setSupplySupplyDetails(null);
-            supplyCopy.setSupplyDeviceSupplyUsages(null);
 
 
             dto.setSupply(supplyCopy);

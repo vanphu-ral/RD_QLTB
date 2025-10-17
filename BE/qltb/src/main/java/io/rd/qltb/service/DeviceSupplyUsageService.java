@@ -7,9 +7,9 @@ import io.rd.qltb.domain.SupplyDetail;
 import io.rd.qltb.events.BeforeDeleteDevice;
 import io.rd.qltb.events.BeforeDeleteSupply;
 import io.rd.qltb.model.DeviceSupplyUsageDTO;
-import io.rd.qltb.model.SupplyDetailDTO;
 import io.rd.qltb.repos.DeviceRepository;
 import io.rd.qltb.repos.DeviceSupplyUsageRepository;
+import io.rd.qltb.repos.SupplyDetailRepository;
 import io.rd.qltb.repos.SupplyRepository;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
@@ -29,12 +29,16 @@ public class DeviceSupplyUsageService {
     private final DeviceSupplyUsageRepository deviceSupplyUsageRepository;
     private final DeviceRepository deviceRepository;
     private final SupplyRepository supplyRepository;
+    private final SupplyDetailService supplyDetailService;
+    private final SupplyDetailRepository supplyDetailRepository;
 
     public DeviceSupplyUsageService(final DeviceSupplyUsageRepository deviceSupplyUsageRepository,
-            final DeviceRepository deviceRepository, final SupplyRepository supplyRepository) {
+                                    final DeviceRepository deviceRepository, final SupplyRepository supplyRepository, SupplyDetailService supplyDetailService, SupplyDetailRepository supplyDetailRepository) {
         this.deviceSupplyUsageRepository = deviceSupplyUsageRepository;
         this.deviceRepository = deviceRepository;
         this.supplyRepository = supplyRepository;
+        this.supplyDetailService = supplyDetailService;
+        this.supplyDetailRepository = supplyDetailRepository;
     }
 
     public List<DeviceSupplyUsageDTO> findAll() {
@@ -127,24 +131,25 @@ public class DeviceSupplyUsageService {
             deviceSupplyUsageDTO.setDevice(null);
         }
 
-        // Sao chép Supply có kiểm soát
-        if (deviceSupplyUsage.getSupply() != null) {
-            Supply supplyCopy = new Supply();
-            supplyCopy.setId(deviceSupplyUsage.getSupply().getId());
-            supplyCopy.setCode(deviceSupplyUsage.getSupply().getCode());
-            supplyCopy.setName(deviceSupplyUsage.getSupply().getName());
-            supplyCopy.setStatus(deviceSupplyUsage.getSupply().getStatus());
-            supplyCopy.setCreatedAt(deviceSupplyUsage.getSupply().getCreatedAt());
-            supplyCopy.setUpdatedAt(deviceSupplyUsage.getSupply().getUpdatedAt());
+        // Sao chép SupplyDetail có kiểm soát
+        if (deviceSupplyUsage.getSupplyDetail() != null) {
+            SupplyDetail supplyDetailCopy = new SupplyDetail();
+            supplyDetailCopy.setId(deviceSupplyUsage.getSupplyDetail().getId());
+            supplyDetailCopy.setSerial(deviceSupplyUsage.getSupplyDetail().getSerial());
+            supplyDetailCopy.setImportDate(deviceSupplyUsage.getSupplyDetail().getImportDate());
+            supplyDetailCopy.setSupplier(deviceSupplyUsage.getSupplyDetail().getSupplier());
+            supplyDetailCopy.setPrice(deviceSupplyUsage.getSupplyDetail().getPrice());
+            supplyDetailCopy.setUnit(deviceSupplyUsage.getSupplyDetail().getUnit());
+            supplyDetailCopy.setCurrency(deviceSupplyUsage.getSupplyDetail().getCurrency());
+            supplyDetailCopy.setQuantity(deviceSupplyUsage.getSupplyDetail().getQuantity());
+            supplyDetailCopy.setStatus(deviceSupplyUsage.getSupplyDetail().getStatus());
 
             // Xóa các quan hệ con
-            supplyCopy.setGroup(null);
-            supplyCopy.setSupplySupplyDetails(null);
-            supplyCopy.setSupplyDeviceSupplyUsages(null);
+            supplyDetailCopy.setSupply(null);
 
-            deviceSupplyUsageDTO.setSupply(supplyCopy);
+            deviceSupplyUsageDTO.setSupplyDetail(supplyDetailCopy);
         } else {
-            deviceSupplyUsageDTO.setSupply(null);
+            deviceSupplyUsageDTO.setSupplyDetail(null);
         }
 
         return deviceSupplyUsageDTO;
@@ -161,9 +166,9 @@ public class DeviceSupplyUsageService {
         final Device device = deviceSupplyUsageDTO.getDevice() == null ? null : deviceRepository.findById(deviceSupplyUsageDTO.getDevice().getId())
                 .orElseThrow(() -> new NotFoundException("device not found"));
         deviceSupplyUsage.setDevice(device);
-        final Supply supply = deviceSupplyUsageDTO.getSupply() == null ? null : supplyRepository.findById(deviceSupplyUsageDTO.getSupply().getId())
+        final SupplyDetail supplyDetail = deviceSupplyUsageDTO.getSupplyDetail() == null ? null : supplyDetailRepository.findById(deviceSupplyUsageDTO.getSupplyDetail().getId())
                 .orElseThrow(() -> new NotFoundException("supply not found"));
-        deviceSupplyUsage.setSupply(supply);
+        deviceSupplyUsage.setSupplyDetail(supplyDetail);
         return deviceSupplyUsage;
     }
 
@@ -181,12 +186,12 @@ public class DeviceSupplyUsageService {
     @EventListener(BeforeDeleteSupply.class)
     public void on(final BeforeDeleteSupply event) {
         final ReferencedException referencedException = new ReferencedException();
-        final DeviceSupplyUsage supplyDeviceSupplyUsage = deviceSupplyUsageRepository.findFirstBySupplyId(event.getId());
-        if (supplyDeviceSupplyUsage != null) {
-            referencedException.setKey("supply.deviceSupplyUsage.supply.referenced");
-            referencedException.addParam(supplyDeviceSupplyUsage.getId());
-            throw referencedException;
-        }
+//        final DeviceSupplyUsage supplyDeviceSupplyUsage = deviceSupplyUsageRepository.findFirstBySupplyId(event.getId());
+//        if (supplyDeviceSupplyUsage != null) {
+//            referencedException.setKey("supply.deviceSupplyUsage.supply.referenced");
+//            referencedException.addParam(supplyDeviceSupplyUsage.getId());
+//            throw referencedException;
+//        }
     }
 
 }
