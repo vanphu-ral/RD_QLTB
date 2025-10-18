@@ -139,9 +139,11 @@ public class DeviceCurrentSupplyService {
             supplyDetailCopy.setCurrency(deviceCurrentSupply.getSupplyDetail().getCurrency());
             supplyDetailCopy.setQuantity(deviceCurrentSupply.getSupplyDetail().getQuantity());
             supplyDetailCopy.setStatus(deviceCurrentSupply.getSupplyDetail().getStatus());
+            supplyDetailCopy.setSupply(deviceCurrentSupply.getSupplyDetail().getSupply());
 
             // Xóa các quan hệ con
-            supplyDetailCopy.setSupply(null);
+            supplyDetailCopy.getSupply().setSupplySupplyDetails(null);
+            supplyDetailCopy.getSupply().setGroup(null);
 
             deviceCurrentSupplyDTO.setSupplyDetail(supplyDetailCopy);
         } else {
