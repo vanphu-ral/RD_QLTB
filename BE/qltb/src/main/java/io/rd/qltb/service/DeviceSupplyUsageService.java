@@ -148,7 +148,8 @@ public class DeviceSupplyUsageService {
             supplyDetailCopy.setStatus(deviceSupplyUsage.getSupplyDetail().getStatus());
 
             // Xóa các quan hệ con
-            supplyDetailCopy.setSupply(null);
+            supplyDetailCopy.getSupply().setGroup(null);
+            supplyDetailCopy.getSupply().setSupplySupplyDetails(null);
 
             deviceSupplyUsageDTO.setSupplyDetail(supplyDetailCopy);
         } else {
