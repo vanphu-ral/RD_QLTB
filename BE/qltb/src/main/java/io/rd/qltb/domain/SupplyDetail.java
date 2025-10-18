@@ -21,7 +21,8 @@ import lombok.Setter;
 @Table(name = "SupplyDetails")
 @Getter
 @Setter
-public class SupplyDetail {
+public class
+SupplyDetail {
 
     @Id
     @Column(nullable = false, updatable = false)

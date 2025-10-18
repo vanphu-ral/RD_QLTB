@@ -146,6 +146,7 @@ public class DeviceSupplyUsageService {
             supplyDetailCopy.setCurrency(deviceSupplyUsage.getSupplyDetail().getCurrency());
             supplyDetailCopy.setQuantity(deviceSupplyUsage.getSupplyDetail().getQuantity());
             supplyDetailCopy.setStatus(deviceSupplyUsage.getSupplyDetail().getStatus());
+            supplyDetailCopy.setSupply(deviceSupplyUsage.getSupplyDetail().getSupply());
 
             // Xóa các quan hệ con
             supplyDetailCopy.getSupply().setGroup(null);

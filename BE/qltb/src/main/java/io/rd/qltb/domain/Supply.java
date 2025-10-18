@@ -60,9 +60,11 @@ public class Supply {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private SupplyGroup group;
 
     @OneToMany(mappedBy = "supply")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Set<SupplyDetail> supplySupplyDetails = new HashSet<>();
 
 }
