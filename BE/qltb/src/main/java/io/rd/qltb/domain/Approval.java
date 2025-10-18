@@ -35,7 +35,9 @@ public class Approval {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = false)
     private ApprovalGroup group;
-
+@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "round_id", nullable = false)
+    private ApprovalRound round;
     @Column
     private Integer status;
 
