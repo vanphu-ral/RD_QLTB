@@ -1,14 +1,12 @@
 package io.rd.qltb.service;
 
-import io.rd.qltb.domain.Approval;
-import io.rd.qltb.domain.ApprovalGroup;
-import io.rd.qltb.domain.ApprovalGroupUser;
-import io.rd.qltb.domain.ApprovalWorkflow;
+import io.rd.qltb.domain.*;
 import io.rd.qltb.model.ApprovalDTO;
 import io.rd.qltb.model.ApprovalRequestDTO;
 import io.rd.qltb.model.ApprovalResponseDTO;
 import io.rd.qltb.repos.ApprovalGroupUserRepository;
 import io.rd.qltb.repos.ApprovalRepository;
+import io.rd.qltb.repos.ApprovalRoundRepository;
 import io.rd.qltb.repos.ApprovalWorkflowRepository;
 import io.rd.qltb.util.NotFoundException;
 
@@ -29,12 +27,14 @@ public class ApprovalService {
     private final ApprovalRepository approvalRepository;
     private final ApprovalWorkflowRepository approvalWorkflowRepository;
     private final ApprovalGroupUserRepository approvalGroupUserRepository;
+    private final ApprovalRoundRepository approvalRoundRepository;
 
-    public ApprovalService(JdbcTemplate jdbcTemplate, final ApprovalRepository approvalRepository, final ApprovalWorkflowRepository approvalWorkflowRepository, ApprovalGroupUserRepository approvalGroupUserRepository) {
+    public ApprovalService(JdbcTemplate jdbcTemplate, final ApprovalRepository approvalRepository, final ApprovalWorkflowRepository approvalWorkflowRepository, ApprovalGroupUserRepository approvalGroupUserRepository, ApprovalRoundRepository approvalRoundRepository) {
         this.jdbcTemplate = jdbcTemplate;
         this.approvalRepository = approvalRepository;
         this.approvalWorkflowRepository = approvalWorkflowRepository;
         this.approvalGroupUserRepository = approvalGroupUserRepository;
+        this.approvalRoundRepository = approvalRoundRepository;
     }
     public List<ApprovalResponseDTO> getAllFromTable() {
         List<Approval> approvals = approvalRepository.findAll();
@@ -111,6 +111,29 @@ public class ApprovalService {
 
     public void createScriptApproval(ApprovalRequestDTO approvalRequestDTO, String entityType, String userName){
         ApprovalWorkflow approvalWorkflow = approvalWorkflowRepository.findById(approvalRequestDTO.getWorkflowId()).orElseThrow(()-> new NotFoundException("approvalWorkflow not found"));
+        ApprovalRound newRound = new ApprovalRound();
+        if(approvalRequestDTO.getPreviousRoundId() != null){
+            ApprovalRound previousRound = approvalRoundRepository.findById(approvalRequestDTO.getPreviousRoundId()).orElseThrow(()-> new NotFoundException("previousRound not found"));
+            newRound.setEntityType(entityType);
+            newRound.setEntityId(approvalRequestDTO.getEntityId());
+            newRound.setRoundNumber(previousRound.getRoundNumber() + 1);
+            newRound.setPreviousRoundId(previousRound.getId());
+            newRound.setWorkflow(approvalWorkflow);
+            newRound.setStatus(1);
+            newRound.setCreatedAt(LocalDateTime.now());
+            newRound.setCreatedBy(userName);
+            approvalRoundRepository.save(newRound);
+        }else {
+            newRound.setEntityType(entityType);
+            newRound.setEntityId(approvalRequestDTO.getEntityId());
+            newRound.setRoundNumber(1);
+            newRound.setPreviousRoundId(null);
+            newRound.setWorkflow(approvalWorkflow);
+            newRound.setStatus(1);
+            newRound.setCreatedAt(LocalDateTime.now());
+            newRound.setCreatedBy(userName);
+            approvalRoundRepository.save(newRound);
+        }
         for(ApprovalGroup approvalGroup: approvalWorkflow.getWorkflowApprovalGroups()){
             for (ApprovalGroupUser approvalGroupUser:approvalGroup.getGroupApprovalGroupUsers()){
                 Approval approval = new Approval();
@@ -123,6 +146,7 @@ public class ApprovalService {
                 approval.setCreatedBy(userName);
                 approval.setGroup(approvalGroup);
                 approval.setWorkflow(approvalWorkflow);
+                approval.setRound(newRound);
                 approvalRepository.save(approval);
             }
         }
@@ -142,6 +166,23 @@ public class ApprovalService {
         approvalDTO.setUpdatedAt(approval.getUpdatedAt());
         approvalDTO.setCreatedBy(approval.getCreatedBy());
         approvalDTO.setUpdatedBy(approval.getUpdatedBy());
+        // sao chep approvalRound có kiểm soát
+        if (approval.getRound() != null) {
+            ApprovalRound roundCopy = new ApprovalRound();
+            roundCopy.setId(approval.getRound().getId());
+            roundCopy.setEntityType(approval.getRound().getEntityType());
+            roundCopy.setEntityId(approval.getRound().getEntityId());
+            roundCopy.setRoundNumber(approval.getRound().getRoundNumber());
+            roundCopy.setPreviousRoundId(approval.getRound().getPreviousRoundId());
+            roundCopy.setStatus(approval.getRound().getStatus());
+            roundCopy.setCreatedAt(approval.getRound().getCreatedAt());
+            roundCopy.setCreatedBy(approval.getRound().getCreatedBy());
+            // Xóa các quan hệ con để tránh vòng lặp
+            roundCopy.setWorkflow(null);
+            approvalDTO.setRound(roundCopy);
+        } else {
+            approvalDTO.setRound(null);
+        }
         // Sao chép ApprovalGroup có kiểm soát
         if (approval.getGroup() != null) {
             ApprovalGroup groupCopy = new ApprovalGroup();
@@ -213,6 +254,7 @@ public class ApprovalService {
         approval.setUpdatedAt(approvalDTO.getUpdatedAt());
         approval.setCreatedBy(approvalDTO.getCreatedBy());
         approval.setUpdatedBy(approvalDTO.getUpdatedBy());
+        approval.setRound(approvalDTO.getRound());
         return approval;
     }
 

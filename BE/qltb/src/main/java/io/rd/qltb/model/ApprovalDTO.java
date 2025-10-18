@@ -2,6 +2,7 @@ package io.rd.qltb.model;
 
 import io.rd.qltb.domain.ApprovalGroup;
 import io.rd.qltb.domain.ApprovalGroupUser;
+import io.rd.qltb.domain.ApprovalRound;
 import io.rd.qltb.domain.ApprovalWorkflow;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -43,5 +44,5 @@ public class ApprovalDTO {
 
     @Size(max = 255)
     private String updatedBy;
-
+    private ApprovalRound round;
 }
