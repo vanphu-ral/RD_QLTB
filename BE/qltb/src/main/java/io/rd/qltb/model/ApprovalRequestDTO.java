@@ -10,4 +10,5 @@ import lombok.Setter;
 public class ApprovalRequestDTO {
     private Long entityId;
     private Long workflowId;
+    private Long previousRoundId;
 }

@@ -35,6 +35,10 @@ public class DeviceCurrentSupplyResource {
             @PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(deviceCurrentSupplyService.get(id));
     }
+    @GetMapping("/byDevice/{deviceId}")
+    public ResponseEntity<List<DeviceCurrentSupplyDTO>> getBySupply(@PathVariable Long deviceId) {
+        return ResponseEntity.ok(deviceCurrentSupplyService.getByDeviceId(deviceId));
+    }
     @PostMapping("/creates")
     @ApiResponse(responseCode = "201")
     public ResponseEntity<List<Long>> creates(@RequestBody @Valid List<DeviceCurrentSupplyDTO> deviceCurrentSupplyDTOS) {

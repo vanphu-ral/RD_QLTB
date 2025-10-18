@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -50,7 +51,11 @@ public class DeviceCurrentSupplyService {
                 .map(deviceCurrentSupply -> mapToDTO(deviceCurrentSupply, new DeviceCurrentSupplyDTO()))
                 .orElseThrow(NotFoundException::new);
     }
-
+    public List<DeviceCurrentSupplyDTO> getByDeviceId(Long deviceId) {
+        return deviceCurrentSupplyRepository.findByDeviceId(deviceId).stream()
+                .map(s -> mapToDTO(s, new DeviceCurrentSupplyDTO()))
+                .collect(Collectors.toList());
+    }
     public Long create(final DeviceCurrentSupplyDTO deviceCurrentSupplyDTO) {
         final DeviceCurrentSupply deviceCurrentSupply = new DeviceCurrentSupply();
         mapToEntity(deviceCurrentSupplyDTO, deviceCurrentSupply);
