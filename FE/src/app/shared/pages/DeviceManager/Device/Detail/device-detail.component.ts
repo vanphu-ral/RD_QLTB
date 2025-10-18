@@ -110,15 +110,7 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
     this.ref.onClose.subscribe((result) => {
       if (result) {
         this.listMaterialInit = result
-        this.listMaterialCurrent = _.map(result, item => {
-          return {
-            ...item,
-            lastReplacementDate: item.usageDate
-          }
-        });
-        console.log(this.listMaterialInit);
-        console.log(this.listMaterialCurrent);
-        
+        this.listMaterialCurrent = _.map(result, item => {return {...item, lastReplacementDate: item.usageDate}});
       }
     });
   }
@@ -149,11 +141,9 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
       );
     }
     const updateRelations = () => {
-      this.listMaterialInit = _.map(this.listMaterialInit, item => ({ ...item, device: this.model }));
-      this.listMaterialCurrent = _.map(this.listMaterialCurrent, item => ({ ...item, device: this.model }));
-      console.log(this.listMaterialCurrent);
-      
-      this.listParameter = _.map(this.listParameter, para => ({ ...para, device: this.model }));
+      this.listMaterialInit = _.map(this.listMaterialInit, item => ({ ...item, device: {id: this.model.id}  }));
+      this.listMaterialCurrent = _.map(this.listMaterialCurrent, item => ({ ...item, device: {id: this.model.id} }));
+      this.listParameter = _.map(this.listParameter, para => ({ ...para, device: {id: this.model.id}  }));
       forkJoin([
         this.deviceParameterUseService.createList(this.listParameter),
         this.deviceSupplyUseService.createList(this.listMaterialInit),
