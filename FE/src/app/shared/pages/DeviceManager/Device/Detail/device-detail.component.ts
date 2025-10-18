@@ -98,19 +98,30 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
     if (typeof this.model.maintenanceCycle === 'string' && !Util.isEmptyString(this.model.maintenanceCycle)) {
       this.model.maintenanceCycle = Util.stringToDropdownOptions(this.model.maintenanceCycle);
     }
+    if (this.isEditMode && this.model?.id) {
+      this.deviceSupplyUseService.getBySupplyId(this.model.id).subscribe(list => {
+        this.listMaterialInit = _.map(list, item => ({ ...item, supply: item.supplyDetail.supply }));
+        this.cdr.detectChanges();
+      });
+    }
   }
 
-  openMaterialDialog(data: any) {
+  openMaterialDialog() {
     this.ref = this.dialogService.open(MaterialListManagerDialogComponent, {
       header: 'Danh sách vật tư sử dụng trong thiết bị',
       width: 'auto',
       modal: true,
-      data: this.model,
+      data: {
+        device: this.model,
+        materials: this.listMaterialInit   
+      },
     });
-    this.ref.onClose.subscribe((result) => {
-      if (result) {
-        this.listMaterialInit = result
-        this.listMaterialCurrent = _.map(result, item => {return {...item, lastReplacementDate: item.usageDate}});
+
+    this.ref.onClose.subscribe((result: DeviceSupplyUse[] | undefined) => {
+      if (result && Array.isArray(result)) {
+        this.listMaterialInit = result;
+        this.listMaterialCurrent = _.map(result, item => ({ ...item, lastReplacementDate: item.usageDate }));
+        this.cdr.detectChanges();
       }
     });
   }
@@ -141,13 +152,34 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
       );
     }
     const updateRelations = () => {
-      this.listMaterialInit = _.map(this.listMaterialInit, item => ({ ...item, device: {id: this.model.id}  }));
-      this.listMaterialCurrent = _.map(this.listMaterialCurrent, item => ({ ...item, device: {id: this.model.id} }));
-      this.listParameter = _.map(this.listParameter, para => ({ ...para, device: {id: this.model.id}  }));
+      const listMaterialForSave = this.listMaterialInit.map(item => {
+        const supplyDetailId = _.get(item, 'supplyDetail.id') ?? _.get(item, 'supplyDetail');
+        return {
+          id: item.id ?? undefined,
+          usageDate: item.usageDate,
+          quantityUsed: item.quantityUsed ?? 1,
+          description: item.description,
+          status: item.status ?? 1,
+          device: { id: this.model.id },
+          supplyDetail: { id: supplyDetailId },
+        } as DeviceSupplyUse;
+      });
+
+      const listMaterialCurrentForSave = this.listMaterialCurrent.map(item => ({
+        ...item,
+        device: { id: this.model.id },
+        quantity: item.quantityUsed
+      }));
+
+      const listParameterForSave = this.listParameter.map(para => ({
+        ...para,
+        device: { id: this.model.id },
+      }));
+
       forkJoin([
-        this.deviceParameterUseService.createList(this.listParameter),
-        this.deviceSupplyUseService.createList(this.listMaterialInit),
-        this.deviceCurrentSupplyService.createList(this.listMaterialCurrent),
+        this.deviceParameterUseService.createList(listParameterForSave),
+        this.deviceSupplyUseService.createList(listMaterialForSave),
+        this.deviceCurrentSupplyService.createList(listMaterialCurrentForSave),
       ]).subscribe({
         next: () => Util.ConfirmMessage('Thao tác thành công', 'success'),
         error: () => Util.ConfirmMessage('Có lỗi xảy ra khi lưu dữ liệu', 'error')

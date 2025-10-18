@@ -21,15 +21,15 @@
                 <tr>
                     <td>{{ i + 1 }}</td>
                     <td>
-                        <p-select [(ngModel)]="row.supply" [options]="listSupply" optionLabel="name" [fluid]="true"
-                            [showClear]="true" [appendTo]="'body'" (onChange)="onChangeSupply($event, i)"
+                        <p-select [(ngModel)]="row.supply" [options]="listSupply" optionLabel="name"
+                            [fluid]="true" [showClear]="true" [appendTo]="'body'" (onChange)="onChangeSupply($event, i)"
                             id="supply-{{ i }}" name="supply-{{ i }}" dataKey="id">
                         </p-select>
                     </td>
                     <td>
-                        <p-select [(ngModel)]="row.serial" [options]="serialOptions[i] || []" optionLabel="serial" [fluid]="true"
-                            [showClear]="true" [appendTo]="'body'" id="serial-{{ i }}"
-                            name="serial-{{ i }}" dataKey="serial">
+                        <p-select [(ngModel)]="row.supplyDetail" [options]="supplyDetailOptions[i] || []"
+                            optionLabel="serial" [fluid]="true" [showClear]="true" [appendTo]="'body'"
+                            id="supplyDetail-{{ i }}" name="supplyDetail-{{ i }}" dataKey="id">
                         </p-select>
                     </td>
                     <td>
@@ -39,8 +39,8 @@
                         </p-datepicker>
                     </td>
                     <td>
-                        <p-inputnumber [(ngModel)]="row.quantityUsed" name="quantityUsed-{{ i }}" mode="decimal" inputId="quantityUsed-{{ i }}"
-                            [useGrouping]="false" [min]="0" [max]="row.serial?.quantity">
+                        <p-inputnumber [(ngModel)]="row.quantityUsed" name="quantityUsed-{{ i }}" mode="decimal"
+                            inputId="quantityUsed-{{ i }}" [useGrouping]="false" [min]="0" [max]="row.serial?.quantity">
                         </p-inputnumber>
                     </td>
                     <td>
@@ -87,8 +87,8 @@
             </ng-template>
         </p-table>
 
-    <div class="d-flex justify-content-end gap-2 mt-4">
-        <p-button label="Lưu" severity="success" (onClick)="submit()"></p-button>
-        <p-button label="Đóng" (onClick)="close()"></p-button>
+        <div class="d-flex justify-content-end gap-2 mt-4">
+            <p-button label="Lưu" severity="success" (onClick)="submit()"></p-button>
+            <p-button label="Đóng" (onClick)="close()"></p-button>
+        </div>
     </div>
-</div>
