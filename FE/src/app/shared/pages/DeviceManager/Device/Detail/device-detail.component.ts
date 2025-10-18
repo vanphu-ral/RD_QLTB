@@ -99,7 +99,7 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
       this.model.maintenanceCycle = Util.stringToDropdownOptions(this.model.maintenanceCycle);
     }
     if (this.isEditMode && this.model?.id) {
-      this.deviceSupplyUseService.getBySupplyId(this.model.id).subscribe(list => {
+      this.deviceSupplyUseService.getListByDeviceId(this.model.id).subscribe(list => {
         this.listMaterialInit = _.map(list, item => ({ ...item, supply: item.supplyDetail.supply }));
         this.cdr.detectChanges();
       });

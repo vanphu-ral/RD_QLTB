@@ -1,3 +1,4 @@
+import { DeviceCurrentSupply } from "../DeviceManager/device-current-supply.model";
 import { Approval } from "./approval.model";
 import { ErrorReport } from "./error-report.model";
 import { PlanDetail } from "./plan-detail.model";
@@ -12,4 +13,5 @@ export class PlanCheck {
     supplyReplacement?: SupplyReplacement[] = [];
     approvals?: Approval[] = [];
     planDetail?: PlanDetail = new PlanDetail();
+    deviceCurrentSupplies?: DeviceCurrentSupply[] = [];
 }
