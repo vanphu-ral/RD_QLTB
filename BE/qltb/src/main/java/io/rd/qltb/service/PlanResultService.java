@@ -75,6 +75,9 @@ public class PlanResultService {
                 .stream()
                 .map(item -> supplyReplacementHistoryService.mapToDTO(item, new SupplyReplacementHistoryDTO()))
                 .toList();
+        if(supplyReplacementHistoryDTOS != null && supplyReplacementHistoryDTOS.size() > 0){
+            planCheckDTO.setSupplyReplacementHistories(supplyReplacementHistoryDTOS);
+        }
         return planCheckDTO;
     }
     public PlanResultDTO get(final Long id) {
