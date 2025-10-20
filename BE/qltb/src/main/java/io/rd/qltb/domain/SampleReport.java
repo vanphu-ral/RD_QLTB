@@ -65,6 +65,7 @@ public class SampleReport {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "device_group_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private DeviceGroup deviceGroup;
 
     @OneToMany(mappedBy = "sampleReport")
