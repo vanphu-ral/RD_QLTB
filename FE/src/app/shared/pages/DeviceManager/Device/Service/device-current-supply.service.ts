@@ -14,7 +14,7 @@ export class DeviceCurrentSupplyService extends BaseApiService<DeviceCurrentSupp
     return this.http.post(`${this['fullBaseUrl']}/creates`, entities, { withCredentials: true });
   }
 
-  getBySupplyId(deviceId: number | string): Observable<DeviceCurrentSupply[]> {
+  getListByDeviceId(deviceId: number | string): Observable<DeviceCurrentSupply[]> {
     return this.http.get<DeviceCurrentSupply[]>(`${this['fullBaseUrl']}/byDevice/${deviceId}`, { withCredentials: true });
   }
 }

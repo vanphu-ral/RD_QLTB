@@ -20,8 +20,8 @@
             <ng-template pTemplate="body" let-row let-i="rowIndex">
                 <tr>
                     <td>{{ i + 1 }}</td>
-                    <td>{{ row.supply.name }}</td>
-                    <td>{{ row.serial }}</td>
+                    <td>{{ row.supplyDetail.supply.name }}</td>
+                    <td>{{ row.supplyDetail.serial }}</td>
                     <td>{{ row.quantityUsed }}</td>
                     <td>{{ row.status }}</td>
                 </tr>
@@ -36,7 +36,7 @@
 
     
     <div class="d-flex justify-content-end mt-2 mb-4">
-        <p-button label="Lịch sử thay thế vật tư" icon="pi pi-history" (onClick)="addNewRow()"></p-button>
+        <p-button label="Lịch sử thay thế vật tư" icon="pi pi-history" (onClick)="historyReplaceSupplyDialog()"></p-button>
     </div>
 
     <div class="table-responsive">
@@ -62,7 +62,7 @@
                     <td>{{ i + 1 }}</td>
                     <td>{{ row.supplyDetail.supply.name }}</td>
                     <td>{{ row.supplyDetail.serial }}</td>
-                    <td>{{ row.quantityUsed }}</td>
+                    <td>{{ row.quantity }}</td>
                     <td>{{ row.status }}</td>
                     <td>
                         <p-button icon="pi pi-refresh" severity="warn" class="mx-2"></p-button>

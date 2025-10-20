@@ -53,6 +53,8 @@ export class CheckDeviceDialog {
                             criticalCode: x.criterial?.code || null,
                             criticalName: x.criterial?.name || null,
                             frequency: x.frequency,
+                            result: "OK",
+                            status: 1
                         };
                     });
                     this.cdr.detectChanges();
@@ -83,6 +85,10 @@ export class CheckDeviceDialog {
             if (result) {
                 this.model.supplyReplacement = result.listSupplyReplace;
                 this.listSupplyReplaceHistory = result.listSupplyReplaceHistory;
+                this.model.deviceCurrentSupplies = result.listCurrentSupply;
+                console.log(this.model);
+                console.log(this.listSupplyReplaceHistory);
+                
                 this.cdr.detectChanges();
             }
         });
