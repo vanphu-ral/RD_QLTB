@@ -88,7 +88,7 @@ public class SupplyReplacementHistoryService {
                 .toList();
     }
 
-    private SupplyReplacementHistoryDTO mapToDTO(
+    public SupplyReplacementHistoryDTO mapToDTO(
             final SupplyReplacementHistory supplyReplacementHistory,
             final SupplyReplacementHistoryDTO dto) {
 
@@ -153,7 +153,7 @@ public class SupplyReplacementHistoryService {
     }
 
 
-    private SupplyReplacementHistory mapToEntity(
+    public SupplyReplacementHistory mapToEntity(
             final SupplyReplacementHistoryDTO supplyReplacementHistoryDTO,
             final SupplyReplacementHistory supplyReplacementHistory) {
         supplyReplacementHistory.setQuantityOld(supplyReplacementHistoryDTO.getQuantityOld());

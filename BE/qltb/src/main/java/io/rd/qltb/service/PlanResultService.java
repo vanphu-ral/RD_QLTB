@@ -5,6 +5,7 @@ import io.rd.qltb.events.BeforeDeletePlanResult;
 import io.rd.qltb.model.PlanCheckDTO;
 import io.rd.qltb.model.PlanResultDTO;
 import io.rd.qltb.model.SupplyReplacementDTO;
+import io.rd.qltb.model.SupplyReplacementHistoryDTO;
 import io.rd.qltb.repos.*;
 import io.rd.qltb.util.NotFoundException;
 
@@ -29,9 +30,11 @@ public class PlanResultService {
     private final PlanDetailRepository planDetailRepository;
     private final DeviceCurrentSupplyService deviceCurrentSupplyService;
     private final DeviceCurrentSupplyRepository deviceCurrentSupplyRepository;
+    private final SupplyReplacementHistoryRepository supplyReplacementHistoryRepository;
+    private final SupplyReplacementHistoryService supplyReplacementHistoryService;
 
     public PlanResultService(final PlanResultRepository planResultRepository,
-                             final ApplicationEventPublisher publisher, PlanResultDetailService planResultDetailService, ErrorReportService errorReportService, PlanResultDetailRepository planResultDetailRepository, SupplyReplacementService supplyReplacementService, SupplyReplacementRepository supplyReplacementRepository, ErrorReportRepository errorReportRepository, PlanDetailRepository planDetailRepository, DeviceCurrentSupplyService deviceCurrentSupplyService, DeviceCurrentSupplyRepository deviceCurrentSupplyRepository) {
+                             final ApplicationEventPublisher publisher, PlanResultDetailService planResultDetailService, ErrorReportService errorReportService, PlanResultDetailRepository planResultDetailRepository, SupplyReplacementService supplyReplacementService, SupplyReplacementRepository supplyReplacementRepository, ErrorReportRepository errorReportRepository, PlanDetailRepository planDetailRepository, DeviceCurrentSupplyService deviceCurrentSupplyService, DeviceCurrentSupplyRepository deviceCurrentSupplyRepository, SupplyReplacementHistoryRepository supplyReplacementHistoryRepository, SupplyReplacementHistoryService supplyReplacementHistoryService) {
         this.planResultRepository = planResultRepository;
         this.publisher = publisher;
         this.planResultDetailService = planResultDetailService;
@@ -43,6 +46,8 @@ public class PlanResultService {
         this.planDetailRepository = planDetailRepository;
         this.deviceCurrentSupplyService = deviceCurrentSupplyService;
         this.deviceCurrentSupplyRepository = deviceCurrentSupplyRepository;
+        this.supplyReplacementHistoryRepository = supplyReplacementHistoryRepository;
+        this.supplyReplacementHistoryService = supplyReplacementHistoryService;
     }
 
     public List<PlanResultDTO> findAll() {
@@ -66,6 +71,10 @@ public class PlanResultService {
         if(supplyReplacements != null && supplyReplacements.size() > 0){
             planCheckDTO.setSupplyReplacement(supplyReplacements.stream().map(item -> supplyReplacementService.mapToDTO(item, new SupplyReplacementDTO())).toList());
         }
+        List<SupplyReplacementHistoryDTO> supplyReplacementHistoryDTOS = supplyReplacementHistoryRepository.findByPlanResultIdOrderByCreatedAtAsc(planResultId)
+                .stream()
+                .map(item -> supplyReplacementHistoryService.mapToDTO(item, new SupplyReplacementHistoryDTO()))
+                .toList();
         return planCheckDTO;
     }
     public PlanResultDTO get(final Long id) {
