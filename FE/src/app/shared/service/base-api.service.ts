@@ -77,7 +77,11 @@ export abstract class BaseApiService<T> {
     );
   }
 
-  approvalEntity(dto: any, entityType: string): Observable<any> {
+  createApprovalEntity(dto: any, entityType: string): Observable<any> {
     return this.http.post(`${this.approvalUrl}/approval?entityType=${entityType}`, dto, { withCredentials: true });
+  }
+
+  approvalEntity(dto: any): Observable<any> {
+    return this.http.put(`${this.approvalUrl}/${dto.id}`, dto, { withCredentials: true });
   }
 }

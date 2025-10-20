@@ -11,6 +11,7 @@ import { ErrorReportService } from "../../Service/error-report.service";
 import { RepairErrorDialog } from "../repair-error-dialog/repair-error.dialog";
 import { ErrorReport } from "../../../../../models/PlanManger/error-report.model";
 import { ConfirmationService, MessageService } from "primeng/api";
+import { ErrorReportSeriousDialog } from "../error-report-serious-dialog/error-report-serious.dialog";
 
 @Component({
     selector: 'app-list-error-dialog',
@@ -84,6 +85,15 @@ export class ListErrorDialog {
         const ref = this.dialogService.open(RepairErrorDialog, {
             header: `Sửa lỗi - ${row.name}`,
             width: '40%',
+            data: row
+        });
+    }
+
+
+    acceptanceError(row: any) {
+        const ref = this.dialogService.open(ErrorReportSeriousDialog, {
+            header: `Tiếp nhận lỗi nghiêm trọng - ${row.name}`,
+            width: '50%',
             data: row
         });
     }

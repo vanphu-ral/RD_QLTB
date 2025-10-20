@@ -17,6 +17,6 @@
   </ng-template>
 </app-base-table>
 <ng-template #customActions let-row>
-  <p-button icon="pi pi-file-check" styleClass="p-button-sm p-button-rounded p-button-success m-1"
+  <p-button *ngIf="row.approval.status == 1" icon="pi pi-file-check" styleClass="p-button-sm p-button-rounded p-button-success m-1"
     (onClick)="approvalDocument(row)"></p-button>
 </ng-template>

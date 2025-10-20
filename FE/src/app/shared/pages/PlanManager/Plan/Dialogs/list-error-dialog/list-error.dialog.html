@@ -20,6 +20,8 @@
                     <td>{{ getSeverity(row.severity) }}</td>
                     <td>{{ row.isRepaired ? 'Đã sửa' : 'Chưa sửa' }}</td>
                     <td class="text-center">
+                        <p-button icon="pi pi-file" styleClass="p-button-sm p-button-rounded p-button-secondary m-1"
+                            (onClick)="acceptanceError(row)"></p-button>
                         <p-button icon="pi pi-check" severity="success" class="m-1"
                             (onClick)="confirmError($event, row)" *ngIf="!row.isRepaired">
                         </p-button>

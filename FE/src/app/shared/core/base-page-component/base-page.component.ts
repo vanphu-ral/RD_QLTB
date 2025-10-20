@@ -75,6 +75,7 @@ export abstract class BasePageComponent<T> implements OnInit {
             this.approvalModel = data;
           })
         }
+        this.approvalModel.status = 2;
       });
     }
     this.cdr.detectChanges();
@@ -94,7 +95,8 @@ export abstract class BasePageComponent<T> implements OnInit {
   }
 
   public Approval() {
-    this.apiService.update(_.get(this.model, 'id')!, this.model).subscribe({
+    this.approvalModel.status = this.approvalModel.status;
+    this.apiService.approvalEntity(this.approvalModel).subscribe({
       next: () => {
         Util.ConfirmMessage('Cập nhật thành công', 'success');
       },
