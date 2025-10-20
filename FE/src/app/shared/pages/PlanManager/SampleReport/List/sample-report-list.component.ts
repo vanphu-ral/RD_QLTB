@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { BaseTableComponent } from '../../../../core/base-table-component/base-table.component';
 import { SharedModule } from '../../../../../share.module';
 import { FormsModule } from '@angular/forms';
@@ -6,6 +6,8 @@ import { SampleReportService } from '../Service/sample-report.service';
 import { Column } from '../../../../models/Core/column.model';
 import { ApprovalWorlflowService } from '../../../ApprovalManager/ApprovalWorkflow/Service/approval-workflow.service';
 import { Util } from '../../../../core/utils/utils-function';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { OptionApprovalDialog } from '../Dialogs/option-approval-dialog/option-approval.dialog';
 
 @Component({
   selector: 'sample-report-list',
@@ -15,8 +17,9 @@ import { Util } from '../../../../core/utils/utils-function';
   styleUrls: ['./sample-report-list.component.scss'],
 })
 export class SampleReportListComponent {
-  selectedStatus: string | null = null;
 
+  selectedStatus: string | null = null;
+  ref?: DynamicDialogRef;
 
   columns: Column[] = [
     { Field: 'id', Header: 'ID', IsHide: true },
@@ -28,7 +31,7 @@ export class SampleReportListComponent {
     { Field: 'updatedAt', Header: 'Ngày cập nhật', IsSearch: true, TypeSearch: 'date', style: { 'min-width': '150px' } },
   ];
 
-  constructor(public apiService: SampleReportService, private approvalWorkflowService: ApprovalWorlflowService) {}
+  constructor(public apiService: SampleReportService, private dialogService: DialogService, private cdr: ChangeDetectorRef) {}
 
   statusToString(status: number) {
     return Util.statusToString(status);
@@ -39,20 +42,35 @@ export class SampleReportListComponent {
   }
 
   approval(data: any) {
-    const approvalModel = {
-      entityId: data.id,
-      workflowId: data.approvalWorkflow.id,
-    }
-    this.apiService.approvalEntity(approvalModel, 'sample_reports').subscribe({
-      next: () => {
-        data.status = 2;
-        this.apiService.update(data.id, data).subscribe({
-          next: (res) => {
-            Object.assign(data, res);
-            Util.ConfirmMessage('Duyệt mẫu biên bản', 'success');
-          },
-        });
-      },
+    this.ref = this.dialogService.open(OptionApprovalDialog, {
+      header: `Duyệt mẫu biên bản`,
+      width: '400px',
+      modal: true,
+      data: data,
     });
+    this.ref.onClose.subscribe((res) => {
+      if (res) {
+        console.log(res);
+        
+        Object.assign(data, res);
+        this.cdr.detectChanges();
+        Util.ConfirmMessage('Gửi duyệt thành công', 'success');
+      }
+    });
+    // const approvalModel = {
+    //   entityId: data.id,
+    //   workflowId: data.approvalWorkflow.id,
+    // }
+    // this.apiService.approvalEntity(approvalModel, 'sample_reports').subscribe({
+    //   next: () => {
+    //     data.status = 2;
+    //     this.apiService.update(data.id, data).subscribe({
+    //       next: (res) => {
+    //         Object.assign(data, res);
+    //         Util.ConfirmMessage('Duyệt mẫu biên bản', 'success');
+    //       },
+    //     });
+    //   },
+    // });
   }
 }

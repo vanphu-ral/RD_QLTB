@@ -15,6 +15,7 @@ import { SupplyReplacementHistory } from "../../../../../models/PlanManger/suppl
 import { SupplyReplacementHistoryService } from "../../Service/supply-replace-history.service";
 import { forkJoin } from "rxjs";
 import { DeviceCurrentSupplyService } from "../../../../DeviceManager/Device/Service/device-current-supply.service";
+import { SupplyReplaceHistoryDialog } from "../supply-replace-history-dialog/supply-replace-history.dialog";
 
 @Component({
     selector: 'app-supply-replacement-dialog',
@@ -38,11 +39,8 @@ export class SupplyReplacementDialog {
         private deviceSupplyUseService: DeviceSupplyUseService,
         private deviceCurrentSupplyService: DeviceCurrentSupplyService,
         private cdr: ChangeDetectorRef,
-        private supplyRepplaceHistoryService: SupplyReplacementHistoryService
     ) {
         this.data = config.data;
-        console.log(this.data);
-        
     }
 
     ngOnInit() {
@@ -61,7 +59,15 @@ export class SupplyReplacementDialog {
     }
 
     historyReplaceSupplyDialog() { 
-
+        const ref = this.dialogService.open(SupplyReplaceHistoryDialog, {
+            header: 'Lịch sử thay thế vật tư',
+            width: '70%',
+            modal: true,
+            data: this.data.historyReplace
+        });
+        ref.onClose.subscribe((result: any) => {
+            if (result) {}
+        });
     }
 
     replaceSupply(index: number) {

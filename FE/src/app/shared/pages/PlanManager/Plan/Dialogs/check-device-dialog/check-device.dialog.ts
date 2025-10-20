@@ -79,7 +79,7 @@ export class CheckDeviceDialog {
             header: `Khai báo vật tư thay thế`,
             width: '100%',
             modal: true,
-            data: { device: this.data.device , supplyReplacement: this.model.supplyReplacement},
+            data: { device: this.data.device , supplyReplacement: this.model.supplyReplacement, historyReplace: this.model.supplyReplacementHistories},
         });
         supplyReplacmentDialog.onClose.subscribe(result => {
             if (result) {

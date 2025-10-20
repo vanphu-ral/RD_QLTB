@@ -4,6 +4,7 @@ import { ErrorReport } from "./error-report.model";
 import { PlanDetail } from "./plan-detail.model";
 import { PlanResultDetail } from "./plan-result-detail.model";
 import { PlanResult } from "./plan-result.model";
+import { SupplyReplacementHistory } from "./supply-replace-history.model";
 import { SupplyReplacement } from "./supply-replacement.model";
 
 export class PlanCheck {
@@ -14,4 +15,5 @@ export class PlanCheck {
     approvals?: Approval[] = [];
     planDetail?: PlanDetail = new PlanDetail();
     deviceCurrentSupplies?: DeviceCurrentSupply[] = [];
+    supplyReplacementHistories?: SupplyReplacementHistory[] = [];
 }

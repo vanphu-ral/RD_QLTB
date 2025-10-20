@@ -136,8 +136,14 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
     }
   }
 
+  prepareModel(): void {
+    if (!this.model) return;
+    _.set(this.model, 'deviceGroup.groupDevices', undefined);
+  }
+
   public override save(): void {
     if (!this.model) return;
+    this.prepareModel();
     this.model = Util.prepareModel(this.model);
     if (this.isAddMode) {
       this.apiService.create(this.model).subscribe({

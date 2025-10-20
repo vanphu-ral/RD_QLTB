@@ -36,4 +36,8 @@ export class SupplyReplacementHistoryService extends BaseApiService<SupplyReplac
       );
   }
 
+  getHistoryByPlanResultId(planResultId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this['fullBaseUrl']}/plan-result/${planResultId}`, { withCredentials: true });
+  }
+
 }

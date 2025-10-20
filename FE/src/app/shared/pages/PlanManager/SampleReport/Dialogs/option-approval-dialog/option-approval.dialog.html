@@ -1,0 +1,33 @@
+<div class="p-1">
+    <div class="d-flex justify-content-around">
+        <div class="flex items-center">
+            <p-radiobutton name="option" [value]="1" [(ngModel)]="selectedOption" inputId="option1" />
+            <label for="option1" class="ml-2">Duyệt lần đầu</label>
+        </div>
+
+        <div class="flex items-center">
+            <p-radiobutton name="option" [value]="2" [(ngModel)]="selectedOption" inputId="option2" />
+            <label for="option2" class="ml-2">Duyệt lại</label>
+        </div>
+    </div>
+
+    <!-- Hiển thị thêm select khi chọn Option 2 -->
+    <div *ngIf="selectedOption === 2" class="mt-4">
+        <div class="row">
+            <div class="col-12">
+                <p-floatlabel variant="on">
+                    <p-select [(ngModel)]="previousRoundId" [options]="listSampleReports" optionLabel="name" [fluid]="true"
+                        [showClear]="true" [appendTo]="'body'" id="previousRoundId" optionValue="id"
+                        name="previousRoundId" required dataKey="id">
+                    </p-select>
+                    <label for="previousRoundId">Chọn bản ghi cần duyệt lại</label>
+                </p-floatlabel>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <p-button label="Xác nhận" (onClick)="save()"></p-button>
+        <p-button label="Đóng" (onClick)="close()"></p-button>
+    </div>
+</div>
