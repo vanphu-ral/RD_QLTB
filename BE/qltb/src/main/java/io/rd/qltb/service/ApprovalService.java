@@ -112,8 +112,8 @@ public class ApprovalService {
     public void createScriptApproval(ApprovalRequestDTO approvalRequestDTO, String entityType, String userName){
         ApprovalWorkflow approvalWorkflow = approvalWorkflowRepository.findById(approvalRequestDTO.getWorkflowId()).orElseThrow(()-> new NotFoundException("approvalWorkflow not found"));
         ApprovalRound newRound = new ApprovalRound();
-        if(approvalRequestDTO.getPreviousRoundId() != null){
-            ApprovalRound previousRound = approvalRoundRepository.findById(approvalRequestDTO.getPreviousRoundId()).orElseThrow(()-> new NotFoundException("previousRound not found"));
+        if(approvalRequestDTO.getPreviousEntityId() != null){ //nếu có previousEntityId thì tạo vòng tiếp theo
+        ApprovalRound previousRound= approvalRoundRepository.findPreviousRoundIdByEntityTypeAndEntityId(entityType, approvalRequestDTO.getPreviousEntityId());
             newRound.setEntityType(entityType);
             newRound.setEntityId(approvalRequestDTO.getEntityId());
             newRound.setRoundNumber(previousRound.getRoundNumber() + 1);
@@ -123,7 +123,7 @@ public class ApprovalService {
             newRound.setCreatedAt(LocalDateTime.now());
             newRound.setCreatedBy(userName);
             approvalRoundRepository.save(newRound);
-        }else {
+        }else { //nếu không có previousEntityId thì tạo vòng đầu tiên
             newRound.setEntityType(entityType);
             newRound.setEntityId(approvalRequestDTO.getEntityId());
             newRound.setRoundNumber(1);
