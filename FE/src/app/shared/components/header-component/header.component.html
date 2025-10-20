@@ -14,15 +14,18 @@
         <i
           [ngClass]="{ 'pi ': true, 'pi-moon': layoutService.isDarkTheme(), 'pi-sun': !layoutService.isDarkTheme() }"></i>
       </button>
-    </div>
-
-    <div class="layout-topbar-menu hidden lg:block">
-      <div class="layout-topbar-menu-content">
-        <a class="layout-topbar-action" (click)="notificationPopover.toggle($event)">
+      <a class="layout-topbar-action" (click)="notificationPopover.toggle($event)">
           <p-overlaybadge [value]="unreadCount" severity="danger">
             <i class="pi pi-bell"></i>
           </p-overlaybadge>
         </a>
+      <button class="layout-topbar-action d-block d-lg-none" (click)="mobileMenuVisible = true">
+        <i class="pi pi-ellipsis-v"></i>
+      </button>
+    </div>
+
+    <div class="layout-topbar-menu d-none d-lg-block">
+      <div class="layout-topbar-menu-content">
         <a class="layout-topbar-action" routerLink="/qr-code">
           <i class="fa-solid fa-qrcode"></i>
           <span>QR Code</span>
@@ -73,5 +76,36 @@
         </ng-template>
       </p-popover>
     </div>
+
+
+    <!-- Mobile menu -->
+    <p-drawer [(visible)]="mobileMenuVisible" position="right" [baseZIndex]="10000">
+      <div class="layout-topbar-menu-content">
+        <a class="layout-topbar-action" routerLink="/qr-code">
+          <i class="fa-solid fa-qrcode"></i>
+          <span>QR Code</span>
+        </a>
+        <a class="layout-topbar-action" routerLink="/Import">
+          <i class="fa-solid fa-file-import"></i>
+          <span>Import</span>
+        </a>
+        <a class="layout-topbar-action" routerLink="/PlanSummary">
+          <i class="fa-solid fa-file-arrow-down"></i>
+          <span>Plan Summary</span>
+        </a>
+        <a class="layout-topbar-action" routerLink="/PlanApprove">
+          <i class="fa-solid fa-person-circle-check"></i>
+          <span>Plan Approve</span>
+        </a>
+        <button type="button" class="layout-topbar-action">
+          <i class="fas fa-expand-arrows-alt"></i>
+          <span>Full screen</span>
+        </button>
+        <div class="flex align-items-center" style="cursor: pointer;">
+          <p-avatar type="button" icon="pi pi-user" shape="circle" pRipple (click)="menu.toggle($event)"></p-avatar>
+          <p-menu #menu [model]="userMenuItems" [popup]="true"></p-menu>
+        </div>
+      </div>
+    </p-drawer>
   </div>
 </div>

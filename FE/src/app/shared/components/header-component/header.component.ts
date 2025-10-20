@@ -25,6 +25,7 @@ export class AppHeaderComponent {
     { id: 2, message: 'Thiết bị A sắp đến hạn kiểm tra', read: false },
     { id: 3, message: 'Bạn có 1 yêu cầu phê duyệt', read: true }
   ];
+  mobileMenuVisible: boolean = false;
 
   constructor(
     private router: Router,

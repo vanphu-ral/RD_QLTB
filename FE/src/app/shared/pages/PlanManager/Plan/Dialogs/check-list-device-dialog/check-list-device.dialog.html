@@ -13,7 +13,7 @@
                     <th>Mã serial</th>
                     <th>Người thực hiện</th>
                     <th>Ngày kiểm tra</th>
-                    <th>Trạng thái</th>
+                    <!-- <th>Trạng thái</th> -->
                     <th>Thao tác</th>
                 </tr>
             </ng-template>
@@ -29,7 +29,7 @@
                         <p-datepicker [(ngModel)]="row.dateTest" appDateConvert [iconDisplay]="'input'" [showIcon]="true"
                             name="dateTest" inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body" />
                     </td>
-                    <td>{{ row.status }}</td>
+                    <!-- <td>{{ row.status }}</td> -->
                     <td class="text-center">
                         <p-button icon="pi pi-save" styleClass="m-1"
                             (onClick)="saveDeviceCheckDate(row)"></p-button>
