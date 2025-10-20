@@ -41,7 +41,7 @@ export class OptionApprovalDialog {
         const approvalModel: any = {
             entityId: this.data.id,
             workflowId: this.data.approvalWorkflow.id,
-            previousRoundId: this.previousRoundId,
+            previousEntityId: this.previousRoundId,
         };
         this.sampleReportService.createApprovalEntity(approvalModel, 'sample_reports').subscribe({
             next: () => {

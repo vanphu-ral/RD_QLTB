@@ -102,6 +102,7 @@ public class PlanResultService {
                     item.setUpdatedAt(java.time.LocalDateTime.now());
                     item.setUpdatedBy(userName);
                     PlanResultDetail planResultDetail = planResultDetailService.mapToEntity(item, existingDetail);
+                    planResultDetail.setId(item.getId());
                     planResultDetailRepository.save(planResultDetail);
                 }else{
                     System.out.println("Insert PlanResultDetail " );
@@ -123,6 +124,7 @@ public class PlanResultService {
                     item.setUpdatedAt(java.time.LocalDateTime.now());
                     item.setUpdatedBy(userName);
                     SupplyReplacement supplyReplacementSave = supplyReplacementService.mapToEntity(item, new SupplyReplacement());
+                    supplyReplacementSave.setId(item.getId());
                     supplyReplacementRepository.save(supplyReplacementSave);
                     System.out.println("");
                 }else {
@@ -145,6 +147,7 @@ public class PlanResultService {
                     item.setUpdatedAt(java.time.LocalDateTime.now());
                     item.setUpdatedBy(userName);
                     ErrorReport errorReportSave = errorReportService.mapToEntity(item, new ErrorReport());
+                    errorReportSave.setId(item.getId());
                     errorReportRepository.save(errorReportSave);
                 }else {
                     System.out.println("Insert ErrorReport " );
@@ -165,6 +168,7 @@ public class PlanResultService {
                     item.setUpdatedAt(java.time.LocalDateTime.now());
                     item.setUpdatedBy(userName);
                     DeviceCurrentSupply deviceCurrentSupply = deviceCurrentSupplyService.mapToEntity(item, existingDetail);
+                    deviceCurrentSupply.setId(item.getId());
                     deviceCurrentSupplyRepository.save(deviceCurrentSupply);
                 }else{
                     item.setCreatedBy(userName);
