@@ -44,6 +44,16 @@
                 <label for="description">Mô tả</label>
             </p-floatlabel>
         </div>
+
+        <div class="col">
+            <p-floatlabel variant="on">
+                <p-select [(ngModel)]="model.statusOldSupply" [options]="listOptionsReplace" optionLabel="label" [fluid]="true"
+                    [showClear]="true" [appendTo]="'body'" id="statusOldSupply" name="statusOldSupply" optionValue="value"
+                    required>
+                </p-select>
+                <label for="statusOldSupply">Lý do thay thế</label>
+            </p-floatlabel>
+        </div>
     </div>
     
 

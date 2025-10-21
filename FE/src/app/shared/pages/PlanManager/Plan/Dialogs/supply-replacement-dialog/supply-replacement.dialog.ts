@@ -13,9 +13,10 @@ import { ReplaceSupplyDialog } from "../replace-supply-dialog/replace-supply.dia
 import { SupplyReplacement } from "../../../../../models/PlanManger/supply-replacement.model";
 import { SupplyReplacementHistory } from "../../../../../models/PlanManger/supply-replace-history.model";
 import { SupplyReplacementHistoryService } from "../../Service/supply-replace-history.service";
-import { forkJoin } from "rxjs";
+import { forkJoin, Observable, switchMap } from "rxjs";
 import { DeviceCurrentSupplyService } from "../../../../DeviceManager/Device/Service/device-current-supply.service";
 import { SupplyReplaceHistoryDialog } from "../supply-replace-history-dialog/supply-replace-history.dialog";
+import { ConfirmationService, MessageService } from "primeng/api";
 
 @Component({
     selector: 'app-supply-replacement-dialog',
@@ -39,11 +40,18 @@ export class SupplyReplacementDialog {
         private deviceSupplyUseService: DeviceSupplyUseService,
         private deviceCurrentSupplyService: DeviceCurrentSupplyService,
         private cdr: ChangeDetectorRef,
+        private comfirmService: ConfirmationService,
+        private messageService: MessageService,
+        private supplyDetailService: SupplyDetailService
     ) {
         this.data = config.data;
     }
 
     ngOnInit() {
+        this.loadData();
+    }
+
+    loadData() {
         this.deviceSupplyUseService
             .getListByDeviceId(this.data.device.deviceId)
             .subscribe((res: any) => {
@@ -54,19 +62,18 @@ export class SupplyReplacementDialog {
         this.deviceCurrentSupplyService.getListByDeviceId(this.data.device.deviceId)
             .subscribe((res: any) => {
                 this.checkList = res;
+                console.log(res);
+                
                 this.cdr.detectChanges();
             });
     }
 
-    historyReplaceSupplyDialog() { 
+    historyReplaceSupplyDialog() {
         const ref = this.dialogService.open(SupplyReplaceHistoryDialog, {
             header: 'Lịch sử thay thế vật tư',
             width: '70%',
             modal: true,
             data: this.data.historyReplace
-        });
-        ref.onClose.subscribe((result: any) => {
-            if (result) {}
         });
     }
 
@@ -95,12 +102,53 @@ export class SupplyReplacementDialog {
                 this.supplyReplaceHistory.quantityChange = result.quantityUsed;
                 this.supplyReplaceHistory.newSupplyDetail = result.serial;
                 this.supplyReplaceHistory.reason = result.description;
+                this.supplyReplaceHistory.oldSupplyDetail.status = result.statusOldSupply;
                 this.listSupplyReplaceHistory.push(this.supplyReplaceHistory);
                 this.checkList[index].supplyDetail = result.serial
                 this.checkList[index].quantity = result.quantityUsed
                 this.cdr.detectChanges();
             }
         });
+    }
+
+    rejectSupply(event: any, data: any) {
+        Util.confirmAndExecute(
+            event,
+            'Bạn có chắc muốn tháo vật tư này khỏi thiết bị?',
+            () => this.rejectData(data),
+            'Đã hoàn thành tháo vật tư',
+            'Lỗi',
+            this.comfirmService,
+            this.messageService,
+            () => this.loadData()
+        );
+    }
+
+    rejectData(data: any): Observable<any> {
+        data.supplyDetail.status = 0;
+        return this.supplyDetailService.update(data.supplyDetail.id as number, data.supplyDetail).pipe(
+            switchMap(() => this.deviceCurrentSupplyService.delete(data.id as number))
+        );
+    }
+
+    reportErrorSupply(event: any, data: any) {
+        Util.confirmAndExecute(
+            event,
+            'Bạn có chắc muốn báo hỏng vật tư này?',
+            () => {
+                data.supplyDetail.status = 3;
+                return this.supplyDetailService.update(data.supplyDetail.id as number, data.supplyDetail)
+            },
+            'Đã hoàn thành báo hỏng vật tư',
+            'Lỗi',
+            this.comfirmService,
+            this.messageService,
+            () => this.loadData()
+        );
+    }
+
+    status(status: number) {
+        return Util.statusSupplyToString(status);
     }
 
     submit() {

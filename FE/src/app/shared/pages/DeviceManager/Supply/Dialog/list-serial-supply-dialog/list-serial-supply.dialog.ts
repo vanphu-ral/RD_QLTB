@@ -16,8 +16,10 @@ export class ListSerialSupplyDialogComponent {
     data: any;
     listSerials: SerialSupply[] = [];
     listStatus: any[] = [
-        { label: 'Kích hoạt', value: 1 },
-        { label: 'Vô hiệu hóa', value: 0 }
+        { label: 'Không sử dụng - Hoạt động tốt', value: 0 },
+        { label: 'Đang sử dụng - Hoạt động tốt', value: 1 },
+        { label: 'Không sử dụng - Hỏng', value: 2 },
+        { label: 'Đang sử dụng - Hỏng', value: 3 }
     ];
     listCurrency: any[] = [
         { label: 'VND', value: 'VND' },

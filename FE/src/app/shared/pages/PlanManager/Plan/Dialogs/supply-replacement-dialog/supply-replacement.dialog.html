@@ -23,7 +23,7 @@
                     <td>{{ row.supplyDetail.supply.name }}</td>
                     <td>{{ row.supplyDetail.serial }}</td>
                     <td>{{ row.quantityUsed }}</td>
-                    <td>{{ row.status }}</td>
+                    <td>{{ status(row.supplyDetail.status) }}</td>
                 </tr>
             </ng-template>
             <ng-template pTemplate="emptymessage">
@@ -63,9 +63,10 @@
                     <td>{{ row.supplyDetail.supply.name }}</td>
                     <td>{{ row.supplyDetail.serial }}</td>
                     <td>{{ row.quantity }}</td>
-                    <td>{{ row.status }}</td>
+                    <td>{{ status(row.supplyDetail.status) }}</td>
                     <td>
-                        <p-button icon="pi pi-refresh" severity="warn" class="mx-2"></p-button>
+                        <p-button icon="pi pi-refresh" severity="warn" class="mx-2" (onClick)="rejectSupply($event, row)"></p-button>
+                        <p-button icon="pi pi-exclamation-circle" severity="danger" class="mx-2" (onClick)="reportErrorSupply($event, row)"></p-button>
                         <p-button icon="pi pi-arrow-right-arrow-left" severity="info" class="mx-2" (onClick)="replaceSupply(i)"></p-button>
                     </td>
                 </tr>
@@ -83,3 +84,5 @@
         <p-button label="Đóng" (onClick)="close()"></p-button>
     </div>
 </div>
+<p-confirmDialog></p-confirmDialog>
+<p-toast></p-toast>

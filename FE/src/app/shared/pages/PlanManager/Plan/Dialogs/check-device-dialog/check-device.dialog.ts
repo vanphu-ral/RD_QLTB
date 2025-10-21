@@ -14,6 +14,7 @@ import { PlanCheck } from "../../../../../models/PlanManger/plan-check.model";
 import { PlanResultService } from "../../Service/plan-result.service";
 import { SupplyReplacementHistoryService } from "../../Service/supply-replace-history.service";
 import { SupplyReplacementHistory } from "../../../../../models/PlanManger/supply-replace-history.model";
+import { SupplyDetailService } from "../../../../DeviceManager/Supply/Service/supply-detail.service";
 
 @Component({
     selector: 'app-check-device-dialog',
@@ -38,7 +39,8 @@ export class CheckDeviceDialog {
         private keyMappingService: KeyMappingService,
         private dialogService: DialogService,
         private planResultService: PlanResultService,
-        private supplyReplaceHistoryService: SupplyReplacementHistoryService
+        private supplyReplaceHistoryService: SupplyReplacementHistoryService,
+        private supplyDetailService: SupplyDetailService,
     ) {
         this.data = config.data;
     }
@@ -114,6 +116,8 @@ export class CheckDeviceDialog {
 
     submit() {
         // this.prepareModel();
+        console.log(this.listSupplyReplaceHistory);
+        
         this.model.planResult = this.data.planResult;
         this.listSupplyReplaceHistory = this.listSupplyReplaceHistory.map(x => {
             return {
@@ -133,6 +137,9 @@ export class CheckDeviceDialog {
                 Util.showSuccessMessage("Lưu lịch sử thay thế vật tư thành công");
             }
         });
+        this.listSupplyReplaceHistory.forEach(item => {
+            this.supplyDetailService.update(item.oldSupplyDetail.id as number, item.oldSupplyDetail).subscribe();
+        })
     }
 
     close() {

@@ -436,4 +436,19 @@ export class Util {
         return '';
     }
   }
+
+  static statusSupplyToString(status: number): string {
+    switch (status) {
+      case 0:
+        return 'Không sử dụng - Hoạt động tốt';
+      case 1:
+        return 'Đang sử dụng - Hoạt động tốt';
+      case 2:
+        return 'Không sử dụng - Hỏng';
+      case 3:
+        return 'Đang sử dụng - Hỏng';
+      default:
+        return '';
+    }
+  }
 }
