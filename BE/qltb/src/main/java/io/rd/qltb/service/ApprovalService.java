@@ -101,6 +101,39 @@ public class ApprovalService {
                 .orElseThrow(NotFoundException::new);
         mapToEntity(approvalDTO, approval);
         approvalRepository.save(approval);
+        // Cập nhật trạng thái của ApprovalRound dựa trên trạng thái của Approval
+        Integer total = approvalRepository.countByRoundIdAndEntityId(approval.getRound().getId(),approval.getEntityId());
+        if(approval.getStatus() == 6){
+            ApprovalRound approvalRound = approvalRoundRepository.findById(approval.getRound().getId()).orElseThrow(()-> new NotFoundException("ApprovalRound not found"));
+            approvalRound.setStatus(6);
+                approvalRoundRepository.save(approvalRound);
+            String tableName = approval.getEntityType();
+            String sql = "update " + tableName + " set status = 6 WHERE id = ?";
+             jdbcTemplate.update(sql, approval.getEntityId());
+        }else if(approvalRepository.countByRoundIdAndEntityIdAndStatus(approval.getRound().getId(),approval.getEntityId(),6) >0){
+            ApprovalRound approvalRound = approvalRoundRepository.findById(approval.getRound().getId()).orElseThrow(()-> new NotFoundException("ApprovalRound not found"));
+            approvalRound.setStatus(6);
+            approvalRoundRepository.save(approvalRound);
+            String tableName = approval.getEntityType();
+            String sql = "update " + tableName + " set status = 6 WHERE id = ?";
+            jdbcTemplate.update(sql, approval.getEntityId());
+        } else if (approvalRepository.countByRoundIdAndEntityIdAndStatus(approval.getRound().getId(),approval.getEntityId(),6) ==0
+        && approvalRepository.countByRoundIdAndEntityIdAndStatus(approval.getRound().getId(),approval.getEntityId(),3) == total) {
+            ApprovalRound approvalRound = approvalRoundRepository.findById(approval.getRound().getId()).orElseThrow(()-> new NotFoundException("ApprovalRound not found"));
+            approvalRound.setStatus(3);
+            approvalRoundRepository.save(approvalRound);
+            String tableName = approval.getEntityType();
+            String sql = "update " + tableName + " set status = 3 WHERE id = ?";
+            jdbcTemplate.update(sql, approval.getEntityId());
+        } else if (approvalRepository.countByRoundIdAndEntityIdAndStatus(approval.getRound().getId(),approval.getEntityId(),6) ==0
+                && approvalRepository.countByRoundIdAndEntityIdAndStatus(approval.getRound().getId(),approval.getEntityId(),3) < total) {
+            ApprovalRound approvalRound = approvalRoundRepository.findById(approval.getRound().getId()).orElseThrow(()-> new NotFoundException("ApprovalRound not found"));
+            approvalRound.setStatus(2);
+            approvalRoundRepository.save(approvalRound);
+            String tableName = approval.getEntityType();
+            String sql = "update " + tableName + " set status = 2 WHERE id = ?";
+            jdbcTemplate.update(sql, approval.getEntityId());
+        }
     }
 
     public void delete(final Long id) {
