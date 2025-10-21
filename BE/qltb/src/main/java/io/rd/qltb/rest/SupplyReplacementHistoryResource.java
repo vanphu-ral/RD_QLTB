@@ -80,4 +80,9 @@ public class SupplyReplacementHistoryResource {
             @PathVariable(name = "planResultId") final Long planResultId) {
         return ResponseEntity.ok(supplyReplacementHistoryService.getByPlanResultId(planResultId));
     }
+    @GetMapping("/device/{planResultId}")
+    public ResponseEntity<List<SupplyReplacementHistoryDTO>> getByDeviceId(
+            @PathVariable(name = "planResultId") final Long planResultId) {
+        return ResponseEntity.ok(supplyReplacementHistoryService.getByDeviceId(planResultId));
+    }
 }

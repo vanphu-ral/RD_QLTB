@@ -87,7 +87,15 @@ public class SupplyReplacementHistoryService {
                 .map(h -> mapToDTO(h, new SupplyReplacementHistoryDTO()))
                 .toList();
     }
-
+    public List<SupplyReplacementHistoryDTO> getByDeviceId(final Long planResultId) {
+        if (planResultId == null) {
+            return Collections.emptyList();
+        }
+        final List<SupplyReplacementHistory> histories = supplyReplacementHistoryRepository.findByDeviceIdOrderByCreatedAtDesc(planResultId);
+        return histories.stream()
+                .map(h -> mapToDTO(h, new SupplyReplacementHistoryDTO()))
+                .toList();
+    }
     public SupplyReplacementHistoryDTO mapToDTO(
             final SupplyReplacementHistory supplyReplacementHistory,
             final SupplyReplacementHistoryDTO dto) {

@@ -14,5 +14,6 @@ public interface SupplyReplacementHistoryRepository extends JpaRepository<Supply
 
     // Lấy theo planResultId, sắp xếp theo createdAt tăng dần
     List<SupplyReplacementHistory> findByPlanResultIdOrderByCreatedAtAsc(Long planResultId);
+    List<SupplyReplacementHistory> findByDeviceIdOrderByCreatedAtDesc(Long deviceId);
 
 }
