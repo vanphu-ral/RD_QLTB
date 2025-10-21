@@ -40,8 +40,8 @@ export abstract class BasePageComponent<T> implements OnInit {
   ];
 
   listApprovalStatus: any[] = [
-    { label: 'Từ chối', value: 3 },
-    { label: 'Duyệt', value: 2 },
+    { label: 'Từ chối', value: 6 },
+    { label: 'Duyệt', value: 3 },
   ];
 
   protected route = inject(ActivatedRoute);

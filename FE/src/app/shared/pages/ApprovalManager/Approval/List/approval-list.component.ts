@@ -54,7 +54,7 @@ export class ApprovalListComponent {
         return 'Chưa duyệt';
       case 2:
         return 'Đã duyệt';
-      case 3:
+      case 6:
         return 'Bị từ chối';
       default:
         return '';
