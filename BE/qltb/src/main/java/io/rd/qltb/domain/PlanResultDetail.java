@@ -52,6 +52,8 @@ public class PlanResultDetail {
 
     @Column
     private Integer max;
+    @Column
+    private String file;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;

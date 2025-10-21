@@ -3,6 +3,7 @@ package io.rd.qltb.model;
 import io.rd.qltb.domain.ApprovalWorkflow;
 import io.rd.qltb.domain.ErrorReport;
 import io.rd.qltb.domain.PlanResult;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -23,6 +24,17 @@ public class AcceptanceDTO {
     private String note;
 
     private String user;
+    private String result;
+    private Integer safe;
+    private Integer quality;
+    private Integer productivity;
+    private String actionMore;
+    private String responsibility;
+    private String limitation;
+    private LocalDateTime fromDateAcceptance;
+    private LocalDateTime toDateAcceptance;
+    private LocalDateTime fromDatePerform;
+    private LocalDateTime toDatePerform;
 
     private LocalDateTime timeAcceptance;
 

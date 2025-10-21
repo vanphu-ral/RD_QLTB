@@ -33,7 +33,7 @@ public class PlanResultDetailDTO {
 
     private Integer max;
 
-
+private String file;
     private LocalDateTime createdAt;
 
 

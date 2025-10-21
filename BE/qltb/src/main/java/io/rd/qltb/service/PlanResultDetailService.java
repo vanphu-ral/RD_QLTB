@@ -71,6 +71,7 @@ public class PlanResultDetailService {
         dto.setUnit(planResultDetail.getUnit());
         dto.setMin(planResultDetail.getMin());
         dto.setMax(planResultDetail.getMax());
+        dto.setFile(planResultDetail.getFile());
         dto.setCreatedAt(planResultDetail.getCreatedAt());
         dto.setUpdatedAt(planResultDetail.getUpdatedAt());
         dto.setCreatedBy(planResultDetail.getCreatedBy());
@@ -118,6 +119,7 @@ public class PlanResultDetailService {
         planResultDetail.setUnit(planResultDetailDTO.getUnit());
         planResultDetail.setMin(planResultDetailDTO.getMin());
         planResultDetail.setMax(planResultDetailDTO.getMax());
+        planResultDetail.setFile(planResultDetailDTO.getFile());
         planResultDetail.setCreatedAt(planResultDetailDTO.getCreatedAt());
         planResultDetail.setUpdatedAt(planResultDetailDTO.getUpdatedAt());
         planResultDetail.setCreatedBy(planResultDetailDTO.getCreatedBy());

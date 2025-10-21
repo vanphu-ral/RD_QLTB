@@ -21,7 +21,7 @@ public class PlanDetailDTO {
     private String serial;
 
     private LocalDateTime createdAt;
-
+    private LocalDateTime estimatedTime;
 
     private LocalDateTime updatedAt;
 

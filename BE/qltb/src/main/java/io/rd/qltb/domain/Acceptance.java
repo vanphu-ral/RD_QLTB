@@ -38,6 +38,29 @@ public class Acceptance {
     private String user;
 
     @Column
+    private String result;
+    @Column
+    private Integer safe;
+    @Column
+    private Integer quality;
+    @Column
+    private Integer productivity;
+    @Column
+    private String actionMore;
+    @Column
+    private String responsibility;
+    @Column
+    private String limitation;
+    @Column
+    private LocalDateTime fromDateAcceptance;
+    @Column
+    private LocalDateTime toDateAcceptance;
+    @Column
+    private LocalDateTime fromDatePerform;
+    @Column
+    private LocalDateTime toDatePerform;
+
+    @Column
     private LocalDateTime timeAcceptance;
 
     @Column(nullable = false)

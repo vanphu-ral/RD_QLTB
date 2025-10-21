@@ -34,7 +34,8 @@ public class PlanDetail {
 
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-
+ @Column
+ private LocalDateTime estimatedTime;
     @Column
     private String createdBy;
 

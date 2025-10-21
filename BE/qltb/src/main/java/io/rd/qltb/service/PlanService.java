@@ -371,7 +371,9 @@ public class PlanService {
                 }
 
                 return d;
-            }).toList();
+            })
+                    .sorted(Comparator.comparing(PlanDetailListDTO::getId).reversed())
+                    .toList();
 
             dto.setDetails(details);
             return dto;
