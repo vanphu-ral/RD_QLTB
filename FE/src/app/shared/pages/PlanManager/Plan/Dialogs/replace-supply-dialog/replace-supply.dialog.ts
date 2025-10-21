@@ -18,6 +18,7 @@ export class ReplaceSupplyDialog {
     model: any = {};
     listSupplys: any[] = [];
     serialOptions: any[] = [];
+    listOptionsReplace: any[] = [{ label: 'Thay thế', value: 1 }, { label: 'Hỏng', value: 2 }];
 
     constructor(
         public ref: DynamicDialogRef,
@@ -55,8 +56,6 @@ export class ReplaceSupplyDialog {
 
     submit() {
         this.model.status = 1;
-        console.log(this.model);
-        
         this.ref.close(this.model);
     }
 
