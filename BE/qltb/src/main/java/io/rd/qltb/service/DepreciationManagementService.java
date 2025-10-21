@@ -20,7 +20,7 @@ public class DepreciationManagementService {
     }
 
     public List<DepreciationManagementDTO> findAll() {
-        final List<DepreciationManagement> depreciationManagements = depreciationManagementRepository.findAll(Sort.by("id"));
+        final List<DepreciationManagement> depreciationManagements = depreciationManagementRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return depreciationManagements.stream()
                 .map(depreciationManagement -> mapToDTO(depreciationManagement, new DepreciationManagementDTO()))
                 .toList();

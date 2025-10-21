@@ -19,7 +19,7 @@ public class PlanSupplieService {
     }
 
     public List<PlanSupplieDTO> findAll() {
-        final List<PlanSupplie> planSupplies = planSupplieRepository.findAll(Sort.by("id"));
+        final List<PlanSupplie> planSupplies = planSupplieRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return planSupplies.stream()
                 .map(planSupplie -> mapToDTO(planSupplie, new PlanSupplieDTO()))
                 .toList();

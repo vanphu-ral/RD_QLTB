@@ -42,7 +42,7 @@ public class DeviceSupplyUsageService {
     }
 
     public List<DeviceSupplyUsageDTO> findAll() {
-        final List<DeviceSupplyUsage> deviceSupplyUsages = deviceSupplyUsageRepository.findAll(Sort.by("id"));
+        final List<DeviceSupplyUsage> deviceSupplyUsages = deviceSupplyUsageRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return deviceSupplyUsages.stream()
                 .map(deviceSupplyUsage -> mapToDTO(deviceSupplyUsage, new DeviceSupplyUsageDTO()))
                 .toList();

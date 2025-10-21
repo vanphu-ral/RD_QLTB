@@ -19,7 +19,7 @@ public class GroupApprovalNameService {
     }
 
     public List<GroupApprovalNameDTO> findAll() {
-        final List<GroupApprovalName> groupApprovalNames = groupApprovalNameRepository.findAll(Sort.by("id"));
+        final List<GroupApprovalName> groupApprovalNames = groupApprovalNameRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return groupApprovalNames.stream()
                 .map(groupApprovalName -> mapToDTO(groupApprovalName, new GroupApprovalNameDTO()))
                 .toList();

@@ -24,7 +24,7 @@ public class PlanTypeService {
     }
 
     public List<PlanTypeDTO> findAll() {
-        final List<PlanType> planTypes = planTypeRepository.findAll(Sort.by("id"));
+        final List<PlanType> planTypes = planTypeRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return planTypes.stream()
                 .map(planType -> mapToDTO(planType, new PlanTypeDTO()))
                 .toList();

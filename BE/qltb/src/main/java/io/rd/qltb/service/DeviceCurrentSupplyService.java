@@ -40,7 +40,7 @@ public class DeviceCurrentSupplyService {
     }
 
     public List<DeviceCurrentSupplyDTO> findAll() {
-        final List<DeviceCurrentSupply> deviceCurrentSupplies = deviceCurrentSupplyRepository.findAll(Sort.by("id"));
+        final List<DeviceCurrentSupply> deviceCurrentSupplies = deviceCurrentSupplyRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return deviceCurrentSupplies.stream()
                 .map(deviceCurrentSupply -> mapToDTO(deviceCurrentSupply, new DeviceCurrentSupplyDTO()))
                 .toList();

@@ -21,7 +21,7 @@ public class UserImageService {
     }
 
     public List<UserImageDTO> findAll() {
-        final List<UserImage> userImages = userImageRepository.findAll(Sort.by("id"));
+        final List<UserImage> userImages = userImageRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return userImages.stream()
                 .map(userImage -> mapToDTO(userImage, new UserImageDTO()))
                 .toList();

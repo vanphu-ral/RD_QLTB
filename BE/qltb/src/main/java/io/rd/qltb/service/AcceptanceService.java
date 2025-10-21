@@ -34,7 +34,7 @@ public class AcceptanceService {
     }
 
     public List<AcceptanceDTO> findAll() {
-        final List<Acceptance> acceptances = acceptanceRepository.findAll(Sort.by("id"));
+        final List<Acceptance> acceptances = acceptanceRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
         return acceptances.stream()
                 .map(acceptance -> mapToDTO(acceptance, new AcceptanceDTO()))
                 .toList();

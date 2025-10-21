@@ -90,7 +90,7 @@ public class PlanDetailService {
         return planCheckDTO;
     }
     public List<PlanDetailDTO> findAll() {
-        final List<PlanDetail> planDetails = planDetailRepository.findAll(Sort.by("id"));
+        final List<PlanDetail> planDetails = planDetailRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return planDetails.stream()
                 .map(planDetail -> mapToDTO(planDetail, new PlanDetailDTO()))
                 .toList();

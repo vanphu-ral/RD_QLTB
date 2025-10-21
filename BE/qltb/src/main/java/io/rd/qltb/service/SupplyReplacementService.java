@@ -37,7 +37,7 @@ public class SupplyReplacementService {
     }
 
     public List<SupplyReplacementDTO> findAll() {
-        final List<SupplyReplacement> supplyReplacements = supplyReplacementRepository.findAll(Sort.by("id"));
+        final List<SupplyReplacement> supplyReplacements = supplyReplacementRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return supplyReplacements.stream()
                 .map(supplyReplacement -> mapToDTO(supplyReplacement, new SupplyReplacementDTO()))
                 .toList();

@@ -44,7 +44,7 @@ public class SupplyService {
     }
 
     public List<SupplyDTO> findAll() {
-        final List<Supply> supplies = supplyRepository.findAll(Sort.by("id"));
+        final List<Supply> supplies = supplyRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return supplies.stream()
                 .map(supply -> mapToDTO(supply, new SupplyDTO()))
                 .toList();
@@ -71,6 +71,7 @@ public class SupplyService {
         });
 
         cq.where(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
+        cq.orderBy(cb.desc(root.get("id")));
         var query = entityManager.createQuery(cq);
         query.setFirstResult(page * 10);
         query.setMaxResults(10);

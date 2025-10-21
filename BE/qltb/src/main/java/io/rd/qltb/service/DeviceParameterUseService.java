@@ -39,7 +39,7 @@ public class DeviceParameterUseService {
     }
 
     public List<DeviceParameterUseDTO> findAll() {
-        final List<DeviceParameterUse> deviceParameterUses = deviceParameterUseRepository.findAll(Sort.by("id"));
+        final List<DeviceParameterUse> deviceParameterUses = deviceParameterUseRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return deviceParameterUses.stream()
                 .map(deviceParameterUse -> mapToDTO(deviceParameterUse, new DeviceParameterUseDTO()))
                 .toList();

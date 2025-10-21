@@ -31,7 +31,7 @@ public class ApprovalWorkflowService {
     }
 
     public List<ApprovalWorkflowDTO> findAll() {
-        final List<ApprovalWorkflow> approvalWorkflows = approvalWorkflowRepository.findAll(Sort.by("id"));
+        final List<ApprovalWorkflow> approvalWorkflows = approvalWorkflowRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return approvalWorkflows.stream()
                 .map(approvalWorkflow -> mapToDTO(approvalWorkflow, new ApprovalWorkflowDTO()))
                 .toList();

@@ -19,7 +19,7 @@ public class AssetHistoryService {
     }
 
     public List<AssetHistoryDTO> findAll() {
-        final List<AssetHistory> assetHistories = assetHistoryRepository.findAll(Sort.by("id"));
+        final List<AssetHistory> assetHistories = assetHistoryRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return assetHistories.stream()
                 .map(assetHistory -> mapToDTO(assetHistory, new AssetHistoryDTO()))
                 .toList();

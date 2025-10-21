@@ -78,7 +78,7 @@ public class ApprovalService {
         }
     }
     public List<ApprovalDTO> findAll() {
-        final List<Approval> approvals = approvalRepository.findAll(Sort.by("id"));
+        final List<Approval> approvals = approvalRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return approvals.stream()
                 .map(approval -> mapToDTO(approval, new ApprovalDTO()))
                 .toList();

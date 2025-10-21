@@ -35,7 +35,7 @@ public class CriterialService {
     }
 
     public List<CriterialDTO> findAll() {
-        final List<Criterial> criterials = criterialRepository.findAll(Sort.by("id"));
+        final List<Criterial> criterials = criterialRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return criterials.stream()
                 .map(criterial -> mapToDTO(criterial, new CriterialDTO()))
                 .toList();

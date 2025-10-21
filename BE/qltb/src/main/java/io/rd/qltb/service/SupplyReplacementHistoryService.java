@@ -36,7 +36,7 @@ public class SupplyReplacementHistoryService {
     }
 
     public List<SupplyReplacementHistoryDTO> findAll() {
-        final List<SupplyReplacementHistory> supplyReplacementHistories = supplyReplacementHistoryRepository.findAll(Sort.by("id"));
+        final List<SupplyReplacementHistory> supplyReplacementHistories = supplyReplacementHistoryRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return supplyReplacementHistories.stream()
                 .map(supplyReplacementHistory -> mapToDTO(supplyReplacementHistory, new SupplyReplacementHistoryDTO()))
                 .toList();

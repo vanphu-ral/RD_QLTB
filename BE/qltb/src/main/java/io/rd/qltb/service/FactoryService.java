@@ -24,7 +24,7 @@ public class FactoryService {
     }
 
     public List<FactoryDTO> findAll() {
-        final List<Factory> factories = factoryRepository.findAll(Sort.by("id"));
+        final List<Factory> factories = factoryRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return factories.stream()
                 .map(factory -> mapToDTO(factory, new FactoryDTO()))
                 .toList();
