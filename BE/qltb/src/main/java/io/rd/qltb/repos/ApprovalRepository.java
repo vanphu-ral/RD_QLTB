@@ -18,4 +18,9 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long> {
             nativeQuery = true
     )
     List<Approval> findApprovalsByUserIds(@Param("userIds") List<Long> userIds);
+    List<Approval> findByRoundId(Long roundId);
+    @Query(value = "select count(status) from approvals where round_id = :roundId and entity_id = :entityId and status = :status ;", nativeQuery = true)
+    Integer countByRoundIdAndEntityIdAndStatus(@Param("roundId") Long roundId, @Param("entityId") Long entityId, @Param("status") Integer status);
+    @Query(value = "select count(*) from approvals where round_id = :roundId and entity_id = :entityId ;", nativeQuery = true)
+    Integer countByRoundIdAndEntityId(@Param("roundId") Long roundId, @Param("entityId") Long entityId);
 }
