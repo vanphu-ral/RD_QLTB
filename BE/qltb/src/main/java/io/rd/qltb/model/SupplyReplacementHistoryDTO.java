@@ -13,6 +13,7 @@ import lombok.Setter;
 public class SupplyReplacementHistoryDTO {
 
     private Long id;
+    private Long deviceId;
 
     private Integer quantityOld;
 

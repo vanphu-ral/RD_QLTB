@@ -24,6 +24,8 @@ public class SupplyReplacementHistory {
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column
+    private Long deviceId;
 
     @Column
     private Integer quantityOld;

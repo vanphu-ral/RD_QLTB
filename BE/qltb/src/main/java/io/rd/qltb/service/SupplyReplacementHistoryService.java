@@ -97,6 +97,7 @@ public class SupplyReplacementHistoryService {
         dto.setQuantityChange(supplyReplacementHistory.getQuantityChange());
         dto.setReason(supplyReplacementHistory.getReason());
         dto.setPlanId(supplyReplacementHistory.getPlanId());
+        dto.setDeviceId(supplyReplacementHistory.getDeviceId());
         dto.setPlanResultId(supplyReplacementHistory.getPlanResultId());
         dto.setCreatedAt(supplyReplacementHistory.getCreatedAt());
         dto.setCreatedBy(supplyReplacementHistory.getCreatedBy());
@@ -160,6 +161,7 @@ public class SupplyReplacementHistoryService {
         supplyReplacementHistory.setQuantityChange(supplyReplacementHistoryDTO.getQuantityChange());
         supplyReplacementHistory.setReason(supplyReplacementHistoryDTO.getReason());
         supplyReplacementHistory.setPlanId(supplyReplacementHistoryDTO.getPlanId());
+        supplyReplacementHistory.setDeviceId(supplyReplacementHistoryDTO.getDeviceId());
         supplyReplacementHistory.setPlanResultId(supplyReplacementHistoryDTO.getPlanResultId());
         supplyReplacementHistory.setCreatedAt(supplyReplacementHistoryDTO.getCreatedAt());
         supplyReplacementHistory.setCreatedBy(supplyReplacementHistoryDTO.getCreatedBy());
