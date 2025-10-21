@@ -3,7 +3,7 @@
     <button class="layout-menu-button layout-topbar-action" (click)="layoutService.onMenuToggle()">
       <i class="pi pi-bars"></i>
     </button>
-    <a class="layout-topbar-logo" routerLink="/">
+    <a class="layout-topbar-logo d-none d-lg-block" routerLink="/">
       <span>Quản Lý Thiết Bị</span>
     </a>
   </div>
@@ -15,10 +15,14 @@
           [ngClass]="{ 'pi ': true, 'pi-moon': layoutService.isDarkTheme(), 'pi-sun': !layoutService.isDarkTheme() }"></i>
       </button>
       <a class="layout-topbar-action" (click)="notificationPopover.toggle($event)">
-          <p-overlaybadge [value]="unreadCount" severity="danger">
-            <i class="pi pi-bell"></i>
-          </p-overlaybadge>
-        </a>
+        <p-overlaybadge [value]="unreadCount" severity="danger">
+          <i class="pi pi-bell"></i>
+        </p-overlaybadge>
+      </a>
+      <div class="flex align-items-center d-block d-lg-none" style="cursor: pointer;">
+        <p-avatar type="button" icon="pi pi-user" shape="circle" pRipple (click)="mobileMenu.toggle($event)"></p-avatar>
+        <p-menu #mobileMenu [model]="userMenuItems" [popup]="true"></p-menu>
+      </div>
       <button class="layout-topbar-action d-block d-lg-none" (click)="mobileMenuVisible = true">
         <i class="pi pi-ellipsis-v"></i>
       </button>
@@ -47,8 +51,8 @@
           <span>Full screen</span>
         </button>
         <div class="flex align-items-center" style="cursor: pointer;">
-          <p-avatar type="button" icon="pi pi-user" shape="circle" pRipple (click)="menu.toggle($event)"></p-avatar>
-          <p-menu #menu [model]="userMenuItems" [popup]="true"></p-menu>
+          <p-avatar type="button" icon="pi pi-user" shape="circle" pRipple (click)="desktopMenu.toggle($event)"></p-avatar>
+          <p-menu #desktopMenu [model]="userMenuItems" [popup]="true"></p-menu>
         </div>
       </div>
 
@@ -79,8 +83,8 @@
 
 
     <!-- Mobile menu -->
-    <p-drawer [(visible)]="mobileMenuVisible" position="right" [baseZIndex]="10000">
-      <div class="layout-topbar-menu-content">
+    <p-drawer header="Menu" [(visible)]="mobileMenuVisible" position="top" [baseZIndex]="10000">
+      <div class="topbar-menu-mobile">
         <a class="layout-topbar-action" routerLink="/qr-code">
           <i class="fa-solid fa-qrcode"></i>
           <span>QR Code</span>
@@ -97,14 +101,6 @@
           <i class="fa-solid fa-person-circle-check"></i>
           <span>Plan Approve</span>
         </a>
-        <button type="button" class="layout-topbar-action">
-          <i class="fas fa-expand-arrows-alt"></i>
-          <span>Full screen</span>
-        </button>
-        <div class="flex align-items-center" style="cursor: pointer;">
-          <p-avatar type="button" icon="pi pi-user" shape="circle" pRipple (click)="menu.toggle($event)"></p-avatar>
-          <p-menu #menu [model]="userMenuItems" [popup]="true"></p-menu>
-        </div>
       </div>
     </p-drawer>
   </div>
