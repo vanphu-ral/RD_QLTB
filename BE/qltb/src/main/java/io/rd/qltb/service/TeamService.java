@@ -31,7 +31,7 @@ public class TeamService {
     }
 
     public List<TeamDTO> findAll() {
-        final List<Team> teams = teamRepository.findAll(Sort.by("id"));
+        final List<Team> teams = teamRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return teams.stream()
                 .map(team -> mapToDTO(team, new TeamDTO()))
                 .toList();

@@ -37,7 +37,7 @@ public class PrameterService {
     }
 
     public List<PrameterDTO> findAll() {
-        final List<Prameter> prameters = prameterRepository.findAll(Sort.by("id"));
+        final List<Prameter> prameters = prameterRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return prameters.stream()
                 .map(prameter -> mapToDTO(prameter, new PrameterDTO()))
                 .toList();

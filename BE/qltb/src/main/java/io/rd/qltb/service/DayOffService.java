@@ -19,7 +19,7 @@ public class DayOffService {
     }
 
     public List<DayOffDTO> findAll() {
-        final List<DayOff> dayOffs = dayOffRepository.findAll(Sort.by("id"));
+        final List<DayOff> dayOffs = dayOffRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return dayOffs.stream()
                 .map(dayOff -> mapToDTO(dayOff, new DayOffDTO()))
                 .toList();

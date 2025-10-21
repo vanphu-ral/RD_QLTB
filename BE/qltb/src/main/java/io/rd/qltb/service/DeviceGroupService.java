@@ -25,7 +25,7 @@ public class DeviceGroupService {
     }
 
     public List<DeviceGroupDTO> findAll() {
-        final List<DeviceGroup> deviceGroups = deviceGroupRepository.findAll(Sort.by("id"));
+        final List<DeviceGroup> deviceGroups = deviceGroupRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return deviceGroups.stream()
                 .map(deviceGroup -> mapToDTO(deviceGroup, new DeviceGroupDTO()))
                 .toList();

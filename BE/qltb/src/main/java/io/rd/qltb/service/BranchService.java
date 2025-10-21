@@ -31,7 +31,7 @@ public class BranchService {
     }
 
     public List<BranchDTO> findAll() {
-        final List<Branch> branches = branchRepository.findAll(Sort.by("id"));
+        final List<Branch> branches = branchRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return branches.stream()
                 .map(branch -> mapToDTO(branch, new BranchDTO()))
                 .toList();

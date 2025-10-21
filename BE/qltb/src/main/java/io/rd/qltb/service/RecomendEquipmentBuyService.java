@@ -20,7 +20,7 @@ public class RecomendEquipmentBuyService {
     }
 
     public List<RecomendEquipmentBuyDTO> findAll() {
-        final List<RecomendEquipmentBuy> recomendEquipmentBuys = recomendEquipmentBuyRepository.findAll(Sort.by("id"));
+        final List<RecomendEquipmentBuy> recomendEquipmentBuys = recomendEquipmentBuyRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return recomendEquipmentBuys.stream()
                 .map(recomendEquipmentBuy -> mapToDTO(recomendEquipmentBuy, new RecomendEquipmentBuyDTO()))
                 .toList();

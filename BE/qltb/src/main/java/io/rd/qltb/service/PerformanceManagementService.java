@@ -20,7 +20,7 @@ public class PerformanceManagementService {
     }
 
     public List<PerformanceManagementDTO> findAll() {
-        final List<PerformanceManagement> performanceManagements = performanceManagementRepository.findAll(Sort.by("id"));
+        final List<PerformanceManagement> performanceManagements = performanceManagementRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return performanceManagements.stream()
                 .map(performanceManagement -> mapToDTO(performanceManagement, new PerformanceManagementDTO()))
                 .toList();

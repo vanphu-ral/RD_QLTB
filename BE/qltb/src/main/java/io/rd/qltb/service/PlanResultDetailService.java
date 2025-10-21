@@ -27,7 +27,7 @@ public class PlanResultDetailService {
     }
 
     public List<PlanResultDetailDTO> findAll() {
-        final List<PlanResultDetail> planResultDetails = planResultDetailRepository.findAll(Sort.by("id"));
+        final List<PlanResultDetail> planResultDetails = planResultDetailRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return planResultDetails.stream()
                 .map(planResultDetail -> mapToDTO(planResultDetail, new PlanResultDetailDTO()))
                 .toList();

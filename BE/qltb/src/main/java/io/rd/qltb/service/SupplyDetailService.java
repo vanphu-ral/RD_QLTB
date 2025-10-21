@@ -37,7 +37,7 @@ public class SupplyDetailService {
     }
 
     public List<SupplyDetailDTO> findAll() {
-        final List<SupplyDetail> supplyDetails = supplyDetailRepository.findAll(Sort.by("id"));
+        final List<SupplyDetail> supplyDetails = supplyDetailRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return supplyDetails.stream()
                 .map(supplyDetail -> mapToDTO(supplyDetail, new SupplyDetailDTO()))
                 .toList();

@@ -32,7 +32,7 @@ public class UserService {
     }
 
     public List<UserDTO> findAll() {
-        final List<User> users = userRepository.findAll(Sort.by("id"));
+        final List<User> users = userRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return users.stream()
                 .map(user -> mapToDTO(user, new UserDTO()))
                 .toList();

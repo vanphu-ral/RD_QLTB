@@ -32,7 +32,7 @@ public class ErrorReportService {
     }
 
     public List<ErrorReportDTO> findAll() {
-        final List<ErrorReport> errorReports = errorReportRepository.findAll(Sort.by("id"));
+        final List<ErrorReport> errorReports = errorReportRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return errorReports.stream()
                 .map(errorReport -> mapToDTO(errorReport, new ErrorReportDTO()))
                 .toList();

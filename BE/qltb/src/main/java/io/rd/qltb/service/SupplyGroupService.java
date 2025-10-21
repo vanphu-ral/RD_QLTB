@@ -24,7 +24,7 @@ public class SupplyGroupService {
     }
 
     public List<SupplyGroupDTO> findAll() {
-        final List<SupplyGroup> supplyGroups = supplyGroupRepository.findAll(Sort.by("id"));
+        final List<SupplyGroup> supplyGroups = supplyGroupRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return supplyGroups.stream()
                 .map(supplyGroup -> mapToDTO(supplyGroup, new SupplyGroupDTO()))
                 .toList();

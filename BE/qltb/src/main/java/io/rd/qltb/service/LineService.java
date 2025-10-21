@@ -31,7 +31,7 @@ public class LineService {
     }
 
     public List<LineDTO> findAll() {
-        final List<Line> lines = lineRepository.findAll(Sort.by("id"));
+        final List<Line> lines = lineRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return lines.stream()
                 .map(line -> mapToDTO(line, new LineDTO()))
                 .toList();

@@ -81,7 +81,7 @@ public class DeviceService {
         return new org.springframework.data.domain.PageImpl<>(dtos, PageRequest.of(page, 10), dtos.size());
     }
     public List<DeviceDTO> findAll() {
-        final List<Device> devices = deviceRepository.findAll(Sort.by("id"));
+        final List<Device> devices = deviceRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return devices.stream()
                 .map(device -> mapToDTO(device, new DeviceDTO()))
                 .toList();

@@ -24,7 +24,7 @@ public class DepartmentService {
     }
 
     public List<DepartmentDTO> findAll() {
-        final List<Department> departments = departmentRepository.findAll(Sort.by("id"));
+        final List<Department> departments = departmentRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return departments.stream()
                 .map(department -> mapToDTO(department, new DepartmentDTO()))
                 .toList();

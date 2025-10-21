@@ -27,7 +27,7 @@ public class ApprovalGroupUserService {
     }
 
     public List<ApprovalGroupUserDTO> findAll() {
-        final List<ApprovalGroupUser> approvalGroupUsers = approvalGroupUserRepository.findAll(Sort.by("id"));
+        final List<ApprovalGroupUser> approvalGroupUsers = approvalGroupUserRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return approvalGroupUsers.stream()
                 .map(approvalGroupUser -> mapToDTO(approvalGroupUser, new ApprovalGroupUserDTO()))
                 .toList();

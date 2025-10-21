@@ -39,7 +39,7 @@ public class ApprovalGroupService {
     }
 
     public List<ApprovalGroupDTO> findAll() {
-        final List<ApprovalGroup> approvalGroups = approvalGroupRepository.findAll(Sort.by("id"));
+        final List<ApprovalGroup> approvalGroups = approvalGroupRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return approvalGroups.stream()
                 .map(approvalGroup -> mapToDTO(approvalGroup, new ApprovalGroupDTO()))
                 .toList();

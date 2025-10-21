@@ -24,7 +24,7 @@ public class CriterialGroupService {
     }
 
     public List<CriterialGroupDTO> findAll() {
-        final List<CriterialGroup> criterialGroups = criterialGroupRepository.findAll(Sort.by("id"));
+        final List<CriterialGroup> criterialGroups = criterialGroupRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return criterialGroups.stream()
                 .map(criterialGroup -> mapToDTO(criterialGroup, new CriterialGroupDTO()))
                 .toList();

@@ -34,7 +34,7 @@ public class KeyMappingDeviceSampleReportService {
     }
 
     public List<KeyMappingDeviceSampleReportDTO> findAll() {
-        final List<KeyMappingDeviceSampleReport> keyMappingDeviceSampleReports = keyMappingDeviceSampleReportRepository.findAll(Sort.by("id"));
+        final List<KeyMappingDeviceSampleReport> keyMappingDeviceSampleReports = keyMappingDeviceSampleReportRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return keyMappingDeviceSampleReports.stream()
                 .map(keyMappingDeviceSampleReport -> mapToDTO(keyMappingDeviceSampleReport, new KeyMappingDeviceSampleReportDTO()))
                 .toList();

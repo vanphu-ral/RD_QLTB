@@ -24,7 +24,7 @@ public class PrameterGroupService {
     }
 
     public List<PrameterGroupDTO> findAll() {
-        final List<PrameterGroup> prameterGroups = prameterGroupRepository.findAll(Sort.by("id"));
+        final List<PrameterGroup> prameterGroups = prameterGroupRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return prameterGroups.stream()
                 .map(prameterGroup -> mapToDTO(prameterGroup, new PrameterGroupDTO()))
                 .toList();

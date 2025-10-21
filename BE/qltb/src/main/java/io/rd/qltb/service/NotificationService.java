@@ -27,7 +27,7 @@ public class NotificationService {
     }
 
     public List<NotificationDTO> findAll() {
-        final List<Notification> notifications = notificationRepository.findAll(Sort.by("id"));
+        final List<Notification> notifications = notificationRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return notifications.stream()
                 .map(notification -> mapToDTO(notification, new NotificationDTO()))
                 .toList();

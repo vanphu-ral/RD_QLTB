@@ -92,6 +92,7 @@ public class PlanService {
         });
 
         cq.where(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
+        cq.orderBy(cb.desc(root.get("id")));
         var query = entityManager.createQuery(cq);
         query.setFirstResult(page * 10);
         query.setMaxResults(10);

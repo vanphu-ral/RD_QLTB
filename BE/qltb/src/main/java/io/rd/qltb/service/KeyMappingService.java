@@ -44,7 +44,7 @@ public class KeyMappingService {
     }
 
     public List<KeyMappingDTO> findAll() {
-        final List<KeyMapping> keyMappings = keyMappingRepository.findAll(Sort.by("id"));
+        final List<KeyMapping> keyMappings = keyMappingRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return keyMappings.stream()
                 .map(keyMapping -> mapToDTO(keyMapping, new KeyMappingDTO()))
                 .toList();

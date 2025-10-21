@@ -19,7 +19,7 @@ public class FormService {
     }
 
     public List<FormDTO> findAll() {
-        final List<Form> forms = formRepository.findAll(Sort.by("id"));
+        final List<Form> forms = formRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return forms.stream()
                 .map(form -> mapToDTO(form, new FormDTO()))
                 .toList();

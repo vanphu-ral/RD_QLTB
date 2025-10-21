@@ -28,7 +28,7 @@ public class DeviceRelocationHistoryService {
     }
 
     public List<DeviceRelocationHistoryDTO> findAll() {
-        final List<DeviceRelocationHistory> deviceRelocationHistories = deviceRelocationHistoryRepository.findAll(Sort.by("id"));
+        final List<DeviceRelocationHistory> deviceRelocationHistories = deviceRelocationHistoryRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return deviceRelocationHistories.stream()
                 .map(deviceRelocationHistory -> mapToDTO(deviceRelocationHistory, new DeviceRelocationHistoryDTO()))
                 .toList();

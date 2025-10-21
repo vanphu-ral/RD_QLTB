@@ -42,7 +42,7 @@ public class SampleReportService {
     }
 
     public List<SampleReportDTO> findAll() {
-        final List<SampleReport> sampleReports = sampleReportRepository.findAll(Sort.by("id"));
+        final List<SampleReport> sampleReports = sampleReportRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return sampleReports.stream()
                 .map(sampleReport -> mapToDTO(sampleReport, new SampleReportDTO()))
                 .toList();
