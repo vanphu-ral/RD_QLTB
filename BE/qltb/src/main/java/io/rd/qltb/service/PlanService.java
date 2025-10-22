@@ -499,7 +499,12 @@ public class PlanService {
 
         return plan;
     }
-
+ public void  inactiveatePlan(Long id) {
+        Plan plan = planRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Plan not found"));
+        plan.setStatus(0); // Giả sử 0 là trạng thái không hoạt động
+        planRepository.save(plan);
+    }
     @EventListener(BeforeDeletePlanType.class)
     public void on(final BeforeDeletePlanType event) {
         final ReferencedException referencedException = new ReferencedException();
