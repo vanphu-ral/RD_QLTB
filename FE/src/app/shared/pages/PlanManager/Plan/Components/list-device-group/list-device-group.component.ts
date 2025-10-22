@@ -120,7 +120,10 @@ export class ListDeviceComponent implements OnInit {
             header: `Danh sách thiết bị thuộc nhóm ${this.model.planDetails[index].deviceGroup.name}`,
             width: 'auto',
             modal: true,
-            data: arrDeviceEdit,
+            data: {
+                device: arrDeviceEdit,
+                plan: this.model.plan
+            },
         });
         this.ref.onClose.subscribe((result) => {
             if (result && result.length > 0) {

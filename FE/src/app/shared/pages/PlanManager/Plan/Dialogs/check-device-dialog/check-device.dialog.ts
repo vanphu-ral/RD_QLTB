@@ -88,9 +88,6 @@ export class CheckDeviceDialog {
                 this.model.supplyReplacement = result.listSupplyReplace;
                 this.listSupplyReplaceHistory = result.listSupplyReplaceHistory;
                 this.model.deviceCurrentSupplies = result.listCurrentSupply;
-                console.log(this.model);
-                console.log(this.listSupplyReplaceHistory);
-                
                 this.cdr.detectChanges();
             }
         });
@@ -115,15 +112,13 @@ export class CheckDeviceDialog {
 
 
     submit() {
-        // this.prepareModel();
-        console.log(this.listSupplyReplaceHistory);
-        
         this.model.planResult = this.data.planResult;
         this.listSupplyReplaceHistory = this.listSupplyReplaceHistory.map(x => {
             return {
                 ...x,
                 planResultId: this.data.planResult.id,
-                planId: 1
+                planId: 1,
+                deviceId: this.data.device.deviceId
             }
         });
         this.planResultService.saveEvaluation(this.model).subscribe({

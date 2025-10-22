@@ -7,6 +7,7 @@ import _ from "lodash";
 import { Util } from "../../../../../core/utils/utils-function";
 
 @Component({
+    standalone: true,
     selector: 'app-list-device-dialog',
     imports: [SharedModule, FormsModule],
     templateUrl: './list-device.dialog.html',
@@ -15,6 +16,7 @@ import { Util } from "../../../../../core/utils/utils-function";
 export class ListDeviceDialog {
 
     data: any;
+    plan: any;
     ListDevice: any[] = []
     listDeviceOptions: any[] = []
     listManagers: any[] = []
@@ -25,7 +27,10 @@ export class ListDeviceDialog {
         private cdr: ChangeDetectorRef,
         private deviceService: DeviceService
     ) {
-        this.data = config.data;
+        this.data = config.data.device;
+        this.plan = config.data.plan;
+        console.log(this.plan);
+        
     }
 
     ngOnInit() {
