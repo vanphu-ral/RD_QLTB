@@ -12,6 +12,8 @@ import { ErrorReport } from "../../../../../models/PlanManger/error-report.model
 import { AccountService } from "../../../../../core/auth/account/account.service";
 import { ErrorReportService } from "../../Service/error-report.service";
 import { ApprovalWorlflowService } from "../../../../ApprovalManager/ApprovalWorkflow/Service/approval-workflow.service";
+import { DeviceService } from "../../../../DeviceManager/Device/Service/device.service";
+import { Acceptance } from "../../../../../models/PlanManger/acceptance.model";
 
 @Component({
     selector: 'app-acceptance-dialog',
@@ -21,7 +23,8 @@ import { ApprovalWorlflowService } from "../../../../ApprovalManager/ApprovalWor
 })
 export class AcceptanceDialog {
 
-    data: ErrorReport = new ErrorReport();
+    data: any = {};
+    model: Acceptance = new Acceptance();
     listApprovalWorkflow: any[] = []
 
     constructor(
@@ -30,14 +33,23 @@ export class AcceptanceDialog {
         private accountService: AccountService,
         private errorReportService: ErrorReportService,
         private approvalWorkflowService: ApprovalWorlflowService,
+        private deviceService: DeviceService,
     ) {
         this.data = config.data;
+        console.log(this.data);
+        
     }
 
     ngOnInit() {
         this.approvalWorkflowService.getAll().subscribe(res => {
             this.listApprovalWorkflow = res
         })
+        this.deviceService.getById(this.data.deviceId || 0).subscribe(res => {
+            console.log(res);
+            
+            this.data.deviceCode = res.code;
+            this.data.deviceName = res.name;
+        });
     }
 
     submit() {
