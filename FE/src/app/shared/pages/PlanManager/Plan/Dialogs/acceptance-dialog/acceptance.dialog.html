@@ -27,23 +27,23 @@
           <td colspan="3">
             <div class="form-group clearfix">
               <div class="icheck-primary d-inline">
-                <input value="1" type="radio" id="rdtimeDelivery1" name="rdtimeDelivery">
-                <label class="mx-2" for="rdtimeDelivery1">Sửa chữa</label>
+                <input value="1" type="radio" id="type1" name="type" [(ngModel)]="model.type">
+                <label class="mx-2" for="type1">Sửa chữa</label>
               </div>
 
               <div class="icheck-primary d-inline">
-                <input value="2" type="radio" id="rdtimeDelivery2" name="rdtimeDelivery">
-                <label class="mx-2" for="rdtimeDelivery2">Bảo dưỡng định kỳ</label>
+                <input value="2" type="radio" id="type2" name="type" [(ngModel)]="model.type">
+                <label class="mx-2" for="type2">Bảo dưỡng định kỳ</label>
               </div>
 
               <div class="icheck-primary d-inline">
-                <input value="3" type="radio" id="rdtimeDelivery3" name="rdtimeDelivery">
-                <label class="mx-2" for="rdtimeDelivery3">Khác</label>
+                <input value="3" type="radio" id="type3" name="type" [(ngModel)]="model.type">
+                <label class="mx-2" for="type3">Khác</label>
               </div>
 
               <div class="icheck-primary d-inline">
-                <input value="0" type="radio" id="rdtimeDelivery0" name="rdtimeDelivery">
-                <label class="mx-2" for="rdtimeDelivery0">Bỏ chọn</label>
+                <input value="0" type="radio" id="type0" name="type" [(ngModel)]="model.type">
+                <label class="mx-2" for="type0">Bỏ chọn</label>
               </div>
 
             </div>
@@ -55,15 +55,15 @@
                 gian hoàn thành: Ngày giờ...):</label>
             <div class="d-flex mt-2">
               <p-floatlabel variant="on" class="mx-1">
-                <p-datepicker appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="installationDate"
+                <p-datepicker appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="fromDateAcceptance" [(ngModel)]="model.fromDateAcceptance"
                   inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body" [inputSize]="100" [autofocus]="false" />
-                <label for="installationDate">Từ ngày</label>
+                <label for="fromDateAcceptance">Từ ngày</label>
               </p-floatlabel>
 
               <p-floatlabel variant="on" class="mx-1">
-                <p-datepicker appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="installationDate"
+                <p-datepicker appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="toDateAcceptance" [(ngModel)]="model.toDateAcceptance"
                   inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body" [inputSize]="100" [autofocus]="false" />
-                <label for="installationDate">Đến ngày</label>
+                <label for="toDateAcceptance">Đến ngày</label>
               </p-floatlabel>
             </div>
           </td>
@@ -73,15 +73,15 @@
             <label for="rangeActDatetimeStop">Thời gian thực hiện bảo dưỡng (Từ ngày: giờ ... đến ngày: giờ...):</label>
             <div class="d-flex mt-2">
               <p-floatlabel variant="on" class="mx-1">
-                <p-datepicker appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="installationDate"
+                <p-datepicker appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="fromDatePerform" [(ngModel)]="model.fromDatePerform"
                   inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body" [inputSize]="100" [autofocus]="false" />
-                <label for="installationDate">Từ ngày</label>
+                <label for="fromDatePerform">Từ ngày</label>
               </p-floatlabel>
 
               <p-floatlabel variant="on" class="mx-1">
-                <p-datepicker appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="installationDate"
+                <p-datepicker appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="toDatePerform" [(ngModel)]="model.toDatePerform"
                   inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body" [inputSize]="100" [autofocus]="false" />
-                <label for="installationDate">Đến ngày</label>
+                <label for="toDatePerform">Đến ngày</label>
               </p-floatlabel>
             </div>
           </td>
@@ -93,8 +93,8 @@
             - Thực hiện bảo dưỡng theo kế hoạch số: <span id="spanBBPlanNumber_2">LED.LED2.BBNTTB.4</span><br />
             - Công việc phát sinh:
             <div class="mt-3">
-              <textarea pTextarea  class="form-control" rows="3" placeholder="Enter ..." id="WorkArising"
-                name="WorkArising"></textarea>
+              <textarea pTextarea  class="form-control" rows="3" placeholder="Enter ..." id="note"
+                name="note" [(ngModel)]="model.note"></textarea>
             </div>
           </td>
         </tr>
@@ -102,8 +102,8 @@
           <td colspan="3" rowspan="3">
             <b>Kết quả vận hành thử:</b>
             <div class="mt-3">
-              <textarea pTextarea  class="form-control" rows="11" placeholder="Enter ..." id="OperatingResults"
-                name="OperatingResults"></textarea>
+              <textarea pTextarea  class="form-control" rows="11" placeholder="Enter ..." id="result"
+                name="result" [(ngModel)]="model.result"></textarea>
             </div>
           </td>
           <td>
@@ -112,20 +112,20 @@
             </b>
             <div class="form-group clearfix mt-2">
               <div class="icheck-primary d-inline">
-                <input type="radio" class="mx-2" value="1" id="rAntoan1" name="rAntoan" checked="">
-                <label for="rAntoan1">
+                <input type="radio" class="mx-2" value="1" id="safe1" name="safe" checked="" [(ngModel)]="model.safe">
+                <label for="safe1">
                   Đạt
                 </label>
               </div>
               <div class="icheck-primary d-inline">
-                <input type="radio" class="mx-2" value="2" id="rAntoan2" name="rAntoan">
-                <label for="rAntoan2">
+                <input type="radio" class="mx-2" value="2" id="safe2" name="safe" [(ngModel)]="model.safe">
+                <label for="safe2">
                   Không đạt
                 </label>
               </div>
               <div class="icheck-primary d-inline">
-                <input type="radio" class="mx-2" value="0" id="rAntoan0" name="rAntoan">
-                <label for="rAntoan0">
+                <input type="radio" class="mx-2" value="0" id="safe0" name="safe" [(ngModel)]="model.safe">
+                <label for="safe0">
                   Không đánh giá
                 </label>
               </div>
@@ -139,20 +139,20 @@
             </b>
             <div class="form-group clearfix mt-2">
               <div class="icheck-primary d-inline">
-                <input class="mx-2" value="1" type="radio" id="rChatluong1" name="rChatluong" checked="">
-                <label for="rChatluong1">
+                <input class="mx-2" value="1" type="radio" id="quality1" name="quality" checked="" [(ngModel)]="model.quality">
+                <label for="quality1">
                   Đạt
                 </label>
               </div>
               <div class="icheck-primary d-inline">
-                <input class="mx-2" value="2" type="radio" id="rChatluong2" name="rChatluong">
-                <label for="rChatluong2">
+                <input class="mx-2" value="2" type="radio" id="quality2" name="quality" [(ngModel)]="model.quality">
+                <label for="quality2">
                   Không đạt
                 </label>
               </div>
               <div class="icheck-primary d-inline">
-                <input class="mx-2" type="radio" class="mx-2" value="0" id="rChatluong0" name="rChatluong">
-                <label for="rChatluong0">
+                <input class="mx-2" type="radio" class="mx-2" value="0" id="quality0" name="quality" [(ngModel)]="model.quality">
+                <label for="quality0">
                   Không đánh giá
                 </label>
               </div>
@@ -166,20 +166,20 @@
             </b>
             <div class="form-group clearfix mt-2">
               <div class="icheck-primary d-inline">
-                <input type="radio" class="mx-2" value="1" id="rNangsuat1" name="rNangsuat" checked="">
-                <label for="rNangsuat1">
+                <input type="radio" class="mx-2" value="1" id="productivity1" name="productivity" checked="" [(ngModel)]="model.productivity">
+                <label for="productivity1">
                   Đạt
                 </label>
               </div>
               <div class="icheck-primary d-inline">
-                <input type="radio" class="mx-2" value="2" id="rNangsuat2" name="rNangsuat">
-                <label for="rNangsuat2">
+                <input type="radio" class="mx-2" value="2" id="productivity2" name="productivity" [(ngModel)]="model.productivity">
+                <label for="productivity2">
                   Không đạt
                 </label>
               </div>
               <div class="icheck-primary d-inline">
-                <input type="radio" class="mx-2" value="0" id="rNangsuat0" name="rNangsuat">
-                <label for="rNangsuat0">
+                <input type="radio" class="mx-2" value="0" id="productivity0" name="productivity" [(ngModel)]="model.productivity">
+                <label for="productivity0">
                   Không đánh giá
                 </label>
               </div>
@@ -195,31 +195,21 @@
           <td colspan="2">
             <div>
               <textarea pTextarea  class="form-control" rows="3" placeholder="Enter ..." id="ActionMore"
-                name="ActionMore"></textarea>
+                name="ActionMore" [(ngModel)]="model.actionMore"></textarea>
             </div>
           </td>
           <td>
             <div id="divBienBanResponsibility">
-              <textarea pTextarea  class="form-control" rows="3" placeholder="Enter ..." id="Responsibility"
-                name="Responsibility"></textarea>
+              <textarea pTextarea  class="form-control" rows="3" placeholder="Enter ..." id="responsibility"
+                name="responsibility" [(ngModel)]="model.responsibility"></textarea>
             </div>
           </td>
           <td>
-            <div id="divBienBanDuration">
-              <textarea pTextarea  class="form-control" rows="3" placeholder="Enter ..." id="Duration" name="Duration"></textarea>
+            <div id="divBienBanLimitation">
+              <textarea pTextarea  class="form-control" rows="3" placeholder="Enter ..." id="limitation" name="limitation" [(ngModel)]="model.limitation"></textarea>
             </div>
           </td>
         </tr>
-        <!-- <tr style="height:200px; text-align:center; vertical-align:text-top; font-weight:bold;">
-          <td style="text-align:center;" id="tdPlanCreatereport">
-          </td>
-          <td style="text-align:center;">Bộ phận QL/SD thiết bị
-          </td>
-          <td style="text-align:center;">Trưởng đơn vị
-          </td>
-          <td style="text-align:center;">Tổng giám đốc (nếu cần)
-          </td>
-        </tr> -->
       </thead>
     </table>
   </div>
@@ -227,7 +217,7 @@
   <div class="row">
     <div class="col-12">
         <p-floatlabel variant="on">
-          <p-select [options]="listApprovalWorkflow" optionLabel="name"
+          <p-select [options]="listApprovalWorkflow" optionLabel="name" [(ngModel)]="model.approvalWorkflow"
             [fluid]="true" [showClear]="true" [appendTo]="'body'" id="approvalWorkflow"
             name="approvalWorkflow" dataKey="id">
           </p-select>

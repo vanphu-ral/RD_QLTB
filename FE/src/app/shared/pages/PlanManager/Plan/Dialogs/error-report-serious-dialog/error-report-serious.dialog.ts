@@ -12,6 +12,7 @@ import { ErrorReport } from "../../../../../models/PlanManger/error-report.model
 import { AccountService } from "../../../../../core/auth/account/account.service";
 import { ErrorReportService } from "../../Service/error-report.service";
 import { ApprovalWorlflowService } from "../../../../ApprovalManager/ApprovalWorkflow/Service/approval-workflow.service";
+import { ReportDeviceIncident } from "../../../../../models/PlanManger/report-device-incident.model";
 
 @Component({
     selector: 'app-error-report-serious-dialog',
@@ -21,7 +22,8 @@ import { ApprovalWorlflowService } from "../../../../ApprovalManager/ApprovalWor
 })
 export class ErrorReportSeriousDialog {
 
-    data: ErrorReport = new ErrorReport();
+    data: any;
+    model: ReportDeviceIncident = new ReportDeviceIncident();
     listApprovalWorkflow: any[] = []
 
     constructor(
