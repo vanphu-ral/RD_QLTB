@@ -312,7 +312,7 @@ public class PlanService {
 
 
     public List<PlanWithDetailsDTO> findAllWithDetails() {
-        List<Plan> plans = planRepository.findAll();
+        List<Plan> plans = planRepository.findByStatusNot(0);
 
         return plans.stream().map(plan -> {
             PlanWithDetailsDTO dto = new PlanWithDetailsDTO();
