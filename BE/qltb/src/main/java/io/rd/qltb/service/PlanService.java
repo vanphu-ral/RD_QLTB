@@ -331,6 +331,7 @@ public class PlanService {
 
             if (plan.getPlanType() != null) {
                 dto.setPlanTypeName(plan.getPlanType().getName());
+                dto.setPlanTypeCode(plan.getPlanType().getCode());
             }
             if (plan.getFactory() != null) {
                 dto.setFactoryName(plan.getFactory().getName());

@@ -24,6 +24,7 @@ public class PlanWithDetailsDTO {
 
     private Long planTypeId;
     private String planTypeName;
+    private String planTypeCode;
 
     private Long factoryId;
     private String factoryName;
