@@ -13,6 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Util } from '../../../../core/utils/utils-function';
 import { ListErrorDialog } from '../Dialogs/list-error-dialog/list-error.dialog';
 import { AcceptanceDialog } from '../Dialogs/acceptance-dialog/acceptance.dialog';
+import { PLANTYPE } from '../../../../enums/plan-type.enum';
 
 @Component({
   selector: 'plan-list',
@@ -29,13 +30,12 @@ export class PlanListComponent {
   selectedPageSize: number = 10;
   pageSizeOptions: number[] = [5, 10, 20, 30, 50, 100];
   expandedRows = {};
+  PLANTYPE = PLANTYPE;
 
   constructor(public apiService: PlanService, private router: Router, private route: ActivatedRoute, private dialogService: DialogService, private cdr: ChangeDetectorRef, private messageService: MessageService, private confirmationService: ConfirmationService) { }
 
   ngOnInit(): void {
     this.loadData();
-    // this.apiService.getPlans({}, 0).subscribe(res => {
-    // })
   }
 
   loadData() {
@@ -145,6 +145,10 @@ export class PlanListComponent {
         });
       }
     });
+  }
+
+  viewPlanMaintance(row: any) {
+    this.router.navigate([row.id, 'maintenance-plan'], { relativeTo: this.route });
   }
 
   // function table child

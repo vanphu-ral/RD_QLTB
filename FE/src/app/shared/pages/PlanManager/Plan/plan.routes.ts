@@ -5,6 +5,7 @@ import { PlanDetailComponent } from './Detail/plan-detail.component';
 import { ViewEvaluatePage } from './ViewEvaluate/view-evaluate.page';
 import { model } from '@angular/core';
 import { PlanDetailResolve } from './Resolve/plan-detail-resolve.service';
+import { ViewPlanMaintancePage } from './ViewPlanMaintance/view-plan-maintance.page';
 
 
 const planRoute: Routes = [
@@ -39,6 +40,14 @@ const planRoute: Routes = [
     data: { model: 'view'},
     resolve: {
       data: PlanDetailResolve
+    }
+  },
+  {
+    path: ':id/maintenance-plan',
+    component: ViewPlanMaintancePage,
+    data: { model: 'view' },
+    resolve: {
+      data: PlanResolve
     }
   }
 ];

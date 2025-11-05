@@ -1,0 +1,6 @@
+export enum PLANTYPE {
+  AUDIT = 'AUDIT',
+  MAINTENANCE = 'MAINTENANCE',
+  REPAIR = 'REPAIR',
+  OTHER = 'OTHER'
+}
