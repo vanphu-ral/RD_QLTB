@@ -5,17 +5,15 @@
   </div>
   <div class="row my-3">
     <div class="col-12">
-      <p-fieldset legend="Nội dung và kết quả xử lý" class="custom-fieldset">
-        <p-editor [(ngModel)]="data.repairDescription" name="description" [style]="{ height: '150px' }" autofocus></p-editor>
-      </p-fieldset>
+      <textarea pTextarea class="form-control" rows="5" placeholder="Nội dung và kết quả xử lý ..." id="repairDescription" name="repairDescription"
+          [(ngModel)]="data.repairDescription"></textarea>
     </div>
   </div>
 
   <div class="row my-3">
     <div class="col-12">
-      <p-fieldset legend="Kết luận" class="custom-fieldset">
-        <p-editor [(ngModel)]="data.result" name="result" [style]="{ height: '150px' }"></p-editor>
-      </p-fieldset>
+      <textarea pTextarea class="form-control" rows="5" placeholder="Kết luận ..." id="result" name="result"
+          [(ngModel)]="data.result"></textarea>
     </div>
   </div>
 
