@@ -1,0 +1,86 @@
+<div class="p-1">
+
+    <div class="table-responsive">
+        <p-table [value]="[data]" responsiveLayout="scroll">
+            <ng-template #caption>
+                <div class="flex items-center justify-between">
+                    <span class="text-xl font-bold">Vị trí hiện tại</span>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Ngành</th>
+                    <th>Dây chuyền</th>
+                    <th>Tổ</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-row let-i="rowIndex">
+                <tr>
+                    <td>{{ row.branch.name }}</td>
+                    <td>{{ row.line.name }}</td>
+                    <td>{{ row.team.name }}</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="99" class="text-center">Chưa có vật tư nào thuộc thiết bị</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <div class="table-responsive">
+        <p-table [value]="[model]" responsiveLayout="scroll">
+            <ng-template #caption>
+                <div class="flex items-center justify-between">
+                    <span class="text-xl font-bold">Di chuyển</span>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Ngành</th>
+                    <th>Dây chuyền</th>
+                    <th>Tổ</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-row let-i="rowIndex">
+                <tr>
+                    <td>
+                        <p-select [(ngModel)]="model.newBranchId" [options]="listBranches" optionLabel="name" optionValue="id" [fluid]="true"
+                            [showClear]="true" [appendTo]="'body'" id="branch" name="branch" dataKey="id">
+                        </p-select>
+                    </td>
+                    <td>
+                        <p-select [(ngModel)]="model.newLineId" [options]="listLines" optionLabel="name" optionValue="id" [fluid]="true"
+                            [showClear]="true" [appendTo]="'body'" id="line" name="line" dataKey="id">
+                        </p-select>
+                    </td>
+                    <td>
+                        <p-select [(ngModel)]="model.newTeamId" [options]="listTeams" optionLabel="name" optionValue="id" [fluid]="true"
+                            [showClear]="true" [appendTo]="'body'" id="team" name="team" dataKey="id">
+                        </p-select>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="99" class="text-center">Chưa có vật tư nào thuộc thiết bị</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <textarea pTextarea class="form-control" rows="5" placeholder="Mô tả ..." id="description"
+                name="description" [(ngModel)]="model.reason"></textarea>
+        </div>
+    </div>
+
+
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <p-button label="Lưu" severity="success" (onClick)="submit()"></p-button>
+        <p-button label="Đóng" (onClick)="close()"></p-button>
+    </div>
+</div>

@@ -14,13 +14,14 @@ import { ApprovalGroupUserService } from '../Service/approval-group-user.service
 import { ApprovalGroup } from '../../../../models/ApprovalManager/approval-group.model';
 import { ApprovalGroupUser } from '../../../../models/ApprovalManager/approval-group-user.model';
 import { ConfirmationService } from 'primeng/api';
+import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 
 
 @Component({
   selector: 'app-approval-workflow-detail',
   standalone: true,
   providers: [ConfirmationService],
-  imports: [SharedModule, CommonModule],
+  imports: [SharedModule, CommonModule, DragDropModule],
   templateUrl: './approval-workflow-detail.component.html',
   styleUrls: ['./approval-workflow-detail.component.scss']
 })
@@ -28,6 +29,7 @@ export class ApprovalWorkflowDetailComponent extends BasePageComponent<ApprovalW
 
   listApprovalGroupsName: any[] = [];
   listUsers: any[] = []
+  override model: ApprovalWorkflow = { approvalGroups: [] as ApprovalGroup[] } as ApprovalWorkflow;
   constructor(
     protected override apiService: ApprovalWorlflowService,
     private approvalGroupNameService: GroupApprovalNameService,
@@ -89,7 +91,7 @@ export class ApprovalWorkflowDetailComponent extends BasePageComponent<ApprovalW
       })
     ).subscribe({
       next: (groupsWithUsers) => {
-        this.model.approvalGroups = groupsWithUsers;
+        this.model.approvalGroups = groupsWithUsers ?? [];
         this.cdr.detectChanges();
       },
       error: (err) => {
@@ -104,7 +106,7 @@ export class ApprovalWorkflowDetailComponent extends BasePageComponent<ApprovalW
     if (Util.isEmptyArray(this.model.approvalGroups)) {
       this.model.approvalGroups = []
     }
-    this.model.approvalGroups!.push({});
+    this.model.approvalGroups!.push({} as ApprovalGroup);
   }
 
   removeApprovalGroup(index: number): void {
@@ -231,6 +233,17 @@ export class ApprovalWorkflowDetailComponent extends BasePageComponent<ApprovalW
           return user;
         })
       );
+  }
+
+  // drag and drop
+  dropGroup(event: CdkDragDrop<ApprovalGroup[]>) {
+    // model.approvalGroups chắc chắn là mảng do chúng ta đã khởi tạo ở trên
+    moveItemInArray(this.model.approvalGroups, event.previousIndex, event.currentIndex);
+  }
+
+  trackByGroupId(index: number, item: ApprovalGroup) {
+    item.level = index;
+    return index; // dùng id nếu có, nếu chưa có thì fallback sang index
   }
 
 

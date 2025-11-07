@@ -34,6 +34,11 @@ export class AccountService {
   setAccount(account: Account | null): void {
     this.accountSignal.set(account);
     this.authenticationState.next(account);
+    if (account) {
+      localStorage.setItem('username', account.fullName ?? '');
+    } else {
+      localStorage.removeItem('username');
+    }
   }
 
   trackAccount(): Signal<Account | null> {

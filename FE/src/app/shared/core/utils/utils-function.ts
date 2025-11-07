@@ -399,6 +399,10 @@ export class Util {
     });
   }
 
+  static getUserNameLogin(): string {
+    return localStorage.getItem('username') || '';
+  }
+
   static statusToString(status: number): string {
     switch (status) {
       case 1:

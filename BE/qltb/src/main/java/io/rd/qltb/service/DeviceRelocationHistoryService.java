@@ -1,11 +1,10 @@
 package io.rd.qltb.service;
 
-import io.rd.qltb.domain.Device;
-import io.rd.qltb.domain.DeviceRelocationHistory;
+import io.rd.qltb.domain.*;
 import io.rd.qltb.events.BeforeDeleteDevice;
 import io.rd.qltb.model.DeviceRelocationHistoryDTO;
-import io.rd.qltb.repos.DeviceRelocationHistoryRepository;
-import io.rd.qltb.repos.DeviceRepository;
+import io.rd.qltb.model.DeviceRelocationHistoryViewDTO;
+import io.rd.qltb.repos.*;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
 import java.util.List;
@@ -19,12 +18,24 @@ public class DeviceRelocationHistoryService {
 
     private final DeviceRelocationHistoryRepository deviceRelocationHistoryRepository;
     private final DeviceRepository deviceRepository;
+    private final FactoryRepository factoryRepository;
+    private final BranchRepository branchRepository;
+    private final LineRepository lineRepository;
+    private final TeamRepository teamRepository;
 
     public DeviceRelocationHistoryService(
             final DeviceRelocationHistoryRepository deviceRelocationHistoryRepository,
-            final DeviceRepository deviceRepository) {
+            final DeviceRepository deviceRepository,
+            final FactoryRepository factoryRepository,
+            final BranchRepository branchRepository,
+            final LineRepository lineRepository,
+            final TeamRepository teamRepository) {
         this.deviceRelocationHistoryRepository = deviceRelocationHistoryRepository;
         this.deviceRepository = deviceRepository;
+        this.factoryRepository = factoryRepository;
+        this.branchRepository = branchRepository;
+        this.lineRepository = lineRepository;
+        this.teamRepository = teamRepository;
     }
 
     public List<DeviceRelocationHistoryDTO> findAll() {
@@ -58,6 +69,79 @@ public class DeviceRelocationHistoryService {
                 .orElseThrow(NotFoundException::new);
         deviceRelocationHistoryRepository.delete(deviceRelocationHistory);
     }
+
+    public List<DeviceRelocationHistoryViewDTO> findAllByDeviceId(Long deviceId) {
+        final List<DeviceRelocationHistory> histories =
+                deviceRelocationHistoryRepository.findAllByDeviceIdOrderByMovedAtDesc(deviceId);
+
+        return histories.stream()
+                .map(history -> mapToDTOWithFullRelations(history, new DeviceRelocationHistoryViewDTO()))
+                .toList();
+    }
+
+    private DeviceRelocationHistoryViewDTO mapToDTOWithFullRelations(
+            final DeviceRelocationHistory deviceRelocationHistory,
+            final DeviceRelocationHistoryViewDTO dto) {
+
+        // Dùng lại mapToDTO gốc
+        mapToDTO(deviceRelocationHistory, dto);
+
+        // Map thêm dữ liệu mô tả cho old/new nếu có
+        // (Giả sử có EntityFactory, Branch, Team, Line tương ứng)
+        if (deviceRelocationHistory.getOldFactoryId() != null) {
+            dto.setOldFactoryName(getNameById("Factory", deviceRelocationHistory.getOldFactoryId()));
+        }
+        if (deviceRelocationHistory.getNewFactoryId() != null) {
+            dto.setNewFactoryName(getNameById("Factory", deviceRelocationHistory.getNewFactoryId()));
+        }
+
+        if (deviceRelocationHistory.getOldBranchId() != null) {
+            dto.setOldBranchName(getNameById("Branch", deviceRelocationHistory.getOldBranchId()));
+        }
+        if (deviceRelocationHistory.getNewBranchId() != null) {
+            dto.setNewBranchName(getNameById("Branch", deviceRelocationHistory.getNewBranchId()));
+        }
+
+        if (deviceRelocationHistory.getOldTeamId() != null) {
+            dto.setOldTeamName(getNameById("Team", deviceRelocationHistory.getOldTeamId()));
+        }
+        if (deviceRelocationHistory.getNewTeamId() != null) {
+            dto.setNewTeamName(getNameById("Team", deviceRelocationHistory.getNewTeamId()));
+        }
+
+        if (deviceRelocationHistory.getOldLineId() != null) {
+            dto.setOldLineName(getNameById("Line", deviceRelocationHistory.getOldLineId()));
+        }
+        if (deviceRelocationHistory.getNewLineId() != null) {
+            dto.setNewLineName(getNameById("Line", deviceRelocationHistory.getNewLineId()));
+        }
+
+        return dto;
+    }
+
+    private String getNameById(String entityType, Long id) {
+        return switch (entityType) {
+            case "Factory" ->
+                    factoryRepository.findById(id)
+                            .map(Factory::getName)
+                            .orElse(null);
+            case "Branch" ->
+                    branchRepository.findById(id)
+                            .map(Branch::getName)
+                            .orElse(null);
+            case "Team" ->
+                    teamRepository.findById(id)
+                            .map(Team::getName)
+                            .orElse(null);
+            case "Line" ->
+                    lineRepository.findById(id)
+                            .map(Line::getName)
+                            .orElse(null);
+            default -> null;
+        };
+    }
+
+
 
     private DeviceRelocationHistoryDTO mapToDTO(
             final DeviceRelocationHistory deviceRelocationHistory,
