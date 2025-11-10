@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component } from "@angular/core";
+import { Component } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { SharedModule } from "../../../../../../share.module";
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
@@ -14,21 +14,16 @@ import { ErrorReportService } from "../../Service/error-report.service";
 import { ApprovalWorlflowService } from "../../../../ApprovalManager/ApprovalWorkflow/Service/approval-workflow.service";
 import { DeviceService } from "../../../../DeviceManager/Device/Service/device.service";
 import { Acceptance } from "../../../../../models/PlanManger/acceptance.model";
-import { Device } from "../../../../../models/DeviceManager/device.model";
-import { PLANTYPE } from "../../../../../enums/plan-type.enum";
-import { CriterialService } from "../../../Criterial/Service/criterial.service";
 
 @Component({
-    selector: 'app-acceptance-dialog',
+    selector: 'app-plan-maintance-detail-dialog',
     imports: [SharedModule, FormsModule],
-    templateUrl: './acceptance.dialog.html',
-    styleUrls: ['./acceptance.dialog.scss'],
+    templateUrl: './plan-maintance-detail.dialog.html',
+    styleUrls: ['./plan-maintance-detail.dialog.scss'],
 })
 export class AcceptanceDialog {
 
     data: any = {};
-    plan: any = {};
-    device: Device = new Device();
     model: Acceptance = new Acceptance();
     listApprovalWorkflow: any[] = []
 
@@ -39,28 +34,21 @@ export class AcceptanceDialog {
         private errorReportService: ErrorReportService,
         private approvalWorkflowService: ApprovalWorlflowService,
         private deviceService: DeviceService,
-        private criterialService: CriterialService,
-        private cdr: ChangeDetectorRef
     ) {
-        this.data = config.data.planResult;
-        this.plan = config.data.plan;
+        this.data = config.data;
+        console.log(this.data);
+        
     }
 
     ngOnInit() {
-        this.model.type = this.plan.planTypeCode == PLANTYPE.REPAIR ? 1 : (this.plan.planTypeCode == PLANTYPE.MAINTENANCE ? 2 : 3);
-        console.log(this.model);
-        this.criterialService.getListBySampleReport(this.data.sampleReportId).subscribe(res => {
-            console.log(res);
-            
-        })
         this.approvalWorkflowService.getAll().subscribe(res => {
             this.listApprovalWorkflow = res
         })
         this.deviceService.getById(this.data.deviceId || 0).subscribe(res => {
-            this.device = res
-            this.cdr.detectChanges();
-            console.log(this.data);
+            console.log(res);
             
+            this.data.deviceCode = res.code;
+            this.data.deviceName = res.name;
         });
     }
 

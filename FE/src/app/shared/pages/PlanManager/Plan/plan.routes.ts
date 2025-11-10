@@ -6,6 +6,7 @@ import { ViewEvaluatePage } from './ViewEvaluate/view-evaluate.page';
 import { model } from '@angular/core';
 import { PlanDetailResolve } from './Resolve/plan-detail-resolve.service';
 import { ViewPlanMaintancePage } from './ViewPlanMaintance/view-plan-maintance.page';
+import { PlanMaintanceResolve } from './Resolve/plan-maintance-resolve.service';
 
 
 const planRoute: Routes = [
@@ -47,7 +48,7 @@ const planRoute: Routes = [
     component: ViewPlanMaintancePage,
     data: { model: 'view' },
     resolve: {
-      data: PlanResolve
+      data: PlanMaintanceResolve
     }
   }
 ];

@@ -66,4 +66,10 @@ public class CriterialResource {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/by-sample-report/{sampleReportId}")
+    public ResponseEntity<List<CriterialDTO>> getBySampleReport(@PathVariable Long sampleReportId) {
+        List<CriterialDTO> result = criterialService.getBySampleReportId(sampleReportId);
+        return ResponseEntity.ok(result);
+    }
+
 }

@@ -18,8 +18,8 @@
           <td>Tên thiết bị: <span id="spanBienBanDeviceName">LED2, TBCD</span></td>
         </tr>
         <tr>
-          <td>Bộ phận quản lý/sử dụng thiết bị: <span id="spanBienBanTeamName">{{ device.team?.name }}</span> </td>
-          <td colspan="2">Ngành/Ban: <span id="spanBienBanBranchName">{{ device.branch?.name }}</span></td>
+          <td>Bộ phận quản lý/sử dụng thiết bị: <span id="spanBienBanTeamName">Tô lắp đặt TB</span> </td>
+          <td colspan="2">Ngành/Ban: <span id="spanBienBanBranchName">LED2, TBCD</span></td>
           <td>Xưởng: <span id="spanBienBanFactoryName">LED</span></td>
         </tr>
         <tr>
@@ -27,22 +27,22 @@
           <td colspan="3">
             <div class="form-group clearfix">
               <div class="icheck-primary d-inline">
-                <input [value]="1" value="1" type="radio" id="type1" name="type" [(ngModel)]="model.type">
+                <input value="1" type="radio" id="type1" name="type" [(ngModel)]="model.type">
                 <label class="mx-2" for="type1">Sửa chữa</label>
               </div>
 
               <div class="icheck-primary d-inline">
-                <input [value]="2" value="2" type="radio" id="type2" name="type" [(ngModel)]="model.type">
+                <input value="2" type="radio" id="type2" name="type" [(ngModel)]="model.type">
                 <label class="mx-2" for="type2">Bảo dưỡng định kỳ</label>
               </div>
 
               <div class="icheck-primary d-inline">
-                <input [value]="3" value="3" type="radio" id="type3" name="type" [(ngModel)]="model.type">
+                <input value="3" type="radio" id="type3" name="type" [(ngModel)]="model.type">
                 <label class="mx-2" for="type3">Khác</label>
               </div>
 
               <div class="icheck-primary d-inline">
-                <input [value]="0" value="0" type="radio" id="type0" name="type" [(ngModel)]="model.type">
+                <input value="0" type="radio" id="type0" name="type" [(ngModel)]="model.type">
                 <label class="mx-2" for="type0">Bỏ chọn</label>
               </div>
 

@@ -13,4 +13,8 @@ export class CriterialService extends BaseApiService<Criterial> {
   getListByGroup(criterialGroupId: number | string): Observable<Criterial[]> {
     return this.http.get<Criterial[]>(`${this['fullBaseUrl']}/ByCriterialGroup/${criterialGroupId}`, { withCredentials: true });
   }
+
+  getListBySampleReport(sampleReportId: number | string): Observable<Criterial[]> {
+    return this.http.get<Criterial[]>(`${this['fullBaseUrl']}/by-sample-report/${sampleReportId}`, { withCredentials: true });
+  }
 }

@@ -179,12 +179,12 @@ export class PlanListComponent {
     });
   }
 
-  acceptance(row: any) {
+  acceptance(data: any, plan: any) {
     this.ref = this.dialogService.open(AcceptanceDialog, {
       header: `Biên bản nghiệm thu thiết bị`,
       width: '70%',
       modal: true,
-      data: row,
+      data: { planResult: data, plan: plan },
     })
     this.ref.onClose.subscribe((result) => {
       if (result && result.length > 0) {

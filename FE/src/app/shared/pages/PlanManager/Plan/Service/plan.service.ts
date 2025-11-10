@@ -53,4 +53,7 @@ export class PlanService extends BaseApiService<PlanRequest> {
     return this.http.get<any[]>(`${this['fullBaseUrl']}/with-details`, { withCredentials: true });
   }
 
+  getScheduleMaintance(id: number | string): Observable<any> {
+    return this.http.get<any>(`${this['fullBaseUrl']}/details/${id}`, { withCredentials: true });
+  }
 }

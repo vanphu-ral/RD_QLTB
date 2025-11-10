@@ -5,11 +5,15 @@ import io.rd.qltb.domain.CriterialGroup;
 import io.rd.qltb.events.BeforeDeleteCriterial;
 import io.rd.qltb.events.BeforeDeleteCriterialGroup;
 import io.rd.qltb.model.CriterialDTO;
+import io.rd.qltb.model.CriterialGroupDTO;
 import io.rd.qltb.model.SupplyDetailDTO;
 import io.rd.qltb.repos.CriterialGroupRepository;
 import io.rd.qltb.repos.CriterialRepository;
+import io.rd.qltb.repos.KeyMappingRepository;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,13 +29,15 @@ public class CriterialService {
     private final CriterialRepository criterialRepository;
     private final CriterialGroupRepository criterialGroupRepository;
     private final ApplicationEventPublisher publisher;
+    private final KeyMappingRepository keyMappingRepository;
 
     public CriterialService(final CriterialRepository criterialRepository,
             final CriterialGroupRepository criterialGroupRepository,
-            final ApplicationEventPublisher publisher) {
+            final ApplicationEventPublisher publisher, final KeyMappingRepository keyMappingRepository) {
         this.criterialRepository = criterialRepository;
         this.criterialGroupRepository = criterialGroupRepository;
         this.publisher = publisher;
+        this.keyMappingRepository = keyMappingRepository;
     }
 
     public List<CriterialDTO> findAll() {
@@ -71,6 +77,32 @@ public class CriterialService {
                 .orElseThrow(NotFoundException::new);
         publisher.publishEvent(new BeforeDeleteCriterial(id));
         criterialRepository.delete(criterial);
+    }
+
+    public List<CriterialDTO> getBySampleReportId(Long sampleReportId) {
+        List<Criterial> criterials = keyMappingRepository.findCriterialsBySampleReportId(sampleReportId);
+        List<CriterialDTO> dtos = new ArrayList<>();
+        for (Criterial c : criterials) {
+            CriterialDTO dto = new CriterialDTO();
+            dto.setId(c.getId());
+            dto.setCode(c.getCode());
+            dto.setName(c.getName());
+            dto.setDetail(c.getDetail());
+            dto.setDescription(c.getDescription());
+            dto.setFrequency(c.getFrequency());
+            dto.setCreatedAt(c.getCreatedAt());
+            dto.setUpdatedAt(c.getUpdatedAt());
+            dto.setCreatedBy(c.getCreatedBy());
+            dto.setUpdatedBy(c.getUpdatedBy());
+            dto.setStatus(c.getStatus());
+
+            // nếu Criterial có relation to CriterialGroup
+            if (c.getCriterialGroup() != null) {
+                dto.setCriterialGroup(c.getCriterialGroup()); 
+            }
+            dtos.add(dto);
+        }
+        return dtos;
     }
 
     private CriterialDTO mapToDTO(final Criterial criterial, final CriterialDTO criterialDTO) {

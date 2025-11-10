@@ -60,7 +60,7 @@
                     <tr>
                         <th rowspan="2">STT</th>
                         <th rowspan="2">Tên thiết bị:</th>
-                        <th colspan="12">Tháng</th>
+                        <th colspan="12" class="text-center">Tháng</th>
                         <th rowspan="2">Bản kế hoạch BDSC thiết bị chi tiết kèm theo</th>
                         <th rowspan="2">Ghi chú</th>
                     </tr>
@@ -80,25 +80,62 @@
                     </tr>
                 </thead>
                 <tbody>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="2" style="text-align:center;" id="tdPlanCreate">
-                        </td>
-                        <td colspan="6" style="text-align:center;"> Trưởng ngành
-                        </td>
-                        <td colspan="6" style="text-align:center;">Quản đốc xưởng
-                        </td>
-                        <td colspan="2" style="text-align:center;">TGĐ/Người được ủy quyền
-                        </td>
-                        @* <td colspan="6" style="text-align:center;" id="idBranch"> *@
-                            @* </td> *@
-                        @* <td colspan="6" style="text-align:center;" id="tdFactory"> *@
-                            @* </td> *@
-                        @* <td colspan="2" style="text-align:center;" id="tdAuthority"> *@
-                            @* </td> *@
+                    <tr *ngFor="let item of model.planDetails; let i = index">
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ item.device.name }}</td>
+
+                        <ng-container *ngFor="let month of months">
+                            <td class="text-center">
+                                <!-- Nếu estimatedTime tồn tại nhưng planResults rỗng -->
+                                <span
+                                    *ngIf="item.estimatedTime && (!item.planResults || item.planResults.length === 0)">
+                                    <span *ngIf="getEstimatedMonth(item) === month"><i class="fa-solid fa-xmark"></i></span>
+                                </span>
+
+                                <!-- Nếu month trùng estimatedMonth -->
+                                <ng-container *ngIf="getEstimatedMonth(item) === month && item.planResults?.length">
+                                    <ng-container *ngFor="let dtMonth of getDateTestMonths(item)">
+
+                                        <!-- Nếu trùng tháng dateTest -->
+                                        <i *ngIf="dtMonth === month" class="fa-regular fa-circle-xmark fa-xl"></i>
+
+                                        <!-- Nếu khác tháng dateTest -->
+                                        <ng-container *ngIf="dtMonth !== month">
+                                            <ng-container
+                                                [ngSwitch]="getArrowPosition(getEstimatedMonth(item), dtMonth)">
+
+                                                <!-- Arrow trước X -->
+                                                <span *ngSwitchCase="'before'">
+                                                    <i class="fa-solid fa-arrow-left"></i>
+                                                    <i class="fa-solid fa-xmark"></i>
+                                                </span>
+
+                                                <!-- Arrow sau X -->
+                                                <span *ngSwitchCase="'after'">
+                                                    <i class="fa-solid fa-xmark"></i>
+                                                    <i class="fa-solid fa-arrow-right"></i>
+                                                </span>
+
+                                            </ng-container>
+                                        </ng-container>
+
+                                    </ng-container>
+                                </ng-container>
+
+                                <!-- Nếu month trùng dateTest nhưng khác estimatedMonth -->
+                                <span
+                                    *ngIf="getEstimatedMonth(item) !== month && getDateTestMonths(item).includes(month)">
+                                    <i class="fa-regular fa-circle-xmark fa-xl"></i>
+                                </span>
+                            </td>
+
+                        </ng-container>
+
+                        <td>Bản kế hoạch chi tiết</td>
+                        <td>Ghi chú</td>
                     </tr>
-                </tfoot>
+
+                </tbody>
             </table>
         </div>
     </div>
