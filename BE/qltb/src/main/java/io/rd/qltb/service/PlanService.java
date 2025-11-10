@@ -110,6 +110,7 @@ public class PlanService {
         // Nếu cần tổng số bản ghi để phân trang, hãy query count riêng
         return new PageImpl<>(dtos, PageRequest.of(page, 10), dtos.size());
     }
+
     public List<PlanDTO> findAll() {
         final List<Plan> plans = planRepository.findAll(Sort.by("id"));
         return plans.stream()
@@ -467,7 +468,16 @@ public class PlanService {
         } else {
             dto.setApprovalWorkflow(null);
         }
-
+        if(plan.getPlanPlanDetails() != null){
+            List<PlanDetailDTO> planDetailDTOS = plan.getPlanPlanDetails().stream()
+                    .map(planDetail -> planDetailService.mapToDTO(planDetail, new PlanDetailDTO()))
+                    .toList();
+            // xoa quan he de tranh vong lap
+            planDetailDTOS.forEach(detailDTO -> {
+                detailDTO.setPlan(null);
+            });
+            dto.setPlanDetails(planDetailDTOS);
+        }
         return dto;
     }
 
@@ -519,7 +529,11 @@ public class PlanService {
             throw referencedException;
         }
     }
-
+    public PlanDTO getById(final Long id) {
+        return planRepository.findById(id)
+                .map(plan -> mapToDTO(plan, new PlanDTO()))
+                .orElseThrow(NotFoundException::new);
+    }
     public ApplicationEventPublisher getPublisher() {
         return publisher;
     }

@@ -95,4 +95,8 @@ public class PlanResource {
     public ResponseEntity<List<PlanWithDetailsDTO>> getAllPlansWithDetails() {
         return ResponseEntity.ok(planService.findAllWithDetails());
     }
+    @GetMapping("/details/{id}")
+    public ResponseEntity<PlanDTO> getPlanWithDetails(@PathVariable(name = "id") final Long id) {
+        return ResponseEntity.ok(planService.getById(id));
+    }
 }
