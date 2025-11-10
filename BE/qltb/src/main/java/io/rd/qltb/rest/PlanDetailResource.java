@@ -26,7 +26,11 @@ public class PlanDetailResource {
     public PlanDetailResource(final PlanDetailService planDetailService) {
         this.planDetailService = planDetailService;
     }
-
+    @GetMapping("/result/{planId}")
+            public ResponseEntity<List<PlanDetailDTO>> getPlanDetailsByPlanId(@PathVariable("planId") Long planId) {
+        List<PlanDetailDTO> planDetails = planDetailService.getPlanDetailsByPlanId(planId);
+        return ResponseEntity.ok(planDetails);
+    }
     @GetMapping
     public ResponseEntity<List<PlanDetailDTO>> getAllPlanDetails() {
         return ResponseEntity.ok(planDetailService.findAll());

@@ -1,12 +1,11 @@
 package io.rd.qltb.model;
 
-import io.rd.qltb.domain.Device;
-import io.rd.qltb.domain.DeviceGroup;
-import io.rd.qltb.domain.Plan;
-import io.rd.qltb.domain.SampleReport;
+import io.rd.qltb.domain.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -43,5 +42,6 @@ public class PlanDetailDTO {
     private DeviceGroup deviceGroup;
 
     private SampleReport sampleReport;
+    private List<PlanResultDTO> planResults;
 
 }

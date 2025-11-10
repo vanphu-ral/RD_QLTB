@@ -14,5 +14,4 @@ public interface PlanDetailRepository extends JpaRepository<PlanDetail, Long> {
 
     PlanDetail findFirstByDeviceGroupId(Long id);
     List<PlanDetail> findAllByPlanId(Long id);
-
 }

@@ -235,11 +235,28 @@ public class PlanDetailService {
             sampleReportCopy.setBranch(null);
             sampleReportCopy.setApprovalWorkflow(null);
         }
+        if(planDetail.getPlanResults().isEmpty() || planDetail.getPlanResults() == null){
+            dto.setPlanResults(new ArrayList<>());
+        } else {
+            List<PlanResultDTO> planResultDTOS = new ArrayList<>();
+            for(PlanResult planResult : planDetail.getPlanResults()){
+                PlanResultDTO planResultDTO = planResultService.mapToDTO(planResult, new PlanResultDTO());
+                // Xóa các quan hệ con không cần thiết
 
+                planResultDTO.setPlanDetail(null);
+                planResultDTOS.add(planResultDTO);
+            }
+            dto.setPlanResults(planResultDTOS);
+        }
         return dto;
     }
 
-
+    public List<PlanDetailDTO> getPlanDetailsByPlanId(final Long planId) {
+        final List<PlanDetail> planDetails = planDetailRepository.findAllByPlanId(planId);
+        return planDetails.stream()
+                .map(planDetail -> mapToDTO(planDetail, new PlanDetailDTO()))
+                .toList();
+    }
     public PlanDetail mapToEntity(final PlanDetailDTO planDetailDTO, final PlanDetail planDetail) {
         planDetail.setSerial(planDetailDTO.getSerial());
         planDetail.setEstimatedTime(planDetailDTO.getEstimatedTime());
