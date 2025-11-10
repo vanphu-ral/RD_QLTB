@@ -11,9 +11,8 @@
 
   <div class="row my-3">
     <div class="col-12">
-      <p-fieldset legend="Mô tả" class="custom-fieldset">
-        <p-editor [(ngModel)]="data.errorDescription" name="description" [style]="{ height: '150px' }"></p-editor>
-      </p-fieldset>
+      <textarea pTextarea class="form-control" rows="5" placeholder="Mô tả ..." id="errorDescription" name="errorDescription"
+          [(ngModel)]="data.errorDescription"></textarea>
     </div>
   </div>
 

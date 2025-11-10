@@ -10,5 +10,5 @@ export class ApprovalWorkflow {
     createdAt?: Date;
     updatedAt?: Date;
     status?: number;
-    approvalGroups?: ApprovalGroup[] = [];
+    approvalGroups: ApprovalGroup[] = [];
 }

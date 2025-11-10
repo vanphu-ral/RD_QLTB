@@ -1,6 +1,6 @@
 <div class="p-1">
     <div class="d-flex justify-content-between mt-2 mb-4">
-        <p-button label="Thêm thiết bị" icon="pi pi-plus"></p-button>
+        <p-button label="Thêm thiết bị" icon="pi pi-plus" (onClick)="addNewRow()"></p-button>
     </div>
 
     <div class="table-responsive">
@@ -21,7 +21,7 @@
                     <td>{{ i + 1 }}</td>
                     <td>
                         <p-select [(ngModel)]="row.device" [options]="listDeviceOptions" optionLabel="name" [fluid]="true"
-                            [showClear]="true" [appendTo]="'body'" [disabled]="true"
+                            [showClear]="true" [appendTo]="'body'"
                             id="device-{{ i }}" name="device-{{ i }}" dataKey="id">
                         </p-select>
                     </td>
@@ -29,7 +29,7 @@
                         <input type="text" pInputText [(ngModel)]="row.serialNumber" />
                     </td>
                     <td *ngIf="plan.planType.id === 2">
-                        <p-datepicker [(ngModel)]="row.estimatedTime" dateFormat="dd/mm/yy"
+                        <p-datepicker [(ngModel)]="row.estimatedTime" [dateFormat]="'dd-mm-yy'" appDateConvert
                             id="estimatedTime-{{ i }}" name="estimatedTime-{{ i }}" appendTo="body">
                         </p-datepicker>
                     </td>

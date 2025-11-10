@@ -1,6 +1,7 @@
 package io.rd.qltb.rest;
 
 import io.rd.qltb.model.DeviceRelocationHistoryDTO;
+import io.rd.qltb.model.DeviceRelocationHistoryViewDTO;
 import io.rd.qltb.service.DeviceRelocationHistoryService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
@@ -62,6 +63,12 @@ public class DeviceRelocationHistoryResource {
             @PathVariable(name = "id") final Long id) {
         deviceRelocationHistoryService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/device/{deviceId}")
+    public ResponseEntity<List<DeviceRelocationHistoryViewDTO>> getAllByDeviceId(
+            @PathVariable(name = "deviceId") final Long deviceId) {
+        return ResponseEntity.ok(deviceRelocationHistoryService.findAllByDeviceId(deviceId));
     }
 
 }

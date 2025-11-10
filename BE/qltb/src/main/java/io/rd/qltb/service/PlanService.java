@@ -170,6 +170,7 @@ public class PlanService {
                 deviceRequest.setDevice(deviceService.mapToDTO(planDetail.getDevice(), new DeviceDTO()));
                 deviceRequest.setSerialNumber(planDetail.getSerial());
                 deviceRequest.setManager(planDetail.getManager());
+                deviceRequest.setEstimatedTime(planDetail.getEstimatedTime());
                 deviceRequest.setPlanDetailId(planDetail.getId());
                 uniqueDevices.put(deviceId, deviceRequest);
             }
@@ -231,6 +232,7 @@ public class PlanService {
                         planDetail.setCreatedBy(userName);
                         planDetail.setUpdatedBy(null);
                         planDetail.setStatus(1);
+                        planDetail.setEstimatedTime(deviceRequest.getEstimatedTime());
                         planDetail.setManager(deviceRequest.getManager());
                         planDetail.setSerial(deviceRequest.getSerialNumber());
                         Device device = deviceRepository.findById(deviceRequest.getDevice().getId())
@@ -278,6 +280,7 @@ public class PlanService {
                             planDetail.setSampleReport(sampleReportRepository.findById(detail.getSampleReport().getId())
                                     .orElseThrow(() -> new NotFoundException("SampleReport not found")));
                             planDetail.setDevice(deviceSave);
+                            planDetail.setEstimatedTime(deviceRequest.getEstimatedTime());
                             planDetail.setManager(deviceRequest.getManager());
                             planDetail.setSerial(deviceRequest.getSerialNumber());
                             planDetail.setUpdatedAt(java.time.LocalDateTime.now());

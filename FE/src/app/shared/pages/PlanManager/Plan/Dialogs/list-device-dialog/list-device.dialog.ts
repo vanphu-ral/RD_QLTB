@@ -29,14 +29,11 @@ export class ListDeviceDialog {
     ) {
         this.data = config.data.device;
         this.plan = config.data.plan;
-        console.log(this.plan);
-        
     }
 
     ngOnInit() {
         this.ListDevice = _.map(this.data, device => { return { ...device, manager: device.manager ? device.manager : device.device.userManager, serialNumber: device.serialNumber ? device.serialNumber : device.device.serialNumber }})
         this.listDeviceOptions = _.map(this.data, item => { return { ...item.device }});
-
         this.deviceService.getUsers().subscribe(users => {
             this.listManagers = _.map(users, user => {
                 const firstName = user.firstName ?? '';
