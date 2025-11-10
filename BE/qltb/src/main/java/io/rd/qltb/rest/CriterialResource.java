@@ -1,6 +1,7 @@
 package io.rd.qltb.rest;
 
 import io.rd.qltb.model.CriterialDTO;
+import io.rd.qltb.model.KeyMappingDTO;
 import io.rd.qltb.model.SupplyDetailDTO;
 import io.rd.qltb.service.CriterialService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -67,8 +68,8 @@ public class CriterialResource {
     }
 
     @GetMapping("/by-sample-report/{sampleReportId}")
-    public ResponseEntity<List<CriterialDTO>> getBySampleReport(@PathVariable Long sampleReportId) {
-        List<CriterialDTO> result = criterialService.getBySampleReportId(sampleReportId);
+    public ResponseEntity<List<KeyMappingDTO>> getBySampleReport(@PathVariable Long sampleReportId) {
+        List<KeyMappingDTO> result = criterialService.getBySampleReportId(sampleReportId);
         return ResponseEntity.ok(result);
     }
 

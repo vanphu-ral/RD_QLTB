@@ -2,11 +2,11 @@ package io.rd.qltb.service;
 
 import io.rd.qltb.domain.Criterial;
 import io.rd.qltb.domain.CriterialGroup;
+import io.rd.qltb.domain.KeyMapping;
 import io.rd.qltb.events.BeforeDeleteCriterial;
 import io.rd.qltb.events.BeforeDeleteCriterialGroup;
 import io.rd.qltb.model.CriterialDTO;
-import io.rd.qltb.model.CriterialGroupDTO;
-import io.rd.qltb.model.SupplyDetailDTO;
+import io.rd.qltb.model.KeyMappingDTO;
 import io.rd.qltb.repos.CriterialGroupRepository;
 import io.rd.qltb.repos.CriterialRepository;
 import io.rd.qltb.repos.KeyMappingRepository;
@@ -30,14 +30,16 @@ public class CriterialService {
     private final CriterialGroupRepository criterialGroupRepository;
     private final ApplicationEventPublisher publisher;
     private final KeyMappingRepository keyMappingRepository;
+    private final KeyMappingService keyMappingService;
 
     public CriterialService(final CriterialRepository criterialRepository,
-            final CriterialGroupRepository criterialGroupRepository,
-            final ApplicationEventPublisher publisher, final KeyMappingRepository keyMappingRepository) {
+                            final CriterialGroupRepository criterialGroupRepository,
+                            final ApplicationEventPublisher publisher, final KeyMappingRepository keyMappingRepository, KeyMappingService keyMappingService) {
         this.criterialRepository = criterialRepository;
         this.criterialGroupRepository = criterialGroupRepository;
         this.publisher = publisher;
         this.keyMappingRepository = keyMappingRepository;
+        this.keyMappingService = keyMappingService;
     }
 
     public List<CriterialDTO> findAll() {
@@ -79,29 +81,11 @@ public class CriterialService {
         criterialRepository.delete(criterial);
     }
 
-    public List<CriterialDTO> getBySampleReportId(Long sampleReportId) {
-        List<Criterial> criterials = keyMappingRepository.findCriterialsBySampleReportId(sampleReportId);
-        List<CriterialDTO> dtos = new ArrayList<>();
-        for (Criterial c : criterials) {
-            CriterialDTO dto = new CriterialDTO();
-            dto.setId(c.getId());
-            dto.setCode(c.getCode());
-            dto.setName(c.getName());
-            dto.setDetail(c.getDetail());
-            dto.setDescription(c.getDescription());
-            dto.setFrequency(c.getFrequency());
-            dto.setCreatedAt(c.getCreatedAt());
-            dto.setUpdatedAt(c.getUpdatedAt());
-            dto.setCreatedBy(c.getCreatedBy());
-            dto.setUpdatedBy(c.getUpdatedBy());
-            dto.setStatus(c.getStatus());
-
-            // nếu Criterial có relation to CriterialGroup
-            if (c.getCriterialGroup() != null) {
-                dto.setCriterialGroup(c.getCriterialGroup()); 
-            }
-            dtos.add(dto);
-        }
+    public List<KeyMappingDTO> getBySampleReportId(Long sampleReportId) {
+        List<KeyMapping> keyMappings = keyMappingRepository.findBySampleReportId(sampleReportId);
+        List<KeyMappingDTO> dtos = keyMappings.stream()
+                .map(km -> keyMappingService.mapToDTO(km, new KeyMappingDTO()))
+                .collect(Collectors.toList());
         return dtos;
     }
 

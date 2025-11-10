@@ -91,7 +91,7 @@ public class KeyMappingService {
         keyMappingRepository.delete(keyMapping);
     }
 
-    private KeyMappingDTO mapToDTO(final KeyMapping keyMapping, final KeyMappingDTO dto) {
+    public KeyMappingDTO mapToDTO(final KeyMapping keyMapping, final KeyMappingDTO dto) {
         dto.setId(keyMapping.getId());
         dto.setFrequency(keyMapping.getFrequency());
         // Sao chép SampleReport có kiểm soát
@@ -146,7 +146,7 @@ public class KeyMappingService {
     }
 
 
-    private KeyMapping mapToEntity(final KeyMappingDTO keyMappingDTO, final KeyMapping keyMapping) {
+    public KeyMapping mapToEntity(final KeyMappingDTO keyMappingDTO, final KeyMapping keyMapping) {
         keyMapping.setFrequency(keyMappingDTO.getFrequency());
         final SampleReport sampleReport = keyMappingDTO.getSampleReport() == null ? null : sampleReportRepository.findById(keyMappingDTO.getSampleReport().getId())
                 .orElseThrow(() -> new NotFoundException("sampleReport not found"));
