@@ -111,6 +111,7 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
       header: 'Danh sách vật tư sử dụng trong thiết bị',
       width: 'auto',
       modal: true,
+      closable: true,
       data: {
         device: this.model,
         materials: this.listMaterialInit   
@@ -132,6 +133,7 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
       width: 'auto',
       modal: true,
       data: this.model,
+      closable: true
     });
 
     this.ref.onClose.subscribe((result) => {

@@ -85,7 +85,8 @@ export class ListErrorDialog {
         const ref = this.dialogService.open(RepairErrorDialog, {
             header: `Sửa lỗi - ${row.name} - ${row.severity ? 'Nghiêm trọng' : row.severity === 1 ? 'Bất thường' : 'Nhẹ'} - ${row.timeReported}`,
             width: '40%',
-            data: row
+            data: row,
+            closable: true
         });
     }
 
@@ -94,7 +95,8 @@ export class ListErrorDialog {
         const ref = this.dialogService.open(ErrorReportSeriousDialog, {
             header: `Tiếp nhận lỗi nghiêm trọng - ${row.name}`,
             width: '50%',
-            data: row
+            data: row,
+            closable: true
         });
     }
 

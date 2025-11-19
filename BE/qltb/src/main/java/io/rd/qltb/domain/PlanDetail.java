@@ -31,6 +31,13 @@ public class PlanDetail {
     private LocalDateTime updatedAt;
     @Column
     private LocalDateTime estimatedTime;
+
+    @Column
+    private String nameDetail;
+
+    @Column
+    private String note;
+
     @Column
     private String createdBy;
 

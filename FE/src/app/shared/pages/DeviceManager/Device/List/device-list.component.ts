@@ -38,6 +38,7 @@ export class DeviceListComponent {
       width: 'auto',
       modal: true,
       data: data,
+      closable: true
     });
     this.ref.onClose.subscribe((result) => {
       if (result) {
@@ -52,6 +53,7 @@ export class DeviceListComponent {
       width: 'auto',
       modal: true,
       data: data,
+      closable: true
     });
     ref.onClose.subscribe((result) => {
       if (result) {

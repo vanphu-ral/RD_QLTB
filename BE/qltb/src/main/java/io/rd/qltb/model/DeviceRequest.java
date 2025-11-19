@@ -13,5 +13,7 @@ public class DeviceRequest {
     private String manager;
     private String serialNumber;
     private LocalDateTime estimatedTime;
+    private String nameDetail;
+    private String note;
     private Long planDetailId;
 }

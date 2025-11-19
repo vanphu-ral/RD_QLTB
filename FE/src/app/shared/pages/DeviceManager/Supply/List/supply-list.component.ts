@@ -36,6 +36,7 @@ export class SupplyListComponent {
       header: 'Thông tin vật tư',
       width: 'auto',
       modal: true, 
+      closable: true,
       data: row, // truyền dữ liệu vào
     });
 

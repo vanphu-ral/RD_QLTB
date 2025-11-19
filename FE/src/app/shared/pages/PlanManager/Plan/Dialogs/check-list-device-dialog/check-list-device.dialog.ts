@@ -84,6 +84,7 @@ export class CheckListDeviceDialog {
             header: `Kiểm tra thiết bị`,
             width: '100%',
             modal: true,
+            closable: true,
             data: { planResult: data, device: this.data },
         });
         childRef.onClose.subscribe((result) => {

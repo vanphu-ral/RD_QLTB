@@ -30,7 +30,7 @@
                     </p-select>
                 </td>
                 <td class="text-center" *ngIf="!isViewMode">
-                    <p-button icon="pi pi-pencil" severity="warn" class="m-1" (onClick)="editRow(i)"></p-button>
+                    <p-button *ngIf="row.deviceGroup" icon="pi pi-pencil" severity="warn" class="m-1" (onClick)="editRow(i)"></p-button>
                     <p-button icon="pi pi-trash" severity="danger" class="m-1" (onClick)="deleteRow(i)"></p-button>
                 </td>
             </tr>

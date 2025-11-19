@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { BasePageComponent } from '../../../../core/base-page-component/base-page.component';
 import { PlanService } from '../Service/plan.service';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { PlanMaintanceDetailDialog } from '../Dialogs/plan-maintance-detail-dialog/plan-maintance-detail.dialog';
 
 @Component({
   selector: 'view-plan-maintance',
@@ -16,17 +18,17 @@ import { PlanService } from '../Service/plan.service';
 export class ViewPlanMaintancePage extends BasePageComponent<any> {
 
   months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  ref?: DynamicDialogRef;
 
   constructor(
     protected override apiService: PlanService,
+    private dialogService: DialogService
   ) {
     super(apiService);
   }
 
   override ngOnInit(): void {
     super.ngOnInit();
-    console.log(this.model);
-
   }
 
   getEstimatedMonth(planDetail: any): number {
@@ -43,8 +45,22 @@ export class ViewPlanMaintancePage extends BasePageComponent<any> {
     return '';
   }
 
+  onRowClick(rowData: any) {
+    const ref = this.dialogService.open(PlanMaintanceDetailDialog, {
+      header: 'Chi tiết nội dung bảo trì bảo dưỡng',
+      width: 'auto',
+      modal: true,
+      data: rowData,
+      closable: true
+    });
+    ref.onClose.subscribe((result) => {
+      if (result && result.length > 0) {
+      }
+    });
+  }
+
+
   public override save(): void {
     throw new Error('Method not implemented.');
   }
-
 }

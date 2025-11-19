@@ -115,11 +115,16 @@ export class ListDeviceComponent implements OnInit {
     }
 
     editRow(index: number) {
+        if(!this.model.plan.planType) {
+            Util.toastMessage('Vui lòng chọn loại kế hoạch', 'error');
+            return
+        }
         const arrDeviceEdit = _.filter(this.model.devices, item => item.device?.group.id == this.model.planDetails[index].deviceGroup.id)
         this.ref = this.dialogService.open(ListDeviceDialog, {
             header: `Danh sách thiết bị thuộc nhóm ${this.model.planDetails[index].deviceGroup.name}`,
             width: 'auto',
             modal: true,
+            closable: true,
             data: {
                 device: arrDeviceEdit,
                 plan: this.model.plan

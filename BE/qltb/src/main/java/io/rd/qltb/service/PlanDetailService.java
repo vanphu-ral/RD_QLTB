@@ -140,6 +140,8 @@ public class PlanDetailService {
         dto.setId(planDetail.getId());
         dto.setSerial(planDetail.getSerial());
         dto.setEstimatedTime(planDetail.getEstimatedTime());
+        dto.setNameDetail(planDetail.getNameDetail());
+        dto.setNote(planDetail.getNote());
         dto.setCreatedAt(planDetail.getCreatedAt());
         dto.setUpdatedAt(planDetail.getUpdatedAt());
         dto.setCreatedBy(planDetail.getCreatedBy());

@@ -50,6 +50,7 @@ export class PlanListComponent {
       header: `Chi tiết đánh giá thiết bị`,
       width: 'auto',
       modal: true,
+      closable: true,
       data: {},
     });
     this.ref.onClose.subscribe((result) => {
@@ -159,6 +160,7 @@ export class PlanListComponent {
       width: 'auto',
       modal: true,
       data: item,
+      closable: true,
     });
     this.ref.onClose.subscribe((result) => {
       if (result && result.length > 0) {
@@ -172,6 +174,7 @@ export class PlanListComponent {
       width: 'auto',
       modal: true,
       data: item,
+      closable: true,
     });
     this.ref.onClose.subscribe((result) => {
       if (result && result.length > 0) {
@@ -185,6 +188,7 @@ export class PlanListComponent {
       width: '70%',
       modal: true,
       data: { planResult: data, plan: plan },
+      closable: true,
     })
     this.ref.onClose.subscribe((result) => {
       if (result && result.length > 0) {

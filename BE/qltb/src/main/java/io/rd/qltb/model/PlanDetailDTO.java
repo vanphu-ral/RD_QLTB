@@ -22,6 +22,9 @@ public class PlanDetailDTO {
     private LocalDateTime createdAt;
     private LocalDateTime estimatedTime;
 
+    private String nameDetail;
+    private String note;
+
     private LocalDateTime updatedAt;
 
     @Size(max = 255)

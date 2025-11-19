@@ -73,6 +73,7 @@ export class SupplyReplacementDialog {
             header: 'Lịch sử thay thế vật tư',
             width: '70%',
             modal: true,
+            closable: true,
             data: this.data.historyReplace
         });
     }
@@ -86,6 +87,7 @@ export class SupplyReplacementDialog {
             header: 'Chọn thiết bị thay thế',
             width: '70%',
             modal: true,
+            closable: true,
             data: {
                 supply: this.checkList[index],
                 device: this.data.device

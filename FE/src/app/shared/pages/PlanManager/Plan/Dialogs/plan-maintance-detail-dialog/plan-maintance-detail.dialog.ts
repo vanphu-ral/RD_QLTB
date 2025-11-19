@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { ChangeDetectorRef, Component } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { SharedModule } from "../../../../../../share.module";
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
@@ -14,6 +14,8 @@ import { ErrorReportService } from "../../Service/error-report.service";
 import { ApprovalWorlflowService } from "../../../../ApprovalManager/ApprovalWorkflow/Service/approval-workflow.service";
 import { DeviceService } from "../../../../DeviceManager/Device/Service/device.service";
 import { Acceptance } from "../../../../../models/PlanManger/acceptance.model";
+import { PlanResultService } from "../../Service/plan-result.service";
+import { PlanDetailService } from "../../Service/plan-detail.service";
 
 @Component({
     selector: 'app-plan-maintance-detail-dialog',
@@ -21,19 +23,18 @@ import { Acceptance } from "../../../../../models/PlanManger/acceptance.model";
     templateUrl: './plan-maintance-detail.dialog.html',
     styleUrls: ['./plan-maintance-detail.dialog.scss'],
 })
-export class AcceptanceDialog {
+export class PlanMaintanceDetailDialog {
 
     data: any = {};
-    model: Acceptance = new Acceptance();
+    model: any = {};
     listApprovalWorkflow: any[] = []
 
     constructor(
         public ref: DynamicDialogRef,
         public config: DynamicDialogConfig,
-        private accountService: AccountService,
-        private errorReportService: ErrorReportService,
+        private planDetailService: PlanDetailService,
         private approvalWorkflowService: ApprovalWorlflowService,
-        private deviceService: DeviceService,
+        private cdr: ChangeDetectorRef
     ) {
         this.data = config.data;
         console.log(this.data);
@@ -44,19 +45,20 @@ export class AcceptanceDialog {
         this.approvalWorkflowService.getAll().subscribe(res => {
             this.listApprovalWorkflow = res
         })
-        this.deviceService.getById(this.data.deviceId || 0).subscribe(res => {
+        this.planDetailService.getSummaryCheckDetail(this.data.id).subscribe(res => {
+            this.model = res;
             console.log(res);
-            
-            this.data.deviceCode = res.code;
-            this.data.deviceName = res.name;
-        });
+            this.cdr.detectChanges();
+        })
+    }
+
+    getMonthFromEstimatedTime(dateStr: string): number {
+        if (!dateStr) return 0;
+        return new Date(dateStr).getMonth() + 1; 
     }
 
     submit() {
-        this.data.repairedBy = this.accountService.getUser()?.fullName || '';
-        this.errorReportService.update(this.data.id as number, this.data).subscribe(() => {
-            this.ref.close(true);
-        });
+        this.ref.close(true);
     }
 
     close() {

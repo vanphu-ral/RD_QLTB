@@ -47,6 +47,7 @@ export class SampleReportListComponent {
       width: '400px',
       modal: true,
       data: data,
+      closable: true
     });
     this.ref.onClose.subscribe((res) => {
       if (res) {

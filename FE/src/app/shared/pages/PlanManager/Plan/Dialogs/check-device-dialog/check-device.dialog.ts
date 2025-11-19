@@ -81,6 +81,7 @@ export class CheckDeviceDialog {
             header: `Khai báo vật tư thay thế`,
             width: '100%',
             modal: true,
+            closable: true,
             data: { device: this.data.device , supplyReplacement: this.model.supplyReplacement, historyReplace: this.model.supplyReplacementHistories},
         });
         supplyReplacmentDialog.onClose.subscribe(result => {
@@ -99,6 +100,7 @@ export class CheckDeviceDialog {
             header: `Khai báo sự cố`,
             width: 'auto',
             modal: true,
+            closable: true,
             data: this.model.errorReport,
         });
         reportDialog.onClose.subscribe(result => {

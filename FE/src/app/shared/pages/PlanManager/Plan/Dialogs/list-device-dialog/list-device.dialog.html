@@ -11,6 +11,8 @@
                     <th>Tên thiết bị</th>
                     <th>Mã serial</th>
                     <th *ngIf="plan.planType.id === 2">Thời gian dự kiến</th>
+                    <th *ngIf="plan.planType.id === 2">Tên bản kế hoạch BDSC đi kèm</th>
+                    <th *ngIf="plan.planType.id === 2">Ghi chú</th>
                     <th>Người quản lý</th>
                     <th>Thao tác</th>
                 </tr>
@@ -32,6 +34,12 @@
                         <p-datepicker [(ngModel)]="row.estimatedTime" [dateFormat]="'dd-mm-yy'" appDateConvert
                             id="estimatedTime-{{ i }}" name="estimatedTime-{{ i }}" appendTo="body">
                         </p-datepicker>
+                    </td>
+                    <td *ngIf="plan.planType.id === 2">
+                        <input type="text" pInputText [(ngModel)]="row.nameDetail" id="nameDetail-{{ i }}" name="nameDetail-{{ i }}"/>
+                    </td>
+                    <td *ngIf="plan.planType.id === 2">
+                        <input type="text" pInputText [(ngModel)]="row.note" id="note-{{ i }}" name="note-{{ i }}"/>
                     </td>
                     <td>
                         <p-select [(ngModel)]="row.manager" [options]="listManagers" optionLabel="name" optionValue="username" [fluid]="true"

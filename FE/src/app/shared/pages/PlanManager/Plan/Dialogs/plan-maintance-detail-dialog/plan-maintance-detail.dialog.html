@@ -1,234 +1,110 @@
 <div class="p-1">
-
-  <div class="card-body">
-    <table id="nghemthu-details-table" class="table table-bordered table-hover">
-      <thead>
-        <tr>
-          <td><img src="/assets/imgs/logo-rang-dong.png" style="width:150px;" /></td>
-          <td colspan="2" style="text-align:center;">
-            <b>BIÊN BẢN NGHIỆM THU THIẾT BỊ</b>
-          </td>
-          <td>
-            Số: <span id="spanBienBanPlanNumber">LED.LED2.BBNTTB.4</span>
-            Ngày: <span id="spanBienBanNgayBB"></span>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="3">Đợn vị thực hiện: <span id="spanBienBanDepartmentAct">LED2, TBCD</span></td>
-          <td>Tên thiết bị: <span id="spanBienBanDeviceName">LED2, TBCD</span></td>
-        </tr>
-        <tr>
-          <td>Bộ phận quản lý/sử dụng thiết bị: <span id="spanBienBanTeamName">Tô lắp đặt TB</span> </td>
-          <td colspan="2">Ngành/Ban: <span id="spanBienBanBranchName">LED2, TBCD</span></td>
-          <td>Xưởng: <span id="spanBienBanFactoryName">LED</span></td>
-        </tr>
-        <tr>
-          <td>Giao nhận sau: </td>
-          <td colspan="3">
-            <div class="form-group clearfix">
-              <div class="icheck-primary d-inline">
-                <input value="1" type="radio" id="type1" name="type" [(ngModel)]="model.type">
-                <label class="mx-2" for="type1">Sửa chữa</label>
-              </div>
-
-              <div class="icheck-primary d-inline">
-                <input value="2" type="radio" id="type2" name="type" [(ngModel)]="model.type">
-                <label class="mx-2" for="type2">Bảo dưỡng định kỳ</label>
-              </div>
-
-              <div class="icheck-primary d-inline">
-                <input value="3" type="radio" id="type3" name="type" [(ngModel)]="model.type">
-                <label class="mx-2" for="type3">Khác</label>
-              </div>
-
-              <div class="icheck-primary d-inline">
-                <input value="0" type="radio" id="type0" name="type" [(ngModel)]="model.type">
-                <label class="mx-2" for="type0">Bỏ chọn</label>
-              </div>
-
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            <label for="rangeActDatetimeStop">Thời gian thực hiện nghiệm thu (Thời gian bắt đầu: Ngày giờ ... - Thời
-                gian hoàn thành: Ngày giờ...):</label>
-            <div class="d-flex mt-2">
-              <p-floatlabel variant="on" class="mx-1">
-                <p-datepicker appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="fromDateAcceptance" [(ngModel)]="model.fromDateAcceptance"
-                  inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body" [inputSize]="100" [autofocus]="false" />
-                <label for="fromDateAcceptance">Từ ngày</label>
-              </p-floatlabel>
-
-              <p-floatlabel variant="on" class="mx-1">
-                <p-datepicker appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="toDateAcceptance" [(ngModel)]="model.toDateAcceptance"
-                  inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body" [inputSize]="100" [autofocus]="false" />
-                <label for="toDateAcceptance">Đến ngày</label>
-              </p-floatlabel>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            <label for="rangeActDatetimeStop">Thời gian thực hiện bảo dưỡng (Từ ngày: giờ ... đến ngày: giờ...):</label>
-            <div class="d-flex mt-2">
-              <p-floatlabel variant="on" class="mx-1">
-                <p-datepicker appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="fromDatePerform" [(ngModel)]="model.fromDatePerform"
-                  inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body" [inputSize]="100" [autofocus]="false" />
-                <label for="fromDatePerform">Từ ngày</label>
-              </p-floatlabel>
-
-              <p-floatlabel variant="on" class="mx-1">
-                <p-datepicker appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="toDatePerform" [(ngModel)]="model.toDatePerform"
-                  inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body" [inputSize]="100" [autofocus]="false" />
-                <label for="toDatePerform">Đến ngày</label>
-              </p-floatlabel>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            - Nội dung công việc thực hiện:
-            <div id="divBienBanWorkContent">LED</div>
-            - Thực hiện bảo dưỡng theo kế hoạch số: <span id="spanBBPlanNumber_2">LED.LED2.BBNTTB.4</span><br />
-            - Công việc phát sinh:
-            <div class="mt-3">
-              <textarea pTextarea  class="form-control" rows="3" placeholder="Enter ..." id="note"
-                name="note" [(ngModel)]="model.note"></textarea>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="3" rowspan="3">
-            <b>Kết quả vận hành thử:</b>
-            <div class="mt-3">
-              <textarea pTextarea  class="form-control" rows="11" placeholder="Enter ..." id="result"
-                name="result" [(ngModel)]="model.result"></textarea>
-            </div>
-          </td>
-          <td>
-            <b>
-              Yêu cầu về an toàn
-            </b>
-            <div class="form-group clearfix mt-2">
-              <div class="icheck-primary d-inline">
-                <input type="radio" class="mx-2" value="1" id="safe1" name="safe" checked="" [(ngModel)]="model.safe">
-                <label for="safe1">
-                  Đạt
-                </label>
-              </div>
-              <div class="icheck-primary d-inline">
-                <input type="radio" class="mx-2" value="2" id="safe2" name="safe" [(ngModel)]="model.safe">
-                <label for="safe2">
-                  Không đạt
-                </label>
-              </div>
-              <div class="icheck-primary d-inline">
-                <input type="radio" class="mx-2" value="0" id="safe0" name="safe" [(ngModel)]="model.safe">
-                <label for="safe0">
-                  Không đánh giá
-                </label>
-              </div>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <b>
-              Yêu cầu về chất lượng
-            </b>
-            <div class="form-group clearfix mt-2">
-              <div class="icheck-primary d-inline">
-                <input class="mx-2" value="1" type="radio" id="quality1" name="quality" checked="" [(ngModel)]="model.quality">
-                <label for="quality1">
-                  Đạt
-                </label>
-              </div>
-              <div class="icheck-primary d-inline">
-                <input class="mx-2" value="2" type="radio" id="quality2" name="quality" [(ngModel)]="model.quality">
-                <label for="quality2">
-                  Không đạt
-                </label>
-              </div>
-              <div class="icheck-primary d-inline">
-                <input class="mx-2" type="radio" class="mx-2" value="0" id="quality0" name="quality" [(ngModel)]="model.quality">
-                <label for="quality0">
-                  Không đánh giá
-                </label>
-              </div>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <b>
-              Yêu cầu về năng suất
-            </b>
-            <div class="form-group clearfix mt-2">
-              <div class="icheck-primary d-inline">
-                <input type="radio" class="mx-2" value="1" id="productivity1" name="productivity" checked="" [(ngModel)]="model.productivity">
-                <label for="productivity1">
-                  Đạt
-                </label>
-              </div>
-              <div class="icheck-primary d-inline">
-                <input type="radio" class="mx-2" value="2" id="productivity2" name="productivity" [(ngModel)]="model.productivity">
-                <label for="productivity2">
-                  Không đạt
-                </label>
-              </div>
-              <div class="icheck-primary d-inline">
-                <input type="radio" class="mx-2" value="0" id="productivity0" name="productivity" [(ngModel)]="model.productivity">
-                <label for="productivity0">
-                  Không đánh giá
-                </label>
-              </div>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="2"><b>Hành động phải thực hiện thêm</b></td>
-          <td><b>Trách nhiệm</b></td>
-          <td><b>Thời hạn</b></td>
-        </tr>
-        <tr>
-          <td colspan="2">
-            <div>
-              <textarea pTextarea  class="form-control" rows="3" placeholder="Enter ..." id="ActionMore"
-                name="ActionMore" [(ngModel)]="model.actionMore"></textarea>
-            </div>
-          </td>
-          <td>
-            <div id="divBienBanResponsibility">
-              <textarea pTextarea  class="form-control" rows="3" placeholder="Enter ..." id="responsibility"
-                name="responsibility" [(ngModel)]="model.responsibility"></textarea>
-            </div>
-          </td>
-          <td>
-            <div id="divBienBanLimitation">
-              <textarea pTextarea  class="form-control" rows="3" placeholder="Enter ..." id="limitation" name="limitation" [(ngModel)]="model.limitation"></textarea>
-            </div>
-          </td>
-        </tr>
-      </thead>
-    </table>
-  </div>
-
   <div class="row">
     <div class="col-12">
-        <p-floatlabel variant="on">
-          <p-select [options]="listApprovalWorkflow" optionLabel="name" [(ngModel)]="model.approvalWorkflow"
-            [fluid]="true" [showClear]="true" [appendTo]="'body'" id="approvalWorkflow"
-            name="approvalWorkflow" dataKey="id">
-          </p-select>
-          <label for="approvalWorkflow">Kịch bản phê duyệt</label>
-        </p-floatlabel>
+      <div class="card card-gray">
+        <div class="card-header d-flex align-items-center">
+          <h3 class="card-title "><b>Lập kế hoạch</b></h3>
+        </div>
+        <div class="card-body">
+          <table id="dinhkytheonam-table" class="table table-bordered table-hover">
+            <thead>
+              <tr>
+                <th><img src="/assets/imgs/logo-rang-dong.png" style="width:150px;" /></th>
+                <th rowspan="3" style="text-align:center;">
+                  <b>
+                    KẾ HOẠCH BẢO DƯỠNG THIẾT BỊ ĐỊNH KỲ
+                  </b>
+                  <br /><span id="spanCurentYear">2021</span>
+                </th>
+                <th>Người lập kế hoạch</th>
+                <th>Trưởng ngành</th>
+                <th>TĐV/UQ</th>
+              </tr>
+              <tr>
+                <th>
+                  <div class="form-group">
+                    <label for="selectFactory">Xưởng:</label><span id="spanCurentFactoryName">LED, TBCD</span>
+                  </div>
+                </th>
+                <td rowspan="2" style="text-align:center;" id="tdPlanCreate_detai"></td>
+                <td rowspan="2" style="text-align:center;" id="idBranch_detai"></td>
+                <td rowspan="2" style="text-align:center;" id="tdAuthority_detai"></td>
+              </tr>
+              <tr>
+                <th>
+                  <div class="form-group">
+                    <label for="Name">Ngành:</label><span id="spanCurentBranchName">LED2, TBCD</span>
+                  </div>
+                </th>
+              </tr>
+              <tr>
+                <th>Số: <span id="spanCurentPlanDeviceNumber"></span></th>
+                <th>
+                  <div class="form-group">
+                    <label for="Name">Thiết bị: <span id="spanCurentDeviceName"> {{ data.device.name }}</span></label>
+                  </div>
+                </th>
+                <th><span id="spanCurentDatePlan">Ngày / tháng/ năm</span></th>
+              </tr>
+            </thead>
+          </table>
+          <table id="noidung-details-table" class="table table-bordered table-hover">
+            <thead>
+              <tr>
+                <th rowspan="2">STT</th>
+                <th rowspan="2">Nội dung sửa chữa, bảo dưỡng</th>
+                <th colspan="12">Tháng</th>
+                <th rowspan="2">Bộ phận thực hiện</th>
+                <th rowspan="2">Hưỡng dẫn, Quy trình (nếu có)</th>
+                <th rowspan="2" colspan="2">Ghi chú</th>
+              </tr>
+              <tr>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+                <th>6</th>
+                <th>7</th>
+                <th>8</th>
+                <th>9</th>
+                <th>10</th>
+                <th>11</th>
+                <th>12</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of model.planResultDetail; index as i">
+                <td>{{ i + 1 }}</td>
+                <td>{{ item.criticalName }}</td>
+                <td *ngFor="let m of [].constructor(12); let month = index">
+                  {{ getMonthFromEstimatedTime(model.planDetail?.estimatedTime) === (month + 1) ? 'X' : '' }}
+                </td>
+                <td>CNVH-CK Ngành-KTV</td>
+                <td>{{ item.note }}</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <button type="button" class="ml-auto btn btn-success" onclick="ShowModalContentPlanDevice(-1)">Thêm nội
+            dung</button>
+          <button style="display:none;" type="button" class="ml-auto btn btn-success"
+            onclick="ShowModalReportPlan(-1)">Biên bản nghiệm thu</button>
+        </div>
+        <p><span>* Ghi chú: Các đơn vị có thể bổ sung nội dung tùy theo đặc điểm máy móc công nghệ</span></p>
+        <p>
+          File đính kèm:
+          <button type="button" id="btShowFile" class="btn btn-info btn-xs"><i class="fa-solid fa-eye"></i></button>
+          <button type="button" id="btAddFile" class="btn btn-warning btn-xs"><i
+              class="fa-solid fa-paperclip"></i></button>
+        </p>
       </div>
+    </div>
   </div>
-
-
   <div class="d-flex justify-content-end gap-2 mt-4">
-    <p-button label="Lưu" severity="success" (onClick)="submit()"></p-button>
-    <p-button label="Đóng" (onClick)="close()"></p-button>
-  </div>
+        <p-button label="Lưu" severity="success" (onClick)="submit()"></p-button>
+        <p-button label="Đóng" (onClick)="close()"></p-button>
+    </div>
 </div>

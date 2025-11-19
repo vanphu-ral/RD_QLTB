@@ -1,142 +1,79 @@
 <div class="maintance-table">
     <div class="card mt-3">
         <div class="table-responsive">
-            <table id="dinhkytheonam-details-table" class="table table-bordered table-hover">
-                <thead>
+            <p-table [value]="model.planDetails" dataKey="id" class="p-datatable-gridlines text-sm" [paginator]="true" [rows]="10">
+                <ng-template pTemplate="header">
                     <tr>
-                        <th colspan="2"><img src="/assets/imgs/logo-rang-dong.png" style="width:150px;" /></th>
-                        <th colspan="12">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="form-group" style="text-align:center;">
-                                        <span>LỊCH BẢO DƯỠNG, SỬA CHỮA THIẾT BỊ ĐỊNH KỲ</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="form-group" style="text-align:center;">
-                                        <span id="SpanPlanYear"></span>
-                                    </div>
-                                </div>
+                        <th colspan="2">
+                            <img src="/assets/imgs/logo-rang-dong.png" style="width:150px;" />
+                        </th>
+                        <th colspan="12" class="text-center">
+                            <div>
+                                <div><strong>LỊCH BẢO DƯỠNG, SỬA CHỮA THIẾT BỊ ĐỊNH KỲ</strong></div>
+                                <div><span id="SpanPlanYear"></span></div>
                             </div>
                         </th>
                         <th colspan="2">
-                            <div class="row">
-                                <div class="col-sm-3">
-                                    <div class="form-group">
-                                        <label>Đơn vị:</label>
-                                    </div>
+                            <div class="flex flex-col">
+                                <div class="flex items-center">
+                                    <label class="font-semibold">Đơn vị:&nbsp;</label>
+                                    <span id="SpanPlanDonVi"></span>
                                 </div>
-                                <div class="col-9">
-                                    <div class="form-group">
-                                        <span id="SpanPlanDonVi"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row" style="display:none;">
-                                <div class="col-sm-3">
-                                    <div class="form-group">
-                                    </div>
-                                </div>
-                                <div class="col-9">
-                                    <div class="form-group">
-                                        <span id="SpanPlanBranch"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-3">
-                                    <div class="form-group">
-                                        <label>Số:</label>
-                                    </div>
-                                </div>
-                                <div class="col-9">
-                                    <p><span id="SpanSoKeHoach"></span><span id="SpanDieuChinh"></span></p>
+                                <div class="flex items-center">
+                                    <label class="font-semibold">Số:&nbsp;</label>
+                                    <span id="SpanSoKeHoach"></span>
+                                    <span id="SpanDieuChinh"></span>
                                 </div>
                             </div>
                         </th>
                     </tr>
                     <tr>
                         <th rowspan="2">STT</th>
-                        <th rowspan="2">Tên thiết bị:</th>
+                        <th rowspan="2">Tên thiết bị</th>
                         <th colspan="12" class="text-center">Tháng</th>
                         <th rowspan="2">Bản kế hoạch BDSC thiết bị chi tiết kèm theo</th>
                         <th rowspan="2">Ghi chú</th>
                     </tr>
                     <tr>
-                        <th>1</th>
-                        <th>2</th>
-                        <th>3</th>
-                        <th>4</th>
-                        <th>5</th>
-                        <th>6</th>
-                        <th>7</th>
-                        <th>8</th>
-                        <th>9</th>
-                        <th>10</th>
-                        <th>11</th>
-                        <th>12</th>
+                        <th *ngFor="let month of months">{{ month }}</th>
                     </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let item of model.planDetails; let i = index">
-                        <td>{{ i + 1 }}</td>
-                        <td>{{ item.device.name }}</td>
-
-                        <ng-container *ngFor="let month of months">
-                            <td class="text-center">
-                                <!-- Nếu estimatedTime tồn tại nhưng planResults rỗng -->
-                                <span
-                                    *ngIf="item.estimatedTime && (!item.planResults || item.planResults.length === 0)">
-                                    <span *ngIf="getEstimatedMonth(item) === month"><i class="fa-solid fa-xmark"></i></span>
+                </ng-template>
+                <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+                    <tr class="table-hover" (click)="onRowClick(item)">
+                        <td>{{ rowIndex + 1 }}</td>
+                        <td>{{ item.device?.name }}</td>
+                        <td *ngFor="let month of months" class="text-center">
+                            <span *ngIf="item.estimatedTime && (!item.planResults || item.planResults.length === 0)">
+                                <span *ngIf="getEstimatedMonth(item) === month">
+                                    <i class="fa-solid fa-xmark"></i>
                                 </span>
-
-                                <!-- Nếu month trùng estimatedMonth -->
-                                <ng-container *ngIf="getEstimatedMonth(item) === month && item.planResults?.length">
-                                    <ng-container *ngFor="let dtMonth of getDateTestMonths(item)">
-
-                                        <!-- Nếu trùng tháng dateTest -->
-                                        <i *ngIf="dtMonth === month" class="fa-regular fa-circle-xmark fa-xl"></i>
-
-                                        <!-- Nếu khác tháng dateTest -->
-                                        <ng-container *ngIf="dtMonth !== month">
-                                            <ng-container
-                                                [ngSwitch]="getArrowPosition(getEstimatedMonth(item), dtMonth)">
-
-                                                <!-- Arrow trước X -->
-                                                <span *ngSwitchCase="'before'">
-                                                    <i class="fa-solid fa-arrow-left"></i>
-                                                    <i class="fa-solid fa-xmark"></i>
-                                                </span>
-
-                                                <!-- Arrow sau X -->
-                                                <span *ngSwitchCase="'after'">
-                                                    <i class="fa-solid fa-xmark"></i>
-                                                    <i class="fa-solid fa-arrow-right"></i>
-                                                </span>
-
-                                            </ng-container>
+                            </span>
+                            <ng-container *ngIf="getEstimatedMonth(item) === month && item.planResults?.length">
+                                <ng-container *ngFor="let dtMonth of getDateTestMonths(item)">
+                                    <i *ngIf="dtMonth === month" class="fa-regular fa-circle-xmark fa-xl"></i>
+                                    <ng-container *ngIf="dtMonth !== month">
+                                        <ng-container [ngSwitch]="getArrowPosition(getEstimatedMonth(item), dtMonth)">
+                                            <span *ngSwitchCase="'before'">
+                                                <i class="fa-solid fa-arrow-left"></i>
+                                                <i class="fa-solid fa-xmark"></i>
+                                            </span>
+                                            <span *ngSwitchCase="'after'">
+                                                <i class="fa-solid fa-xmark"></i>
+                                                <i class="fa-solid fa-arrow-right"></i>
+                                            </span>
                                         </ng-container>
-
                                     </ng-container>
                                 </ng-container>
-
-                                <!-- Nếu month trùng dateTest nhưng khác estimatedMonth -->
-                                <span
-                                    *ngIf="getEstimatedMonth(item) !== month && getDateTestMonths(item).includes(month)">
-                                    <i class="fa-regular fa-circle-xmark fa-xl"></i>
-                                </span>
-                            </td>
-
-                        </ng-container>
-
-                        <td>Bản kế hoạch chi tiết</td>
-                        <td>Ghi chú</td>
+                            </ng-container>
+                            <span *ngIf="getEstimatedMonth(item) !== month && getDateTestMonths(item).includes(month)">
+                                <i class="fa-regular fa-circle-xmark fa-xl"></i>
+                            </span>
+                        </td>
+                        <td>{{ item.nameDetail }}</td>
+                        <td>{{ item.note }}</td>
                     </tr>
-
-                </tbody>
-            </table>
+                </ng-template>
+            </p-table>
         </div>
     </div>
 

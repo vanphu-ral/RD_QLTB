@@ -17,6 +17,7 @@ import { Acceptance } from "../../../../../models/PlanManger/acceptance.model";
 import { Device } from "../../../../../models/DeviceManager/device.model";
 import { PLANTYPE } from "../../../../../enums/plan-type.enum";
 import { CriterialService } from "../../../Criterial/Service/criterial.service";
+import { AcceptanceService } from "../../Service/acceptance.service";
 
 @Component({
     selector: 'app-acceptance-dialog',
@@ -30,13 +31,13 @@ export class AcceptanceDialog {
     plan: any = {};
     device: Device = new Device();
     model: Acceptance = new Acceptance();
+    implementationContent: any[] = [];
     listApprovalWorkflow: any[] = []
 
     constructor(
         public ref: DynamicDialogRef,
         public config: DynamicDialogConfig,
-        private accountService: AccountService,
-        private errorReportService: ErrorReportService,
+        private acceptanceService: AcceptanceService,
         private approvalWorkflowService: ApprovalWorlflowService,
         private deviceService: DeviceService,
         private criterialService: CriterialService,
@@ -50,8 +51,7 @@ export class AcceptanceDialog {
         this.model.type = this.plan.planTypeCode == PLANTYPE.REPAIR ? 1 : (this.plan.planTypeCode == PLANTYPE.MAINTENANCE ? 2 : 3);
         console.log(this.model);
         this.criterialService.getListBySampleReport(this.data.sampleReportId).subscribe(res => {
-            console.log(res);
-            
+            this.implementationContent = res
         })
         this.approvalWorkflowService.getAll().subscribe(res => {
             this.listApprovalWorkflow = res
@@ -65,10 +65,18 @@ export class AcceptanceDialog {
     }
 
     submit() {
-        this.data.repairedBy = this.accountService.getUser()?.fullName || '';
-        this.errorReportService.update(this.data.id as number, this.data).subscribe(() => {
+        this.model.name = `ACCEPTANCE-${new Date().getTime()}`
+        this.model.code = Util.generateCode(this.data.name);
+        // this.model.planResult = this.data;
+        this.model.timeAcceptance = new Date();
+        this.model.status = 1
+        this.acceptanceService.create(this.model).subscribe(res => {
             this.ref.close(true);
-        });
+        })
+        // this.data.repairedBy = this.accountService.getUser()?.fullName || '';
+        // this.errorReportService.update(this.data.id as number, this.data).subscribe(() => {
+        //     this.ref.close(true);
+        // });
     }
 
     close() {
