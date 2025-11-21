@@ -52,7 +52,7 @@ export class ApprovalListComponent {
     switch (status) {
       case 1:
         return 'Chưa duyệt';
-      case 2:
+      case 3:
         return 'Đã duyệt';
       case 6:
         return 'Bị từ chối';
@@ -65,9 +65,9 @@ export class ApprovalListComponent {
     switch (status) {
       case 1:
         return 'warning';
-      case 2:
-        return 'success';
       case 3:
+        return 'success';
+      case 6:
         return 'danger';
       default:
         return '';

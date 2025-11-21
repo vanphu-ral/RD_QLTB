@@ -9,10 +9,10 @@
   <ng-template appColumnTemplate="approval" let-rowData>
     {{ getEntityType(rowData) }}
   </ng-template>
-  <ng-template appColumnTemplate="createdAt" let-rowData>
+  <ng-template appColumnTemplate="approval.createdAt" let-rowData>
     {{ rowData | date: 'dd/MM/yyyy' }}
   </ng-template>
-  <ng-template appColumnTemplate="updatedAt" let-rowData>
+  <ng-template appColumnTemplate="approval.updatedAt" let-rowData>
     {{ rowData | date: 'dd/MM/yyyy' }}
   </ng-template>
 </app-base-table>

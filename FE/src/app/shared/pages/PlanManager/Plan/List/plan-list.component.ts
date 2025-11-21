@@ -60,36 +60,34 @@ export class PlanListComponent {
     });
   }
 
-  getSeverity(status: number): any {
+  getSeverity(status: number): string {
     switch (status) {
-      case 0:
-        return 'success';
-      case 2:
-        return 'danger';
-      case 1:
-        return 'warning';
-      case 3:
-        return 'info';
+      case 1: return 'secondary';   // Mới tạo
+      case 2: return 'warning';     // Chờ duyệt
+      case 3: return 'info';        // Đã duyệt
+      case 4: return 'primary';     // Đang thực hiện
+      case 5: return 'success';     // Đã hoàn thành
+      case 6: return 'danger';      // Bị từ chối
+      default: return 'secondary';
     }
   }
 
-  getValue(status: number): any {
+  getStatus(status: number): string {
     switch (status) {
-      case 0:
-        return 'Mới tạo';
-      case 1:
-        return 'Đang thực hiện';
-      case 2:
-        return 'Đã hoàn thành';
-      default:
-        return 'Đang chờ';
-    }  
+      case 1: return 'Mới tạo';
+      case 2: return 'Chờ duyệt';
+      case 3: return 'Đã duyệt';
+      case 4: return 'Đang thực hiện';
+      case 5: return 'Đã hoàn thành';
+      case 6: return 'Bị từ chối';
+      default: return 'Không xác định';
+    }
   }
 
 
-  onRowExpand(event: TableRowExpandEvent) {}
+  onRowExpand(event: TableRowExpandEvent) { }
 
-  onRowCollapse(event: TableRowCollapseEvent) {}
+  onRowCollapse(event: TableRowCollapseEvent) { }
 
 
   // function table parent
@@ -121,22 +119,22 @@ export class PlanListComponent {
         severity: 'danger'
       },
       accept: () => {
-          this.apiService.delete(item.id).subscribe({
-            next: () => {
-              this.messageService.add({
-                severity: 'info',
-                summary: 'Đã xác nhận',
-                detail: 'Xóa thành công!',
-                life: 3000
-              });
-            },
-            error: (error) => {
-              Util.handleApiError(error, this.messageService);
-            },
-            complete: () => {
-              this.loadData();
-            }
-          });
+        this.apiService.delete(item.id).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'info',
+              summary: 'Đã xác nhận',
+              detail: 'Xóa thành công!',
+              life: 3000
+            });
+          },
+          error: (error) => {
+            Util.handleApiError(error, this.messageService);
+          },
+          complete: () => {
+            this.loadData();
+          }
+        });
       },
       reject: () => {
         this.messageService.add({
@@ -163,10 +161,9 @@ export class PlanListComponent {
     });
     this.ref.onClose.subscribe((res) => {
       if (res) {
-        data.status = 2;
-        this.apiService.update(data.id, data).subscribe({
+        this.apiService.updateStatus(data.id, 2).subscribe({
           next: (res) => {
-            Object.assign(data, res);
+            this.loadData();
             this.cdr.detectChanges();
             Util.ConfirmMessage('Gửi duyệt thành công', 'success');
           },

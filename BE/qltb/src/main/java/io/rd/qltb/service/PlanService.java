@@ -401,6 +401,14 @@ public class PlanService {
         }).toList();
     }
 
+    public void updateStatus(Long id, Integer status) {
+        Plan plan = planRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Plan not found"));
+
+        plan.setStatus(status);
+        planRepository.save(plan);
+    }
+
     private PlanDTO mapToDTO(final Plan plan, final PlanDTO dto) {
         dto.setId(plan.getId());
         dto.setCode(plan.getCode());

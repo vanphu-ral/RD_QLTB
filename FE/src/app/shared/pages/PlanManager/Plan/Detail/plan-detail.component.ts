@@ -16,11 +16,12 @@ import { FactoryService } from '../../../Categories/Factory/Service/factory.serv
 import { ListDeviceComponent } from '../Components/list-device-group/list-device-group.component';
 import { PlanDetail } from '../../../../models/PlanManger/plan-detail.model';
 import { DeviceDetail, PlanRequest } from '../../../../models/PlanManger/plan-request.model';
+import { BaseApprovalComponent } from "../../../../base/base-approval-component/base-approval.component";
 
 @Component({
   selector: 'app-plan-detail',
   standalone: true,
-  imports: [SharedModule, CommonModule, ListDeviceComponent],
+  imports: [SharedModule, CommonModule, ListDeviceComponent, BaseApprovalComponent],
   templateUrl: './plan-detail.component.html',
   styleUrls: ['./plan-detail.component.scss']
 })

@@ -49,7 +49,7 @@
         <td>{{ row.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
         <td>{{ row.updatedAt | date: 'dd/MM/yyyy HH:mm' }}</td>
         <td>
-          <p-tag [value]="getValue(row.status)" [severity]="getSeverity(row.status)" />
+          <p-tag [value]="getStatus(row.status)" [severity]="getSeverity(row.status)" />
         </td>
         <td>
           <p-button icon="pi pi-file-check" *ngIf="row.status == 1" styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="approval(row)"></p-button>
@@ -99,7 +99,7 @@
         <td>{{ detail.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
         <td>{{ detail.updatedAt | date: 'dd/MM/yyyy HH:mm' }}</td>
         <td>
-          <p-tag [value]="getValue(detail.status)" [severity]="getSeverity(detail.status)" />
+          <p-tag [value]="getStatus(detail.status)" [severity]="getSeverity(detail.status)" />
         </td>
         <td>
           <p-button icon="pi pi-file" styleClass="p-button-sm p-button-rounded p-button-secondary m-1"

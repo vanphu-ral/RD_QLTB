@@ -56,4 +56,8 @@ export class PlanService extends BaseApiService<PlanRequest> {
   getScheduleMaintance(id: number | string): Observable<any> {
     return this.http.get<any>(`${this['fullBaseUrl']}/details/${id}`, { withCredentials: true });
   }
+
+  updateStatus(id: number, value: number) {
+    return this.http.put<void>(`${this['fullBaseUrl']}/${id}/status?value=${value}`, {}, {withCredentials: true});
+  }
 }

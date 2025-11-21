@@ -16,11 +16,12 @@ import _ from 'lodash';
 import { KeyMappingService } from '../Service/key-mapping.service';
 import { forkJoin } from 'rxjs';
 import { PlanTypeService } from '../../PlanType/Service/plan-type.service';
+import { BaseApprovalComponent } from "../../../../base/base-approval-component/base-approval.component";
 
 @Component({
   selector: 'app-sample-report-detail',
   standalone: true,
-  imports: [SharedModule, CommonModule],
+  imports: [SharedModule, CommonModule, BaseApprovalComponent],
   templateUrl: './sample-report-detail.component.html',
   styleUrls: ['./sample-report-detail.component.scss']
 })

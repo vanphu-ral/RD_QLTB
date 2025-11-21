@@ -99,4 +99,11 @@ public class PlanResource {
     public ResponseEntity<PlanDTO> getPlanWithDetails(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(planService.getById(id));
     }
+    @PutMapping("/{id}/status")
+    public ResponseEntity<Void> updateStatus(
+            @PathVariable Long id,
+            @RequestParam Integer value) {
+        planService.updateStatus(id, value);
+        return ResponseEntity.ok().build();
+    }
 }

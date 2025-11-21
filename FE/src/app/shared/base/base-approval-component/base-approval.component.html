@@ -1,0 +1,33 @@
+<div class="row my-3">
+    <div class="col-12 my-3">
+        <p-table [value]="tableRows">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th *ngFor="let h of headers">{{ h }}</th>
+                </tr>
+            </ng-template>
+        
+            <ng-template pTemplate="body" let-row>
+                <tr>
+                    <td *ngFor="let h of headers">
+                        <p-tag [value]="row[h] ? 'Đã duyệt' : 'Chưa duyệt'" [severity]="row[h] ? 'success' : 'danger'">
+                        </p-tag>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+    <div class="col-12 my-3" *ngIf="approvalModel.status == 6">
+        <textarea pTextarea class="form-control" rows="5" placeholder="Mô tả ..." id="approvalModel.note" name="approvalModel.note"
+          [(ngModel)]="approvalModel.note"></textarea>
+    </div>
+    <div class="col-12 my-3">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="approvalModel.status" [options]="listApprovalStatus" optionLabel="label" [fluid]="true"
+            optionValue="value" [showClear]="true" [appendTo]="'body'" id="status" name="status"
+            [invalid]="!approvalModel.status" required >
+          </p-select>
+          <label for="status">Tùy chọn duyệt</label>
+        </p-floatlabel>
+    </div>
+</div>
