@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { SharedModule } from '../../../../../share.module';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { BasePageComponent } from '../../../../core/base-page-component/base-page.component';
+import { BasePageComponent } from '../../../../base/base-page-component/base-page.component';
 import { PlanDetailService } from '../Service/plan-detail.service';
 import { SignatureService } from '../../../SystemManager/Signature/Service/signature.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';

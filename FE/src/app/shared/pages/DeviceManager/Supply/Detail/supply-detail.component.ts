@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { SharedModule } from '../../../../../share.module';
 import { CommonModule } from '@angular/common';
-import { BasePageComponent } from '../../../../core/base-page-component/base-page.component';
+import { BasePageComponent } from '../../../../base/base-page-component/base-page.component';
 import { Util } from '../../../../core/utils/utils-function';
 import { SupplyService } from '../Service/supply.service';
 import { Supply } from '../../../../models/DeviceManager/supply.model';

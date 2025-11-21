@@ -17,6 +17,7 @@ import { SampleReportService } from "../../Service/sample-report.service";
 export class OptionApprovalDialog {
 
     data: any;
+    type: any
     selectedOption: number = 1;
     listSampleReports: any[] = [];
     previousRoundId: any;
@@ -27,7 +28,8 @@ export class OptionApprovalDialog {
         private sampleReportService: SampleReportService,
         private cdr: ChangeDetectorRef
     ) {
-        this.data = config.data;
+        this.data = config.data.data;
+        this.type = config.data.type;
     }
 
     ngOnInit(): void {
@@ -43,14 +45,12 @@ export class OptionApprovalDialog {
             workflowId: this.data.approvalWorkflow.id,
             previousEntityId: this.previousRoundId,
         };
-        this.sampleReportService.createApprovalEntity(approvalModel, 'sample_reports').subscribe({
+        this.sampleReportService.createApprovalEntity(approvalModel, this.type).subscribe({
             next: () => {
-                this.data.status = 2;
-                this.sampleReportService.update(this.data.id, this.data).subscribe({
-                    next: (res) => {
-                        this.ref.close(res);
-                    },
-                });
+                this.ref.close(true);
+            },
+            error: () => {
+                this.ref.close(false);
             },
         });
     }

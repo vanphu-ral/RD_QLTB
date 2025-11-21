@@ -11,7 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Column } from '../../models/Core/column.model';
 import { CustomColumnDirective } from '../../directive/app.custom-column.directive';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { Util } from '../utils/utils-function';
+import { Util } from '../../core/utils/utils-function';
 
 @Component({
   selector: 'app-base-table',

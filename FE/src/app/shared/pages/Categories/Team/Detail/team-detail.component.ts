@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SharedModule } from '../../../../../share.module';
 import { CommonModule } from '@angular/common';
-import { BasePageComponent } from '../../../../core/base-page-component/base-page.component';
+import { BasePageComponent } from '../../../../base/base-page-component/base-page.component';
 import { TeamService } from '../Service/team.service';
 import { Util } from '../../../../core/utils/utils-function';
 import { AccountService } from '../../../../core/auth/account/account.service';

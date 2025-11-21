@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { SharedModule } from '../../../../../share.module';
 import { CommonModule } from '@angular/common';
-import { BasePageComponent } from '../../../../core/base-page-component/base-page.component';
+import { BasePageComponent } from '../../../../base/base-page-component/base-page.component';
 import { GroupApprovalNameService } from '../Service/group-approval-name.service';
 import { Util } from '../../../../core/utils/utils-function';
 import { GroupApprovalName } from '../../../../models/ApprovalManager/group-approval-name.model';

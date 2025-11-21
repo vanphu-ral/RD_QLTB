@@ -4,10 +4,10 @@ import { BaseApiService } from '../../service/base-api.service';
 import { Observable, take } from 'rxjs';
 import * as _ from 'lodash';
 import { NavigationService } from '../../service/navigation.service';
-import { AccountService } from '../auth/account/account.service';
+import { AccountService } from '../../core/auth/account/account.service';
 import { ApprovalStateService } from '../../pages/ApprovalManager/Approval/Service/approval-state.service';
 import { ApprovalService } from '../../pages/ApprovalManager/Approval/Service/approval.service';
-import { Util } from '../utils/utils-function';
+import { Util } from '../../core/utils/utils-function';
 
 @Directive()
 export abstract class BasePageComponent<T> implements OnInit {
@@ -75,7 +75,7 @@ export abstract class BasePageComponent<T> implements OnInit {
             this.approvalModel = data;
           })
         }
-        this.approvalModel.status = 2;
+        this.approvalModel.status = 3;
       });
     }
     this.cdr.detectChanges();

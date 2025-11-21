@@ -34,6 +34,6 @@ public class PlanWithDetailsDTO {
 
     private Long approvalWorkflowId;
     private String approvalWorkflowName;
-
+    private ApprovalWorkflowDTO approvalWorkflow;
     private List<PlanDetailListDTO> details;
 }

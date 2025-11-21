@@ -14,6 +14,7 @@ import { Util } from '../../../../core/utils/utils-function';
 import { ListErrorDialog } from '../Dialogs/list-error-dialog/list-error.dialog';
 import { AcceptanceDialog } from '../Dialogs/acceptance-dialog/acceptance.dialog';
 import { PLANTYPE } from '../../../../enums/plan-type.enum';
+import { OptionApprovalDialog } from '../../SampleReport/Dialogs/option-approval-dialog/option-approval.dialog';
 
 @Component({
   selector: 'plan-list',
@@ -150,6 +151,28 @@ export class PlanListComponent {
 
   viewPlanMaintance(row: any) {
     this.router.navigate([row.id, 'maintenance-plan'], { relativeTo: this.route });
+  }
+
+  approval(data: any) {
+    this.ref = this.dialogService.open(OptionApprovalDialog, {
+      header: `Duyệt mẫu biên bản`,
+      width: '400px',
+      modal: true,
+      data: { data: data, type: 'plans' },
+      closable: true
+    });
+    this.ref.onClose.subscribe((res) => {
+      if (res) {
+        data.status = 2;
+        this.apiService.update(data.id, data).subscribe({
+          next: (res) => {
+            Object.assign(data, res);
+            this.cdr.detectChanges();
+            Util.ConfirmMessage('Gửi duyệt thành công', 'success');
+          },
+        });
+      }
+    });
   }
 
   // function table child

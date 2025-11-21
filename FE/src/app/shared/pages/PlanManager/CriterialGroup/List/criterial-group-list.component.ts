@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { BaseTableComponent } from '../../../../core/base-table-component/base-table.component';
+import { BaseTableComponent } from '../../../../base/base-table-component/base-table.component';
 import { SharedModule } from '../../../../../share.module';
 import { FormsModule } from '@angular/forms';
 import { CriterialGroupService } from '../Service/criterial-group.service';

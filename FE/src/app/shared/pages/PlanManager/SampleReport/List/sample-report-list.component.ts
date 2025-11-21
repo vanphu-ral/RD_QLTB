@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
-import { BaseTableComponent } from '../../../../core/base-table-component/base-table.component';
+import { BaseTableComponent } from '../../../../base/base-table-component/base-table.component';
 import { SharedModule } from '../../../../../share.module';
 import { FormsModule } from '@angular/forms';
 import { SampleReportService } from '../Service/sample-report.service';
@@ -46,32 +46,21 @@ export class SampleReportListComponent {
       header: `Duyệt mẫu biên bản`,
       width: '400px',
       modal: true,
-      data: data,
+      data: { data: data, type: 'sample_reports' },
       closable: true
     });
     this.ref.onClose.subscribe((res) => {
       if (res) {
-        console.log(res);
-        
-        Object.assign(data, res);
-        this.cdr.detectChanges();
-        Util.ConfirmMessage('Gửi duyệt thành công', 'success');
+        data.status = 2;
+        this.apiService.update(data.id, data).subscribe({
+          next: (res) => {
+            console.log(res);
+            Object.assign(data, res);
+            this.cdr.detectChanges();
+            Util.ConfirmMessage('Gửi duyệt thành công', 'success');
+          }
+        });
       }
     });
-    // const approvalModel = {
-    //   entityId: data.id,
-    //   workflowId: data.approvalWorkflow.id,
-    // }
-    // this.apiService.approvalEntity(approvalModel, 'sample_reports').subscribe({
-    //   next: () => {
-    //     data.status = 2;
-    //     this.apiService.update(data.id, data).subscribe({
-    //       next: (res) => {
-    //         Object.assign(data, res);
-    //         Util.ConfirmMessage('Duyệt mẫu biên bản', 'success');
-    //       },
-    //     });
-    //   },
-    // });
   }
 }

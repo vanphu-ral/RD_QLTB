@@ -50,7 +50,15 @@ const planRoute: Routes = [
     resolve: {
       data: PlanMaintanceResolve
     }
-  }
+  },
+  {
+      path: ':id/approval',
+      component: PlanDetailComponent,
+      data: { mode: 'approval' },
+      resolve: {
+        data: PlanResolve,
+      },
+    }
 ];
 
 export default planRoute;

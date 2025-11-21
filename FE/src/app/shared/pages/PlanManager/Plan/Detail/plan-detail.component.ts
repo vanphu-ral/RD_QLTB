@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SharedModule } from '../../../../../share.module';
 import { CommonModule } from '@angular/common';
-import { BasePageComponent } from '../../../../core/base-page-component/base-page.component';
+import { BasePageComponent } from '../../../../base/base-page-component/base-page.component';
 import { PlanService } from '../Service/plan.service';
 import { Util } from '../../../../core/utils/utils-function';
 import { Plan } from '../../../../models/PlanManger/plan.model';

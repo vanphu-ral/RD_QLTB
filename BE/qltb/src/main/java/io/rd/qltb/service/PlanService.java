@@ -349,8 +349,18 @@ public class PlanService {
             if (plan.getBranch() != null) {
                 dto.setBranchName(plan.getBranch().getName());
             }
+//            if (plan.getApprovalWorkflow() != null) {
+//                dto.setApprovalWorkflowName(plan.getApprovalWorkflow().getName());
+//            }
             if (plan.getApprovalWorkflow() != null) {
                 dto.setApprovalWorkflowName(plan.getApprovalWorkflow().getName());
+                dto.setApprovalWorkflowId(plan.getApprovalWorkflow().getId());
+                // --- thêm phần gán ApprovalWorkflowDTO ---
+                ApprovalWorkflowDTO aw = new ApprovalWorkflowDTO();
+                aw.setId(plan.getApprovalWorkflow().getId());
+                aw.setCode(plan.getApprovalWorkflow().getCode());
+                aw.setName(plan.getApprovalWorkflow().getName());
+                dto.setApprovalWorkflow(aw);
             }
 
             // Map children (PlanDetail → PlanDetailDTO)

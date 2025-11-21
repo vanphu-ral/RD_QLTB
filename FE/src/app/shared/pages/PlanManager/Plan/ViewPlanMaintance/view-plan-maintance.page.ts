@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { SharedModule } from '../../../../../share.module';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { BasePageComponent } from '../../../../core/base-page-component/base-page.component';
+import { BasePageComponent } from '../../../../base/base-page-component/base-page.component';
 import { PlanService } from '../Service/plan.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { PlanMaintanceDetailDialog } from '../Dialogs/plan-maintance-detail-dialog/plan-maintance-detail.dialog';

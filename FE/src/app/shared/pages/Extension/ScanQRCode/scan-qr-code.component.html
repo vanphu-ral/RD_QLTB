@@ -1,16 +1,21 @@
 <div class="qr-code-page mt-3">
   <div class="row">
-    <div class="col-3">
+    <div class="col-12 col-lg-3">
       <div class="device-info">
         <div class="scan-qr-device">
-          <div class="d-flex my-4">
-            <i class="fa-solid fa-qrcode" style="font-size: 2.7rem; margin-right: 10px;"></i>
-            <p-inputgroup>
-              <p-inputgroup-addon>
-                <i class="pi pi-search"></i>
-              </p-inputgroup-addon>
-              <input pInputText placeholder="serial" />
-            </p-inputgroup>
+          <div class="d-flex my-4"  style="flex-direction: column;">
+            <div class="d-flex justify-content-between">
+              <label class="mb-2">
+                <i class="fa-solid fa-qrcode" style="font-size: 2rem; margin-right: 10px;"></i>
+                Quét mã thiết bị
+              </label>
+              <button *ngIf="scanType == 2" pButton type="button" label="Đổi Camera" icon="pi pi-refresh" (click)="toggleCamera()"></button>
+            </div>
+            <p-select [options]="optionScans" [(ngModel)]="scanType" optionLabel="label" optionValue="value" placeholder="Select a Scan Type" class="w-full md:w-56" />
+            <video *ngIf="scanType == 2" #preview style="width: 100%; max-width: 350px; border: 1px solid #ccc; border-radius: 6px;"></video>
+            <div class="mt-2">
+              <strong>Mã serial:</strong> <input pInputText id="serial" name="serial" [(ngModel)]="serial" autocomplete="off" [fluid]="true"/>
+            </div>
           </div>
           <div style="border: 1px solid;"></div>
           <div class="d-flex my-4">
@@ -61,7 +66,7 @@
         </div>
       </div>
     </div>
-    <div class="col-9">
+    <div class="col-12 col-lg-9">
       <div class="device-task">
         <p-tabs value="0">
           <p-tablist>
@@ -74,7 +79,7 @@
           </p-tablist>
           <p-tabpanels>
             <p-tabpanel value="0">
-              <p class="m-0">
+              <!-- <p class="m-0">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
                 dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
                 ex
@@ -83,7 +88,43 @@
                 nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
                 mollit
                 anim id est laborum.
-              </p>
+              </p> -->
+              <p-table [value]="listHistory" responsiveLayout="scroll">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>Ngành</th>
+                    <th>Dây chuyền</th>
+                    <th>Tổ</th>
+                    <th></th>
+                    <th>Ngành</th>
+                    <th>Dây chuyền</th>
+                    <th>Tổ</th>
+                    <th>Lý do</th>
+                    <th>Người di chuyển</th>
+                    <th>Thời gian</th>
+                  </tr>
+                </ng-template>
+              
+                <ng-template pTemplate="body" let-row let-i="rowIndex">
+                  <tr>
+                    <td>{{ row.oldBranchName }}</td>
+                    <td>{{ row.oldLineName }}</td>
+                    <td>{{ row.oldTeamName }}</td>
+                    <td><i class="pi pi-arrow-right"></i></td>
+                    <td>{{ row.newBranchName }}</td>
+                    <td>{{ row.newLineName }}</td>
+                    <td>{{ row.newTeamName }}</td>
+                    <td>{{ row.reason }}</td>
+                    <td>{{ row.movedBy }}</td>
+                    <td>{{ row.movedAt | date:'dd/MM/yyyy HH:mm'}}</td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                  <tr>
+                    <td colspan="99" class="text-center">Chưa có lịch sử di chuyển</td>
+                  </tr>
+                </ng-template>
+              </p-table>
             </p-tabpanel>
             <p-tabpanel value="1">
               <p class="m-0">
