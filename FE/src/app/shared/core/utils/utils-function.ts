@@ -220,6 +220,25 @@ export class Util {
   }
 
   /**
+   * Lấy thời gian hiện tại UTC + 7 theo định dạng dd/MM/yyyy HH:mm
+   */
+  static toLocalIsoString(): string {
+    const date = new Date();
+    const pad = (n: number) => n.toString().padStart(2, '0');
+
+    return (
+      date.getFullYear() +
+      "-" + pad(date.getMonth() + 1) +
+      "-" + pad(date.getDate()) +
+      "T" + pad(date.getHours()) +
+      ":" + pad(date.getMinutes()) +
+      ":" + pad(date.getSeconds()) +
+      "." + date.getMilliseconds().toString().padStart(3, '0')
+    );
+  }
+
+
+  /**
    * Lấy ngày đầu tháng
    */
   static startOfMonth(date: Date | string = new Date()): string {
@@ -454,5 +473,12 @@ export class Util {
       default:
         return '';
     }
+  }
+
+  /**
+   * Get user by username
+   */
+  static getUserByUsername(listUser: any[], username: string): any {
+    return listUser.find(user => user.username === username);
   }
 }
