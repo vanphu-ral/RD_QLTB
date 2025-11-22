@@ -77,6 +77,9 @@ public class ApprovalService {
             }).toList();
         }
     }
+    public List<Approval> findApprovalsByEntityIdAndEntityType(String entity,String entityType){
+        return approvalRepository.findApprovalsByEntityIdAndEntityType(entity,entityType);
+    }
     public List<ApprovalDTO> findAll() {
         final List<Approval> approvals = approvalRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return approvals.stream()

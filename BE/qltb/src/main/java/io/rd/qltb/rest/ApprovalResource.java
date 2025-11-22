@@ -1,5 +1,6 @@
 package io.rd.qltb.rest;
 
+import io.rd.qltb.domain.Approval;
 import io.rd.qltb.model.ApprovalDTO;
 import io.rd.qltb.model.ApprovalRequestDTO;
 import io.rd.qltb.model.ApprovalResponseDTO;
@@ -68,6 +69,13 @@ public class ApprovalResource {
     public ResponseEntity<List<ApprovalResponseDTO>> getApprovalsByUser(@AuthenticationPrincipal OidcUser oidcUser) {
         List<ApprovalResponseDTO> responseList = approvalService.getAllFromTableByUserName(oidcUser.getName());
         return ResponseEntity.ok(responseList);
+    }
+    @GetMapping("/entity")
+    public ResponseEntity<List<Approval>> findApprovalsByEntityIdAndEntityType(
+            @RequestParam("entity") String entity,
+            @RequestParam("entityType") String entityType
+    ) {
+        return ResponseEntity.ok(approvalService.findApprovalsByEntityIdAndEntityType(entity,entityType));
     }
     @GetMapping("/all")
     public ResponseEntity<List<ApprovalResponseDTO>> getApprovalsByUser() {
