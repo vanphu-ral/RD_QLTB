@@ -77,8 +77,9 @@ public class ApprovalService {
             }).toList();
         }
     }
-    public List<Approval> findApprovalsByEntityIdAndEntityType(String entity,String entityType){
-        return approvalRepository.findApprovalsByEntityIdAndEntityType(entity,entityType);
+    public List<ApprovalDTO> findApprovalsByEntityIdAndEntityType(String entity,String entityType){
+        return approvalRepository.findApprovalsByEntityIdAndEntityType(entity,entityType).stream().map(
+                approval -> mapToDTO(approval,new ApprovalDTO())).toList();
     }
     public List<ApprovalDTO> findAll() {
         final List<Approval> approvals = approvalRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
@@ -230,7 +231,7 @@ public class ApprovalService {
             groupCopy.setCreatedBy(approval.getGroup().getCreatedBy());
             groupCopy.setUpdatedBy(approval.getGroup().getUpdatedBy());
             groupCopy.setStatus(approval.getGroup().getStatus());
-
+            groupCopy.setLevel(approval.getGroup().getLevel());
             // Xóa các quan hệ con để tránh vòng lặp
             groupCopy.setWorkflow(null);
             groupCopy.setGroupApprovalGroupUsers(null);

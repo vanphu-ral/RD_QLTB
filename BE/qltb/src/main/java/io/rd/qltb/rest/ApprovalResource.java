@@ -71,7 +71,7 @@ public class ApprovalResource {
         return ResponseEntity.ok(responseList);
     }
     @GetMapping("/entity")
-    public ResponseEntity<List<Approval>> findApprovalsByEntityIdAndEntityType(
+    public ResponseEntity<List<ApprovalDTO>> findApprovalsByEntityIdAndEntityType(
             @RequestParam("entity") String entity,
             @RequestParam("entityType") String entityType
     ) {
