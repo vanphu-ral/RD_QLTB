@@ -63,7 +63,6 @@ public class ApprovalService {
             List<Approval> approvals = approvalRepository.findApprovalsByUserIds(userIds);
             return approvals.stream().map(approval -> {
                 ApprovalResponseDTO responseDTO = new ApprovalResponseDTO();
-                responseDTO.setApproval(mapToDTO(approval, new ApprovalDTO()));
                 String entityType = approval.getEntityType();
                 Long entityId = approval.getEntityId();
                 String tableName = entityType;
@@ -96,6 +95,7 @@ public class ApprovalService {
                     System.out.println("Nhóm phê duyệt đầu tiên");
                     responseDTO.getApproval().setCheckStatus(1); //đến lượt phê duyệt
                 }
+                responseDTO.setApproval(mapToDTO(approval, new ApprovalDTO()));
                 return responseDTO;
             }).toList();
         }
@@ -104,9 +104,11 @@ public class ApprovalService {
         List<ApprovalDTO> approvalDTOS = approvalRepository.findApprovalsByEntityIdAndEntityType(entity,entityType).stream().map(
                 approval -> mapToDTO(approval,new ApprovalDTO())).toList();
         for (ApprovalDTO approval: approvalDTOS){
-        // Thêm tên nhóm phê duyệt vào ApprovalDTO
-        approval.getGroup().setGroupApprovalName(approvalGroupRepository.findById(approval.getGroup().getId()).orElseThrow(()-> new NotFoundException("ApprovalGroup not found")).getGroupApprovalName());
-        approval.getGroup().getGroupApprovalName().setApprovalGroups(null); // tránh vòng lặp
+            // Thêm tên nhóm phê duyệt vào ApprovalDTO
+            ApprovalGroup group = approvalGroupRepository.findById(approval.getGroup().getId()).orElseThrow(()-> new NotFoundException("ApprovalGroup not found"));
+            approval.getGroup().setGroupApprovalName(groupApprovalNameRepository.findById(group.getGroupApprovalName().getId()).orElseThrow(()-> new NotFoundException("GroupApprovalName not found")));
+            System.out.println("Group Approval Name: " + approval.getGroup().getGroupApprovalName().getName());
+            approval.getGroup().getGroupApprovalName().setApprovalGroups(null); // tránh vòng lặp
         }
         return approvalDTOS;
     }
