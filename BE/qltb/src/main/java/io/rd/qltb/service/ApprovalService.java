@@ -26,14 +26,16 @@ public class ApprovalService {
     private final ApprovalGroupUserRepository approvalGroupUserRepository;
     private final ApprovalRoundRepository approvalRoundRepository;
     private final ApprovalGroupRepository approvalGroupRepository;
+    private final GroupApprovalNameRepository groupApprovalNameRepository;
 
-    public ApprovalService(JdbcTemplate jdbcTemplate, final ApprovalRepository approvalRepository, final ApprovalWorkflowRepository approvalWorkflowRepository, ApprovalGroupUserRepository approvalGroupUserRepository, ApprovalRoundRepository approvalRoundRepository, ApprovalGroupRepository approvalGroupRepository) {
+    public ApprovalService(JdbcTemplate jdbcTemplate, final ApprovalRepository approvalRepository, final ApprovalWorkflowRepository approvalWorkflowRepository, ApprovalGroupUserRepository approvalGroupUserRepository, ApprovalRoundRepository approvalRoundRepository, ApprovalGroupRepository approvalGroupRepository, GroupApprovalNameRepository groupApprovalNameRepository) {
         this.jdbcTemplate = jdbcTemplate;
         this.approvalRepository = approvalRepository;
         this.approvalWorkflowRepository = approvalWorkflowRepository;
         this.approvalGroupUserRepository = approvalGroupUserRepository;
         this.approvalRoundRepository = approvalRoundRepository;
         this.approvalGroupRepository = approvalGroupRepository;
+        this.groupApprovalNameRepository = groupApprovalNameRepository;
     }
     public List<ApprovalResponseDTO> getAllFromTable() {
         List<Approval> approvals = approvalRepository.findAll();
@@ -73,7 +75,8 @@ public class ApprovalService {
                     responseDTO.setData(null);
                 }
                 // Thêm tên nhóm phê duyệt vào ApprovalDTO
-                approval.getGroup().setGroupApprovalName(approvalGroupRepository.findById(approval.getGroup().getId()).orElseThrow(()-> new NotFoundException("ApprovalGroup not found")).getGroupApprovalName());
+                ApprovalGroup group = approvalGroupRepository.findById(approval.getGroup().getId()).orElseThrow(()-> new NotFoundException("ApprovalGroup not found"));
+                approval.getGroup().setGroupApprovalName(groupApprovalNameRepository.findById(group.getGroupApprovalName().getId()).orElseThrow(()-> new NotFoundException("GroupApprovalName not found")));
                 approval.getGroup().getGroupApprovalName().setApprovalGroups(null); // tránh vòng lặp
                 // Kiểm tra trạng thái phê duyệt
                 if (approval.getGroup().getLevel() > 0){ // nếu không phải nhóm phê duyệt đầu tiên
