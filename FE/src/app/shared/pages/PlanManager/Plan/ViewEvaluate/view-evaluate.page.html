@@ -1,7 +1,7 @@
 <div class="summary-table">
-    <div class="card mt-3">
+    <div class="card mt-3" id="print-section">
         <div class="table-responsive">
-            <table class="table table-bordered table-hover">
+            <table class="table table-bordered table-hover" style="margin: 0;">
                 <thead>
                     <tr>
                         <th colspan="3"><img src="/assets/imgs/logo-rang-dong.png" style="width:150px;" /></th>
@@ -113,14 +113,29 @@
                         <td colspan="7" id="sign_week_02"></td>
                         <td colspan="7" id="sign_week_03"></td>
                         <td colspan="7" id="sign_week_04"></td>
-                        <td colspan="3" id="sign_week_05"></td>
+                        <td colspan="7" id="sign_week_05"></td>
                     </tr>
                 </tfoot>
             </table>
         </div>
+        <table id="nghemthu-details-table" class="table table-bordered table-hover" style="width: 100%;">
+            <thead>
+                <tr>
+                    <th *ngFor="let h of listUserApproval || []" class="text-center">
+                        {{ userMap[h.userApproval?.username] || h.userApproval?.username }}
+                    </th>
+                </tr>
+                <tr>
+                    <th *ngFor="let h of listUserApproval" class="text-center align-middle">
+                        <img [src]="h.signature" style="width: 120px; height: 60px; display: block; margin: 0 auto;">
+                    </th>
+                </tr>
+            </thead>
+        </table>
     </div>
 
     <div class="d-flex justify-content-end mt-3">
       <p-button label="Quay lại" severity="info" (click)="onBack()" icon="pi pi-arrow-left" class="me-2"></p-button>
+      <p-button label="In" icon="pi pi-print" severity="success" (click)="printDiv()" class="me-2"></p-button>
     </div>
 </div>

@@ -60,4 +60,10 @@ public class UserImageResource {
     public ResponseEntity<UserImageDTO> getByUsername(@PathVariable String username) {
         return ResponseEntity.ok(userImageService.getByUsername(username));
     }
+
+    @PostMapping("/by-usernames")
+    public ResponseEntity<List<UserImageDTO>> getByUsernames(
+            @RequestBody List<String> usernames) {
+        return ResponseEntity.ok(userImageService.getByUsernames(usernames));
+    }
 }

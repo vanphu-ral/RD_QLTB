@@ -41,6 +41,10 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
   public groupedDetails: GroupedCritical[] = [];
   public planInfo: any = {};
   public signature: any = {};
+  listUserApproval: any[] = [];
+  listUsers: any[] = [];
+  userMap: Record<string, string> = {};
+  Math = Math;
 
   constructor(
     protected override apiService: PlanDetailService,
@@ -55,6 +59,34 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
     this.signatureService.getByUsername('admin').subscribe((data) => {
       this.signature = data;
       this.groupPlanDetails();
+    });
+    this.approvalService
+      .findApprovalsByEntityIdAndEntityType(this.model.planDetail.plan.id, 'plans')
+      .subscribe((data) => {
+        this.listUserApproval = data;
+        const usernames = data.map(x => x.userApproval?.username);
+        this.signatureService.getByListUsernames(usernames).subscribe(signatures => {
+          const signatureMap = new Map(
+            signatures.map(s => [s.username, s.imageLink])
+          );
+          this.listUserApproval = this.listUserApproval.map(item => {
+            const username = item.userApproval?.username;
+            return {
+              ...item,
+              signature: signatureMap.get(username) || null
+            }
+          });
+        });
+        this.cdr.detectChanges();
+      });
+    this.approvalService.getUsers().subscribe(users => {
+      this.listUsers = users;
+      this.userMap = users.reduce((acc, u) => {
+        const fullName = [u.firstName, u.lastName].filter(Boolean).join(' ').trim();
+        acc[u.username] = fullName || u.username;
+        return acc;
+      }, {} as Record<string, string>);
+      this.cdr.detectChanges();
     });
   }
 
@@ -212,6 +244,41 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
       return Array.from({ length: numDays }, (_, i) => i + 1);
     }
     return Array.from({ length: 31 }, (_, i) => i + 1);
+  }
+
+  // nút In
+  printDiv() {
+    const printContents = document.getElementById('print-section')?.innerHTML;
+    if (!printContents) return;
+
+    const popupWin = window.open('', '_blank', 'width=1024,height=768');
+
+    popupWin!.document.open();
+    popupWin!.document.write(`
+      <html>
+        <head>
+          <title>In báo cáo</title>
+          <style>
+            table, th, td {
+              border: 1px solid #000;
+              border-collapse: collapse;
+            }
+            th, td {
+              padding: 4px;
+              text-align: center;
+              vertical-align: middle;
+            }
+            img {
+              max-width: 100%;
+            }
+          </style>
+        </head>
+        <body onload="window.print(); window.close();">
+          ${printContents}
+        </body>
+      </html>
+    `);
+    popupWin!.document.close();
   }
 
   public override save(): void {
