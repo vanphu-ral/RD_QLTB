@@ -1,10 +1,7 @@
 package io.rd.qltb.rest;
 
 import io.rd.qltb.domain.Plan;
-import io.rd.qltb.model.ApprovalRequestDTO;
-import io.rd.qltb.model.DeviceSupplyUsageDTO;
-import io.rd.qltb.model.PlanCheckDTO;
-import io.rd.qltb.model.PlanDetailDTO;
+import io.rd.qltb.model.*;
 import io.rd.qltb.service.PlanDetailService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
@@ -73,5 +70,10 @@ public class PlanDetailResource {
         planDetailService.delete(id);
         return ResponseEntity.noContent().build();
     }
-
+    @GetMapping("/plans")
+    public ResponseEntity<List<PlanDTO>> getDeviceSupplyUsages(
+            @RequestParam("serial") String serial) {
+        List<PlanDTO> deviceSupplyUsages = planDetailService.getByDetiveId( serial);
+        return ResponseEntity.ok(deviceSupplyUsages);
+    }
 }

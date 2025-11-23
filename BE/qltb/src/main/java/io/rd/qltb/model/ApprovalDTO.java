@@ -45,4 +45,5 @@ public class ApprovalDTO {
     @Size(max = 255)
     private String updatedBy;
     private ApprovalRound round;
+    private Integer checkStatus;
 }

@@ -4,10 +4,7 @@ import io.rd.qltb.domain.*;
 import io.rd.qltb.model.ApprovalDTO;
 import io.rd.qltb.model.ApprovalRequestDTO;
 import io.rd.qltb.model.ApprovalResponseDTO;
-import io.rd.qltb.repos.ApprovalGroupUserRepository;
-import io.rd.qltb.repos.ApprovalRepository;
-import io.rd.qltb.repos.ApprovalRoundRepository;
-import io.rd.qltb.repos.ApprovalWorkflowRepository;
+import io.rd.qltb.repos.*;
 import io.rd.qltb.util.NotFoundException;
 
 import java.time.LocalDateTime;
@@ -28,13 +25,15 @@ public class ApprovalService {
     private final ApprovalWorkflowRepository approvalWorkflowRepository;
     private final ApprovalGroupUserRepository approvalGroupUserRepository;
     private final ApprovalRoundRepository approvalRoundRepository;
+    private final ApprovalGroupRepository approvalGroupRepository;
 
-    public ApprovalService(JdbcTemplate jdbcTemplate, final ApprovalRepository approvalRepository, final ApprovalWorkflowRepository approvalWorkflowRepository, ApprovalGroupUserRepository approvalGroupUserRepository, ApprovalRoundRepository approvalRoundRepository) {
+    public ApprovalService(JdbcTemplate jdbcTemplate, final ApprovalRepository approvalRepository, final ApprovalWorkflowRepository approvalWorkflowRepository, ApprovalGroupUserRepository approvalGroupUserRepository, ApprovalRoundRepository approvalRoundRepository, ApprovalGroupRepository approvalGroupRepository) {
         this.jdbcTemplate = jdbcTemplate;
         this.approvalRepository = approvalRepository;
         this.approvalWorkflowRepository = approvalWorkflowRepository;
         this.approvalGroupUserRepository = approvalGroupUserRepository;
         this.approvalRoundRepository = approvalRoundRepository;
+        this.approvalGroupRepository = approvalGroupRepository;
     }
     public List<ApprovalResponseDTO> getAllFromTable() {
         List<Approval> approvals = approvalRepository.findAll();
@@ -72,6 +71,18 @@ public class ApprovalService {
                     responseDTO.setData(data.get(0));
                 } else {
                     responseDTO.setData(null);
+                }
+                // Kiểm tra trạng thái phê duyệt
+                if (approval.getGroup().getLevel() > 0){ // nếu không phải nhóm phê duyệt đầu tiên
+                    // tìm nhóm phê duyệt trước đó
+                    ApprovalGroup previousGroup = approvalGroupRepository.findByWorkflowIdAndLevel(approval.getWorkflow().getId(),approval.getGroup().getLevel() - 1);
+                    // đếm số lượng approval trong nhóm phê duyệt trước đó có trạng thái khác 3 (đã phê duyệt)
+                    Integer pendingCount = approvalRepository.countPendingByGroupIdAndWorkflowId(previousGroup.getId(),approval.getWorkflow().getId());
+                    if (pendingCount > 0){
+                        responseDTO.getApproval().setCheckStatus(0); //chưa đến lượt phê duyệt
+                    } else {
+                        responseDTO.getApproval().setCheckStatus(1); //đến lượt phê duyệt
+                    }
                 }
                 return responseDTO;
             }).toList();
@@ -235,7 +246,8 @@ public class ApprovalService {
             // Xóa các quan hệ con để tránh vòng lặp
             groupCopy.setWorkflow(null);
             groupCopy.setGroupApprovalGroupUsers(null);
-            groupCopy.setGroupApprovalName(null);
+            //  Xóa quan hệ với GroupApprovalName để tránh vòng lặp
+            groupCopy.getGroupApprovalName().setApprovalGroups(null);
 
             approvalDTO.setGroup(groupCopy);
         } else {

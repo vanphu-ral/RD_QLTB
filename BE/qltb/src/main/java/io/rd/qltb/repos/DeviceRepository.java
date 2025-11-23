@@ -17,5 +17,5 @@ public interface DeviceRepository extends JpaRepository<Device, Long> {
     Device findFirstByTeamId(Long id);
 
     List<Device> findByGroupId(Long groupId);
-
+    Device findFirstBySerialNumber(String serialNumber);
 }

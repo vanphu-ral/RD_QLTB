@@ -86,7 +86,6 @@ public class DeviceService {
                 .map(device -> mapToDTO(device, new DeviceDTO()))
                 .toList();
     }
-
     public List<DeviceDTO> getDevicesByGroupId(Long groupId) {
         final List<Device> devices = deviceRepository.findByGroupId(groupId);
         return devices.stream()

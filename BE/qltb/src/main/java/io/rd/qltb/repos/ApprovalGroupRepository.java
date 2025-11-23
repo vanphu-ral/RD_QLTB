@@ -14,6 +14,8 @@ public interface ApprovalGroupRepository extends JpaRepository<ApprovalGroup, Lo
 
     ApprovalGroup findFirstByWorkflowId(Long id);
     List<ApprovalGroup> findByWorkflowId(Long id);
+
+    ApprovalGroup findByWorkflowIdAndLevel(Long workflowId, Integer level);
     @Transactional
     @Modifying
     @Query(value = "delete from approval_groups ag where ag.workflow_id = ?1",nativeQuery = true)

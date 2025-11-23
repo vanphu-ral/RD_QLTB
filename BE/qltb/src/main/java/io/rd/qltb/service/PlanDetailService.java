@@ -95,7 +95,38 @@ public class PlanDetailService {
                 .map(planDetail -> mapToDTO(planDetail, new PlanDetailDTO()))
                 .toList();
     }
-
+    public List<PlanDTO> getByDetiveId(final String serial) {
+        Device device = deviceRepository.findFirstBySerialNumber(serial);
+        List<PlanDetailDTO> planDetails = planDetailRepository.findAllByDeviceId(device.getId()).stream()
+                .map(planDetail -> mapToDTO(planDetail, new PlanDetailDTO()))
+                .toList();
+        List<PlanDTO> plans = new ArrayList<>();
+        for(PlanDetailDTO planDetailDTO : planDetails){
+            PlanDTO planDTO = new PlanDTO();
+            planDTO.setId(planDetailDTO.getPlan().getId());
+            planDTO.setName(planDetailDTO.getPlan().getName());
+            planDTO.setFrequency(planDetailDTO.getPlan().getFrequency());
+            planDTO.setPlanNumber(planDetailDTO.getPlan().getPlanNumber());
+            planDTO.setDescription(planDetailDTO.getPlan().getDescription());
+            planDTO.setCreatedBy(planDetailDTO.getPlan().getCreatedBy());
+            planDTO.setCreatedAt(planDetailDTO.getPlan().getCreatedAt());
+            planDTO.setUpdatedAt(planDetailDTO.getPlan().getUpdatedAt());
+            planDTO.setUpdatedBy(planDetailDTO.getPlan().getUpdatedBy());
+            planDTO.setStatus(planDetailDTO.getPlan().getStatus());
+            // check trùng
+            boolean isDuplicate = false;
+            for(PlanDTO existingPlan : plans){
+                if(existingPlan.getId().equals(planDTO.getId())){
+                    isDuplicate = true;
+                    break;
+                }
+            }
+            if(!isDuplicate){
+                plans.add(planDTO);
+            }
+        }
+        return plans;
+    }
     public PlanDetailDTO get(final Long id) {
         return planDetailRepository.findById(id)
                 .map(planDetail -> mapToDTO(planDetail, new PlanDetailDTO()))
