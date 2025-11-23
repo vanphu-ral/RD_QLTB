@@ -82,11 +82,14 @@ public class ApprovalService {
                     // đếm số lượng approval trong nhóm phê duyệt trước đó có trạng thái khác 3 (đã phê duyệt)
                     Integer pendingCount = approvalRepository.countPendingByGroupIdAndWorkflowId(previousGroup.getId(),approval.getWorkflow().getId());
                     if (pendingCount > 0){
+                        System.out.println("Chưa đến lượt phê duyệt");
                         responseDTO.getApproval().setCheckStatus(0); //chưa đến lượt phê duyệt
                     } else {
+                        System.out.println("Đến lượt phê duyệt");
                         responseDTO.getApproval().setCheckStatus(1); //đến lượt phê duyệt
                     }
                 }else {
+                    System.out.println("Nhóm phê duyệt đầu tiên");
                     responseDTO.getApproval().setCheckStatus(1); //đến lượt phê duyệt
                 }
                 return responseDTO;
