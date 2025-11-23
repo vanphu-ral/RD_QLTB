@@ -77,6 +77,7 @@ public class ApprovalService {
                 // Thêm tên nhóm phê duyệt vào ApprovalDTO
                 ApprovalGroup group = approvalGroupRepository.findById(approval.getGroup().getId()).orElseThrow(()-> new NotFoundException("ApprovalGroup not found"));
                 approval.getGroup().setGroupApprovalName(groupApprovalNameRepository.findById(group.getGroupApprovalName().getId()).orElseThrow(()-> new NotFoundException("GroupApprovalName not found")));
+                System.out.println("Group Approval Name: " + approval.getGroup().getGroupApprovalName().getName());
                 approval.getGroup().getGroupApprovalName().setApprovalGroups(null); // tránh vòng lặp
                 // Kiểm tra trạng thái phê duyệt
                 if (approval.getGroup().getLevel() > 0){ // nếu không phải nhóm phê duyệt đầu tiên
