@@ -15,6 +15,10 @@ export class SignatureService extends BaseApiService<Signature> {
     return this.http.get<Signature>(`${this['fullBaseUrl']}/by-username/${username}`, { withCredentials: true });
   }
 
+  getByListUsernames(usernames: string[]): Observable<Signature[]> {
+    return this.http.post<Signature[]>(`${this['fullBaseUrl']}/by-usernames`, usernames, { withCredentials: true });
+  }
+
   override create(entity: CreateEntity<any>): Observable<any> {
     // delete entity.createdBy;
     return this.http.post<any>(`${this['fullBaseUrl']}`, entity, { withCredentials: true });

@@ -434,7 +434,7 @@ export class Util {
         return 'Đang thực hiện';
       case 5:
         return 'Đã hoàn thành';
-      case 0:
+      case 6:
         return 'Bị từ chối';
       default:
         return '';
@@ -453,7 +453,7 @@ export class Util {
         return 'info';
       case 5:
         return 'success';
-      case 0:
+      case 6:
         return 'danger';
       default:
         return '';

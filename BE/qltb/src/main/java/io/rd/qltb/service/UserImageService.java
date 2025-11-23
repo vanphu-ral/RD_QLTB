@@ -58,6 +58,14 @@ public class UserImageService {
                 .orElseThrow(NotFoundException::new);
     }
 
+    public List<UserImageDTO> getByUsernames(List<String> usernames) {
+        List<UserImage> userImages = userImageRepository.findByUsernameIn(usernames);
+
+        return userImages.stream()
+                .map(userImage -> mapToDTO(userImage, new UserImageDTO()))
+                .toList();
+    }
+
     private UserImageDTO mapToDTO(final UserImage userImage, final UserImageDTO userImageDTO) {
         userImageDTO.setId(userImage.getId());
         userImageDTO.setUsername(userImage.getUsername());
