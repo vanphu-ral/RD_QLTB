@@ -86,14 +86,22 @@ public class ApprovalService {
                     } else {
                         responseDTO.getApproval().setCheckStatus(1); //đến lượt phê duyệt
                     }
+                }else {
+                    responseDTO.getApproval().setCheckStatus(1); //đến lượt phê duyệt
                 }
                 return responseDTO;
             }).toList();
         }
     }
     public List<ApprovalDTO> findApprovalsByEntityIdAndEntityType(String entity,String entityType){
-        return approvalRepository.findApprovalsByEntityIdAndEntityType(entity,entityType).stream().map(
+        List<ApprovalDTO> approvalDTOS = approvalRepository.findApprovalsByEntityIdAndEntityType(entity,entityType).stream().map(
                 approval -> mapToDTO(approval,new ApprovalDTO())).toList();
+        for (ApprovalDTO approval: approvalDTOS){
+        // Thêm tên nhóm phê duyệt vào ApprovalDTO
+        approval.getGroup().setGroupApprovalName(approvalGroupRepository.findById(approval.getGroup().getId()).orElseThrow(()-> new NotFoundException("ApprovalGroup not found")).getGroupApprovalName());
+        approval.getGroup().getGroupApprovalName().setApprovalGroups(null); // tránh vòng lặp
+        }
+        return approvalDTOS;
     }
     public List<ApprovalDTO> findAll() {
         final List<Approval> approvals = approvalRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
