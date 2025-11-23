@@ -1,13 +1,14 @@
 import { ChangeDetectorRef, Directive, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BaseApiService } from '../../service/base-api.service';
-import { Observable, take } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, take } from 'rxjs';
 import * as _ from 'lodash';
 import { NavigationService } from '../../service/navigation.service';
 import { AccountService } from '../../core/auth/account/account.service';
 import { ApprovalStateService } from '../../pages/ApprovalManager/Approval/Service/approval-state.service';
 import { ApprovalService } from '../../pages/ApprovalManager/Approval/Service/approval.service';
 import { Util } from '../../core/utils/utils-function';
+import { DataService } from '../../service/send-data.service';
 
 @Directive()
 export abstract class BasePageComponent<T> implements OnInit {
@@ -50,6 +51,7 @@ export abstract class BasePageComponent<T> implements OnInit {
   protected cdr = inject(ChangeDetectorRef);
   protected approvalStateService = inject(ApprovalStateService);
   protected approvalService = inject(ApprovalService)
+  protected dataService = inject(DataService);
 
   constructor(protected apiService: BaseApiService<T>) {}
   
@@ -70,15 +72,31 @@ export abstract class BasePageComponent<T> implements OnInit {
       this.approvalStateService.getApproval$().pipe(take(1)).subscribe((a: any) => {
         if (a) {
           this.approvalModel = a;
+          this.approvalModel.signedAt = Util.toLocalIsoString();
+          this.approvalModel.status = 3;
+          this.approvalService.findApprovalsByEntityIdAndEntityType(
+            this.approvalModel.entityId,
+            this.approvalModel.entityType
+          ).subscribe((data: any) => {
+            this.dataService.updateData(data);
+            this.cdr.markForCheck();
+          });
         } else {
           this.approvalService.getById(this.approvalStateService.getApprovalIdFromStorage() as number).subscribe((data: any) => {
             this.approvalModel = data;
+            this.approvalModel.signedAt = Util.toLocalIsoString();
+            this.approvalModel.status = 3;
+            this.approvalService.findApprovalsByEntityIdAndEntityType(
+              this.approvalModel.entityId,
+              this.approvalModel.entityType
+            ).subscribe((data: any) => {
+              this.dataService.updateData(data);
+              this.cdr.markForCheck();
+            });
           })
         }
-        this.approvalModel.status = 3;
       });
     }
-    this.cdr.detectChanges();
   }
   
  protected initNewModel(): void {

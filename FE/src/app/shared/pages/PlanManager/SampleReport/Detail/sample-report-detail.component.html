@@ -132,7 +132,7 @@
     <div class="row my-3">
       <div class="col-12">
         <textarea pTextarea class="form-control" rows="5" placeholder="Mô tả ..." id="description" name="description"
-          [(ngModel)]="model.description"></textarea>
+          [(ngModel)]="model.description" [disabled]="isViewMode || isApprovalMode"></textarea>
       </div>
     </div>
 
@@ -149,15 +149,6 @@
     </div>
 
     <div class="row my-3" *ngIf="isApprovalMode">
-      <!-- <div class="col-12">
-        <p-floatlabel variant="on">
-          <p-select [(ngModel)]="approvalModel.status" [options]="listApprovalStatus" optionLabel="label" [fluid]="true"
-            optionValue="value" [showClear]="true" [appendTo]="'body'" id="status" name="status"
-            [invalid]="!approvalModel.status" required >
-          </p-select>
-          <label for="status">Tùy chọn duyệt</label>
-        </p-floatlabel>
-      </div> -->
       <app-base-approval
         [approvalModel]="approvalModel"
         ></app-base-approval>
