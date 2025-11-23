@@ -72,6 +72,9 @@ public class ApprovalService {
                 } else {
                     responseDTO.setData(null);
                 }
+                // Thêm tên nhóm phê duyệt vào ApprovalDTO
+                approval.getGroup().setGroupApprovalName(approvalGroupRepository.findById(approval.getGroup().getId()).orElseThrow(()-> new NotFoundException("ApprovalGroup not found")).getGroupApprovalName());
+                approval.getGroup().getGroupApprovalName().setApprovalGroups(null); // tránh vòng lặp
                 // Kiểm tra trạng thái phê duyệt
                 if (approval.getGroup().getLevel() > 0){ // nếu không phải nhóm phê duyệt đầu tiên
                     // tìm nhóm phê duyệt trước đó
@@ -247,7 +250,7 @@ public class ApprovalService {
             groupCopy.setWorkflow(null);
             groupCopy.setGroupApprovalGroupUsers(null);
             //  Xóa quan hệ với GroupApprovalName để tránh vòng lặp
-            groupCopy.getGroupApprovalName().setApprovalGroups(null);
+            groupCopy.setGroupApprovalName(null);
 
             approvalDTO.setGroup(groupCopy);
         } else {
