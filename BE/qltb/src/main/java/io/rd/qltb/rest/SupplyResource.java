@@ -5,6 +5,8 @@ import io.rd.qltb.model.SupplyDTO;
 import io.rd.qltb.service.SupplyService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,13 +37,20 @@ public class SupplyResource {
         return ResponseEntity.ok(supplyService.get(id));
     }
     @GetMapping("/paged")
-    public ResponseEntity<Page<SupplyDTO>> getDevices(
-            @RequestParam Map<String, Object> filters,
-            @RequestParam(defaultValue = "0") int page) {
+    public ResponseEntity<Page<SupplyDTO>> getSupplies(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam Map<String, String> params) {
+
+        // Loại bỏ param "page" khỏi filters
+        params.remove("page");
+
+        // Chuyển sang Map<String,Object> để truyền xuống service
+        Map<String, Object> filters = new HashMap<>(params);
 
         Page<SupplyDTO> result = supplyService.findSuppliesPaged(filters, page);
         return ResponseEntity.ok(result);
     }
+
     @PostMapping
     @ApiResponse(responseCode = "201")
     public ResponseEntity<Long> createSupply(@RequestBody @Valid final SupplyDTO supplyDTO) {

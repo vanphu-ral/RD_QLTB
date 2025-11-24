@@ -4,6 +4,8 @@ import io.rd.qltb.model.*;
 import io.rd.qltb.service.PlanService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,13 +33,20 @@ public class PlanResource {
         return ResponseEntity.ok(planService.findAll());
     }
     @GetMapping("/paged")
-    public ResponseEntity<Page<PlanDTO>> getDevices(
-            @RequestParam Map<String, Object> filters,
-            @RequestParam(defaultValue = "0") int page) {
+    public ResponseEntity<Page<PlanDTO>> getPlans(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam Map<String, String> params) {
+
+        // Loại bỏ param "page" khỏi filters
+        params.remove("page");
+
+        // Chuyển sang Map<String,Object> để truyền xuống service
+        Map<String, Object> filters = new HashMap<>(params);
 
         Page<PlanDTO> result = planService.findPlansPaged(filters, page);
         return ResponseEntity.ok(result);
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<PlanDTO> getPlan(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(planService.get(id));

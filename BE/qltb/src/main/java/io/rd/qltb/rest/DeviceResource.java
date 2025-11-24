@@ -5,6 +5,8 @@ import io.rd.qltb.model.DeviceSupplyUsageDTO;
 import io.rd.qltb.service.DeviceService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -52,12 +55,20 @@ public class DeviceResource {
     }
     @GetMapping("/paged")
     public ResponseEntity<Page<DeviceDTO>> getDevices(
-            @RequestParam Map<String, Object> filters,
-            @RequestParam(defaultValue = "0") int page) {
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam MultiValueMap<String, String> params) {
+
+        // Loại bỏ param "page"
+        params.remove("page");
+
+        Map<String, Object> filters = new HashMap<>();
+        params.forEach((k, v) -> filters.put(k, v.get(0)));
 
         Page<DeviceDTO> result = deviceService.findDevicesPaged(filters, page);
         return ResponseEntity.ok(result);
     }
+
+
     @PostMapping("/creates")
     @ApiResponse(responseCode = "201")
     public ResponseEntity<List<Long>> creates(@RequestBody @Valid List<DeviceDTO> deviceDTOS) {
