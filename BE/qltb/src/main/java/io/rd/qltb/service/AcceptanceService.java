@@ -32,7 +32,9 @@ public class AcceptanceService {
         this.planResultRepository = planResultRepository;
         this.errorReportRepository = errorReportRepository;
     }
-
+    public Integer checkIfExistByCode(String code) {
+        return acceptanceRepository.countByCode(code);
+    }
     public List<AcceptanceDTO> findAll() {
         final List<Acceptance> acceptances = acceptanceRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
         return acceptances.stream()

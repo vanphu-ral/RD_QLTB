@@ -10,5 +10,5 @@ public interface AcceptanceRepository extends JpaRepository<Acceptance, Long> {
     Acceptance findFirstByPlanResultId(Long id);
 
     Acceptance findFirstByErrorReportId(Long id);
-
+    Integer countByCode(String code);
 }

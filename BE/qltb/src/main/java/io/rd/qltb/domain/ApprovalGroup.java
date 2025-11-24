@@ -1,5 +1,6 @@
 package io.rd.qltb.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -55,9 +56,11 @@ public class ApprovalGroup {
 
     @ManyToOne(fetch =  FetchType.LAZY)
     @JoinColumn(name = "group_appr_name_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private GroupApprovalName groupApprovalName;
 
     @OneToMany(mappedBy = "group")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Set<ApprovalGroupUser> groupApprovalGroupUsers = new HashSet<>();
 
 }

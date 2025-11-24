@@ -38,7 +38,12 @@ public class AcceptanceResource {
             @PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(acceptanceService.get(id));
     }
-
+    @GetMapping("exist")
+    public ResponseEntity<Integer> checkAcceptanceExistence(
+            @PathVariable(name = "code") final String code) {
+        Integer exists = acceptanceService.checkIfExistByCode(code);
+        return ResponseEntity.ok(exists);
+    }
     @PostMapping
     @ApiResponse(responseCode = "201")
     public ResponseEntity<Long> createAcceptance(
