@@ -17,6 +17,7 @@ export class Acceptance {
     fromDatePerform?: Date;
     toDatePerform?: Date;
     timeAcceptance?: Date;
+    planDetailId?: number;
     status?: number;
     createdBy?: string;
     createdAt?: Date;

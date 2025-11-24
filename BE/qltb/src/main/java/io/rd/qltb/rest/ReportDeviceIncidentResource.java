@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/api/reportDeviceIncidentResource", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/reportDeviceIncident", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ReportDeviceIncidentResource {
     @Autowired
     private ReportDeviceIncidentService reportDeviceIncidentService;

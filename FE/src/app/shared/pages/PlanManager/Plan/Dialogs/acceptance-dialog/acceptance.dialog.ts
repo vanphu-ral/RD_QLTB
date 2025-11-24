@@ -45,11 +45,21 @@ export class AcceptanceDialog {
     ) {
         this.data = config.data.planResult;
         this.plan = config.data.plan;
+        console.log(this.data);
+        console.log(this.plan);
+        
     }
 
     ngOnInit() {
+        this.acceptanceService.checkExistByPlanDetailId(this.data.id).subscribe(res => {
+            console.log(res);
+            if (res && res > 0) {
+                
+                // Util.showErrorMessage("Đã tồn tại biên bản nghiệm thu cho kế hoạch này!");
+                this.ref.close();
+            }
+        })
         this.model.type = this.plan.planTypeCode == PLANTYPE.REPAIR ? 1 : (this.plan.planTypeCode == PLANTYPE.MAINTENANCE ? 2 : 3);
-        console.log(this.model);
         this.criterialService.getListBySampleReport(this.data.sampleReportId).subscribe(res => {
             this.implementationContent = res
         })
@@ -59,24 +69,18 @@ export class AcceptanceDialog {
         this.deviceService.getById(this.data.deviceId || 0).subscribe(res => {
             this.device = res
             this.cdr.detectChanges();
-            console.log(this.data);
-            
         });
     }
 
     submit() {
         this.model.name = `ACCEPTANCE-${new Date().getTime()}`
         this.model.code = Util.generateCode(this.data.name);
-        // this.model.planResult = this.data;
         this.model.timeAcceptance = new Date();
+        this.model.planDetailId = this.data.id;
         this.model.status = 1
         this.acceptanceService.create(this.model).subscribe(res => {
             this.ref.close(true);
         })
-        // this.data.repairedBy = this.accountService.getUser()?.fullName || '';
-        // this.errorReportService.update(this.data.id as number, this.data).subscribe(() => {
-        //     this.ref.close(true);
-        // });
     }
 
     close() {

@@ -5,6 +5,7 @@ import { SharedModule } from '../../../../../../share.module';
 import { CommonModule } from '@angular/common';
 import { DeviceService } from '../../../../DeviceManager/Device/Service/device.service';
 import { DeviceRelocationHistoryService } from '../../../../DeviceManager/Device/Service/device-relocation-histories.service';
+import { PlanDetailService } from '../../../../PlanManager/Plan/Service/plan-detail.service';
 
 @Component({
   selector: 'app-information-tab',
@@ -20,7 +21,7 @@ export class InformationTabComponent implements OnChanges {
 
   listHistory: any[] = []
 
-  constructor(private cdr: ChangeDetectorRef, private deviceRelocationHistoryService: DeviceRelocationHistoryService) {
+  constructor(private cdr: ChangeDetectorRef, private deviceRelocationHistoryService: DeviceRelocationHistoryService, private planDetailService: PlanDetailService) {
   }
 
   ngOnInit() { this.activeTabIndex = "0"; }
@@ -31,16 +32,41 @@ export class InformationTabComponent implements OnChanges {
     }
   }
 
-  
+
   onTabChange(event: any) {
-    if(event.index === 0 && this.model?.id) {
-      this.loadHistoryMove(this.model.id);
+    console.log(event);
+    
+    // if (!this.model?.id) return;
+    switch (event) {
+      case "0":
+        this.loadHistoryMove(this.model.id);
+        break;
+
+      case "1":
+        this.loadHistoryError(this.model.id);
+        break;
+
+      case "2":
+        // this.loadHistoryMaintenance(this.model.id);
+        break;
+
+      case "3":
+        this.loadPlan(this.model.serialNumber);
+        break;
+
+      case "4":
+        // this.loadBaoTri(this.model.id);
+        break;
+
+      case "5":
+        // this.loadSuaChua(this.model.id);
+        break;
+
+      default:
+        break;
     }
-    // if(event.index === 1 && this.model?.id) {
-    //   this.activeTabIndex = 0;
-    // }
   }
-  
+
   loadHistoryMove(deviceId: number) {
     this.deviceRelocationHistoryService.getHistoryMoveByDeviceId(deviceId).subscribe(res => {
       this.listHistory = res;
@@ -50,6 +76,15 @@ export class InformationTabComponent implements OnChanges {
 
   loadHistoryError(deviceId: number) {
     // load lịch sử sự cố
+  }
+
+  loadPlan(serial: string) {
+    this.planDetailService.getPlansBySerial(serial).subscribe(res => {
+      console.log(res);
+      
+      // this.listHistory = res;
+      this.cdr.detectChanges();
+    });
   }
 
 }

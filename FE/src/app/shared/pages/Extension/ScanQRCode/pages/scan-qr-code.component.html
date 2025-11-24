@@ -26,6 +26,12 @@
           </div>
           <div class="d-flex my-4">
             <p-floatlabel variant="on">
+              <input pInputText id="code" name="code" autocomplete="off" fluid  [(ngModel)]="device.serialNumber" [disabled]="true" />
+              <label for="code">Mã serial</label>
+            </p-floatlabel>
+          </div>
+          <div class="d-flex my-4">
+            <p-floatlabel variant="on">
               <input pInputText id="code" name="code" autocomplete="off" [fluid]="true" [(ngModel)]="device.line.name"  [disabled]="true"  />
               <label for="code">Vị trí lắp đặt</label>
             </p-floatlabel>

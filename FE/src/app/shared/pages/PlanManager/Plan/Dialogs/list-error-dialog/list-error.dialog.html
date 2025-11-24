@@ -18,7 +18,7 @@
                     <td>{{ row.name }}</td>
                     <td>{{ row.timeReported | date: 'dd-MM-yyyy' }}</td>
                     <td>{{ getSeverity(row.severity) }}</td>
-                    <td>{{ row.isRepaired ? 'Đã sửa' : 'Chưa sửa' }}</td>
+                    <td><span [ngClass]="row.isRepaired ? 'badge text-bg-success' : 'badge text-bg-danger'">{{ row.isRepaired ? 'Đã sửa' : 'Chưa sửa' }}</span></td>
                     <td class="text-center">
                         <p-button icon="pi pi-file" styleClass="p-button-sm p-button-rounded p-button-secondary m-1"
                             (onClick)="acceptanceError(row)"></p-button>

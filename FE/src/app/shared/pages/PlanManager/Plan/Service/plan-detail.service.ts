@@ -23,4 +23,9 @@ export class PlanDetailService extends BaseApiService<PlanDetail> {
   getBySupplyId(deviceId: number | string): Observable<PlanDetail[]> {
     return this.http.get<PlanDetail[]>(`${this['fullBaseUrl']}/byDevice/${deviceId}`, { withCredentials: true });
   }
+
+  getPlansBySerial(serial: string): Observable<any[]> {
+    const params = new HttpParams().set('serial', serial);
+    return this.http.get<any[]>(`${this['fullBaseUrl']}/plans`, { params, withCredentials: true });
+  }
 }

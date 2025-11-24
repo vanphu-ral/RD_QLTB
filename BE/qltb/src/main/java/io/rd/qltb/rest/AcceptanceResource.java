@@ -38,13 +38,13 @@ public class AcceptanceResource {
             @PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(acceptanceService.get(id));
     }
-    @GetMapping("exist/plan-detail")
+    @GetMapping("exist/plan-detail/{id}")
     public ResponseEntity<Integer> checkAcceptanceExistPlanDetail(
             @PathVariable(name = "id") final Long id) {
         Integer exists = acceptanceService.checkIfExistByIdPlanDetail(id);
         return ResponseEntity.ok(exists);
     }
-    @GetMapping("exist/error-report")
+    @GetMapping("exist/error-report/{id}")
     public ResponseEntity<Integer> checkAcceptanceExistErrorReport(
             @PathVariable(name = "id") final Long id) {
         Integer exists = acceptanceService.checkIfExistByIdPlanDetail(id);

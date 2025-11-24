@@ -86,6 +86,7 @@ export class ListErrorDialog {
             header: `Sửa lỗi - ${row.name} - ${row.severity ? 'Nghiêm trọng' : row.severity === 1 ? 'Bất thường' : 'Nhẹ'} - ${row.timeReported}`,
             width: '40%',
             data: row,
+            modal: true,
             closable: true
         });
     }

@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { ChangeDetectorRef, Component } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { SharedModule } from "../../../../../../share.module";
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
@@ -13,6 +13,7 @@ import { AccountService } from "../../../../../core/auth/account/account.service
 import { ErrorReportService } from "../../Service/error-report.service";
 import { ApprovalWorlflowService } from "../../../../ApprovalManager/ApprovalWorkflow/Service/approval-workflow.service";
 import { ReportDeviceIncident } from "../../../../../models/PlanManger/report-device-incident.model";
+import { ReportDeviceIncidentService } from "../../Service/report-device-incident.service";
 
 @Component({
     selector: 'app-error-report-serious-dialog',
@@ -29,23 +30,31 @@ export class ErrorReportSeriousDialog {
     constructor(
         public ref: DynamicDialogRef,
         public config: DynamicDialogConfig,
-        private accountService: AccountService,
-        private errorReportService: ErrorReportService,
+        private cdr: ChangeDetectorRef,
         private approvalWorkflowService: ApprovalWorlflowService,
+        private reportDeviceIncidentService: ReportDeviceIncidentService
     ) {
         this.data = config.data;
+        console.log(this.data);
+        
+        this.model.errorReport = this.data;
+        this.model.errorDescription = this.data.errorDescription;
+        this.model.reason = this.data.result;
+        this.model.treatmentMeasure = this.data.repairDescription;
+        this.model.timeComplete = this.data.timeRepaired;
     }
 
     ngOnInit() {
         this.approvalWorkflowService.getAll().subscribe(res => {
             this.listApprovalWorkflow = res
+            this.cdr.detectChanges();
         })
     }
 
     submit() {
-        this.data.repairedBy = this.accountService.getUser()?.fullName || '';
-        this.errorReportService.update(this.data.id as number, this.data).subscribe(() => {
-            this.ref.close(true);
+        this.reportDeviceIncidentService.create(this.model).subscribe(res => {
+            Util.showSuccessMessage("Báo cáo sự cố nghiêm trọng thành công");
+            this.close();
         });
     }
 
