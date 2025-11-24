@@ -6,14 +6,18 @@
                     <tr>
                         <th colspan="3"><img src="/assets/imgs/logo-rang-dong.png" style="width:150px;" /></th>
                         <th colspan="15"><b>BẢNG KIỂM TRA, BẢO DƯỠNG MÁY HÀNG NGÀY, HÀNG TUẦN</b></th>
-                        <th colspan="6">Số hiệu:<span id="spanPlanNumber"></span><span id="SpanDieuChinh">{{ model.planDetail.sampleReport.documentNumber }}</span></th>
+                        <th colspan="6">Số hiệu:<span id="spanPlanNumber"></span><span id="SpanDieuChinh">{{
+                                model.planDetail.sampleReport.documentNumber }}</span></th>
                         <th colspan="4">Biên soạn</th>
                         <th colspan="4">Soát xét</th>
                         <th colspan="4">Phê duyệt</th>
                     </tr>
                     <tr>
-                        <th colspan="4">Tên đơn vị: <span id="SpanPlanDonVi">{{ model.planDetail.device.branch.factory.name }} - {{ model.planDetail.device.branch.name }}</span></th>
-                        <th colspan="9">Số hiệu máy: <span id="spanDeviceCode">{{ model.planDetail.device.code }}</span></th>
+                        <th colspan="4">Tên đơn vị: <span id="SpanPlanDonVi">{{
+                                model.planDetail.device.branch.factory.name }} - {{ model.planDetail.device.branch.name
+                                }}</span></th>
+                        <th colspan="9">Số hiệu máy: <span id="spanDeviceCode">{{ model.planDetail.device.code }}</span>
+                        </th>
                         <th rowspan="3" colspan="5">
                             <p>Tháng: <span id="SpanPlanMonth">{{ model.planDetail.createdAt | date:'M' }}</span></p>
                             <p>Năm: <span id="SpanPlanYear">{{ model.planDetail.createdAt | date:'yyyy' }}</span></p>
@@ -24,8 +28,10 @@
                         <th rowspan="3" colspan="4" style="text-align:center;">789</th>
                     </tr>
                     <tr>
-                        <th colspan="4">Tên máy: <span id="spanDeviceName">{{ model.planDetail.device.name }}</span></th>
-                        <th colspan="9">Dây chuyền: <span id="spanLineName"> {{ model.planDetail.device.line.name }} </span></th>
+                        <th colspan="4">Tên máy: <span id="spanDeviceName">{{ model.planDetail.device.name }}</span>
+                        </th>
+                        <th colspan="9">Dây chuyền: <span id="spanLineName"> {{ model.planDetail.device.line.name }}
+                            </span></th>
                     </tr>
                     <tr>
                         <th colspan="4">
@@ -95,18 +101,18 @@
                             <p>4. Gạch chéo ( // ) vào ngày không sử dụng.</p>
                             <p>5. Mục hàng tuần: Ghi rõ ngày thực hiện.</p>
                         </td>
-                
+
                         <td>Người thực hiện ký</td>
-                
+
                         <td *ngFor="let day of getDaysArray()" style="padding:0px !important;">
                             <span [innerHTML]="hasResultForDay(day)"></span>
                         </td>
-                
+
                         <ng-container *ngIf="getDaysArray().length < 31">
                             <td *ngFor="let i of [].constructor(31 - getDaysArray().length)"></td>
                         </ng-container>
                     </tr>
-                
+
                     <tr>
                         <td>Tổ trưởng xác nhận ký (1 tuần/lần)</td>
                         <td colspan="7" id="sign_week_01"></td>
@@ -121,21 +127,23 @@
         <table id="nghemthu-details-table" class="table table-bordered table-hover" style="width: 100%;">
             <thead>
                 <tr>
-                    <th *ngFor="let h of listUserApproval || []" class="text-center">
-                        {{ userMap[h.userApproval?.username] || h.userApproval?.username }}
+                    <th *ngFor="let g of listUserApproval" class="text-center">
+                        {{ g.groupName }}
                     </th>
                 </tr>
                 <tr>
-                    <th *ngFor="let h of listUserApproval" class="text-center align-middle">
-                        <img [src]="h.signature" style="width: 120px; height: 60px; display: block; margin: 0 auto;">
-                    </th>
+                    <td *ngFor="let g of listUserApproval" class="">
+                        <div *ngFor="let sig of g.signatures" style="margin-bottom: 10px;">
+                            <img *ngIf="sig" [src]="sig"
+                                style="width: 120px; height: 60px; display: block; margin: 0 auto;">
+                        </div>
+                    </td>
                 </tr>
             </thead>
         </table>
     </div>
-
     <div class="d-flex justify-content-end mt-3">
-      <p-button label="Quay lại" severity="info" (click)="onBack()" icon="pi pi-arrow-left" class="me-2"></p-button>
-      <p-button label="In" icon="pi pi-print" severity="success" (click)="printDiv()" class="me-2"></p-button>
+        <p-button label="Quay lại" severity="info" (click)="onBack()" icon="pi pi-arrow-left" class="me-2"></p-button>
+        <p-button label="In" icon="pi pi-print" severity="success" (click)="printDiv()" class="me-2"></p-button>
     </div>
 </div>

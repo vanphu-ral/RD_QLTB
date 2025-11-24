@@ -63,20 +63,40 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
     this.approvalService
       .findApprovalsByEntityIdAndEntityType(this.model.planDetail.plan.id, 'plans')
       .subscribe((data) => {
-        this.listUserApproval = data;
         const usernames = data.map(x => x.userApproval?.username);
         this.signatureService.getByListUsernames(usernames).subscribe(signatures => {
-          const signatureMap = new Map(
-            signatures.map(s => [s.username, s.imageLink])
-          );
-          this.listUserApproval = this.listUserApproval.map(item => {
-            const username = item.userApproval?.username;
-            return {
-              ...item,
-              signature: signatureMap.get(username) || null
-            }
-          });
+          this.listUserApproval = Object.values(
+            data.reduce((acc: any, item: any) => {
+              const groupId = item.group?.groupApprovalName?.id;
+
+              acc[groupId] ??= {
+                groupApprovalName: item.group.groupApprovalName,
+                items: [],
+                userApprovals: []
+              };
+
+              acc[groupId].items.push(item);
+              acc[groupId].userApprovals.push(item.userApproval);
+
+              return acc;
+            }, {})
+          ).map((group: any) => ({
+            ...group,
+            userApprovals: group.userApprovals.map((u: any) => ({
+              ...u,
+              imageLink: signatures.find((s: any) => s.username === u.username)?.imageLink || null
+            }))
+          }));
+          this.listUserApproval = this.listUserApproval.map(g => ({
+            groupName: g.groupApprovalName.name,
+            signatures: g.userApprovals.map((u: any) => u.imageLink)
+          }));
+          console.log(this.listUserApproval);
         });
+
+
+
+
         this.cdr.detectChanges();
       });
     this.approvalService.getUsers().subscribe(users => {

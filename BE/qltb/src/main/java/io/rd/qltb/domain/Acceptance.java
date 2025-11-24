@@ -63,6 +63,9 @@ public class Acceptance {
     @Column
     private LocalDateTime timeAcceptance;
 
+    @Column
+    private Long planDetailId;
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
 

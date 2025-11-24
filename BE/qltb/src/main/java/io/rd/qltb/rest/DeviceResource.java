@@ -78,4 +78,10 @@ public class DeviceResource {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/by-serial")
+    public ResponseEntity<DeviceDTO> getDeviceBySerialNumber(@RequestParam String serialNumber) {
+        DeviceDTO device = deviceService.getDeviceBySerialNumber(serialNumber);
+        return ResponseEntity.ok(device);
+    }
+
 }

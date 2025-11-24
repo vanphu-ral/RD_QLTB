@@ -23,6 +23,7 @@ import { Util } from '../../core/utils/utils-function';
 })
 export class BaseTableComponent<T> implements OnInit, AfterContentInit {
   @Input() apiService!: BaseApiService<T>;
+  @Input() dataSource?: T[];
   @Input() columns: Column[] = []
   @Input() onAddClick?: () => void;
   @Input() title?: string;
@@ -51,7 +52,11 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
       IsHide: c.IsHide ?? false,
     }));
     this.selectedColumns = [...this.columns];
-    this.loadData();
+    if (this.dataSource && this.dataSource.length > 0) {
+      this.data = this.dataSource;
+    } else {
+      this.loadData();
+    }
   }
 
   // function support template

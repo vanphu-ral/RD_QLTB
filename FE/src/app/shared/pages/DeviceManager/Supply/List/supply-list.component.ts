@@ -18,6 +18,8 @@ export class SupplyListComponent {
   selectedStatus: string | null = null;
   ref?: DynamicDialogRef;
 
+  data: any[] = [];
+
   columns: Column[] = [
     { Field: 'id', Header: 'ID', IsHide: true },
     { Field: 'code', Header: 'Mã vật tư', IsSearch: true, TypeSearch: 'text' },
@@ -30,6 +32,14 @@ export class SupplyListComponent {
   ];
 
   constructor(public api: SupplyService, private dialogService: DialogService) { }
+
+  ngOnInit(): void {
+    this.api.getAllByPaged().subscribe(res => {
+      this.data = res.content;
+      console.log(this.data);
+      
+    });
+  }
 
   openDialog(row: any) {
     this.ref = this.dialogService.open(ListSerialSupplyDialogComponent, {

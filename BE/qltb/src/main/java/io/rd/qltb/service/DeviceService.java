@@ -133,6 +133,12 @@ public class DeviceService {
         deviceRepository.delete(device);
     }
 
+    public DeviceDTO getDeviceBySerialNumber(String serialNumber) {
+        return deviceRepository.findBySerialNumber(serialNumber)
+                .map(device -> mapToDTO(device, new DeviceDTO()))
+                .orElseThrow(NotFoundException::new);
+    }
+
     public DeviceDTO mapToDTO(final Device device, final DeviceDTO deviceDTO) {
         deviceDTO.setId(device.getId());
         deviceDTO.setCode(device.getCode());

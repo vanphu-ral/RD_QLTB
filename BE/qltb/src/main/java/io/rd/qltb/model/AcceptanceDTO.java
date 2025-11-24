@@ -38,6 +38,8 @@ public class AcceptanceDTO {
 
     private LocalDateTime timeAcceptance;
 
+    private Long planDetailId;
+
 
     private LocalDateTime createdAt;
 

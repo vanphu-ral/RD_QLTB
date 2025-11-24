@@ -5,7 +5,7 @@ import { AppLayout } from './shared/layout/app.layout';
 import { DashboardComponent } from './shared/pages/Dashboard/List/dashboard.component';
 import { DepartmentListComponent } from './shared/pages/Categories/Department/List/department-list.component';
 import { CallbackComponent } from './shared/core/auth/callback.component';
-import { ScanQrCodeComponent } from './shared/pages/Extension/ScanQRCode/scan-qr-code.component';
+import { ScanQrCodeComponent } from './shared/pages/Extension/ScanQRCode/pages/scan-qr-code.component';
 
 export const routes: Routes = [
     {

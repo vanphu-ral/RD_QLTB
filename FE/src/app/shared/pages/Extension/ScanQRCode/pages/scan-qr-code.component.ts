@@ -1,13 +1,16 @@
 import { Component, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { BrowserMultiFormatReader, BarcodeFormat } from '@zxing/browser';
 import { DecodeHintType } from '@zxing/library';
-import { SharedModule } from '../../../../share.module';
+import { SharedModule } from '../../../../../share.module';
 import { CommonModule } from '@angular/common';
+import { InformationTabComponent } from "../components/information-tab-component/information-tab.component";
+import { DeviceService } from '../../../DeviceManager/Device/Service/device.service';
+import { Device } from '../../../../models/DeviceManager/device.model';
 
 @Component({
   selector: 'app-scan-qr-code',
   standalone: true,
-  imports: [SharedModule, CommonModule],
+  imports: [SharedModule, CommonModule, InformationTabComponent],
   templateUrl: './scan-qr-code.component.html',
   styleUrls: ['./scan-qr-code.component.scss']
 })
@@ -21,13 +24,12 @@ export class ScanQrCodeComponent {
   videoStream: MediaStream | null = null;
   codeReader: BrowserMultiFormatReader = new BrowserMultiFormatReader();
 
-  listCriterialGroup: any[] = []
-  listHistory: any[] = []
-
   optionScans = [{ label: 'Scan máy', value: 1 }, { label: 'Scan camera', value: 2 }];
   scanType: number = 2;
 
-  constructor(private cdr: ChangeDetectorRef) {
+  device: any = { line: {} };
+
+  constructor(private cdr: ChangeDetectorRef, private deviceService: DeviceService) {
   }
 
   ngOnInit(): void {
@@ -83,16 +85,11 @@ export class ScanQrCodeComponent {
   }
 
   async toggleCamera() {
-    // stop scan cũ trước
     if (this.videoStream) {
       this.videoStream.getTracks().forEach(track => track.stop());
       this.videoStream = null;
     }
-
-    // đổi facingMode
     this.facingMode = this.facingMode === 'environment' ? 'user' : 'environment';
-
-    // start lại scan
     await this.startScan();
   }
 
@@ -105,9 +102,17 @@ export class ScanQrCodeComponent {
     }
   }
 
-  getDeviceInfo(serial: string) {
-    // gọi API của bạn
-    // this.deviceService.getBySerial(serial).subscribe(...)
+  getDeviceInfo(serial: any) {
+    this.deviceService.getBySerialNumber(serial).subscribe({
+      next: (device) => {
+        this.device = device;
+        this.device.DateUseAndInstall = `${new Date(this.device.dateManufacture).getFullYear()} - ${new Date(this.device.installationDate).getFullYear()}`;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error fetching device info:', err);
+      }
+    });
   }
 
 

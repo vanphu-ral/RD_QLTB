@@ -32,8 +32,12 @@ public class AcceptanceService {
         this.planResultRepository = planResultRepository;
         this.errorReportRepository = errorReportRepository;
     }
-    public Integer checkIfExistByCode(String code) {
-        return acceptanceRepository.countByCode(code);
+    public Integer checkIfExistByIdPlanDetail(Long id) {
+        return acceptanceRepository.countByPlanDetailId(id);
+    }
+
+    public Integer checkIfExistByIdErrorReport(Long id) {
+        return acceptanceRepository.countByErrorReportId(id);
     }
     public List<AcceptanceDTO> findAll() {
         final List<Acceptance> acceptances = acceptanceRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
@@ -85,6 +89,7 @@ public class AcceptanceService {
         acceptanceDTO.setFromDatePerform(acceptance.getFromDatePerform());
         acceptanceDTO.setToDatePerform(acceptance.getToDatePerform());
         acceptanceDTO.setTimeAcceptance(acceptance.getTimeAcceptance());
+        acceptanceDTO.setPlanDetailId(acceptance.getPlanDetailId());
         acceptanceDTO.setCreatedAt(acceptance.getCreatedAt());
         acceptanceDTO.setUpdatedAt(acceptance.getUpdatedAt());
         acceptanceDTO.setCreatedBy(acceptance.getCreatedBy());
@@ -160,6 +165,7 @@ public class AcceptanceService {
         acceptance.setFromDatePerform(acceptanceDTO.getFromDatePerform());
         acceptance.setToDatePerform(acceptanceDTO.getToDatePerform());
         acceptance.setTimeAcceptance(acceptanceDTO.getTimeAcceptance());
+        acceptance.setPlanDetailId(acceptanceDTO.getPlanDetailId());
         acceptance.setCreatedAt(acceptanceDTO.getCreatedAt());
         acceptance.setUpdatedAt(acceptanceDTO.getUpdatedAt());
         acceptance.setCreatedBy(acceptanceDTO.getCreatedBy());

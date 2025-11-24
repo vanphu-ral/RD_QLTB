@@ -21,6 +21,8 @@ export class DeviceListComponent {
   selectedStatus: string | null = null;
   ref?: DynamicDialogRef;
 
+  data: any[] = [];
+
   columns: Column[] = [
     { Field: 'id', Header: 'ID', IsHide: true },
     { Field: 'code', Header: 'Mã thiết bị', IsSearch: true, TypeSearch: 'text' },
@@ -31,6 +33,14 @@ export class DeviceListComponent {
   ];
 
   constructor(public apiService: DeviceService, private dialogService: DialogService) {}
+
+  ngOnInit(): void {
+    this.apiService.getAllByPaged().subscribe(res => {
+      this.data = res.content;
+      console.log(this.data);
+      
+    });
+  }
 
   moveDeviceDialog(data: any) {
     this.ref = this.dialogService.open(MoveDeviceDialog, {
