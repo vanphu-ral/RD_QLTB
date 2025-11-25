@@ -73,21 +73,8 @@ public class PlanService {
         List<Predicate> predicates = new ArrayList<>();
         filters.forEach((key, value) -> {
             if (value != null) {
-                switch (key) {
-                    case "code", "name", "frequency", "planNumber", "userPerformer", "description", "createdBy", "updatedBy" ->
-                            predicates.add((Predicate) cb.like(root.get(key), "%" + value + "%"));
-                    case "status" ->
-                            predicates.add((Predicate) cb.equal(root.get(key), value));
-                    case "planTypeId" ->
-                            predicates.add((Predicate) cb.equal(root.get("planType").get("id"), value));
-                    case "factoryId" ->
-                            predicates.add((Predicate) cb.equal(root.get("factory").get("id"), value));
-                    case "branchId" ->
-                            predicates.add((Predicate) cb.equal(root.get("branch").get("id"), value));
-                    case "approvalWorkflowId" ->
-                            predicates.add((Predicate) cb.equal(root.get("approvalWorkflow").get("id"), value));
-                    // Thêm các trường khác nếu cần
-                }
+                // tất cả đều chuyển về LIKE
+                predicates.add((Predicate) cb.like(root.get(key).as(String.class), "%" + value + "%"));
             }
         });
 
@@ -110,6 +97,52 @@ public class PlanService {
         // Nếu cần tổng số bản ghi để phân trang, hãy query count riêng
         return new PageImpl<>(dtos, PageRequest.of(page, 10), dtos.size());
     }
+
+//    public Page<PlanDTO> findPlansPaged(Map<String, Object> filters, int page) {
+//        var cb = entityManager.getCriteriaBuilder();
+//        var cq = cb.createQuery(Plan.class);
+//        var root = cq.from(Plan.class);
+//
+//        List<Predicate> predicates = new ArrayList<>();
+//        filters.forEach((key, value) -> {
+//            if (value != null) {
+//                switch (key) {
+//                    case "code", "name", "frequency", "planNumber", "userPerformer", "description", "createdBy", "updatedBy" ->
+//                            predicates.add((Predicate) cb.like(root.get(key), "%" + value + "%"));
+//                    case "status" ->
+//                            predicates.add((Predicate) cb.equal(root.get(key), value));
+//                    case "planTypeId" ->
+//                            predicates.add((Predicate) cb.equal(root.get("planType").get("id"), value));
+//                    case "factoryId" ->
+//                            predicates.add((Predicate) cb.equal(root.get("factory").get("id"), value));
+//                    case "branchId" ->
+//                            predicates.add((Predicate) cb.equal(root.get("branch").get("id"), value));
+//                    case "approvalWorkflowId" ->
+//                            predicates.add((Predicate) cb.equal(root.get("approvalWorkflow").get("id"), value));
+//                    // Thêm các trường khác nếu cần
+//                }
+//            }
+//        });
+//
+//        cq.where(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
+//        cq.orderBy(cb.desc(root.get("id")));
+//        var query = entityManager.createQuery(cq);
+//        query.setFirstResult(page * 10);
+//        query.setMaxResults(10);
+//
+//        List<Plan> plans = query.getResultList();
+//        List<PlanDTO> dtos = plans.stream()
+//                .map(plan -> mapToDTO(plan, new PlanDTO()))
+//                .toList();
+//        for (PlanDTO dto : dtos) {
+//            List<PlanDetail> details = planDetailRepository.findAllByPlanId(dto.getId());
+//            dto.setPlanDetails(details.stream()
+//                    .map(detail -> planDetailService.mapToDTO(detail, new PlanDetailDTO()))
+//                    .toList());
+//        }
+//        // Nếu cần tổng số bản ghi để phân trang, hãy query count riêng
+//        return new PageImpl<>(dtos, PageRequest.of(page, 10), dtos.size());
+//    }
 
     public List<PlanDTO> findAll() {
         final List<Plan> plans = planRepository.findAll(Sort.by("id"));

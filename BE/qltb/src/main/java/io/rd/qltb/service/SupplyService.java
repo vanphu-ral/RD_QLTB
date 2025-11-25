@@ -74,9 +74,9 @@ public class SupplyService {
                     LocalDateTime startOfDay = date.atStartOfDay();
                     LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
                     predicates.add(cb.between(root.get(key), startOfDay, endOfDay));
-                }
-                else {
-                    predicates.add(cb.equal(path, value));
+                } else {
+                    // chuyển equal sang like
+                    predicates.add(cb.like(path.as(String.class), "%" + value + "%"));
                 }
             }
         });
@@ -92,6 +92,45 @@ public class SupplyService {
                 .toList();
         return new org.springframework.data.domain.PageImpl<>(dtos, PageRequest.of(page, 10), dtos.size());
     }
+
+//    public Page<SupplyDTO> findSuppliesPaged(Map<String, Object> filters, int page) {
+//        var cb = entityManager.getCriteriaBuilder();
+//        var cq = cb.createQuery(Supply.class);
+//        var root = cq.from(Supply.class);
+//        List<Predicate> predicates = new ArrayList<>();
+//        filters.forEach((key, value) -> {
+//            if (value != null) {
+//                Path<?> path = root.get(key);
+//                if (path.getJavaType().equals(LocalDateTime.class)) {
+//                    String v = value.toString();
+//                    LocalDateTime dateTime;
+//                    if (v.length() == 10) {
+//                        dateTime = LocalDate.parse(v).atStartOfDay();
+//                    } else {
+//                        dateTime = LocalDateTime.parse(v);
+//                    }
+//                    LocalDate date = dateTime.toLocalDate();
+//                    LocalDateTime startOfDay = date.atStartOfDay();
+//                    LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
+//                    predicates.add(cb.between(root.get(key), startOfDay, endOfDay));
+//                }
+//                else {
+//                    predicates.add(cb.equal(path, value));
+//                }
+//            }
+//        });
+//
+//        cq.where(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
+//        var query = entityManager.createQuery(cq);
+//        query.setFirstResult(page * 10);
+//        query.setMaxResults(10);
+//
+//        List<Supply> supplies = query.getResultList();
+//        List<SupplyDTO> dtos = supplies.stream()
+//                .map(supply -> mapToDTO(supply, new SupplyDTO()))
+//                .toList();
+//        return new org.springframework.data.domain.PageImpl<>(dtos, PageRequest.of(page, 10), dtos.size());
+//    }
 
     public SupplyDTO get(final Long id) {
         return supplyRepository.findById(id)

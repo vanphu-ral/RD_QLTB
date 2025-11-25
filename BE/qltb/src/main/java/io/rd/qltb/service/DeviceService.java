@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 
@@ -96,8 +97,9 @@ public class DeviceService {
                     predicates.add(cb.between(root.get(key), startOfDay, endOfDay));
                 }
                 else {
-                    predicates.add(cb.equal(path, value));
+                    predicates.add(cb.like((Expression<String>) path, "%" + value + "%"));
                 }
+
             }
         });
 
