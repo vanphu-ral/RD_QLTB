@@ -4,7 +4,11 @@ import io.rd.qltb.model.AcceptanceDTO;
 import io.rd.qltb.service.AcceptanceService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -39,10 +43,14 @@ public class AcceptanceResource {
         return ResponseEntity.ok(acceptanceService.get(id));
     }
     @GetMapping("exist/plan-detail/{id}")
-    public ResponseEntity<Integer> checkAcceptanceExistPlanDetail(
+    public ResponseEntity<Map<String, Integer>> checkAcceptanceExistPlanDetail(
             @PathVariable(name = "id") final Long id) {
         Integer exists = acceptanceService.checkIfExistByIdPlanDetail(id);
-        return ResponseEntity.ok(exists);
+
+        Map<String, Integer> response = new HashMap<>();
+        response.put("exists", exists);
+
+        return ResponseEntity.ok(response);
     }
     @GetMapping("exist/error-report/{id}")
     public ResponseEntity<Integer> checkAcceptanceExistErrorReport(
