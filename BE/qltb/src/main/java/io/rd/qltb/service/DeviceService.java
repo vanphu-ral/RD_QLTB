@@ -16,10 +16,15 @@ import io.rd.qltb.repos.TeamRepository;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
+
+import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Predicate;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -61,9 +66,38 @@ public class DeviceService {
         var root = cq.from(Device.class);
 
         List<Predicate> predicates = new ArrayList<>();
+
         filters.forEach((key, value) -> {
             if (value != null) {
-                predicates.add((Predicate) cb.equal(root.get(key), value));
+                Path<?> path = root.get(key);
+
+                if (path.getJavaType().equals(LocalDateTime.class)) {
+                    String v = value.toString();
+
+                    LocalDateTime dateTime;
+
+                    // FE có thể gửi "2024-11-20" hoặc "2024-11-20T10:00" hoặc "2024-11-20T10:00:00"
+                    if (v.length() == 10) {
+                        // yyyy-MM-dd
+                        dateTime = LocalDate.parse(v).atStartOfDay();
+                    } else {
+                        // yyyy-MM-ddTHH:mm hoặc yyyy-MM-ddTHH:mm:ss
+                        dateTime = LocalDateTime.parse(v);
+                    }
+
+                    // Lấy phần ngày
+                    LocalDate date = dateTime.toLocalDate();
+
+                    // Tạo khoảng thời gian từ đầu ngày -> cuối ngày
+                    LocalDateTime startOfDay = date.atStartOfDay();
+                    LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
+
+                    // Quan trọng: so sánh theo khoảng ngày
+                    predicates.add(cb.between(root.get(key), startOfDay, endOfDay));
+                }
+                else {
+                    predicates.add(cb.equal(path, value));
+                }
             }
         });
 

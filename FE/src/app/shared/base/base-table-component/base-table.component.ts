@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ContentChildren, QueryList, TemplateRef, AfterContentInit, ViewChild, ChangeDetectorRef } from '@angular/core';
-import { Table } from 'primeng/table';
+import { Table, TableLazyLoadEvent } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { FormsModule } from '@angular/forms';
@@ -12,6 +12,7 @@ import { Column } from '../../models/Core/column.model';
 import { CustomColumnDirective } from '../../directive/app.custom-column.directive';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Util } from '../../core/utils/utils-function';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-base-table',
@@ -23,7 +24,7 @@ import { Util } from '../../core/utils/utils-function';
 })
 export class BaseTableComponent<T> implements OnInit, AfterContentInit {
   @Input() apiService!: BaseApiService<T>;
-  @Input() dataSource?: T[];
+  @Input() isLazy = false;
   @Input() columns: Column[] = []
   @Input() onAddClick?: () => void;
   @Input() title?: string;
@@ -39,6 +40,9 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
   private filterTpls = new Map<string, TemplateRef<any>>();
   @ViewChild('dt') dt!: Table;
 
+  totalRecords = 0;
+  rows = 10;
+
   data: any[] = [];
   loading = false;
   selectedColumns: any[] = [];
@@ -52,47 +56,49 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
       IsHide: c.IsHide ?? false,
     }));
     this.selectedColumns = [...this.columns];
-    if (this.dataSource && this.dataSource.length > 0) {
-      this.data = this.dataSource;
-    } else {
-      this.loadData();
+    if (!this.isLazy) {
+       this.loadData(); // logic cũ
     }
   }
 
-  // function support template
-  ngAfterContentInit(): void {
-    const rebuild = () => {
-      this.filterTpls.clear();
-      this.customFilters?.forEach(d => this.filterTpls.set(d.field, d.template));
-    };
-    rebuild();
-    this.customFilters?.changes.subscribe(rebuild);
-  }
-
-  getFilterTemplate(field: string): TemplateRef<any> | null {
-    return this.filterTpls.get(field) ?? null;
-  }
-
-  getColumnTemplate(field: string): TemplateRef<any> | null {
-    const template = this.columnTemplates.find(t => t.field === field);
-    return template ? template.template : null;
-  }
-
-  getColumnStyle(col: { style?: string }): { [key: string]: string } | null {
-    if (!col.style) return null;
-    const styleObj: { [key: string]: string } = {};
-    col.style.split(';').forEach(pair => {
-      const [key, value] = pair.split(':').map(s => s.trim());
-      if (key && value) {
-        styleObj[key] = value;
-      }
-    });
-    return Object.keys(styleObj).length ? styleObj : null;
-  }
-
-  getValueByPath(obj: any, path: string): any {
-    if (!obj || !path) return null;
-    return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+  loadDataLazy(event: TableLazyLoadEvent) {
+    if (!this.apiService || !this.isLazy) return;
+    this.loading = true;
+    const first = event.first || 0;
+    const rows = event.rows || 10;
+    const page = first / rows; 
+    const filters: any = {};
+    if (event.filters) {
+      Object.keys(event.filters).forEach(key => {
+        const filterMeta = event.filters![key];
+        if (filterMeta && !Array.isArray(filterMeta) && filterMeta.value) {
+          filters[key] = filterMeta.value;
+        }
+        else if (Array.isArray(filterMeta) && filterMeta[0].value) {
+          filters[key] = filterMeta[0].value;
+        }
+      });
+    }
+    const service = this.apiService as any;
+    if (service.getAllByPaged) {
+      service.getAllByPaged(filters, page).subscribe({
+        next: (res: any) => {
+          this.data = res.content;
+          this.totalRecords = res.totalElements; 
+          this.loading = false;
+          this.cdr.detectChanges();
+        },
+        error: () => {
+          this.data = [];
+          this.totalRecords = 0;
+          this.loading = false;
+          this.cdr.detectChanges();
+        }
+      });
+    } else {
+      console.warn('Service không hỗ trợ getAllByPaged');
+      this.loading = false;
+    }
   }
 
   // prepare data
@@ -194,6 +200,44 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
         });
       }
     });
+  }
+
+
+
+    // function support template
+  ngAfterContentInit(): void {
+    const rebuild = () => {
+      this.filterTpls.clear();
+      this.customFilters?.forEach(d => this.filterTpls.set(d.field, d.template));
+    };
+    rebuild();
+    this.customFilters?.changes.subscribe(rebuild);
+  }
+
+  getFilterTemplate(field: string): TemplateRef<any> | null {
+    return this.filterTpls.get(field) ?? null;
+  }
+
+  getColumnTemplate(field: string): TemplateRef<any> | null {
+    const template = this.columnTemplates.find(t => t.field === field);
+    return template ? template.template : null;
+  }
+
+  getColumnStyle(col: { style?: string }): { [key: string]: string } | null {
+    if (!col.style) return null;
+    const styleObj: { [key: string]: string } = {};
+    col.style.split(';').forEach(pair => {
+      const [key, value] = pair.split(':').map(s => s.trim());
+      if (key && value) {
+        styleObj[key] = value;
+      }
+    });
+    return Object.keys(styleObj).length ? styleObj : null;
+  }
+
+  getValueByPath(obj: any, path: string): any {
+    if (!obj || !path) return null;
+    return path.split('.').reduce((acc, part) => acc && acc[part], obj);
   }
 
 }

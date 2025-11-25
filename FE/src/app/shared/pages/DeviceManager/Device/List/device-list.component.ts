@@ -35,11 +35,11 @@ export class DeviceListComponent {
   constructor(public apiService: DeviceService, private dialogService: DialogService) {}
 
   ngOnInit(): void {
-    this.apiService.getAllByPaged().subscribe(res => {
-      this.data = res.content;
-      console.log(this.data);
+    // this.apiService.getAllByPaged().subscribe(res => {
+    //   this.data = res.content;
+    //   console.log(this.data);
       
-    });
+    // });
   }
 
   moveDeviceDialog(data: any) {

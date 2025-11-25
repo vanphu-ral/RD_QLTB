@@ -2,10 +2,10 @@
 <app-base-table 
   [apiService]="apiService"
   [columns]="columns"
-  [dataSource]="data"
   [title]="'Danh sách thiết bị'"
   [showAddButton]="true"
-  [actionTemplate]="customActions">
+  [actionTemplate]="customActions"
+  [isLazy]="true">
   <ng-template appColumnTemplate="createdAt" let-rowData>
     {{ rowData | date: 'dd/MM/yyyy' }}
   </ng-template>

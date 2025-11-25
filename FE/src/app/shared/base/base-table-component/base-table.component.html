@@ -2,8 +2,9 @@
   <h2>{{ title }}</h2>
   <p-button *ngIf="showAddButton" [label]="addButtonText" class="p-button-sm" (click)="addItem()" />
 </div>
-<p-table #dt [value]="data" [columns]="selectedColumns" [scrollable]="true" [paginator]="true" [rows]="10" [loading]="loading" [rowsPerPageOptions]="[5, 10, 20, 50]"
-  [showCurrentPageReport]="true" currentPageReportTemplate="Tổng: {totalRecords} bản ghi">
+<p-table #dt [value]="data" [columns]="selectedColumns" [scrollable]="true" [paginator]="true" [rows]="10"
+  [loading]="loading" [rowsPerPageOptions]="[5, 10, 20, 50]" [lazy]="isLazy" (onLazyLoad)="loadDataLazy($event)"
+  [totalRecords]="totalRecords" [showCurrentPageReport]="true" currentPageReportTemplate="Tổng: {totalRecords} bản ghi">
   <ng-template #caption>
     <p-multiSelect [options]="columns" [(ngModel)]="selectedColumns" optionLabel="Header" display="chip"
       placeholder="Chọn cột hiển thị" styleClass="p-column-toggler">
@@ -29,23 +30,25 @@
             </ng-template>
           </p-columnFilter>
         </ng-container>
-    
+
         <ng-template #defaultFilter>
           <ng-container *ngIf="col.IsSearch">
             <!-- Nếu text -->
             <p-columnFilter *ngIf="!col.TypeSearch || col.TypeSearch === 'text'" [field]="col.Field"
               placeholder="Tìm {{ col.Header }}" [showMenu]="false">
             </p-columnFilter>
-    
+
             <!-- Nếu date -->
-            <p-columnFilter *ngIf="col.TypeSearch === 'date'" [field]="col.Field" matchMode="dateIs" [showMenu]="false" type="date">
+            <p-columnFilter *ngIf="col.TypeSearch === 'date'" [field]="col.Field" matchMode="dateIs" [showMenu]="false"
+              type="date">
             </p-columnFilter>
-    
+
             <!-- Nếu select -->
-            <p-columnFilter *ngIf="col.TypeSearch === 'select'" [field]="col.Field" matchMode="equals" [showMenu]="false">
+            <p-columnFilter *ngIf="col.TypeSearch === 'select'" [field]="col.Field" matchMode="equals"
+              [showMenu]="false">
               <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                <p-select [ngModel]="value" (ngModelChange)="filter($event)" [options]="col.Options || []" optionLabel="label"
-                  optionValue="value" [showClear]="true" [appendTo]="'body'">
+                <p-select [ngModel]="value" (ngModelChange)="filter($event)" [options]="col.Options || []"
+                  optionLabel="label" optionValue="value" [showClear]="true" [appendTo]="'body'">
                 </p-select>
               </ng-template>
             </p-columnFilter>
@@ -74,9 +77,12 @@
           <ng-container *ngTemplateOutlet="actionTemplate; context: { $implicit: row }"></ng-container>
         </ng-container>
         <!-- base button -->
-        <p-button *ngIf="showEditButton" icon="pi pi-pencil" styleClass="p-button-sm p-button-rounded p-button-warn m-1" (onClick)="editItem(row)"></p-button>
-        <p-button *ngIf="showViewButton" icon="pi pi-eye" styleClass="p-button-sm p-button-rounded p-button-info m-1" (onClick)="viewItem(row)"></p-button>
-        <p-button *ngIf="showDeleteButton" icon="pi pi-trash" styleClass="p-button-sm p-button-rounded p-button-danger m-1" (onClick)="deleteItem(row, $event)"></p-button>
+        <p-button *ngIf="showEditButton" icon="pi pi-pencil" styleClass="p-button-sm p-button-rounded p-button-warn m-1"
+          (onClick)="editItem(row)"></p-button>
+        <p-button *ngIf="showViewButton" icon="pi pi-eye" styleClass="p-button-sm p-button-rounded p-button-info m-1"
+          (onClick)="viewItem(row)"></p-button>
+        <p-button *ngIf="showDeleteButton" icon="pi pi-trash"
+          styleClass="p-button-sm p-button-rounded p-button-danger m-1" (onClick)="deleteItem(row, $event)"></p-button>
       </td>
     </tr>
   </ng-template>

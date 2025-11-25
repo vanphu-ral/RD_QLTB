@@ -16,13 +16,26 @@ export class DeviceService extends BaseApiService<Device> {
   }
 
   getAllByPaged(filters: any = {}, page: number = 0): Observable<Page<Device>> {
-    let params = new HttpParams().set('page', page.toString());
+    let params = new HttpParams()
+      .set('page', page.toString());
     Object.keys(filters).forEach(key => {
-      if (filters[key] !== null && filters[key] !== undefined) {
-        params = params.set(key, filters[key]);
+      let value = filters[key];
+      if (value !== null && value !== undefined && value !== '') {
+        if (value instanceof Date) {
+          const year = value.getFullYear();
+          const month = (value.getMonth() + 1).toString().padStart(2, '0');
+          const day = value.getDate().toString().padStart(2, '0');
+
+          value = `${year}-${month}-${day}`;
+        }
+        params = params.set(key, value);
       }
     });
-    return this.http.get<Page<Device>>(`${this['fullBaseUrl']}/paged`, { params, withCredentials: true });
+
+    return this.http.get<Page<Device>>(
+      `${this['fullBaseUrl']}/paged`,
+      { params, withCredentials: true }
+    );
   }
 
   getBySerialNumber(serialNumber: string): Observable<Device> {

@@ -1,4 +1,4 @@
-<app-base-table [apiService]="api" [columns]="columns" [title]="'Danh sách vật tư'" [showAddButton]="true"
+<app-base-table [apiService]="api" [columns]="columns" [title]="'Danh sách vật tư'" [showAddButton]="true" [isLazy]="true"
   [actionTemplate]="customActions">
   <ng-template appColumnTemplate="createdAt" let-rowData>
     {{ rowData | date: 'dd/MM/yyyy' }}
