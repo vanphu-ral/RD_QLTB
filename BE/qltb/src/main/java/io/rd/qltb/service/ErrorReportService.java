@@ -1,14 +1,16 @@
 package io.rd.qltb.service;
 
 import io.rd.qltb.domain.ErrorReport;
+import io.rd.qltb.domain.PlanDetail;
 import io.rd.qltb.domain.PlanResult;
 import io.rd.qltb.events.BeforeDeleteErrorReport;
 import io.rd.qltb.events.BeforeDeletePlanResult;
 import io.rd.qltb.model.ErrorReportDTO;
-import io.rd.qltb.repos.ErrorReportRepository;
-import io.rd.qltb.repos.PlanResultRepository;
+import io.rd.qltb.repos.*;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
+
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
@@ -22,15 +24,30 @@ public class ErrorReportService {
     private final ErrorReportRepository errorReportRepository;
     private final PlanResultRepository planResultRepository;
     private final ApplicationEventPublisher publisher;
-
+    private final DeviceRepository deviceRepository;
+    private final PlanResultDetailRepository planResultDetailRepository;;
+private final PlanDetailRepository planDetailRepository;
     public ErrorReportService(final ErrorReportRepository errorReportRepository,
-            final PlanResultRepository planResultRepository,
-            final ApplicationEventPublisher publisher) {
+                              final PlanResultRepository planResultRepository,
+                              final ApplicationEventPublisher publisher, DeviceRepository deviceRepository, PlanResultDetailRepository planResultDetailRepository, PlanDetailRepository planDetailRepository) {
         this.errorReportRepository = errorReportRepository;
         this.planResultRepository = planResultRepository;
         this.publisher = publisher;
+        this.deviceRepository = deviceRepository;
+        this.planResultDetailRepository = planResultDetailRepository;
+        this.planDetailRepository = planDetailRepository;
     }
-
+    public List<ErrorReportDTO> findByPlanResultId(final Long id) {
+         List<ErrorReport> errorReports = new ArrayList<>();
+         List<PlanDetail> planDetails = planDetailRepository.findAllByDeviceId(id);
+         for (PlanDetail planDetail : planDetails) {
+             List<ErrorReport> reports = errorReportRepository.findAllByPlanDetailId(planDetail.getId());
+             errorReports.addAll(reports);
+         }
+        return errorReports.stream()
+                .map(errorReport -> mapToDTO(errorReport, new ErrorReportDTO()))
+                .toList();
+    }
     public List<ErrorReportDTO> findAll() {
         final List<ErrorReport> errorReports = errorReportRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return errorReports.stream()
