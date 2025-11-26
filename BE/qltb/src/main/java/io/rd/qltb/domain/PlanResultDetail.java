@@ -54,6 +54,10 @@ public class PlanResultDetail {
     private Integer max;
     @Column
     private String file;
+    @Column
+    private  String committee;// Bộ phận thực hiện
+    @Column
+    private String comment;// Ghi chú của bộ phận thực hiện
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
