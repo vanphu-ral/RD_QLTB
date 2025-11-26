@@ -1,0 +1,19 @@
+<!-- acceptance-list.component.html -->
+<app-base-table 
+  [apiService]="acceptanceService"
+  [columns]="columns"
+  [title]="'Danh sách các biên bản nghiệm thu thiết bị'"
+  [showAddButton]="true"
+  [showEditButton]="false"
+  [showViewButton]="false"
+  [actionTemplate]="customActions">
+  <ng-template appColumnTemplate="createdAt" let-rowData>
+    {{ rowData | date: 'dd/MM/yyyy' }}
+  </ng-template>
+  <ng-template appColumnTemplate="updatedAt" let-rowData>
+    {{ rowData | date: 'dd/MM/yyyy' }}
+  </ng-template>
+</app-base-table>
+<ng-template #customActions let-row>
+  <p-button icon="pi pi-eye" styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="viewAcceptance(row)"></p-button>
+</ng-template>

@@ -138,4 +138,10 @@ export const routes: Routes = [
             { path: '', component: ScanQrCodeComponent }
         ]
     },
+    // Report Manager
+    {
+        path: 'Acceptance',
+        component: AppLayout,
+        loadChildren: () => import('./shared/pages/Reports/Acceptance/acceptance.routes').then(m => m.default)
+    }
 ];
