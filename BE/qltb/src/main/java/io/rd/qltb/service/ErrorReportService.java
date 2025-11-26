@@ -41,8 +41,11 @@ private final PlanDetailRepository planDetailRepository;
          List<ErrorReport> errorReports = new ArrayList<>();
          List<PlanDetail> planDetails = planDetailRepository.findAllByDeviceId(id);
          for (PlanDetail planDetail : planDetails) {
-             List<ErrorReport> reports = errorReportRepository.findAllByPlanDetailId(planDetail.getId());
-             errorReports.addAll(reports);
+             List<PlanResult> planResults = planResultRepository.findByPlanDetailId(planDetail.getId());
+             for (PlanResult planResult : planResults) {
+                 List<ErrorReport> reports = errorReportRepository.findByPlanResultId(planResult.getId());
+                 errorReports.addAll(reports);
+             }
          }
         return errorReports.stream()
                 .map(errorReport -> mapToDTO(errorReport, new ErrorReportDTO()))

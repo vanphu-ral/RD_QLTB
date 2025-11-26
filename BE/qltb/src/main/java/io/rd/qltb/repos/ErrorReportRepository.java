@@ -15,6 +15,5 @@ public interface ErrorReportRepository extends JpaRepository<ErrorReport, Long> 
             "inner join plan_results b on b.id = a.plan_result_id " +
             "inner join plan_details c on c.id =b.plan_detail_id where c.id =?1 ",nativeQuery = true )
     List<ErrorReport> findByPlanDetailId(Long id);
-    List<ErrorReport> findAllByPlanDetailId(Long id);
 
 }
