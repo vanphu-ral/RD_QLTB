@@ -17,6 +17,7 @@ import { PlanResultService } from "../../Service/plan-result.service";
 export class CheckListDeviceDialog {
 
     data: any;
+    plan: any;
     checkList: PlanResult[] = [];
 
     constructor(
@@ -26,7 +27,8 @@ export class CheckListDeviceDialog {
         private planResultService: PlanResultService,
         private cdr: ChangeDetectorRef,
     ) {
-        this.data = config.data;
+        this.data = config.data.planDetail;
+        this.plan = config.data.plan;
     }
 
     ngOnInit() {
@@ -85,7 +87,7 @@ export class CheckListDeviceDialog {
             width: '100%',
             modal: true,
             closable: true,
-            data: { planResult: data, device: this.data },
+            data: { planResult: data, device: this.data, plan: this.plan },
         });
         childRef.onClose.subscribe((result) => {
             if (result && result.length > 0) {

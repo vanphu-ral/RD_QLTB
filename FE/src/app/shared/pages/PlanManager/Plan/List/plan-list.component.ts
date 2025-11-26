@@ -174,12 +174,12 @@ export class PlanListComponent {
 
   // function table child
 
-  deviceDateCheckList(item: any) {
+  deviceDateCheckList(planDetail: any, plan: any) {
     this.ref = this.dialogService.open(CheckListDeviceDialog, {
       header: `Danh sách lịch kiểm tra thiết bị`,
       width: 'auto',
       modal: true,
-      data: item,
+      data: {planDetail: planDetail, plan: plan},
       closable: true,
     });
     this.ref.onClose.subscribe((result) => {
