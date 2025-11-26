@@ -14,7 +14,7 @@
                   <b>
                     KẾ HOẠCH BẢO DƯỠNG THIẾT BỊ ĐỊNH KỲ
                   </b>
-                  <br /><span id="spanCurentYear">2021</span>
+                  <br /><span id="spanCurentYear">2025</span>
                 </th>
                 <th>Người lập kế hoạch</th>
                 <th>Trưởng ngành</th>
@@ -33,7 +33,7 @@
               <tr>
                 <th>
                   <div class="form-group">
-                    <label for="Name">Ngành:</label><span id="spanCurentBranchName">LED2, TBCD</span>
+                    <label for="Name">Ngành:</label><span id="spanCurentBranchName">{{ model?.planDetail?.device?.branch?.name}}</span>
                   </div>
                 </th>
               </tr>
@@ -80,31 +80,31 @@
                 <td *ngFor="let m of [].constructor(12); let month = index">
                   {{ getMonthFromEstimatedTime(model.planDetail?.estimatedTime) === (month + 1) ? 'X' : '' }}
                 </td>
-                <td>CNVH-CK Ngành-KTV</td>
+                <td>{{ item.committee }}</td>
                 <td>{{ item.note }}</td>
-                <td></td>
+                <td>{{ item.comment }}</td>
               </tr>
             </tbody>
           </table>
         </div>
         <div>
-          <button type="button" class="ml-auto btn btn-success" onclick="ShowModalContentPlanDevice(-1)">Thêm nội
+          <!-- <button type="button" class="ml-auto btn btn-success" onclick="ShowModalContentPlanDevice(-1)">Thêm nội
             dung</button>
           <button style="display:none;" type="button" class="ml-auto btn btn-success"
-            onclick="ShowModalReportPlan(-1)">Biên bản nghiệm thu</button>
+            onclick="ShowModalReportPlan(-1)">Biên bản nghiệm thu</button> -->
         </div>
         <p><span>* Ghi chú: Các đơn vị có thể bổ sung nội dung tùy theo đặc điểm máy móc công nghệ</span></p>
-        <p>
+        <!-- <p>
           File đính kèm:
           <button type="button" id="btShowFile" class="btn btn-info btn-xs"><i class="fa-solid fa-eye"></i></button>
           <button type="button" id="btAddFile" class="btn btn-warning btn-xs"><i
               class="fa-solid fa-paperclip"></i></button>
-        </p>
+        </p> -->
       </div>
     </div>
   </div>
   <div class="d-flex justify-content-end gap-2 mt-4">
-        <p-button label="Lưu" severity="success" (onClick)="submit()"></p-button>
+        <!-- <p-button label="Lưu" severity="success" (onClick)="submit()"></p-button> -->
         <p-button label="Đóng" (onClick)="close()"></p-button>
     </div>
 </div>

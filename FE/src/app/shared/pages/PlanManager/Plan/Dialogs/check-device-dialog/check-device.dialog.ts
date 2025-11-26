@@ -4,8 +4,7 @@ import { SharedModule } from "../../../../../../share.module";
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
 import _ from "lodash";
 import { Util } from "../../../../../core/utils/utils-function";
-import { PlanResult } from "../../../../../models/PlanManger/plan-result.model";
-import { SampleReportService } from "../../../SampleReport/Service/sample-report.service";
+import { PLANTYPE } from "../../../../../enums/plan-type.enum";
 import { KeyMappingService } from "../../../SampleReport/Service/key-mapping.service";
 import { PlanResultDetail } from "../../../../../models/PlanManger/plan-result-detail.model";
 import { ErrorReportDialog } from "../error-report-dialog/error-report.dialog";
@@ -31,6 +30,7 @@ export class CheckDeviceDialog {
     listResult: any[] = ["OK", "Đã điều chỉnh", "Có bất thường"];
     listStatus: any[] = [{ label: 'Đã kiểm tra', value: 1 }, { label: 'Chưa kiểm tra', value: 2 }, { label: 'Không kiểm tra', value: 3 }];
     listSupplyReplaceHistory: SupplyReplacementHistory[] = [];
+    PLANTYPE = PLANTYPE;
 
     constructor(
         public ref: DynamicDialogRef,
@@ -43,6 +43,8 @@ export class CheckDeviceDialog {
         private supplyDetailService: SupplyDetailService,
     ) {
         this.data = config.data;
+        console.log(this.data);
+        
     }
 
     ngOnInit() {

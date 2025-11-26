@@ -10,6 +10,8 @@ export class PlanResultDetail {
     unit?: string;
     min?: number;
     max?: number;
+    committee?: string;
+    comment?: string;
     status?: number;
     createdBy?: string;
     createdAt?: Date;

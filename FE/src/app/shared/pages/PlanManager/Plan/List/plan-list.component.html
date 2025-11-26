@@ -105,7 +105,7 @@
           <p-button icon="pi pi-file" styleClass="p-button-sm p-button-rounded p-button-secondary m-1"  *ngIf="row.planTypeCode == PLANTYPE.MAINTENANCE || row.planTypeCode == PLANTYPE.REPAIR"
             (onClick)="acceptance(detail, row)"></p-button>
           <p-button icon="pi pi-check-square" styleClass="p-button-sm p-button-rounded p-button-success m-1"
-            (onClick)="deviceDateCheckList(detail)"></p-button>
+            (onClick)="deviceDateCheckList(detail, row)"></p-button>
           <p-button icon="pi pi-wrench" styleClass="p-button-sm p-button-rounded p-button-warn m-1"
             (onClick)="repairDevice(detail)"></p-button>
           <p-button icon="pi pi-eye" styleClass="p-button-sm p-button-rounded p-button-info m-1" *ngIf="row.planTypeCode == PLANTYPE.AUDIT"
