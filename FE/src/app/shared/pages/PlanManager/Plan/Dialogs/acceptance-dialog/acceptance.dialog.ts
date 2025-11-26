@@ -17,7 +17,7 @@ import { Acceptance } from "../../../../../models/PlanManger/acceptance.model";
 import { Device } from "../../../../../models/DeviceManager/device.model";
 import { PLANTYPE } from "../../../../../enums/plan-type.enum";
 import { CriterialService } from "../../../Criterial/Service/criterial.service";
-import { AcceptanceService } from "../../Service/acceptance.service";
+import { AcceptanceService } from "../../../../Reports/Acceptance/service/acceptance.service";
 
 @Component({
     selector: 'app-acceptance-dialog',
@@ -32,7 +32,9 @@ export class AcceptanceDialog {
     device: Device = new Device();
     model: Acceptance = new Acceptance();
     implementationContent: any[] = [];
-    listApprovalWorkflow: any[] = []
+    listApprovalWorkflow: any[] = [];
+
+    IsAddModel: boolean = true;
 
     constructor(
         public ref: DynamicDialogRef,
@@ -45,20 +47,15 @@ export class AcceptanceDialog {
     ) {
         this.data = config.data.planResult;
         this.plan = config.data.plan;
-        console.log(this.data);
-        console.log(this.plan);
-        
     }
 
     ngOnInit() {
-        this.acceptanceService.checkExistByPlanDetailId(this.data.id).subscribe(res => {
-            console.log(res);
-            if (res && res > 0) {
-                
-                // Util.showErrorMessage("Đã tồn tại biên bản nghiệm thu cho kế hoạch này!");
-                this.ref.close();
-            }
-        })
+        // this.acceptanceService.checkExistByPlanDetailId(this.data.id).subscribe((res: any) => {
+        //     if(res.exists == 1) {
+        //         Util.ConfirmMessage('Phiếu nghiệm thu đã tồn tại cho phiếu này!', 'error');
+        //         this.ref.close(false);
+        //     }
+        // })
         this.model.type = this.plan.planTypeCode == PLANTYPE.REPAIR ? 1 : (this.plan.planTypeCode == PLANTYPE.MAINTENANCE ? 2 : 3);
         this.criterialService.getListBySampleReport(this.data.sampleReportId).subscribe(res => {
             this.implementationContent = res

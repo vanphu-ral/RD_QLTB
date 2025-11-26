@@ -26,6 +26,7 @@ export class ErrorReportSeriousDialog {
     data: any;
     model: ReportDeviceIncident = new ReportDeviceIncident();
     listApprovalWorkflow: any[] = []
+    listUsers: any[] = []
 
     constructor(
         public ref: DynamicDialogRef,
@@ -35,8 +36,6 @@ export class ErrorReportSeriousDialog {
         private reportDeviceIncidentService: ReportDeviceIncidentService
     ) {
         this.data = config.data;
-        console.log(this.data);
-        
         this.model.errorReport = this.data;
         this.model.errorDescription = this.data.errorDescription;
         this.model.reason = this.data.result;
@@ -49,6 +48,18 @@ export class ErrorReportSeriousDialog {
             this.listApprovalWorkflow = res
             this.cdr.detectChanges();
         })
+        this.approvalWorkflowService.getUsers().subscribe(users => {
+            this.listUsers = _.map(users, user => {
+                const firstName = user.firstName ?? '';
+                const lastName = user.lastName ?? '';
+                const fullName = [firstName, lastName].filter(Boolean).join(' ').trim();
+                return {
+                    name: fullName ? `${user.username} - ${fullName}` : user.username,
+                    username: user.username,
+                };
+            })
+            this.cdr.detectChanges();
+        });
     }
 
     submit() {
