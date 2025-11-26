@@ -1,6 +1,7 @@
 package io.rd.qltb.model;
 
 import io.rd.qltb.domain.PlanResult;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -32,7 +33,8 @@ public class PlanResultDetailDTO {
     private Integer min;
 
     private Integer max;
-
+    private  String committee;// Bộ phận thực hiện
+    private String comment;// Ghi chú của bộ phận thực hiện
 private String file;
     private LocalDateTime createdAt;
 
