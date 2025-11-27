@@ -113,6 +113,9 @@ public class PlanDetailService {
             planDTO.setUpdatedAt(planDetailDTO.getPlan().getUpdatedAt());
             planDTO.setUpdatedBy(planDetailDTO.getPlan().getUpdatedBy());
             planDTO.setStatus(planDetailDTO.getPlan().getStatus());
+            planDTO.setPlanType(planDetailDTO.getPlan().getPlanType());
+            List<PlanDetailDTO> planDetailDTOS = new ArrayList<>();
+            planDTO.setPlanDetails(planDetailDTOS.add(planDetailDTO)?planDetailDTOS:null);
             // check trùng
             boolean isDuplicate = false;
             for(PlanDTO existingPlan : plans){
