@@ -2,6 +2,9 @@ export class Acceptance {
     id?: number;
     code?: string;
     name?: string;
+    docNumber?: string;
+    implementingUnit?: string;
+    dateRecord?: Date;
     type?: number;
     note?: string;
     user?: string;
@@ -26,4 +29,5 @@ export class Acceptance {
     planResult?: any
     errorReport?: any;
     approvalWorkflow?: any;
+    device?: any;
 }

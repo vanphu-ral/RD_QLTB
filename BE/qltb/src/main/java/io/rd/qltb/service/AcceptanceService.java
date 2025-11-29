@@ -72,6 +72,7 @@ public class AcceptanceService {
         acceptanceDTO.setId(acceptance.getId());
         acceptanceDTO.setCode(acceptance.getCode());
         acceptanceDTO.setName(acceptance.getName());
+        acceptanceDTO.setType(acceptance.getType());
         acceptanceDTO.setNote(acceptance.getNote());
         acceptanceDTO.setUser(acceptance.getUser());
         acceptanceDTO.setResult(acceptance.getResult());
@@ -191,6 +192,7 @@ public class AcceptanceService {
     private Acceptance mapToEntity(final AcceptanceDTO acceptanceDTO, final Acceptance acceptance) {
         acceptance.setCode(acceptanceDTO.getCode());
         acceptance.setName(acceptanceDTO.getName());
+        acceptance.setType(acceptance.getType());
         acceptance.setNote(acceptanceDTO.getNote());
         acceptance.setUser(acceptanceDTO.getUser());
         acceptance.setResult(acceptanceDTO.getResult());

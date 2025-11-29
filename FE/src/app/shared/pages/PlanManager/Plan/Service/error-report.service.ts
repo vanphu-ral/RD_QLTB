@@ -13,4 +13,10 @@ export class ErrorReportService extends BaseApiService<ErrorReport> {
   getAllErrorByPlanDetailId(planDetailId: number | string): Observable<ErrorReport[]> {
     return this.http.get<ErrorReport[]>(`${this['fullBaseUrl']}/plan-detail/${planDetailId}`, { withCredentials: true });
   }
+
+  findByPlanResultId(id: number): Observable<ErrorReport[]> {
+    return this.http.get<ErrorReport[]>(`${this['fullBaseUrl']}/plan-detail/scan-qr/${id}`, {
+      withCredentials: true
+    });
+  }
 }

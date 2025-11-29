@@ -23,7 +23,7 @@
               <tr>
                 <th>
                   <div class="form-group">
-                    <label for="selectFactory">Xưởng:</label><span id="spanCurentFactoryName">LED, TBCD</span>
+                    <label for="selectFactory">Xưởng:</label><span id="spanCurentFactoryName">{{ plan?.factory?.name }}</span>
                   </div>
                 </th>
                 <td rowspan="2" style="text-align:center;" id="tdPlanCreate_detai"></td>
@@ -33,12 +33,12 @@
               <tr>
                 <th>
                   <div class="form-group">
-                    <label for="Name">Ngành:</label><span id="spanCurentBranchName">{{ model?.planDetail?.device?.branch?.name}}</span>
+                    <label for="Name">Ngành:</label><span id="spanCurentBranchName">{{ plan?.branch?.name }}</span>
                   </div>
                 </th>
               </tr>
               <tr>
-                <th>Số: <span id="spanCurentPlanDeviceNumber"></span></th>
+                <th>Số: <span id="spanCurentPlanDeviceNumber">{{ plan?.code }}-{{ model.planDetail.device.code }}</span></th>
                 <th>
                   <div class="form-group">
                     <label for="Name">Thiết bị: <span id="spanCurentDeviceName"> {{ data.device.name }}</span></label>

@@ -67,24 +67,22 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
 
   override ngOnInit(): void {
     super.ngOnInit();
-    this.deviceGroupService.getAll().subscribe(groups => {
-      this.listDeviceGroups = groups;
-      this.cdr.detectChanges();
-    });
-    this.branchService.getAll().subscribe(branches => {
-      this.listBranches = branches;
-      this.cdr.detectChanges();
-    });
-    this.lineService.getAll().subscribe(lines => {
-      this.listLines = lines;
-      this.cdr.detectChanges();
-    });
-    this.teamService.getAll().subscribe(teams => {
-      this.listTeams = teams;
-      this.cdr.detectChanges();
-    });
-    this.apiService.getUsers().subscribe(users => {
-      this.listUsers = _.map(users, user => {
+    const requests: any = {
+      groups: this.deviceGroupService.getAll(),
+      branches: this.branchService.getAll(),
+      lines: this.lineService.getAll(),
+      teams: this.teamService.getAll(),
+      users: this.apiService.getUsers(),
+    };
+    if (this.isEditMode && this.model?.id) {
+      requests.materials = this.deviceSupplyUseService.getListByDeviceId(this.model.id);
+    }
+    forkJoin(requests).subscribe((res: any) => {
+      this.listDeviceGroups = res.groups;
+      this.listBranches = res.branches;
+      this.listLines = res.lines;
+      this.listTeams = res.teams;
+      this.listUsers = _.map(res.users, user => {
         const firstName = user.firstName ?? '';
         const lastName = user.lastName ?? '';
         const fullName = [firstName, lastName].filter(Boolean).join(' ').trim();
@@ -92,18 +90,18 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
           name: fullName ? `${user.username} - ${fullName}` : user.username,
           username: user.username,
         };
-      })
-      this.cdr.detectChanges();
-    })
-    if (typeof this.model.maintenanceCycle === 'string' && !Util.isEmptyString(this.model.maintenanceCycle)) {
-      this.model.maintenanceCycle = Util.stringToDropdownOptions(this.model.maintenanceCycle);
-    }
-    if (this.isEditMode && this.model?.id) {
-      this.deviceSupplyUseService.getListByDeviceId(this.model.id).subscribe(list => {
-        this.listMaterialInit = _.map(list, item => ({ ...item, supply: item.supplyDetail.supply }));
-        this.cdr.detectChanges();
       });
-    }
+      if (res.materials) {
+        this.listMaterialInit = _.map(res.materials, item => ({
+          ...item,
+          supply: item.supplyDetail.supply,
+        }));
+      }
+      if (typeof this.model.maintenanceCycle === 'string' && !Util.isEmptyString(this.model.maintenanceCycle)) {
+        this.model.maintenanceCycle = Util.stringToDropdownOptions(this.model.maintenanceCycle);
+      }
+      this.cdr.detectChanges();
+    });
   }
 
   openMaterialDialog() {
@@ -114,7 +112,7 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
       closable: true,
       data: {
         device: this.model,
-        materials: this.listMaterialInit   
+        materials: this.listMaterialInit
       },
     });
 

@@ -9,23 +9,24 @@
             <b>BIÊN BẢN NGHIỆM THU THIẾT BỊ</b>
           </td>
           <td>
-            Số: <span id="spanBienBanPlanNumber">LED.LED2.BBNTTB.4</span>
-            Ngày: <span id="spanBienBanNgayBB"></span>
+            Số: <span id="spanBienBanPlanNumber">{{ model.docNumber }}</span><br />
+            <br />
+            Ngày: <span id="spanBienBanNgayBB">{{ model.dateRecord | date:'dd/MM/yyyy' }}</span>
           </td>
         </tr>
         <tr>
           <td colspan="3">Đợn vị thực hiện: <span id="spanBienBanDepartmentAct">LED2, TBCD</span></td>
-          <td>Tên thiết bị: <span id="spanBienBanDeviceName">LED2, TBCD</span></td>
+          <td>Tên thiết bị: <span id="spanBienBanDeviceName">{{ model.device?.name }}</span></td>
         </tr>
         <tr>
-          <td>Bộ phận quản lý/sử dụng thiết bị: <span id="spanBienBanTeamName">{{ device.team?.name }}</span> </td>
-          <td colspan="2">Ngành/Ban: <span id="spanBienBanBranchName">{{ device.branch?.name }}</span></td>
+          <td>Bộ phận quản lý/sử dụng thiết bị: <span id="spanBienBanTeamName">{{ model.device?.team?.name }}</span> </td>
+          <td colspan="2">Ngành/Ban: <span id="spanBienBanBranchName">{{ model.device?.branch?.name }}</span></td>
           <td>Xưởng: <span id="spanBienBanFactoryName">LED</span></td>
         </tr>
         <tr>
           <td>Giao nhận sau: </td>
           <td colspan="3">
-            <div class="form-group clearfix">
+            <div class="form-group clearfix"> 
               <div class="icheck-primary d-inline">
                 <input [value]="1" value="1" type="radio" id="type1" name="type" [(ngModel)]="model.type">
                 <label class="mx-2" for="type1">Sửa chữa</label>

@@ -50,7 +50,7 @@ export class ViewPlanMaintancePage extends BasePageComponent<any> {
       header: 'Chi tiết nội dung bảo trì bảo dưỡng',
       width: 'auto',
       modal: true,
-      data: rowData,
+      data: {planDetail: rowData, plan: this.model},
       closable: true
     });
     ref.onClose.subscribe((result) => {

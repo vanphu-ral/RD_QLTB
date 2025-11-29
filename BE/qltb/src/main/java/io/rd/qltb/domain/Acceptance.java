@@ -44,7 +44,8 @@ public class Acceptance {
     private LocalDateTime dateRecord;
     @Column
     private String user;
-
+    @Column
+    private Integer type;
     @Column
     private String result;
     @Column

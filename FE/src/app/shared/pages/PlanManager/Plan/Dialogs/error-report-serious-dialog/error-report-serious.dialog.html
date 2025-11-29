@@ -66,18 +66,11 @@
         <tr>
           <td colspan="2">
             Họ và tên
-            <!-- <p-select [options]="listUsers" optionLabel="name" optionValue="username" [fluid]="true" [ngClass]="'mt-3'" [(ngModel)]="model.listUser"
-              [showClear]="true" [filter]="true" [appendTo]="'body'" id="manager" name="manager"
-              dataKey="username">
-            </p-select> -->
             <p-multiselect [options]="listUsers" [(ngModel)]="model.listUser" optionValue="username" [fluid]="true" [ngClass]="'mt-3'" [maxSelectedLabels]="2" optionLabel="name" appendTo="body" />
           </td>
           <td colspan="2">
             Đơn vị
-            <p-select  optionLabel="name" optionValue="username" [fluid]="true" [ngClass]="'mt-3'" [(ngModel)]="model.listDivision"
-              [showClear]="true" [filter]="true" [appendTo]="'body'" id="manager" name="manager"
-              dataKey="username">
-            </p-select>
+            <p-multiselect [options]="listBranches" [(ngModel)]="model.listDivision" optionValue="username" [fluid]="true" [ngClass]="'mt-3'" [maxSelectedLabels]="2" optionLabel="name" appendTo="body" />
           </td>
         </tr>
       </thead>

@@ -6,6 +6,7 @@ import { BasePageComponent } from '../../../../base/base-page-component/base-pag
 import { PlanDetailService } from '../Service/plan-detail.service';
 import { SignatureService } from '../../../SystemManager/Signature/Service/signature.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { BaseApprovalComponent } from "../../../../base/base-approval-component/base-approval.component";
 
 interface DailyResult {
   day: number;
@@ -38,10 +39,13 @@ interface GroupedCritical {
   styleUrls: ['./view-evaluate.page.scss'],
 })
 export class ViewEvaluatePage extends BasePageComponent<any> {
+
   public groupedDetails: GroupedCritical[] = [];
   public planInfo: any = {};
   public signature: any = {};
+
   listUserApproval: any[] = [];
+  listUserStatusAppr: any[] = [];
   listUsers: any[] = [];
   userMap: Record<string, string> = {};
   Math = Math;
@@ -63,21 +67,20 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
     this.approvalService
       .findApprovalsByEntityIdAndEntityType(this.model.planDetail.plan.id, 'plans')
       .subscribe((data) => {
+        console.log(data);
+        this.listUserStatusAppr = data;
         const usernames = data.map(x => x.userApproval?.username);
         this.signatureService.getByListUsernames(usernames).subscribe(signatures => {
           this.listUserApproval = Object.values(
             data.reduce((acc: any, item: any) => {
               const groupId = item.group?.groupApprovalName?.id;
-
               acc[groupId] ??= {
                 groupApprovalName: item.group.groupApprovalName,
                 items: [],
                 userApprovals: []
               };
-
               acc[groupId].items.push(item);
               acc[groupId].userApprovals.push(item.userApproval);
-
               return acc;
             }, {})
           ).map((group: any) => ({
@@ -93,10 +96,6 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
           }));
           console.log(this.listUserApproval);
         });
-
-
-
-
         this.cdr.detectChanges();
       });
     this.approvalService.getUsers().subscribe(users => {
