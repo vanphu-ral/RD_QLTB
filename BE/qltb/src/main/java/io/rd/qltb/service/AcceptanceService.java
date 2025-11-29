@@ -107,10 +107,27 @@ public class AcceptanceService {
             deviceCopy.setUpdatedAt(acceptance.getDevice().getUpdatedAt());
 
             // Xóa các quan hệ con
-            deviceCopy.setGroup(null);
-            deviceCopy.setLine(null);
-            deviceCopy.setBranch(null);
-            deviceCopy.setTeam(null);
+            deviceCopy.setGroup(acceptance.getDevice().getGroup());
+            deviceCopy.getGroup().setGroupDevices(null);
+            deviceCopy.getGroup().setDeviceGroupSampleReports(null);
+            deviceCopy.getGroup().setDeviceGroupKeyMappingDeviceSampleReports(null);
+            deviceCopy.getGroup().setDeviceGroupPlanDetails(null);
+
+            deviceCopy.setLine(acceptance.getDevice().getLine());
+            deviceCopy.getLine().setLineDevices(null);
+            deviceCopy.getLine().setTeam(null);
+
+            deviceCopy.setBranch(acceptance.getDevice().getBranch());
+            deviceCopy.getBranch().getFactory().setFactoryBranches(null);
+            deviceCopy.getBranch().setBranchDevices(null);
+            deviceCopy.getBranch().setBranchTeams(null);
+            deviceCopy.getBranch().setSampleReports(null);
+
+            deviceCopy.setTeam(acceptance.getDevice().getTeam());
+            deviceCopy.getTeam().setTeamDevices(null);
+            deviceCopy.getTeam().setBranch(null);
+            deviceCopy.getTeam().setTeamLines(null);
+
             deviceCopy.setDeviceDeviceParameterUses(null);
             deviceCopy.setDeviceDeviceRelocationHistories(null);
             deviceCopy.setDeviceDeviceSupplyUsages(null);

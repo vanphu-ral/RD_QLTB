@@ -96,10 +96,27 @@ public ReportDeviceIncidentDTO mapToDTO(final ReportDeviceIncident reportDeviceI
            deviceCopy.setUpdatedAt(reportDeviceIncident.getDevice().getUpdatedAt());
 
            // Xóa các quan hệ con
-           deviceCopy.setGroup(null);
-           deviceCopy.setLine(null);
-           deviceCopy.setBranch(null);
-           deviceCopy.setTeam(null);
+           deviceCopy.setGroup(reportDeviceIncident.getDevice().getGroup());
+           deviceCopy.getGroup().setGroupDevices(null);
+           deviceCopy.getGroup().setDeviceGroupSampleReports(null);
+           deviceCopy.getGroup().setDeviceGroupKeyMappingDeviceSampleReports(null);
+           deviceCopy.getGroup().setDeviceGroupPlanDetails(null);
+
+           deviceCopy.setLine(reportDeviceIncident.getDevice().getLine());
+           deviceCopy.getLine().setLineDevices(null);
+           deviceCopy.getLine().setTeam(null);
+
+           deviceCopy.setBranch(reportDeviceIncident.getDevice().getBranch());
+           deviceCopy.getBranch().getFactory().setFactoryBranches(null);
+           deviceCopy.getBranch().setBranchDevices(null);
+           deviceCopy.getBranch().setBranchTeams(null);
+           deviceCopy.getBranch().setSampleReports(null);
+
+           deviceCopy.setTeam(reportDeviceIncident.getDevice().getTeam());
+           deviceCopy.getTeam().setTeamDevices(null);
+           deviceCopy.getTeam().setBranch(null);
+           deviceCopy.getTeam().setTeamLines(null);
+
            deviceCopy.setDeviceDeviceParameterUses(null);
            deviceCopy.setDeviceDeviceRelocationHistories(null);
            deviceCopy.setDeviceDeviceSupplyUsages(null);
