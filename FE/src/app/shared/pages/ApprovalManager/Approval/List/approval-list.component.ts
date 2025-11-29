@@ -43,6 +43,8 @@ export class ApprovalListComponent {
         return 'Kế hoạch';
       case 'acceptances':
         return 'Biên bản nghiệm thu';
+      case 'report_device_incidents':
+        return 'Biên bản sự cố thiết bị';
       default:
         return '';
     }

@@ -78,6 +78,7 @@ export class ErrorReportSeriousDialog {
                 ...res.branches,
                 ...res.departments
             ];
+            this.cdr.detectChanges();
         })
         if (this.IsAddMode) {
             const requests = {

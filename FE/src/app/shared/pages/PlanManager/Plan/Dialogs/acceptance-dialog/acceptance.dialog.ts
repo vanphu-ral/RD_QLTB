@@ -47,22 +47,22 @@ export class AcceptanceDialog {
         private cdr: ChangeDetectorRef
     ) {
         this.IsAddModel = config.data.IsAddModel;
-        if(config.data.IsAddModel === false){
+        if (config.data.IsAddModel === false) {
             this.model = config.data.data;
-            
-        }else{
+
+        } else {
             this.data = config.data.planResult;
             this.plan = config.data.plan;
         }
     }
 
     ngOnInit() {
-        if(this.IsAddModel) {
+        if (this.IsAddModel) {
             this.acceptanceService.checkExistByPlanDetailId(this.data.id).subscribe((res: any) => {
                 if (res.exists == 1) {
                     Util.ConfirmMessage('Phiếu nghiệm thu đã tồn tại cho phiếu này!', 'error');
                     this.ref.close(false);
-                    return; 
+                    return;
                 }
                 this.model.type = this.plan.planTypeCode == PLANTYPE.REPAIR ? 1 : (this.plan.planTypeCode == PLANTYPE.MAINTENANCE ? 2 : 3);
                 forkJoin({
@@ -92,8 +92,15 @@ export class AcceptanceDialog {
         this.model.planDetailId = this.data.id;
         this.model.status = 1
         this.acceptanceService.create(this.model).subscribe(res => {
-            Util.showSuccessMessage("Tạo biên bản nghiệm thu thành công");
-            this.close();
+            this.acceptanceService.createApprovalEntity({ entityId: res, workflowId: this.model.approvalWorkflow.id }, 'acceptances').subscribe({
+                next: () => {
+                    Util.showSuccessMessage("Tạo biên bản nghiệm thu thành công");
+                    this.close();
+                },
+                error: () => {
+                    this.ref.close(false);
+                },
+            });
         })
     }
 
