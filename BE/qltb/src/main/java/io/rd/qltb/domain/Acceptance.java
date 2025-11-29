@@ -35,8 +35,9 @@ public class Acceptance {
     private String note;
     @Column
     private String docNumber;
-    @Column
-    private Long deviceId;
+    @ManyToOne
+    @JoinColumn(name = "device_id", nullable = false)
+    private Device device;
     @Column
     private String implementingUnit;
     @Column

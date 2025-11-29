@@ -23,8 +23,6 @@ public class ReportDeviceIncident {
     @Column
     private String reason;
     @Column
-    private Long deviceId;
-    @Column
     private String docNumber;
     @Column
     private String treatment_measures;
@@ -46,12 +44,13 @@ public class ReportDeviceIncident {
     private String updatedBy;
     @Column
     private Integer status;
+    @ManyToOne
+    @JoinColumn(name = "device_id", nullable = false)
+    private Device device;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workflow_id", nullable = false)
     private ApprovalWorkflow workflow;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "error_report_id", nullable = false)
     private ErrorReport errorReport;
-
-
 }

@@ -1,9 +1,12 @@
 package io.rd.qltb.model;
 
 import io.rd.qltb.domain.ApprovalWorkflow;
+import io.rd.qltb.domain.Device;
 import io.rd.qltb.domain.ErrorReport;
 import io.rd.qltb.domain.PlanResult;
 import jakarta.persistence.Column;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -23,7 +26,7 @@ public class AcceptanceDTO {
 
     private String note;
     private String docNumber;
-    private Long deviceId;
+    private Device device;
     private String implementingUnit;
     private LocalDateTime dateRecord;
     private String user;

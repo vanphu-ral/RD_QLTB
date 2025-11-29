@@ -1,6 +1,7 @@
 package io.rd.qltb.service;
 
 import io.rd.qltb.domain.ApprovalWorkflow;
+import io.rd.qltb.domain.Device;
 import io.rd.qltb.domain.ErrorReport;
 import io.rd.qltb.domain.ReportDeviceIncident;
 import io.rd.qltb.model.ReportDeviceIncidentDTO;
@@ -32,7 +33,6 @@ public ReportDeviceIncidentDTO mapToDTO(final ReportDeviceIncident reportDeviceI
         reportDeviceIncidentDTO.setUpdatedAt(reportDeviceIncident.getUpdatedAt());
         reportDeviceIncidentDTO.setUpdatedBy(reportDeviceIncident.getUpdatedBy());
         reportDeviceIncidentDTO.setStatus(reportDeviceIncident.getStatus());
-        reportDeviceIncidentDTO.setDeviceId(reportDeviceIncident.getDeviceId());
         reportDeviceIncidentDTO.setDocNumber(reportDeviceIncident.getDocNumber());
        if (reportDeviceIncident.getWorkflow() != null) {
            ApprovalWorkflow workflowCopy = new ApprovalWorkflow();
@@ -84,6 +84,30 @@ public ReportDeviceIncidentDTO mapToDTO(final ReportDeviceIncident reportDeviceI
                 reportDeviceIncidentDTO.setErrorReport(null);
 
        }
+       if (reportDeviceIncident.getDevice() != null) {
+           Device deviceCopy = new Device();
+           deviceCopy.setId(reportDeviceIncident.getDevice().getId());
+           deviceCopy.setCode(reportDeviceIncident.getDevice().getCode());
+           deviceCopy.setName(reportDeviceIncident.getDevice().getName());
+           deviceCopy.setSerialNumber(reportDeviceIncident.getDevice().getSerialNumber());
+           deviceCopy.setUnit(reportDeviceIncident.getDevice().getUnit());
+           deviceCopy.setStatus(reportDeviceIncident.getDevice().getStatus());
+           deviceCopy.setCreatedAt(reportDeviceIncident.getDevice().getCreatedAt());
+           deviceCopy.setUpdatedAt(reportDeviceIncident.getDevice().getUpdatedAt());
+
+           // Xóa các quan hệ con
+           deviceCopy.setGroup(null);
+           deviceCopy.setLine(null);
+           deviceCopy.setBranch(null);
+           deviceCopy.setTeam(null);
+           deviceCopy.setDeviceDeviceParameterUses(null);
+           deviceCopy.setDeviceDeviceRelocationHistories(null);
+           deviceCopy.setDeviceDeviceSupplyUsages(null);
+           deviceCopy.setDevicePlanDetails(null);
+           reportDeviceIncidentDTO.setDevice(deviceCopy);
+         } else {
+           reportDeviceIncidentDTO.setDevice(null);
+       }
         return reportDeviceIncidentDTO;
     }
     public ReportDeviceIncident mapToEntity(final ReportDeviceIncidentDTO dto, final ReportDeviceIncident entity) {
@@ -103,8 +127,8 @@ public ReportDeviceIncidentDTO mapToDTO(final ReportDeviceIncident reportDeviceI
         entity.setStatus(dto.getStatus());
         entity.setWorkflow(dto.getWorkflow());
         entity.setErrorReport(dto.getErrorReport());
-        entity.setDeviceId(dto.getDeviceId());
         entity.setDocNumber(dto.getDocNumber());
+        entity.setDevice(dto.getDevice());
         return entity;
     }
     public ResponseEntity<?> createReportDeviceIncident(ReportDeviceIncidentDTO dto) {

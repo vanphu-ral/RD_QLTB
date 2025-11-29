@@ -1,6 +1,7 @@
 package io.rd.qltb.model;
 
 import io.rd.qltb.domain.ApprovalWorkflow;
+import io.rd.qltb.domain.Device;
 import io.rd.qltb.domain.ErrorReport;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -16,7 +17,7 @@ public class ReportDeviceIncidentDTO {
     private String errorDescription;
     private String reason;
     private String treatment_measures;
-    private Long deviceId;
+    private Device device;
     private String docNumber;
     private String performer;
     private LocalDateTime timeComplete;

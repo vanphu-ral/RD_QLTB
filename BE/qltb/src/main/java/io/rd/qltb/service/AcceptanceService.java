@@ -1,9 +1,6 @@
 package io.rd.qltb.service;
 
-import io.rd.qltb.domain.Acceptance;
-import io.rd.qltb.domain.ApprovalWorkflow;
-import io.rd.qltb.domain.ErrorReport;
-import io.rd.qltb.domain.PlanResult;
+import io.rd.qltb.domain.*;
 import io.rd.qltb.events.BeforeDeleteErrorReport;
 import io.rd.qltb.events.BeforeDeletePlanResult;
 import io.rd.qltb.model.AcceptanceDTO;
@@ -96,10 +93,32 @@ public class AcceptanceService {
         acceptanceDTO.setUpdatedBy(acceptance.getUpdatedBy());
         acceptanceDTO.setStatus(acceptance.getStatus());
         acceptanceDTO.setDocNumber(acceptance.getDocNumber());
-        acceptanceDTO.setDeviceId(acceptance.getDeviceId());
         acceptanceDTO.setImplementingUnit(acceptance.getImplementingUnit());
         acceptanceDTO.setDateRecord(acceptance.getDateRecord());
+        if (acceptance.getDevice() != null) {
+            Device deviceCopy = new Device();
+            deviceCopy.setId(acceptance.getDevice().getId());
+            deviceCopy.setCode(acceptance.getDevice().getCode());
+            deviceCopy.setName(acceptance.getDevice().getName());
+            deviceCopy.setSerialNumber(acceptance.getDevice().getSerialNumber());
+            deviceCopy.setUnit(acceptance.getDevice().getUnit());
+            deviceCopy.setStatus(acceptance.getDevice().getStatus());
+            deviceCopy.setCreatedAt(acceptance.getDevice().getCreatedAt());
+            deviceCopy.setUpdatedAt(acceptance.getDevice().getUpdatedAt());
 
+            // Xóa các quan hệ con
+            deviceCopy.setGroup(null);
+            deviceCopy.setLine(null);
+            deviceCopy.setBranch(null);
+            deviceCopy.setTeam(null);
+            deviceCopy.setDeviceDeviceParameterUses(null);
+            deviceCopy.setDeviceDeviceRelocationHistories(null);
+            deviceCopy.setDeviceDeviceSupplyUsages(null);
+            deviceCopy.setDevicePlanDetails(null);
+            acceptanceDTO.setDevice(deviceCopy);
+        } else {
+            acceptanceDTO.setDevice(null);
+        }
         // Sao chép PlanResult có kiểm soát
         if (acceptance.getPlanResult() != null) {
             PlanResult planResultCopy = new PlanResult();
@@ -176,7 +195,7 @@ public class AcceptanceService {
         acceptance.setUpdatedBy(acceptanceDTO.getUpdatedBy());
         acceptance.setStatus(acceptanceDTO.getStatus());
         acceptance.setDocNumber(acceptanceDTO.getDocNumber());
-        acceptance.setDeviceId(acceptanceDTO.getDeviceId());
+        acceptance.setDevice(acceptanceDTO.getDevice());
         acceptance.setImplementingUnit(acceptanceDTO.getImplementingUnit());
         acceptance.setDateRecord(acceptanceDTO.getDateRecord());
         final PlanResult planResult = acceptanceDTO.getPlanResult() == null ? null : planResultRepository.findById(acceptanceDTO.getPlanResult().getId())
