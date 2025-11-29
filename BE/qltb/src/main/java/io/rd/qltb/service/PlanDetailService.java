@@ -196,9 +196,9 @@ public class PlanDetailService {
             planCopy.setUpdatedAt(planDetail.getPlan().getUpdatedAt());
             planCopy.setUpdatedBy(planDetail.getPlan().getUpdatedBy());
             planCopy.setStatus(planDetail.getPlan().getStatus());
-
+            planCopy.setPlanType(planDetail.getPlan().getPlanType());
             // Xóa các quan hệ con
-            planCopy.setPlanType(null);
+            planCopy.getPlanType().setPlanTypePlans(null);
             planCopy.setPlanPlanDetails(null);
 
             dto.setPlan(planCopy);

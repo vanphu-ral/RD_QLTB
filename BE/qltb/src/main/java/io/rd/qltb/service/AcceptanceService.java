@@ -95,6 +95,10 @@ public class AcceptanceService {
         acceptanceDTO.setCreatedBy(acceptance.getCreatedBy());
         acceptanceDTO.setUpdatedBy(acceptance.getUpdatedBy());
         acceptanceDTO.setStatus(acceptance.getStatus());
+        acceptanceDTO.setDocNumber(acceptance.getDocNumber());
+        acceptanceDTO.setDeviceId(acceptance.getDeviceId());
+        acceptanceDTO.setImplementingUnit(acceptance.getImplementingUnit());
+        acceptanceDTO.setDateRecord(acceptance.getDateRecord());
 
         // Sao chép PlanResult có kiểm soát
         if (acceptance.getPlanResult() != null) {
@@ -171,6 +175,10 @@ public class AcceptanceService {
         acceptance.setCreatedBy(acceptanceDTO.getCreatedBy());
         acceptance.setUpdatedBy(acceptanceDTO.getUpdatedBy());
         acceptance.setStatus(acceptanceDTO.getStatus());
+        acceptance.setDocNumber(acceptanceDTO.getDocNumber());
+        acceptance.setDeviceId(acceptanceDTO.getDeviceId());
+        acceptance.setImplementingUnit(acceptanceDTO.getImplementingUnit());
+        acceptance.setDateRecord(acceptanceDTO.getDateRecord());
         final PlanResult planResult = acceptanceDTO.getPlanResult() == null ? null : planResultRepository.findById(acceptanceDTO.getPlanResult().getId())
                 .orElseThrow(() -> new NotFoundException("planResult not found"));
         acceptance.setPlanResult(planResult);

@@ -22,7 +22,10 @@ public class AcceptanceDTO {
     private String name;
 
     private String note;
-
+    private String docNumber;
+    private Long deviceId;
+    private String implementingUnit;
+    private LocalDateTime dateRecord;
     private String user;
     private String result;
     private Integer safe;

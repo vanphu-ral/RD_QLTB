@@ -33,7 +33,14 @@ public class Acceptance {
 
     @Column(columnDefinition = "longtext")
     private String note;
-
+    @Column
+    private String docNumber;
+    @Column
+    private Long deviceId;
+    @Column
+    private String implementingUnit;
+    @Column
+    private LocalDateTime dateRecord;
     @Column
     private String user;
 
