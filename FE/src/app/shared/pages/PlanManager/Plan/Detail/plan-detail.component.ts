@@ -81,6 +81,12 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
     _.set(this.model as any, 'plan.status', 1);
   }
 
+  generateCoede(): void {
+    this.model.plan.code = `${this.model.plan.planType?.code}-${Util.getInitials(this.model.plan.branch?.name)}-${Util.dateToCode()}`;
+    this.model.plan.planNumber = this.model.plan.code;
+  }
+
+
   cleanPlanRequest(planRequest: any) {
     if (!planRequest) return planRequest;
     const planDetails = planRequest.planDetails || [];

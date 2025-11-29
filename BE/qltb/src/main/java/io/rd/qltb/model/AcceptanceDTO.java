@@ -23,7 +23,7 @@ public class AcceptanceDTO {
     private String code;
 
     private String name;
-
+    private Integer type;
     private String note;
     private String docNumber;
     private Device device;

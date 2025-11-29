@@ -14,7 +14,7 @@
             <p-select [options]="optionScans" [(ngModel)]="scanType" optionLabel="label" optionValue="value" placeholder="Select a Scan Type" class="w-full md:w-56" />
             <video *ngIf="scanType == 2" #preview style="width: 100%; max-width: 350px; border: 1px solid #ccc; border-radius: 6px;"></video>
             <div class="mt-2">
-              <strong>Mã serial:</strong> <input pInputText id="serial" name="serial" [(ngModel)]="serial" autocomplete="off" [fluid]="true" (ngModelChange)="getDeviceInfo($event)"/>
+              <strong>Mã serial:</strong> <input pInputText id="serial" name="serial" [(ngModel)]="serial" autocomplete="off" [fluid]="true" (keyup.enter)="getDeviceInfo(serial)"/>
             </div>
           </div>
           <div style="border: 1px solid;"></div>

@@ -237,6 +237,20 @@ export class Util {
     );
   }
 
+  /**
+   * Lấy thời gian hiện tại mã hóa ra code
+   */
+  static dateToCode(): string {
+    const d = new Date();
+    const dd = String(d.getDate()).padStart(2, '0');
+    const MM = String(d.getMonth() + 1).padStart(2, '0'); // tháng bắt đầu từ 0
+    const yyyy = d.getFullYear();
+    const HH = String(d.getHours()).padStart(2, '0');
+    const mm = String(d.getMinutes()).padStart(2, '0');
+
+    return `${dd}${MM}${yyyy}${HH}${mm}`;
+  }
+
 
   /**
    * Lấy ngày đầu tháng
@@ -345,6 +359,18 @@ export class Util {
     if (!arr || index < 0 || index >= arr.length - 1) return arr || [];
     [arr[index], arr[index + 1]] = [arr[index + 1], arr[index]];
     return arr;
+  }
+
+  /*
+  * Chuyển một chuỗi thành chữ in hoa các ký tự đầu mỗi từ
+  */
+  static getInitials(text: string): string {
+    if (!text) return '';
+    return text
+      .trim()
+      .split(/\s+/)                
+      .map(word => word[0].toUpperCase())  
+      .join('');
   }
 
   static confirmAndExecute(

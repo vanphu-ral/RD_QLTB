@@ -26,6 +26,7 @@ import { PlanDetailService } from "../../Service/plan-detail.service";
 export class PlanMaintanceDetailDialog {
 
     data: any = {};
+    plan: any = {};
     model: any = {};
     listApprovalWorkflow: any[] = []
 
@@ -37,9 +38,8 @@ export class PlanMaintanceDetailDialog {
         private cdr: ChangeDetectorRef,
         private ngZone: NgZone
     ) {
-        this.data = config.data;
-        console.log(this.data);
-
+        this.data = config.data.planDetail;
+        this.plan = config.data.plan;
     }
 
     ngOnInit() {

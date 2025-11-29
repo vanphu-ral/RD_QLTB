@@ -9,6 +9,7 @@
       <p-tab value="5">Sửa chữa thiết bị</p-tab>
     </p-tablist>
     <p-tabpanels>
+      <!-- Lịch sử di chuyển -->
       <p-tabpanel value="0">
         <div class="table-responsive">
           <p-table [value]="listHistory" responsiveLayout="scroll">
@@ -26,7 +27,6 @@
                 <th>Thời gian</th>
               </tr>
             </ng-template>
-
             <ng-template pTemplate="body" let-row let-i="rowIndex">
               <tr>
                 <td>{{ row.oldBranchName }}</td>
@@ -49,15 +49,61 @@
           </p-table>
         </div>
       </p-tabpanel>
+      <!-- Lịch sử sự cố -->
       <p-tabpanel value="1">
-        <p class="m-0">
-          1111
-        </p>
+        <p-table [value]="listError" responsiveLayout="scroll">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Tên lỗi</th>
+              <th>Loại lỗi</th>
+              <th>Thời gian lỗi</th>
+              <th>Trạng thái</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-row let-i="rowIndex">
+            <tr>
+              <td>{{ row.name }}</td>
+              <td>{{ getSeverity(row.severity) }}</td>
+              <td>{{ row.timeReported | date: 'dd-MM-yyyy' }}</td>
+              <td><span [ngClass]="row.isRepaired ? 'badge text-bg-success' : 'badge text-bg-danger'">{{ row.isRepaired ? 'Đã sửa' : 'Chưa sửa' }}</span></td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="99" class="text-center">Chưa có lịch sử di chuyển</td>
+            </tr>
+          </ng-template>
+        </p-table>
       </p-tabpanel>
+      <!-- Lịch sử bảo dưỡng, sửa chữa -->
       <p-tabpanel value="2">
-        <p class="m-0">
-          2222
-        </p>
+        <p-table [value]="listRepaired" responsiveLayout="scroll">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Tên lỗi</th>
+              <th>Loại lỗi</th>
+              <th>Nội dung sửa chữa</th>
+              <th>Kết quả sửa chữa</th>
+              <th>Thời gian sửa chữa</th>
+              <th>Người sửa chữa</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-row let-i="rowIndex">
+            <tr>
+              <td>{{ row.name }}</td>
+              <td>{{ getSeverity(row.severity) }}</td>
+              <td>{{ row.repairDescription }}</td>
+              <td>{{ row.result }}</td>
+              <td>{{ row.timeRepaired | date: 'dd-MM-yyyy' }}</td>
+              <td>{{ row.repairedBy }}</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="99" class="text-center">Chưa có lịch sử di chuyển</td>
+            </tr>
+          </ng-template>
+        </p-table>
       </p-tabpanel>
       <p-tabpanel value="3">
         <p class="m-0">

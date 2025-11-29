@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { DeviceService } from '../../../../DeviceManager/Device/Service/device.service';
 import { DeviceRelocationHistoryService } from '../../../../DeviceManager/Device/Service/device-relocation-histories.service';
 import { PlanDetailService } from '../../../../PlanManager/Plan/Service/plan-detail.service';
+import { ErrorReportService } from '../../../../PlanManager/Plan/Service/error-report.service';
 
 @Component({
   selector: 'app-information-tab',
@@ -20,8 +21,10 @@ export class InformationTabComponent implements OnChanges {
   activeTabIndex: string = "0";
 
   listHistory: any[] = []
+  listError: any[] = []
+  listRepaired: any[] = []
 
-  constructor(private cdr: ChangeDetectorRef, private deviceRelocationHistoryService: DeviceRelocationHistoryService, private planDetailService: PlanDetailService) {
+  constructor(private cdr: ChangeDetectorRef, private deviceRelocationHistoryService: DeviceRelocationHistoryService, private planDetailService: PlanDetailService, private errorReportService: ErrorReportService) {
   }
 
   ngOnInit() { this.activeTabIndex = "0"; }
@@ -32,7 +35,7 @@ export class InformationTabComponent implements OnChanges {
     }
   }
 
-
+  // Tab change
   onTabChange(event: any) {
     console.log(event);
     
@@ -47,7 +50,7 @@ export class InformationTabComponent implements OnChanges {
         break;
 
       case "2":
-        // this.loadHistoryMaintenance(this.model.id);
+        this.loadHistoryError(this.model.id);
         break;
 
       case "3":
@@ -67,6 +70,7 @@ export class InformationTabComponent implements OnChanges {
     }
   }
 
+  // Load Data By Tab
   loadHistoryMove(deviceId: number) {
     this.deviceRelocationHistoryService.getHistoryMoveByDeviceId(deviceId).subscribe(res => {
       this.listHistory = res;
@@ -75,7 +79,13 @@ export class InformationTabComponent implements OnChanges {
   }
 
   loadHistoryError(deviceId: number) {
-    // load lịch sử sự cố
+    this.errorReportService.findByPlanResultId(deviceId).subscribe(res => {
+      this.listError = res;
+      this.listRepaired = res.filter((item: any) => item.isRepaired);
+      console.log(res); 
+      
+      this.cdr.detectChanges();
+    });
   }
 
   loadPlan(serial: string) {
@@ -85,6 +95,20 @@ export class InformationTabComponent implements OnChanges {
       // this.listHistory = res;
       this.cdr.detectChanges();
     });
+  }
+
+
+  getSeverity(status: number): any {
+    switch (status) {
+      case 0:
+        return 'Nghiêm trọng';
+      case 1:
+        return 'Bất thường';
+      case 2:
+        return 'Nhẹ';
+      default:
+        return '';
+    }
   }
 
 }
