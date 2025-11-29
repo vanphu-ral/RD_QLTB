@@ -23,6 +23,10 @@ public class ReportDeviceIncident {
     @Column
     private String reason;
     @Column
+    private Long deviceId;
+    @Column
+    private String docNumber;
+    @Column
     private String treatment_measures;
     @Column
     private String performer;

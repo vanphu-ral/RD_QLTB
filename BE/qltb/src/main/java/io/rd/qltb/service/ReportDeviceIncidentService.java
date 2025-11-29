@@ -32,6 +32,8 @@ public ReportDeviceIncidentDTO mapToDTO(final ReportDeviceIncident reportDeviceI
         reportDeviceIncidentDTO.setUpdatedAt(reportDeviceIncident.getUpdatedAt());
         reportDeviceIncidentDTO.setUpdatedBy(reportDeviceIncident.getUpdatedBy());
         reportDeviceIncidentDTO.setStatus(reportDeviceIncident.getStatus());
+        reportDeviceIncidentDTO.setDeviceId(reportDeviceIncident.getDeviceId());
+        reportDeviceIncidentDTO.setDocNumber(reportDeviceIncident.getDocNumber());
        if (reportDeviceIncident.getWorkflow() != null) {
            ApprovalWorkflow workflowCopy = new ApprovalWorkflow();
            workflowCopy.setId(reportDeviceIncident.getWorkflow().getId());
@@ -101,6 +103,8 @@ public ReportDeviceIncidentDTO mapToDTO(final ReportDeviceIncident reportDeviceI
         entity.setStatus(dto.getStatus());
         entity.setWorkflow(dto.getWorkflow());
         entity.setErrorReport(dto.getErrorReport());
+        entity.setDeviceId(dto.getDeviceId());
+        entity.setDocNumber(dto.getDocNumber());
         return entity;
     }
     public ResponseEntity<?> createReportDeviceIncident(ReportDeviceIncidentDTO dto) {
