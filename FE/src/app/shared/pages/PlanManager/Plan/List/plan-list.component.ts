@@ -207,7 +207,7 @@ export class PlanListComponent {
       header: `Biên bản nghiệm thu thiết bị`,
       width: '70%',
       modal: true,
-      data: { planResult: data, plan: plan },
+      data: { planResult: data, plan: plan, IsAddModel: true },
       closable: true,
     })
     this.ref.onClose.subscribe((result) => {

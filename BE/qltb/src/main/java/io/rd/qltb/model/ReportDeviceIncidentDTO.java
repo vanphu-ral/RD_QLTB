@@ -16,11 +16,10 @@ public class ReportDeviceIncidentDTO {
     private String name;
     private String errorDescription;
     private String reason;
-    private String treatment_measures;
-    private Device device;
-    private String docNumber;
+    private String treatmentMeasure;
     private String performer;
     private LocalDateTime timeComplete;
+    private String docNumber;
     private String listUser;
     private String division;
     private LocalDateTime createdAt;
@@ -30,4 +29,5 @@ public class ReportDeviceIncidentDTO {
     private Integer status;
     private ApprovalWorkflow workflow;
     private ErrorReport errorReport;
+    private Device device;
 }

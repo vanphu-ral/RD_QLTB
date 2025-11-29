@@ -1,0 +1,19 @@
+<!-- report-device-incident-list.component.html -->
+<app-base-table 
+  [apiService]="reportDeviceIncidentService"
+  [columns]="columns"
+  [title]="'Danh sách các biên bản nghiệm thu lỗi thiết bị'"
+  [showAddButton]="true"
+  [showEditButton]="false"
+  [showViewButton]="false"
+  [actionTemplate]="customActions">
+  <ng-template appColumnTemplate="createdAt" let-rowData>
+    {{ rowData | date: 'dd/MM/yyyy' }}
+  </ng-template>
+  <ng-template appColumnTemplate="updatedAt" let-rowData>
+    {{ rowData | date: 'dd/MM/yyyy' }}
+  </ng-template>
+</app-base-table>
+<ng-template #customActions let-row>
+  <p-button icon="pi pi-eye" styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="viewReport(row)"></p-button>
+</ng-template>

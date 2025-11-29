@@ -507,4 +507,11 @@ export class Util {
   static getUserByUsername(listUser: any[], username: string): any {
     return listUser.find(user => user.username === username);
   }
+
+  /**
+   * Chuyển arr sang chuỗi ngăn cách bởi dấu phẩy
+   */
+  static arrayToString(arr: any[], separator = ','): string {
+    return arr.map(item => item.toString()).join(separator);
+  }
 }

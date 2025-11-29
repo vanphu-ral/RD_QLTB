@@ -34,6 +34,8 @@ export class ListErrorDialog {
         private messageService: MessageService
     ) {
         this.data = config.data;
+        console.log(this.data);
+        
     }
 
     ngOnInit() {
@@ -96,7 +98,7 @@ export class ListErrorDialog {
         const ref = this.dialogService.open(ErrorReportSeriousDialog, {
             header: `Tiếp nhận lỗi nghiêm trọng - ${row.name}`,
             width: '50%',
-            data: row,
+            data: {error: row, planDetail: this.data, IsAddMode: true},
             closable: true
         });
     }

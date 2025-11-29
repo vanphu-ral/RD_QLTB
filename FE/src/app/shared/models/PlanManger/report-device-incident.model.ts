@@ -7,13 +7,15 @@ export class ReportDeviceIncident {
     treatmentMeasure?: string;
     performer?: string;
     timeComplete?: Date;
-    listUser?: any[];
-    listDivision?: any[];
-    status?: number;
+    docNumber?: string;
+    listUser?: any;
+    division?: any;
     createdBy?: string;
     createdAt?: Date;
     updatedBy?: string;
     updatedAt?: Date;
+    status?: number;
     workflow?: any;
     errorReport?: any;
+    device?: any;
 }

@@ -25,7 +25,7 @@ public class ReportDeviceIncident {
     @Column
     private String docNumber;
     @Column
-    private String treatment_measures;
+    private String treatmentMeasure;
     @Column
     private String performer;
     @Column

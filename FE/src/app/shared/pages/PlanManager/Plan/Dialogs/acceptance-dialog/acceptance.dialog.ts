@@ -19,6 +19,7 @@ import { PLANTYPE } from "../../../../../enums/plan-type.enum";
 import { CriterialService } from "../../../Criterial/Service/criterial.service";
 import { AcceptanceService } from "../../../../Reports/Acceptance/service/acceptance.service";
 import { forkJoin } from "rxjs/internal/observable/forkJoin";
+import { ɵɵDir } from "@angular/cdk/scrolling";
 
 @Component({
     selector: 'app-acceptance-dialog',
@@ -45,50 +46,54 @@ export class AcceptanceDialog {
         private criterialService: CriterialService,
         private cdr: ChangeDetectorRef
     ) {
-        this.data = config.data.planResult;
-        this.plan = config.data.plan;
-        console.log(this.data);
-        console.log(this.plan);
-
+        this.IsAddModel = config.data.IsAddModel;
+        if(config.data.IsAddModel === false){
+            this.model = config.data.data;
+            
+        }else{
+            this.data = config.data.planResult;
+            this.plan = config.data.plan;
+        }
     }
 
     ngOnInit() {
-        this.acceptanceService.checkExistByPlanDetailId(this.data.id).subscribe((res: any) => {
-            if (res.exists == 1) {
-                // Util.ConfirmMessage('Phiếu nghiệm thu đã tồn tại cho phiếu này!', 'error');
-                // this.ref.close(false);
-                // return; 
-            }
-            this.model.type = this.plan.planTypeCode == PLANTYPE.REPAIR ? 1 : (this.plan.planTypeCode == PLANTYPE.MAINTENANCE ? 2 : 3);
-            forkJoin({
-                criterial: this.criterialService.getListBySampleReport(this.data.sampleReportId),
-                workflows: this.approvalWorkflowService.getAll(),
-                device: this.deviceService.getById(this.data.deviceId || 0)
-            }).subscribe(result => {
-                this.implementationContent = result.criterial;
-                this.listApprovalWorkflow = result.workflows;
-                this.model.device = result.device;
-                console.log(result.device);
-                
-                this.model.docNumber = `BBNTTB-${Util.getInitials(this.model.device.branch.name)}-${this.model.device.code}-${Util.dateToCode()}`;
-                this.model.dateRecord = new Date();
-                this.cdr.detectChanges();
+        if(this.IsAddModel) {
+            this.acceptanceService.checkExistByPlanDetailId(this.data.id).subscribe((res: any) => {
+                if (res.exists == 1) {
+                    Util.ConfirmMessage('Phiếu nghiệm thu đã tồn tại cho phiếu này!', 'error');
+                    this.ref.close(false);
+                    return; 
+                }
+                this.model.type = this.plan.planTypeCode == PLANTYPE.REPAIR ? 1 : (this.plan.planTypeCode == PLANTYPE.MAINTENANCE ? 2 : 3);
+                forkJoin({
+                    criterial: this.criterialService.getListBySampleReport(this.data.sampleReportId),
+                    workflows: this.approvalWorkflowService.getAll(),
+                    device: this.deviceService.getById(this.data.deviceId || 0)
+                }).subscribe(result => {
+                    this.implementationContent = result.criterial;
+                    this.listApprovalWorkflow = result.workflows;
+                    this.model.device = result.device;
+                    this.model.docNumber = `BBNTTB-${Util.getInitials(this.model.device.branch.name)}-${this.model.device.code}-${Util.dateToCode()}`;
+                    this.model.dateRecord = new Date();
+                    this.cdr.detectChanges();
+                });
             });
-        });
-        this.model.fromDateAcceptance = new Date();
-        this.model.toDateAcceptance = new Date();
-        this.model.fromDatePerform = new Date();
-        this.model.toDatePerform = new Date();
+            this.model.fromDateAcceptance = new Date();
+            this.model.toDateAcceptance = new Date();
+            this.model.fromDatePerform = new Date();
+            this.model.toDatePerform = new Date();
+        }
     }
 
     submit() {
-        this.model.name = `ACCEPTANCE-${new Date().getTime()}`
+        this.model.name = `BBNTTB-${new Date().getTime()}`
         this.model.code = this.model.docNumber;
         this.model.timeAcceptance = new Date();
         this.model.planDetailId = this.data.id;
         this.model.status = 1
         this.acceptanceService.create(this.model).subscribe(res => {
-            this.ref.close(true);
+            Util.showSuccessMessage("Tạo biên bản nghiệm thu thành công");
+            this.close();
         })
     }
 

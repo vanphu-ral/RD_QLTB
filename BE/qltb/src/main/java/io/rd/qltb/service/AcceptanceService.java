@@ -192,7 +192,7 @@ public class AcceptanceService {
     private Acceptance mapToEntity(final AcceptanceDTO acceptanceDTO, final Acceptance acceptance) {
         acceptance.setCode(acceptanceDTO.getCode());
         acceptance.setName(acceptanceDTO.getName());
-        acceptance.setType(acceptance.getType());
+        acceptance.setType(acceptanceDTO.getType());
         acceptance.setNote(acceptanceDTO.getNote());
         acceptance.setUser(acceptanceDTO.getUser());
         acceptance.setResult(acceptanceDTO.getResult());

@@ -11,6 +11,7 @@ import { Department } from "../../../../../models/Catogories/department.model";
 import { DepartmentService } from "../../../../Categories/Department/Service/department.service";
 import { BranchService } from "../../../../Categories/Branch/Service/branch.service";
 import { forkJoin } from "rxjs";
+import { DeviceService } from "../../../../DeviceManager/Device/Service/device.service";
 
 @Component({
     selector: 'app-error-report-serious-dialog',
@@ -21,10 +22,13 @@ import { forkJoin } from "rxjs";
 export class ErrorReportSeriousDialog {
 
     data: any;
+    planDetail: any;
     model: ReportDeviceIncident = new ReportDeviceIncident();
     listApprovalWorkflow: any[] = []
     listUsers: any[] = []
     listBranches: any[] = []
+
+    IsAddMode: boolean = true;
 
     constructor(
         public ref: DynamicDialogRef,
@@ -34,24 +38,33 @@ export class ErrorReportSeriousDialog {
         private reportDeviceIncidentService: ReportDeviceIncidentService,
         private departmentService: DepartmentService,
         private branchService: BranchService,
+        private deviceService: DeviceService,
     ) {
-        this.data = config.data;
-        this.model.errorReport = this.data;
-        this.model.errorDescription = this.data.errorDescription;
-        this.model.reason = this.data.result;
-        this.model.treatmentMeasure = this.data.repairDescription;
-        this.model.timeComplete = this.data.timeRepaired;
+        this.IsAddMode = this.config.data.IsAddMode;
+        if (!this.IsAddMode) {
+            this.model = this.config.data.data;
+            this.model.listUser = _.split(this.model.listUser, ',');
+            this.model.division = _.split(this.model.division, ',');
+
+        } else {
+            this.data = config.data.error;
+            this.planDetail = config.data.planDetail;
+            this.model.errorReport = this.data;
+            this.model.errorDescription = this.data.errorDescription;
+            this.model.reason = this.data.result;
+            this.model.treatmentMeasure = this.data.repairDescription;
+            this.model.timeComplete = this.data.timeRepaired;
+            this.model.createdAt = new Date();
+        }
     }
 
     ngOnInit() {
         const requests = {
-            workflows: this.approvalWorkflowService.getAll(),
             users: this.approvalWorkflowService.getUsers(),
             branches: this.branchService.getAll(),
             departments: this.departmentService.getAll(),
-        };
+        }
         forkJoin(requests).subscribe(res => {
-            this.listApprovalWorkflow = res.workflows;
             this.listUsers = _.map(res.users, user => {
                 const firstName = user.firstName ?? '';
                 const lastName = user.lastName ?? '';
@@ -65,11 +78,26 @@ export class ErrorReportSeriousDialog {
                 ...res.branches,
                 ...res.departments
             ];
-            this.cdr.detectChanges();
-        });
+        })
+        if (this.IsAddMode) {
+            const requests = {
+                workflows: this.approvalWorkflowService.getAll(),
+                device: this.deviceService.getById(this.planDetail.deviceId),
+            };
+            forkJoin(requests).subscribe(res => {
+                this.listApprovalWorkflow = res.workflows;
+                this.model.device = res.device;
+                this.model.docNumber = `BBNTLTB-${Util.getInitials(this.model.device.branch.name)}-${this.model.device.code}-${Util.dateToCode()}`;
+                this.cdr.detectChanges();
+            });
+        }
     }
 
     submit() {
+        this.model.name = `BBNTLTB-${new Date().getTime()}`
+        this.model.code = this.model.docNumber;
+        this.model.listUser = Util.arrayToString(this.model.listUser);
+        this.model.division = Util.arrayToString(this.model.division);
         this.reportDeviceIncidentService.create(this.model).subscribe(res => {
             Util.showSuccessMessage("Báo cáo sự cố nghiêm trọng thành công");
             this.close();

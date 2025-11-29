@@ -41,7 +41,7 @@ export const MENU_ITEMS: MenuItem[] = [
                 icon: 'fa-solid fa-file-signature',
                 items: [
                     { label: 'Biên bản nghiệm thu thiết bị', icon: 'fa-solid fa-file-invoice', routerLink: ['/Acceptance'] },
-                    { label: 'Biên bản sự cố nghiêm trọng', icon: 'fa-solid fa-file-excel', routerLink: ['/RepairRecords'] }
+                    { label: 'Biên bản sự cố nghiêm trọng', icon: 'fa-solid fa-file-excel', routerLink: ['/ReportDeviceIncident'] }
                 ]
             },
             {

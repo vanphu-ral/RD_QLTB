@@ -3,18 +3,18 @@ import { BaseTableComponent } from '../../../../base/base-table-component/base-t
 import { SharedModule } from '../../../../../share.module';
 import { FormsModule } from '@angular/forms';
 import { Column } from '../../../../models/Core/column.model';
-import { AcceptanceService } from '../service/acceptance.service';
+import { ReportDeviceIncidentService } from '../service/report-device-incident.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { AcceptanceDialog } from '../../../PlanManager/Plan/Dialogs/acceptance-dialog/acceptance.dialog';
+import { ErrorReportSeriousDialog } from '../../../PlanManager/Plan/Dialogs/error-report-serious-dialog/error-report-serious.dialog';
 
 @Component({
-  selector: 'acceptance-list',
+  selector: 'report-device-incident-list',
   standalone: true,
   imports: [SharedModule, BaseTableComponent, FormsModule],
-  templateUrl: './acceptance-list.component.html',
-  styleUrls: ['./acceptance-list.component.scss'],
+  templateUrl: './report-device-incident-list.component.html',
+  styleUrls: ['./report-device-incident-list.component.scss'],
 })
-export class AcceptanceListComponent {
+export class ReportDeviceIncidentListComponent {
   selectedStatus: string | null = null;
 
   ref?: DynamicDialogRef;
@@ -28,14 +28,13 @@ export class AcceptanceListComponent {
     { Field: 'updatedAt', Header: 'Ngày cập nhật', IsSearch: true, TypeSearch: 'date', style: { 'min-width': '150px' } },
   ];
 
-  constructor(public acceptanceService: AcceptanceService, private dialogService: DialogService) {}
+  constructor(public reportDeviceIncidentService: ReportDeviceIncidentService, private dialogService: DialogService) {}
 
-  viewAcceptance(row: any) {
-    console.log(1);
-    const ref = this.dialogService.open(AcceptanceDialog, {
-      header: 'Xem biên bản nghiệm thu',
+  viewReport(row: any) {
+    const ref = this.dialogService.open(ErrorReportSeriousDialog, {
+      header: 'Xem biên bản thiết bị sự cố',
       width: '70%',
-      data: { data: row, IsAddModel: false },
+      data: { data: row, IsAddMode: false },
       modal: true,
     });
     this.ref = ref;

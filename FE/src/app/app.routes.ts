@@ -143,5 +143,10 @@ export const routes: Routes = [
         path: 'Acceptance',
         component: AppLayout,
         loadChildren: () => import('./shared/pages/Reports/Acceptance/acceptance.routes').then(m => m.default)
+    },
+    {
+        path: 'ReportDeviceIncident',
+        component: AppLayout,
+        loadChildren: () => import('./shared/pages/Reports/ReportDeviceIncident/report-device-incident.routes').then(m => m.default)
     }
 ];
