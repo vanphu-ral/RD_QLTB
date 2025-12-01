@@ -38,7 +38,7 @@ const planRoute: Routes = [
   {
     path: ':id/summary',
     component: ViewEvaluatePage,
-    data: { model: 'view'},
+    data: { model: 'view' },
     resolve: {
       data: PlanDetailResolve
     }
@@ -52,13 +52,13 @@ const planRoute: Routes = [
     }
   },
   {
-      path: ':id/approval',
-      component: PlanDetailComponent,
-      data: { mode: 'approval' },
-      resolve: {
-        data: PlanResolve,
-      },
-    }
+    path: ':id/approval',
+    component: PlanDetailComponent,
+    data: { mode: 'approval' },
+    resolve: {
+      data: PlanResolve,
+    },
+  }
 ];
 
 export default planRoute;

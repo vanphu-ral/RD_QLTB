@@ -31,7 +31,6 @@ export class AcceptanceListComponent {
   constructor(public acceptanceService: AcceptanceService, private dialogService: DialogService) {}
 
   viewAcceptance(row: any) {
-    console.log(1);
     const ref = this.dialogService.open(AcceptanceDialog, {
       header: 'Xem biên bản nghiệm thu',
       width: '70%',
