@@ -31,4 +31,9 @@ public class ReportDeviceIncidentResource {
         reportDeviceIncidentService.updateReportDeviceIncident(id, reportDeviceIncidentDTO);
         return ResponseEntity.ok().build();
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteReportDeviceIncident(@PathVariable final Long id) {
+        reportDeviceIncidentService.deleteReportDeviceIncident(id);
+        return ResponseEntity.noContent().build();
+    }
 }

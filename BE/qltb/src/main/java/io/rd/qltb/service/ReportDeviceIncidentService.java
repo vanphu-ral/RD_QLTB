@@ -168,5 +168,7 @@ public ReportDeviceIncidentDTO mapToDTO(final ReportDeviceIncident reportDeviceI
         ReportDeviceIncident reportDeviceIncident = reportDeviceIncidentRepository.findById(id).orElseThrow();
         return mapToDTO(reportDeviceIncident, new ReportDeviceIncidentDTO());
     }
-
+    public void deleteReportDeviceIncident(Long id) {
+        reportDeviceIncidentRepository.deleteById(id);
+    }
 }
