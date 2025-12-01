@@ -31,6 +31,8 @@ public class ReportDeviceIncident {
     @Column
     private LocalDateTime timeComplete;
     @Column
+    private LocalDateTime timeReported;
+    @Column
     private String listUser;
     @Column
     private String division;

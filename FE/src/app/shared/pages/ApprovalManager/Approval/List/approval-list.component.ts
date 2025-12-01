@@ -97,7 +97,7 @@ export class ApprovalListComponent {
       'sample_reports': 'SampleReports',
       'plans': 'Plans',
       'acceptances': 'Acceptance',
-      'report_device_incidents': 'ReportDeviceIncidents',
+      'report_device_incidents': 'ReportDeviceIncident',
       // thêm mapping nếu có entityType khác
     };
 

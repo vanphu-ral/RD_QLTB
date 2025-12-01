@@ -29,8 +29,6 @@ export class AcceptancePage extends BasePageComponent<Acceptance> {
     implementationContent: any[] = [];
     listApprovalWorkflow: any[] = [];
 
-    IsAddModel: boolean = true;
-
     constructor(
         protected override apiService: AcceptanceService,
         private approvalWorkflowService: ApprovalWorlflowService,
@@ -42,14 +40,12 @@ export class AcceptancePage extends BasePageComponent<Acceptance> {
             const data = res.data;
             this.plan = data.plan;
             this.planResult = data.planResult;
-            this.IsAddModel = data.IsAddModel;
         });
-        this.IsAddModel = this.route.snapshot.data['mode'] === 'add';
     }
 
     override ngOnInit() {
         super.ngOnInit();
-        if (this.IsAddModel) {
+        if (this.isAddMode) {
             this.model.type = this.plan.planTypeCode == PLANTYPE.REPAIR ? 1 : (this.plan.planTypeCode == PLANTYPE.MAINTENANCE ? 2 : 3);
             forkJoin({
                 criterial: this.criterialService.getListBySampleReport(this.planResult.sampleReportId),

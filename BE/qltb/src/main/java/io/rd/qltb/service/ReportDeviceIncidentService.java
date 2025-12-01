@@ -26,6 +26,7 @@ public ReportDeviceIncidentDTO mapToDTO(final ReportDeviceIncident reportDeviceI
         reportDeviceIncidentDTO.setTreatmentMeasure(reportDeviceIncident.getTreatmentMeasure());
         reportDeviceIncidentDTO.setPerformer(reportDeviceIncident.getPerformer());
         reportDeviceIncidentDTO.setTimeComplete(reportDeviceIncident.getTimeComplete());
+        reportDeviceIncidentDTO.setTimeReported(reportDeviceIncident.getTimeReported());
         reportDeviceIncidentDTO.setListUser(reportDeviceIncident.getListUser());
         reportDeviceIncidentDTO.setDivision(reportDeviceIncident.getDivision());
         reportDeviceIncidentDTO.setCreatedAt(reportDeviceIncident.getCreatedAt());
@@ -135,6 +136,7 @@ public ReportDeviceIncidentDTO mapToDTO(final ReportDeviceIncident reportDeviceI
         entity.setTreatmentMeasure(dto.getTreatmentMeasure());
         entity.setPerformer(dto.getPerformer());
         entity.setTimeComplete(dto.getTimeComplete());
+        entity.setTimeReported(dto.getTimeReported());
         entity.setListUser(dto.getListUser());
         entity.setDivision(dto.getDivision());
         entity.setCreatedAt(dto.getCreatedAt());

@@ -20,29 +20,29 @@
         <tr>
           <td>Bộ phận quản lý/sử dụng thiết bị: <span id="spanBienBanTeamName">{{ model.device?.team?.name }}</span> </td>
           <td colspan="2">Ngành/Ban: <span id="spanBienBanBranchName">{{ model.device?.branch?.name }}</span></td>
-          <td>Xưởng: <span id="spanBienBanFactoryName">{{ !IsAddModel ? model.device?.branch?.factory?.name : "Xưởng LED DT&TBCS" }}</span></td>
+          <td>Xưởng: <span id="spanBienBanFactoryName">{{ !isAddMode ? model.device?.branch?.factory?.name : "Xưởng LED DT&TBCS" }}</span></td>
         </tr>
         <tr>
           <td>Giao nhận sau: </td>
           <td colspan="3">
             <div class="form-group clearfix"> 
               <div class="icheck-primary d-inline">
-                <input [value]="1" value="1" type="radio" id="type1" name="type" [(ngModel)]="model.type" [disabled]="!IsAddModel">
+                <input [value]="1" value="1" type="radio" id="type1" name="type" [(ngModel)]="model.type" [disabled]="!isAddMode">
                 <label class="mx-2" for="type1">Sửa chữa</label>
               </div>
 
               <div class="icheck-primary d-inline">
-                <input [value]="2" value="2" type="radio" id="type2" name="type" [(ngModel)]="model.type" [disabled]="!IsAddModel">
+                <input [value]="2" value="2" type="radio" id="type2" name="type" [(ngModel)]="model.type" [disabled]="!isAddMode">
                 <label class="mx-2" for="type2">Bảo dưỡng định kỳ</label>
               </div>
 
               <div class="icheck-primary d-inline">
-                <input [value]="3" value="3" type="radio" id="type3" name="type" [(ngModel)]="model.type" [disabled]="!IsAddModel">
+                <input [value]="3" value="3" type="radio" id="type3" name="type" [(ngModel)]="model.type" [disabled]="!isAddMode">
                 <label class="mx-2" for="type3">Khác</label>
               </div>
 
               <div class="icheck-primary d-inline">
-                <input [value]="0" value="0" type="radio" id="type0" name="type" [(ngModel)]="model.type" [disabled]="!IsAddModel">
+                <input [value]="0" value="0" type="radio" id="type0" name="type" [(ngModel)]="model.type" [disabled]="!isAddMode">
                 <label class="mx-2" for="type0">Bỏ chọn</label>
               </div>
 
@@ -56,13 +56,13 @@
             <div class="d-flex mt-2">
               <p-floatlabel variant="on" class="mx-1">
                 <p-datepicker appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="fromDateAcceptance" [(ngModel)]="model.fromDateAcceptance"
-                  inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body" [inputSize]="100" [autofocus]="false" [disabled]="!IsAddModel" />
+                  inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body" [inputSize]="100" [autofocus]="false" [disabled]="!isAddMode" />
                 <label for="fromDateAcceptance">Từ ngày</label>
               </p-floatlabel>
 
               <p-floatlabel variant="on" class="mx-1">
                 <p-datepicker appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="toDateAcceptance" [(ngModel)]="model.toDateAcceptance"
-                  inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body" [inputSize]="100" [autofocus]="false" [disabled]="!IsAddModel" />
+                  inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body" [inputSize]="100" [autofocus]="false" [disabled]="!isAddMode" />
                 <label for="toDateAcceptance">Đến ngày</label>
               </p-floatlabel>
             </div>
@@ -74,13 +74,13 @@
             <div class="d-flex mt-2">
               <p-floatlabel variant="on" class="mx-1">
                 <p-datepicker appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="fromDatePerform" [(ngModel)]="model.fromDatePerform"
-                  inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body" [inputSize]="100" [autofocus]="false" [disabled]="!IsAddModel"/>
+                  inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body" [inputSize]="100" [autofocus]="false" [disabled]="!isAddMode"/>
                 <label for="fromDatePerform">Từ ngày</label>
               </p-floatlabel>
 
               <p-floatlabel variant="on" class="mx-1">
                 <p-datepicker appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="toDatePerform" [(ngModel)]="model.toDatePerform"
-                  inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body" [inputSize]="100" [autofocus]="false" [disabled]="!IsAddModel"/>
+                  inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body" [inputSize]="100" [autofocus]="false" [disabled]="!isAddMode"/>
                 <label for="toDatePerform">Đến ngày</label>
               </p-floatlabel>
             </div>
@@ -98,7 +98,7 @@
             </div>
             <div class="mt-3">
               <textarea pTextarea  class="form-control" rows="3" placeholder="Enter ..." id="note"
-                name="note" [(ngModel)]="model.note" [disabled]="!IsAddModel"></textarea>
+                name="note" [(ngModel)]="model.note" [disabled]="!isAddMode"></textarea>
             </div>
           </td>
         </tr>
@@ -107,7 +107,7 @@
             <b>Kết quả vận hành thử:</b>
             <div class="mt-3">
               <textarea pTextarea  class="form-control" rows="11" placeholder="Enter ..." id="result"
-                name="result" [(ngModel)]="model.result" [disabled]="!IsAddModel"></textarea>
+                name="result" [(ngModel)]="model.result" [disabled]="!isAddMode"></textarea>
             </div>
           </td>
           <td>
@@ -116,19 +116,19 @@
             </b>
             <div class="form-group clearfix mt-2">
               <div class="icheck-primary d-inline">
-                <input type="radio" [value]="1" class="mx-2" value="1" id="safe1" name="safe" checked="" [(ngModel)]="model.safe" [disabled]="!IsAddModel">
+                <input type="radio" [value]="1" class="mx-2" value="1" id="safe1" name="safe" checked="" [(ngModel)]="model.safe" [disabled]="!isAddMode">
                 <label for="safe1">
                   Đạt
                 </label>
               </div>
               <div class="icheck-primary d-inline">
-                <input type="radio" [value]="2" class="mx-2" value="2" id="safe2" name="safe" [(ngModel)]="model.safe" [disabled]="!IsAddModel">
+                <input type="radio" [value]="2" class="mx-2" value="2" id="safe2" name="safe" [(ngModel)]="model.safe" [disabled]="!isAddMode">
                 <label for="safe2">
                   Không đạt
                 </label>
               </div>
               <div class="icheck-primary d-inline">
-                <input type="radio" [value]="0" class="mx-2" value="0" id="safe0" name="safe" [(ngModel)]="model.safe" [disabled]="!IsAddModel">
+                <input type="radio" [value]="0" class="mx-2" value="0" id="safe0" name="safe" [(ngModel)]="model.safe" [disabled]="!isAddMode">
                 <label for="safe0">
                   Không đánh giá
                 </label>
@@ -143,19 +143,19 @@
             </b>
             <div class="form-group clearfix mt-2">
               <div class="icheck-primary d-inline">
-                <input class="mx-2" [value]="1" value="1" type="radio" id="quality1" name="quality" checked="" [(ngModel)]="model.quality" [disabled]="!IsAddModel">
+                <input class="mx-2" [value]="1" value="1" type="radio" id="quality1" name="quality" checked="" [(ngModel)]="model.quality" [disabled]="!isAddMode">
                 <label for="quality1">
                   Đạt
                 </label>
               </div>
               <div class="icheck-primary d-inline">
-                <input class="mx-2" [value]="2" value="2" type="radio" id="quality2" name="quality" [(ngModel)]="model.quality" [disabled]="!IsAddModel">
+                <input class="mx-2" [value]="2" value="2" type="radio" id="quality2" name="quality" [(ngModel)]="model.quality" [disabled]="!isAddMode">
                 <label for="quality2">
                   Không đạt
                 </label>
               </div>
               <div class="icheck-primary d-inline">
-                <input class="mx-2" [value]="0" type="radio" class="mx-2" value="0" id="quality0" name="quality" [(ngModel)]="model.quality" [disabled]="!IsAddModel">
+                <input class="mx-2" [value]="0" type="radio" class="mx-2" value="0" id="quality0" name="quality" [(ngModel)]="model.quality" [disabled]="!isAddMode">
                 <label for="quality0">
                   Không đánh giá
                 </label>
@@ -170,19 +170,19 @@
             </b>
             <div class="form-group clearfix mt-2">
               <div class="icheck-primary d-inline">
-                <input type="radio" [value]="1" class="mx-2" value="1" id="productivity1" name="productivity" checked="" [(ngModel)]="model.productivity" [disabled]="!IsAddModel">
+                <input type="radio" [value]="1" class="mx-2" value="1" id="productivity1" name="productivity" checked="" [(ngModel)]="model.productivity" [disabled]="!isAddMode">
                 <label for="productivity1">
                   Đạt
                 </label>
               </div>
               <div class="icheck-primary d-inline">
-                <input type="radio" [value]="2" class="mx-2" value="2" id="productivity2" name="productivity" [(ngModel)]="model.productivity" [disabled]="!IsAddModel">
+                <input type="radio" [value]="2" class="mx-2" value="2" id="productivity2" name="productivity" [(ngModel)]="model.productivity" [disabled]="!isAddMode">
                 <label for="productivity2">
                   Không đạt
                 </label>
               </div>
               <div class="icheck-primary d-inline">
-                <input type="radio" [value]="0" class="mx-2" value="0" id="productivity0" name="productivity" [(ngModel)]="model.productivity" [disabled]="!IsAddModel">
+                <input type="radio" [value]="0" class="mx-2" value="0" id="productivity0" name="productivity" [(ngModel)]="model.productivity" [disabled]="!isAddMode">
                 <label for="productivity0">
                   Không đánh giá
                 </label>
@@ -199,18 +199,18 @@
           <td colspan="2">
             <div>
               <textarea pTextarea  class="form-control" rows="3" placeholder="Enter ..." id="ActionMore"
-                name="ActionMore" [(ngModel)]="model.actionMore" [disabled]="!IsAddModel"></textarea>
+                name="ActionMore" [(ngModel)]="model.actionMore" [disabled]="!isAddMode"></textarea>
             </div>
           </td>
           <td>
             <div id="divBienBanResponsibility">
               <textarea pTextarea  class="form-control" rows="3" placeholder="Enter ..." id="responsibility"
-                name="responsibility" [(ngModel)]="model.responsibility" [disabled]="!IsAddModel"></textarea>
+                name="responsibility" [(ngModel)]="model.responsibility" [disabled]="!isAddMode"></textarea>
             </div>
           </td>
           <td>
             <div id="divBienBanLimitation">
-              <textarea pTextarea  class="form-control" rows="3" placeholder="Enter ..." id="limitation" name="limitation" [(ngModel)]="model.limitation" [disabled]="!IsAddModel"></textarea>
+              <textarea pTextarea  class="form-control" rows="3" placeholder="Enter ..." id="limitation" name="limitation" [(ngModel)]="model.limitation" [disabled]="!isAddMode"></textarea>
             </div>
           </td>
         </tr>
@@ -222,7 +222,7 @@
     <app-base-approval [approvalModel]="approvalModel"></app-base-approval>
   </div>
 
-  <div class="row" *ngIf="IsAddModel">
+  <div class="row" *ngIf="isAddMode">
     <div class="col-12">
         <p-floatlabel variant="on">
           <p-select [options]="listApprovalWorkflow" optionLabel="name" [(ngModel)]="model.approvalWorkflow"
@@ -237,7 +237,7 @@
 
   <div class="d-flex justify-content-end gap-2 mt-4">
     <p-button label="Quay lại" severity="info" (click)="onBack()" icon="pi pi-arrow-left" class="me-2"></p-button>
-    <p-button label="Lưu" severity="success" *ngIf="IsAddModel" (onClick)="save()"></p-button>
+    <p-button label="Lưu" severity="success" *ngIf="isAddMode" (onClick)="save()"></p-button>
     <p-button *ngIf="isApprovalMode" label="Lưu" icon="pi pi-save" severity="success"
         class="w-full max-w-[17.35rem]" (click)="Approval()" styleClass="w-full mx-auto" />
   </div>
