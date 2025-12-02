@@ -3,25 +3,18 @@
 
   <form #f="ngForm" *ngIf="model && model.plan">
     <div class="row my-3">
-      <div class="col-4">
+      <div class="col-6">
         <p-floatlabel variant="on">
-          <input pInputText id="plan.code" name="plan.code" [(ngModel)]="model.plan.code" autocomplete="off" [disabled]="isViewMode || isApprovalMode" [fluid]="true"/>
+          <input pInputText id="plan.code" name="plan.code" [(ngModel)]="model.plan.code" autocomplete="off"
+            [disabled]="isViewMode || isApprovalMode" [fluid]="true" />
           <label for="plan.code">Mã kế hoạch</label>
         </p-floatlabel>
       </div>
-      <div class="col-4">
+      <div class="col-6">
         <p-floatlabel variant="on">
-          <input pInputText id="name" name="name" [(ngModel)]="model.plan.name" required [invalid]="!model.plan.name" autocomplete="off" [disabled]="isViewMode || isApprovalMode" [fluid]="true"/>
+          <input pInputText id="name" name="name" [(ngModel)]="model.plan.name" required [invalid]="!model.plan.name"
+            autocomplete="off" [disabled]="isViewMode || isApprovalMode" [fluid]="true" />
           <label for="name">Tên kế hoạch</label>
-        </p-floatlabel>
-      </div>
-
-      <div class="col-4">
-        <p-floatlabel variant="on">
-          <p-select [(ngModel)]="model.plan.planType" [invalid]="!model.plan.planType" [options]="listTypes" [fluid]="true" [disabled]="isViewMode || isApprovalMode"
-            [showClear]="true" [appendTo]="'body'" id="planType" name="planType" optionLabel="name" dataKey="id" (ngModelChange)="generateCoede()">
-          </p-select>
-          <label for="planType">Loại</label>
         </p-floatlabel>
       </div>
     </div>
@@ -29,8 +22,19 @@
     <div class="row my-3">
       <div class="col-4">
         <p-floatlabel variant="on">
-          <p-select [(ngModel)]="model.plan.frequency" [invalid]="!model.plan.frequency" [options]="listFrequencies" [fluid]="true" [disabled]="isViewMode || isApprovalMode"
-            [showClear]="true" [appendTo]="'body'" id="frequency" name="frequency">
+          <p-select [(ngModel)]="model.plan.planType" [invalid]="!model.plan.planType" [options]="listTypes"
+            [fluid]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'"
+            id="planType" name="planType" optionLabel="name" dataKey="id" (ngModelChange)="generateCoede()">
+          </p-select>
+          <label for="planType">Loại</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.plan.frequency" [invalid]="!model.plan.frequency" [options]="listFrequencies"
+            [fluid]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'"
+            id="frequency" name="frequency">
           </p-select>
           <label for="frequency">Tần suất</label>
         </p-floatlabel>
@@ -38,26 +42,21 @@
 
       <div class="col-4">
         <p-floatlabel variant="on">
-          <input pInputText id="planNumber" name="planNumber" [(ngModel)]="model.plan.planNumber" [invalid]="!model.plan.planNumber" autocomplete="off" [disabled]="isViewMode || isApprovalMode" [fluid]="true"/>
+          <input pInputText id="planNumber" name="planNumber" [(ngModel)]="model.plan.planNumber"
+            [invalid]="!model.plan.planNumber" autocomplete="off" [disabled]="isViewMode || isApprovalMode"
+            [fluid]="true" />
           <label for="planNumber">Số kế hoạch</label>
         </p-floatlabel>
       </div>
 
-      <div class="col-4">
-        <p-floatlabel variant="on">
-          <p-select [(ngModel)]="model.plan.userPerformer" [invalid]="!model.plan.userPerformer" [options]="listUserPerformer" [fluid]="true" [disabled]="isViewMode || isApprovalMode"
-            [showClear]="true" [appendTo]="'body'" id="userPerformer" name="userPerformer" optionLabel="name" optionValue="username" dataKey="username">
-          </p-select>
-          <label for="userPerformer">Người thực hiện</label>
-        </p-floatlabel>
-      </div>
     </div>
 
     <div class="row my-3">
       <div class="col-4">
         <p-floatlabel variant="on">
-          <p-select [(ngModel)]="model.plan.factory" [invalid]="!model.plan.factory" [options]="listFactory" [fluid]="true" [disabled]="isViewMode || isApprovalMode"
-            [showClear]="true" [appendTo]="'body'" id="factory" name="factory" optionLabel="name" dataKey="id">
+          <p-select [(ngModel)]="model.plan.factory" [options]="listFactory"
+            [fluid]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="factory"
+            name="factory" optionLabel="name" dataKey="id">
           </p-select>
           <label for="factory">Xưởng</label>
         </p-floatlabel>
@@ -65,8 +64,9 @@
 
       <div class="col-4">
         <p-floatlabel variant="on">
-          <p-select [(ngModel)]="model.plan.branch" [invalid]="!model.plan.branch" [options]="listBranchs" [fluid]="true" [disabled]="isViewMode || isApprovalMode"
-            [showClear]="true" [appendTo]="'body'" id="branch" name="branch" optionLabel="name" dataKey="id" (ngModelChange)="generateCoede()">
+          <p-select [(ngModel)]="model.plan.branch" [options]="listBranchs"
+            [fluid]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="branch"
+            name="branch" optionLabel="name" dataKey="id" (ngModelChange)="generateCoede()">
           </p-select>
           <label for="branch">Ngành</label>
         </p-floatlabel>
@@ -74,16 +74,57 @@
 
       <div class="col-4">
         <p-floatlabel variant="on">
-          <p-select [(ngModel)]="model.plan.approvalWorkflow" [invalid]="!model.plan.approvalWorkflow" [options]="listApprovalWorkflow" optionLabel="name"
-            [fluid]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="approvalWorkflow"
-            name="approvalWorkflow" dataKey="id">
+          <p-select [(ngModel)]="model.plan.team" [options]="listTeamsFiltered" optionLabel="name"
+            [fluid]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="team"
+            name="team" dataKey="id">
+          </p-select>
+          <label for="team">Tổ</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <div class="row my-3">
+      <div class="col-6">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.plan.userPerformer" [invalid]="!model.plan.userPerformer"
+            [options]="listUserPerformer" [fluid]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true"
+            [appendTo]="'body'" id="userPerformer" name="userPerformer" optionLabel="name" optionValue="username"
+            dataKey="username">
+          </p-select>
+          <label for="userPerformer">Người thực hiện</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="col-6">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.plan.approvalWorkflow" [invalid]="!model.plan.approvalWorkflow"
+            [options]="listApprovalWorkflow" optionLabel="name" [fluid]="true" [disabled]="isViewMode || isApprovalMode"
+            [showClear]="true" [appendTo]="'body'" id="approvalWorkflow" name="approvalWorkflow" dataKey="id">
           </p-select>
           <label for="approvalWorkflow">Kịch bản phê duyệt</label>
         </p-floatlabel>
       </div>
     </div>
 
-    <list-device-group-component [isAddMode]="isAddMode" [isEditMode]="isEditMode" 
+    <div class="row my-3">
+      <div class="col-6">
+        <p-floatlabel variant="on">
+          <p-datepicker [(ngModel)]="model.plan.fromDate" appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="fromDate"
+            inputId="icondisplay" [dateFormat]="'dd-mm-yy'"  appendTo="body" [inputSize]="100" [disabled]="isViewMode"/>
+          <label for="fromDate">Thời gian bắt đầu</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="col-6">
+        <p-floatlabel variant="on">
+          <p-datepicker [(ngModel)]="model.plan.toDate" appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="toDate"
+            inputId="icondisplay" [dateFormat]="'dd-mm-yy'"  appendTo="body" [inputSize]="100" [disabled]="isViewMode"/>
+          <label for="toDate">Thời gian kết thúc</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <list-device-group-component [isAddMode]="isAddMode" [isEditMode]="isEditMode"
       [isViewMode]="isViewMode || isApprovalMode" [model]="model">
     </list-device-group-component>
 
@@ -97,8 +138,9 @@
     <div class="row my-3" *ngIf="!isApprovalMode">
       <div class="col-12">
         <p-floatlabel variant="on">
-          <p-select [(ngModel)]="model.plan.status" [options]="listStatus" optionLabel="label" [fluid]="true" [disabled]="isViewMode || isApprovalMode"
-            optionValue="value" [showClear]="true" [appendTo]="'body'" id="status" name="status" required [invalid]="!model.plan.status">
+          <p-select [(ngModel)]="model.plan.status" [options]="listStatus" optionLabel="label" [fluid]="true"
+            [disabled]="isViewMode || isApprovalMode" optionValue="value" [showClear]="true" [appendTo]="'body'"
+            id="status" name="status" required [invalid]="!model.plan.status">
           </p-select>
           <label for="status">Trạng thái</label>
         </p-floatlabel>
@@ -106,15 +148,13 @@
     </div>
 
     <div class="row my-3" *ngIf="isApprovalMode">
-      <app-base-approval
-        [approvalModel]="approvalModel"
-        ></app-base-approval>
+      <app-base-approval [approvalModel]="approvalModel"></app-base-approval>
     </div>
 
     <div class="d-flex justify-content-end mt-3">
       <p-button label="Quay lại" severity="info" (click)="onBack()" icon="pi pi-arrow-left" class="me-2"></p-button>
-      <p-button *ngIf="!(isViewMode || isApprovalMode)" label="Lưu" icon="pi pi-save" severity="success" [disableIfInvalid]="f"
-        class="w-full max-w-[17.35rem]" (click)="save()" styleClass="w-full mx-auto" />
+      <p-button *ngIf="!(isViewMode || isApprovalMode)" label="Lưu" icon="pi pi-save" severity="success"
+        [disableIfInvalid]="f" class="w-full max-w-[17.35rem]" (click)="save()" styleClass="w-full mx-auto" />
       <p-button *ngIf="isApprovalMode" label="Lưu" icon="pi pi-save" severity="success" [disableIfInvalid]="f"
         class="w-full max-w-[17.35rem]" (click)="Approval()" styleClass="w-full mx-auto" />
     </div>

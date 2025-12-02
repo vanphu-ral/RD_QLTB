@@ -1,6 +1,3 @@
-import { Device } from "../DeviceManager/device.model";
-import { PlanDetail } from "./plan-detail.model";
-
 export class Plan {
     id?: number;
     code?: string;
@@ -8,6 +5,8 @@ export class Plan {
     frequency?: string;
     planNumber?: string;
     userPerformer?: string;
+    fromDate?: Date;
+    toDate?: Date;
     description?: string;
     createdBy?: string;
     updatedBy?: string;
@@ -17,6 +16,7 @@ export class Plan {
     planType?: any;
     factory?: any;
     branch?: any;
+    team?: any;
     approvalWorkflow?: any;
     planDetails: any
 }

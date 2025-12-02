@@ -26,6 +26,10 @@ public class PlanDTO {
 
     private String userPerformer;
 
+    private LocalDateTime fromDate;
+
+    private LocalDateTime toDate;
+
     private String description;
 
     @Size(max = 200)
@@ -47,6 +51,8 @@ public class PlanDTO {
     private Factory factory;
 
     private Branch branch;
+
+    private Team team;
 
     private ApprovalWorkflow approvalWorkflow;
     private List<PlanDetailDTO> planDetails;

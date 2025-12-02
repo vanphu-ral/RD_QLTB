@@ -31,6 +31,7 @@ public class PlanService {
     private final PlanTypeRepository planTypeRepository;
     private final FactoryRepository factoryRepository;
     private final BranchRepository branchRepository;
+    private final TeamRepository teamRepository;
     private final ApprovalWorkflowRepository approvalWorkflowRepository;
     private final ApplicationEventPublisher publisher;
     private final PlanDetailRepository planDetailRepository;
@@ -46,12 +47,14 @@ public class PlanService {
                        final PlanTypeRepository planTypeRepository,
                        final FactoryRepository factoryRepository,
                        final BranchRepository branchRepository,
+                       final TeamRepository teamRepository,
                        final ApprovalWorkflowRepository approvalWorkflowRepository,
                        final ApplicationEventPublisher publisher, PlanDetailRepository planDetailRepository, DeviceRepository deviceRepository, DeviceGroupRepository deviceGroupRepository, SampleReportRepository sampleReportRepository, DeviceGroupService deviceGroupService, SampleReportService sampleReportService, DeviceService deviceService, PlanDetailService planDetailService) {
         this.planRepository = planRepository;
         this.planTypeRepository = planTypeRepository;
         this.factoryRepository = factoryRepository;
         this.branchRepository = branchRepository;
+        this.teamRepository = teamRepository;
         this.approvalWorkflowRepository = approvalWorkflowRepository;
         this.publisher = publisher;
         this.planDetailRepository = planDetailRepository;
@@ -449,6 +452,8 @@ public class PlanService {
         dto.setFrequency(plan.getFrequency());
         dto.setPlanNumber(plan.getPlanNumber());
         dto.setUserPerformer(plan.getUserPerformer());
+        dto.setFromDate(plan.getFromDate());
+        dto.setToDate(plan.getToDate());
         dto.setDescription(plan.getDescription());
         dto.setCreatedBy(plan.getCreatedBy());
         dto.setCreatedAt(plan.getCreatedAt());
@@ -512,6 +517,27 @@ public class PlanService {
             dto.setBranch(null);
         }
 
+        if (plan.getTeam() != null) {
+            Team teamCopy = new Team();
+            teamCopy.setId(plan.getTeam().getId());
+            teamCopy.setCode(plan.getTeam().getCode());
+            teamCopy.setName(plan.getTeam().getName());
+            teamCopy.setDescription(plan.getTeam().getDescription());
+            teamCopy.setCreatedAt(plan.getTeam().getCreatedAt());
+            teamCopy.setUpdatedAt(plan.getTeam().getUpdatedAt());
+            teamCopy.setCreatedBy(plan.getTeam().getCreatedBy());
+            teamCopy.setUpdatedBy(plan.getTeam().getUpdatedBy());
+            teamCopy.setStatus(plan.getTeam().getStatus());
+
+            // Xóa các quan hệ con để tránh vòng lặp
+            teamCopy.setTeamLines(null);
+            teamCopy.setTeamDevices(null);
+
+            dto.setTeam(teamCopy);
+        } else {
+            dto.setTeam(null);
+        }
+
         if (plan.getApprovalWorkflow() != null) {
             ApprovalWorkflow approvalWorkflowCopy = new ApprovalWorkflow();
             approvalWorkflowCopy.setId(plan.getApprovalWorkflow().getId());
@@ -545,6 +571,8 @@ public class PlanService {
         plan.setFrequency(planDTO.getFrequency());
         plan.setPlanNumber(planDTO.getPlanNumber());
         plan.setUserPerformer(planDTO.getUserPerformer());
+        plan.setFromDate(planDTO.getFromDate());
+        plan.setToDate(planDTO.getToDate());
         plan.setDescription(planDTO.getDescription());
         plan.setCreatedBy(planDTO.getCreatedBy());
         plan.setCreatedAt(planDTO.getCreatedAt());
@@ -562,6 +590,10 @@ public class PlanService {
         final Branch branch = planDTO.getBranch() == null ? null : branchRepository.findById(planDTO.getBranch().getId())
                 .orElseThrow(() -> new NotFoundException("branch not found"));
         plan.setBranch(branch);
+
+        final Team team = planDTO.getTeam() == null ? null : teamRepository.findById(planDTO.getTeam().getId())
+                .orElseThrow(() -> new NotFoundException("team not found"));
+        plan.setTeam(team);
 
         final ApprovalWorkflow approvalWorkflow = planDTO.getApprovalWorkflow() == null ? null :
                 approvalWorkflowRepository.findById(planDTO.getApprovalWorkflow().getId())

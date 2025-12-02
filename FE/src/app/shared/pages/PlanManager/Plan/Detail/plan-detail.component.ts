@@ -17,6 +17,7 @@ import { ListDeviceComponent } from '../Components/list-device-group/list-device
 import { PlanDetail } from '../../../../models/PlanManger/plan-detail.model';
 import { DeviceDetail, PlanRequest } from '../../../../models/PlanManger/plan-request.model';
 import { BaseApprovalComponent } from "../../../../base/base-approval-component/base-approval.component";
+import { TeamService } from '../../../Categories/Team/Service/team.service';
 
 @Component({
   selector: 'app-plan-detail',
@@ -33,6 +34,8 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
   listFactory: any[] = []
   listApprovalWorkflow: any[] = []
   listUserPerformer: any[] = []
+  listTeams: any[] = [];
+  listTeamsFiltered: any[] = [];
 
   @ViewChild(ListDeviceComponent) listDeviceComponent?: ListDeviceComponent;
 
@@ -42,7 +45,8 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
     private approvalWorkflowService: ApprovalWorlflowService,
     private deviceGroupService: DeviceGroupService,
     private planTypeService: PlanTypeService,
-    private factoryService: FactoryService
+    private factoryService: FactoryService,
+    private teamService: TeamService,
   ) {
     super(apiService);
     this.model = new PlanRequest()
@@ -57,9 +61,12 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
       deviceGroups: this.deviceGroupService.getAll(),
       planTypes: this.planTypeService.getAll(),
       users: this.apiService.getUsers(),
-      factories: this.factoryService.getAll()
+      factories: this.factoryService.getAll(),
+      teams: this.teamService.getAll()
     }).subscribe(result => {
       this.listBranchs = result.branchs;
+      this.listTeams = result.teams;
+      this.listTeamsFiltered = [...this.listTeams];
       this.listApprovalWorkflow = result.workflows;
       this.listTypes = result.planTypes;
       this.listFactory = result.factories;
@@ -84,6 +91,19 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
   generateCoede(): void {
     this.model.plan.code = `${this.model.plan.planType?.code}-${Util.getInitials(this.model.plan.branch?.name)}-${Util.dateToCode()}`;
     this.model.plan.planNumber = this.model.plan.code;
+    const branchId = this.model.plan.branch?.id;
+    if (!branchId) {
+      this.listTeamsFiltered = [];
+      this.model.plan.team = null;
+      return;
+    }
+
+    this.listTeamsFiltered = this.listTeams.filter(x => x.branch?.id === branchId);
+
+    // Clear old selected team nếu không thuộc branch mới
+    if (!this.listTeamsFiltered.some(x => x.id === this.model.plan.team)) {
+      this.model.plan.team = null;
+    }
   }
 
 

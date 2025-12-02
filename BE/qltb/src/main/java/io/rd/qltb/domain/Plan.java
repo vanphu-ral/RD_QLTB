@@ -16,6 +16,8 @@ import java.util.HashSet;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 
 @Entity
@@ -43,6 +45,12 @@ public class Plan {
 
     @Column(length = 50)
     private String userPerformer;
+
+    @Column(nullable = true)
+    private LocalDateTime fromDate;
+
+    @Column(nullable = true)
+    private LocalDateTime toDate;
 
     @Column(length = 500, name = "\"description\"")
     private String description;
@@ -76,6 +84,12 @@ public class Plan {
     @JoinColumn(name = "branch_id", nullable = false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Branch branch;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @NotFound(action = NotFoundAction.IGNORE)
+    private Team team;
 
     @OneToMany(mappedBy = "plan")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
