@@ -236,22 +236,22 @@ public class ApprovalService {
         approvalDTO.setCreatedBy(approval.getCreatedBy());
         approvalDTO.setUpdatedBy(approval.getUpdatedBy());
         // sao chep approvalRound có kiểm soát
-        if (approval.getRound() != null) {
-            ApprovalRound roundCopy = new ApprovalRound();
-            roundCopy.setId(approval.getRound().getId());
-            roundCopy.setEntityType(approval.getRound().getEntityType());
-            roundCopy.setEntityId(approval.getRound().getEntityId());
-            roundCopy.setRoundNumber(approval.getRound().getRoundNumber());
-            roundCopy.setPreviousRoundId(approval.getRound().getPreviousRoundId());
-            roundCopy.setStatus(approval.getRound().getStatus());
-            roundCopy.setCreatedAt(approval.getRound().getCreatedAt());
-            roundCopy.setCreatedBy(approval.getRound().getCreatedBy());
-            // Xóa các quan hệ con để tránh vòng lặp
-            roundCopy.setWorkflow(null);
-            approvalDTO.setRound(roundCopy);
-        } else {
-            approvalDTO.setRound(null);
-        }
+//        if (approval.getRound() != null) {
+//            ApprovalRound roundCopy = new ApprovalRound();
+//            roundCopy.setId(approval.getRound().getId());
+//            roundCopy.setEntityType(approval.getRound().getEntityType());
+//            roundCopy.setEntityId(approval.getRound().getEntityId());
+//            roundCopy.setRoundNumber(approval.getRound().getRoundNumber());
+//            roundCopy.setPreviousRoundId(approval.getRound().getPreviousRoundId());
+//            roundCopy.setStatus(approval.getRound().getStatus());
+//            roundCopy.setCreatedAt(approval.getRound().getCreatedAt());
+//            roundCopy.setCreatedBy(approval.getRound().getCreatedBy());
+//            // Xóa các quan hệ con để tránh vòng lặp
+//            roundCopy.setWorkflow(null);
+//            approvalDTO.setRound(roundCopy);
+//        } else {
+//            approvalDTO.setRound(null);
+//        }
         // Sao chép ApprovalGroup có kiểm soát
         if (approval.getGroup() != null) {
             ApprovalGroup groupCopy = new ApprovalGroup();
@@ -324,7 +324,7 @@ public class ApprovalService {
         approval.setUpdatedAt(approvalDTO.getUpdatedAt());
         approval.setCreatedBy(approvalDTO.getCreatedBy());
         approval.setUpdatedBy(approvalDTO.getUpdatedBy());
-        approval.setRound(approvalDTO.getRound());
+//        approval.setRound(approvalDTO.getRound());
         return approval;
     }
 
