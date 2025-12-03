@@ -35,6 +35,11 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
   @Input() addButtonText = 'Thêm mới';
   @Input() actionTemplate?: TemplateRef<any>;
   @Input() onDeleteItem?: (row: any, event: Event) => void;
+  @Input() actionCondition?: (row: any) => {
+    showEdit: boolean,
+    showView: boolean,
+    showDelete: boolean
+  };
   @ContentChildren(CustomFilterDirective) customFilters!: QueryList<CustomFilterDirective>;
   @ContentChildren(CustomColumnDirective) columnTemplates!: QueryList<CustomColumnDirective>;
   private filterTpls = new Map<string, TemplateRef<any>>();
@@ -57,7 +62,7 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
     }));
     this.selectedColumns = [...this.columns];
     if (!this.isLazy) {
-       this.loadData(); // logic cũ
+      this.loadData(); // logic cũ
     }
   }
 
@@ -66,7 +71,7 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
     this.loading = true;
     const first = event.first || 0;
     const rows = event.rows || 10;
-    const page = first / rows; 
+    const page = first / rows;
     const filters: any = {};
     if (event.filters) {
       Object.keys(event.filters).forEach(key => {
@@ -84,7 +89,7 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
       service.getAllByPaged(filters, page).subscribe({
         next: (res: any) => {
           this.data = res.content;
-          this.totalRecords = res.totalElements; 
+          this.totalRecords = res.totalElements;
           this.loading = false;
           this.cdr.detectChanges();
         },
@@ -204,7 +209,7 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
 
 
 
-    // function support template
+  // function support template
   ngAfterContentInit(): void {
     const rebuild = () => {
       this.filterTpls.clear();

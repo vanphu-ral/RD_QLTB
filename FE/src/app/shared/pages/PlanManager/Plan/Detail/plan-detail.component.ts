@@ -18,6 +18,7 @@ import { PlanDetail } from '../../../../models/PlanManger/plan-detail.model';
 import { DeviceDetail, PlanRequest } from '../../../../models/PlanManger/plan-request.model';
 import { BaseApprovalComponent } from "../../../../base/base-approval-component/base-approval.component";
 import { TeamService } from '../../../Categories/Team/Service/team.service';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-plan-detail',
@@ -47,6 +48,7 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
     private planTypeService: PlanTypeService,
     private factoryService: FactoryService,
     private teamService: TeamService,
+    private confirmationService: ConfirmationService
   ) {
     super(apiService);
     this.model = new PlanRequest()
@@ -158,5 +160,36 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
         }).add(() => this.navigationService.back());
       }
     }
+  }
+
+  ApprovalAgain() {
+    if (!this.model) return;
+    this.model.plan = Util.prepareModel(this.model.plan)
+      this.model = this.cleanPlanRequest(this.model)
+    this.model.plan.status = 2;
+    this.confirmationService.confirm({
+      message: 'Bạn có chắc muốn sửa và gửi duyệt lại không?',
+      header: 'Xác nhận',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Đồng ý',
+      rejectLabel: 'Hủy',
+      accept: () => {
+        this.apiService.update(this.model.plan.id!, this.model).subscribe({
+          next: (id) => {
+            this.apiService.createApprovalEntity({ entityId: id, workflowId: this.model.plan.approvalWorkflow.id }, 'sample_reports').subscribe({
+              next: () => {
+                Util.ConfirmMessage('Đã sửa và gửi duyệt thành công', 'success');
+                this.navigationService.back();
+              },
+              error: () => {
+                Util.ConfirmMessage('Thất bại', 'error');
+              }
+            });
+          },
+        });
+      },
+      reject: () => {
+      }
+    });
   }
 }

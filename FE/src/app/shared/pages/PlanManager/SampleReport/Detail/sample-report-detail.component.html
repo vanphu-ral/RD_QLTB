@@ -157,9 +157,12 @@
     <div class="d-flex justify-content-end mt-3">
       <p-button label="Quay lại" severity="info" (click)="onBack()" icon="pi pi-arrow-left" class="me-2"></p-button>
       <p-button *ngIf="!(isViewMode || isApprovalMode)" label="Lưu" icon="pi pi-save" severity="success" [disableIfInvalid]="f"
-        class="w-full max-w-[17.35rem]" (click)="save()" styleClass="w-full mx-auto" />
+        class="w-full max-w-[17.35rem] me-2" (click)="save()" styleClass="w-full mx-auto" />
       <p-button *ngIf="isApprovalMode" label="Lưu" icon="pi pi-save" severity="success" [disableIfInvalid]="f"
         class="w-full max-w-[17.35rem]" (click)="Approval()" styleClass="w-full mx-auto" />
+      <p-button *ngIf="isEditMode" label="Gửi duyệt lại" icon="pi pi-file-check" severity="success"
+        [disableIfInvalid]="f" class="w-full max-w-[17.35rem]" (click)="ApprovalAgain()" styleClass="w-full mx-auto" />
     </div>
   </form>
 </div>
+<p-confirmDialog></p-confirmDialog>

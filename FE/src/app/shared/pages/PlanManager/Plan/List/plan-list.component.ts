@@ -34,8 +34,8 @@ export class PlanListComponent {
   expandedRows = {};
   PLANTYPE = PLANTYPE;
 
-  constructor(public apiService: PlanService, private router: Router, private route: ActivatedRoute, 
-    private dialogService: DialogService, private cdr: ChangeDetectorRef, private messageService: MessageService, 
+  constructor(public apiService: PlanService, private router: Router, private route: ActivatedRoute,
+    private dialogService: DialogService, private cdr: ChangeDetectorRef, private messageService: MessageService,
     private confirmationService: ConfirmationService, private acceptanceService: AcceptanceService) { }
 
   ngOnInit(): void {
@@ -85,6 +85,10 @@ export class PlanListComponent {
       case 6: return 'Bị từ chối';
       default: return 'Không xác định';
     }
+  }
+
+  isLocked(row: any) {
+    return row.status === 2 || row.status === 6;
   }
 
 
@@ -154,25 +158,46 @@ export class PlanListComponent {
     this.router.navigate([row.id, 'maintenance-plan'], { relativeTo: this.route });
   }
 
-  approval(data: any) {
-    this.ref = this.dialogService.open(OptionApprovalDialog, {
-      header: `Duyệt mẫu biên bản`,
-      width: '400px',
-      modal: true,
-      data: { data: data, type: 'plans' },
-      closable: true
-    });
-    this.ref.onClose.subscribe((res) => {
-      if (res) {
-        this.apiService.updateStatus(data.id, 2).subscribe({
+  approval(data: any, event: any) {
+    const modelApproval = { entityId: data.id, workflowId: data.approvalWorkflow.id };
+    Util.confirmAndExecute(
+      event,
+      'Bạn có chắc muốn gửi duyệt bản ghi này?',
+      () => this.apiService.createApprovalEntity(modelApproval, 'sample_reports'),
+      'Gửi duyệt thành công !',
+      'Lỗi gửi duyệt',
+      this.confirmationService,
+      this.messageService,
+      () => {
+        data.status = 2;
+        this.apiService.update(data.id, data).subscribe({
           next: (res) => {
-            this.loadData();
+            console.log(res);
+            Object.assign(data, res);
             this.cdr.detectChanges();
-            Util.ConfirmMessage('Gửi duyệt thành công', 'success');
-          },
+            Util.ConfirmMessage('Gửi duyệt thông', 'success');
+          }
         });
       }
-    });
+    );
+    // this.ref = this.dialogService.open(OptionApprovalDialog, {
+    //   header: `Duyệt mẫu biên bản`,
+    //   width: '400px',
+    //   modal: true,
+    //   data: { data: data, type: 'plans' },
+    //   closable: true
+    // });
+    // this.ref.onClose.subscribe((res) => {
+    //   if (res) {
+    //     this.apiService.updateStatus(data.id, 2).subscribe({
+    //       next: (res) => {
+    //         this.loadData();
+    //         this.cdr.detectChanges();
+    //         Util.ConfirmMessage('Gửi duyệt thành công', 'success');
+    //       },
+    //     });
+    //   }
+    // });
   }
 
   // function table child

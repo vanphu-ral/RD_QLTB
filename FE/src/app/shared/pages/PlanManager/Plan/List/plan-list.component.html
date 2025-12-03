@@ -52,14 +52,14 @@
           <p-tag [value]="getStatus(row.status)" [severity]="getSeverity(row.status)" />
         </td>
         <td>
-          <p-button icon="pi pi-file-check" *ngIf="row.status == 1" styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="approval(row)"></p-button>
-          <p-button icon="pi pi-file-check" styleClass="p-button-sm p-button-rounded p-button-info m-1" *ngIf="row.planTypeCode == PLANTYPE.MAINTENANCE"
+          <p-button icon="pi pi-file-check" *ngIf="row.status == 1" styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="approval(row, $event)"></p-button>
+          <p-button icon="pi pi-file-check" styleClass="p-button-sm p-button-rounded p-button-info m-1" *ngIf="row.planTypeCode == PLANTYPE.MAINTENANCE && !isLocked(row)"
             (onClick)="viewPlanMaintance(row)"></p-button>
-          <p-button icon="pi pi-pencil" styleClass="p-button-sm p-button-rounded p-button-warn m-1"
+          <p-button icon="pi pi-pencil" *ngIf="!isLocked(row)" styleClass="p-button-sm p-button-rounded p-button-warn m-1"
             (onClick)="editItem(row)"></p-button>
           <p-button icon="pi pi-eye" styleClass="p-button-sm p-button-rounded p-button-info m-1"
             (onClick)="viewItem(row)"></p-button>
-          <p-button icon="pi pi-trash" styleClass="p-button-sm p-button-rounded p-button-danger m-1"
+          <p-button icon="pi pi-trash" *ngIf="!isLocked(row)" styleClass="p-button-sm p-button-rounded p-button-danger m-1"
             (onClick)="deleteItem(row, $event)"></p-button>
         </td>
       </tr>
@@ -102,15 +102,15 @@
           <p-tag [value]="getStatus(detail.status)" [severity]="getSeverity(detail.status)" />
         </td>
         <td>
-          <p-button icon="pi pi-file" styleClass="p-button-sm p-button-rounded p-button-secondary m-1"  *ngIf="row.planTypeCode == PLANTYPE.MAINTENANCE || row.planTypeCode == PLANTYPE.REPAIR"
+          <p-button icon="pi pi-file" styleClass="p-button-sm p-button-rounded p-button-secondary m-1"  *ngIf="(row.planTypeCode == PLANTYPE.MAINTENANCE || row.planTypeCode == PLANTYPE.REPAIR) && !isLocked(row)"
             (onClick)="acceptance(detail, row)"></p-button>
-          <p-button icon="pi pi-check-square" styleClass="p-button-sm p-button-rounded p-button-success m-1"
+          <p-button icon="pi pi-check-square" *ngIf="!isLocked(row)" styleClass="p-button-sm p-button-rounded p-button-success m-1"
             (onClick)="deviceDateCheckList(detail, row)"></p-button>
-          <p-button icon="pi pi-wrench" styleClass="p-button-sm p-button-rounded p-button-warn m-1"
+          <p-button icon="pi pi-wrench" *ngIf="!isLocked(row)" styleClass="p-button-sm p-button-rounded p-button-warn m-1"
             (onClick)="repairDevice(detail)"></p-button>
           <p-button icon="pi pi-eye" styleClass="p-button-sm p-button-rounded p-button-info m-1" *ngIf="row.planTypeCode == PLANTYPE.AUDIT"
             (onClick)="viewEvaluateDevice(detail)"></p-button>
-          <p-button icon="pi pi-trash" styleClass="p-button-sm p-button-rounded p-button-danger m-1"
+          <p-button icon="pi pi-trash" *ngIf="!isLocked(row)" styleClass="p-button-sm p-button-rounded p-button-danger m-1"
             (onClick)="deleteItem(row, $event)"></p-button>
         </td>
       </tr>

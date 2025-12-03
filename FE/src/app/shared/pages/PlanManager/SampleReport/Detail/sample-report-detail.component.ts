@@ -17,6 +17,7 @@ import { KeyMappingService } from '../Service/key-mapping.service';
 import { forkJoin } from 'rxjs';
 import { PlanTypeService } from '../../PlanType/Service/plan-type.service';
 import { BaseApprovalComponent } from "../../../../base/base-approval-component/base-approval.component";
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-sample-report-detail',
@@ -45,7 +46,8 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
     private criterialGroupServie: CriterialGroupService,
     private criterialService: CriterialService,
     private keyMappingService: KeyMappingService,
-    private planTypeService: PlanTypeService
+    private planTypeService: PlanTypeService,
+    private confirmationService: ConfirmationService
   ) {
     super(apiService);
   }
@@ -94,7 +96,7 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
           const year = new Date(item.createdAt).getFullYear();
           return year === currentYear;
         });
-        const count = recordsThisYear.length + 1; 
+        const count = recordsThisYear.length + 1;
         const countFormatted = count.toString().padStart(2, '0');
         const yearShort = currentYear.toString().slice(-2);
         this.model.documentNumber = `${countFormatted}.${yearShort}`;
@@ -205,5 +207,35 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
     }
   }
 
+  ApprovalAgain() {
+    if (!this.model) return;
+    this.prepareModel();
+    this.model = Util.prepareModel(this.model);
+    this.model.status = 2;
+    this.confirmationService.confirm({
+      message: 'Bạn có chắc muốn sửa và gửi duyệt lại không?',
+      header: 'Xác nhận',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Đồng ý',
+      rejectLabel: 'Hủy',
+      accept: () => {
+        this.apiService.update(this.model.id!, this.model).subscribe({
+          next: (id) => {
+            this.apiService.createApprovalEntity({ entityId: id, workflowId: this.model.approvalWorkflow.id }, 'sample_reports').subscribe({
+              next: () => {
+                Util.ConfirmMessage('Đã sửa và gửi duyệt thành công', 'success');
+                this.navigationService.back();
+              },
+              error: () => {
+                Util.ConfirmMessage('Thất bại', 'error');
+              }
+            });
+          },
+        });
+      },
+      reject: () => {
+      }
+    });
+  }
 
 }
