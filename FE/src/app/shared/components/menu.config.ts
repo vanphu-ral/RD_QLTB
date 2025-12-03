@@ -53,6 +53,7 @@ export const MENU_ITEMS: MenuItem[] = [
                     { label: 'Danh mục ngành sản xuất', icon: 'fa-solid fa-code-branch', routerLink: ['/Branches'] },
                     { label: 'Danh mục tổ sản xuất', icon: 'fa-solid fa-object-ungroup', routerLink: ['/Teams'] },
                     { label: 'Danh mục dây chuyền sản xuất', icon: 'fa-solid fa-grip-lines', routerLink: ['/Lines'] },
+                    { label: 'Quản lý ngày nghỉ', icon: 'fa-solid fa-calendar', routerLink: ['/DayOffCalendars'] },
                     // { label: 'Danh mục ca sản xuất', icon: 'fa-solid fa-clock', routerLink: ['/Shift'] },
                     // { label: 'Danh mục chức vụ', icon: 'fa-solid fa-crosshairs', routerLink: ['/Position'] }
                 ]

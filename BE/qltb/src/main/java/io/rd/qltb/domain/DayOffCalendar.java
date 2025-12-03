@@ -1,5 +1,6 @@
 package io.rd.qltb.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,22 +17,22 @@ public class DayOffCalendar {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private Integer branchId;
+    @Column(nullable = false, length = 50)
+    private String code;
 
-    @Column
-    private Integer teamId;
+    @Column(nullable = false, length = 200)
+    private String name;
 
-    @Column
+    @Column(nullable = true)
     private LocalDateTime date;
 
-    @Column
+    @Column(nullable = true)
     private Integer dayOfWeek;
 
-    @Column
+    @Column(nullable = true)
     private String type;
 
-    @Column
+    @Column(nullable = true)
     private Integer isDayOff;
 
     @Column(length = 500, name = "\"description\"")
@@ -51,4 +52,15 @@ public class DayOffCalendar {
 
     @Column
     private Integer status;
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "branch_id")      // cột FK trong DB
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Branch branch;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Team team;
 }

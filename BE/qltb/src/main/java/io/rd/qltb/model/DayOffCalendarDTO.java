@@ -1,5 +1,7 @@
 package io.rd.qltb.model;
 
+import io.rd.qltb.domain.Branch;
+import io.rd.qltb.domain.Team;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,8 +11,8 @@ import java.time.LocalDateTime;
 @Setter
 public class DayOffCalendarDTO {
     private Long id;
-    private Integer branchId;
-    private Integer teamId;
+    private String code;
+    private String name;
     private LocalDateTime date;
     private Integer dayOfWeek;
     private String type;
@@ -21,4 +23,6 @@ public class DayOffCalendarDTO {
     private String createdBy;
     private String updatedBy;
     private Integer status;
+    private Branch branch;
+    private Team team;
 }
