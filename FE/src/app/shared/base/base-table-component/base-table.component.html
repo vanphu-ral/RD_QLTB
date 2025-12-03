@@ -90,9 +90,13 @@
         </ng-container>
         <ng-template #defaultButtons>
           <!-- fallback nếu không truyền actionCondition -->
-          <p-button *ngIf="showEditButton" ...></p-button>
-          <p-button *ngIf="showViewButton" ...></p-button>
-          <p-button *ngIf="showDeleteButton" ...></p-button>
+          <p-button *ngIf="showEditButton" icon="pi pi-pencil"
+            styleClass="p-button-sm p-button-rounded p-button-warn m-1" (onClick)="editItem(row)"></p-button>
+          <p-button *ngIf="showViewButton" icon="pi pi-eye" styleClass="p-button-sm p-button-rounded p-button-info m-1"
+            (onClick)="viewItem(row)"></p-button>
+          <p-button *ngIf="showDeleteButton" icon="pi pi-trash"
+            styleClass="p-button-sm p-button-rounded p-button-danger m-1"
+            (onClick)="deleteItem(row, $event)"></p-button>
         </ng-template>
       </td>
     </tr>
