@@ -1,0 +1,25 @@
+<div class="import-data-page mt-3">
+  <h2>Import dữ liệu từ file Excel cho các danh mục</h2>
+  <div class="card">
+    <div class="row my-3">
+      <div class="col-6">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="data.table" [options]="listTables" optionLabel="name" [fluid]="true" [showClear]="true"
+            [appendTo]="'body'" id="table" name="table" dataKey="id">
+          </p-select>
+          <label for="table">Chọn danh mục</label>
+        </p-floatlabel>
+      </div>
+    </div>
+    <div class="row my-3">
+      <div class="col-6">
+        <p-fileupload name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php" [multiple]="true"
+          accept=".xlsx, .xls, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" maxFileSize="1000000" mode="advanced">
+          <ng-template #empty>
+            <div>Drag and drop files to here to upload.</div>
+          </ng-template>
+        </p-fileupload>
+      </div>
+    </div>
+  </div>
+</div>

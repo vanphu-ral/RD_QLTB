@@ -1,7 +1,7 @@
 <app-base-table 
   [apiService]="apiService"
   [columns]="columns"
-  [title]="'Dánh sách mẫu biên bản'"
+  [title]="'Danh sách mẫu biên bản'"
   [showAddButton]="true" [actionTemplate]="customActions">
   <ng-template appColumnTemplate="status" let-rowData>
     <p-tag [value]="statusToString(rowData)" [severity]="statusToSeverity(rowData)"></p-tag>

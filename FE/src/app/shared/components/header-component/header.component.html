@@ -34,7 +34,7 @@
           <i class="fa-solid fa-qrcode"></i>
           <span>QR Code</span>
         </a>
-        <a class="layout-topbar-action" routerLink="/Import">
+        <a class="layout-topbar-action" routerLink="/import-data">
           <i class="fa-solid fa-file-import"></i>
           <span>Import</span>
         </a>
@@ -46,7 +46,7 @@
           <i class="fa-solid fa-person-circle-check"></i>
           <span>Approve</span>
         </a>
-        <button type="button" class="layout-topbar-action">
+        <button type="button" class="layout-topbar-action" (click)="toggleFullScreen()">
           <i class="fas fa-expand-arrows-alt"></i>
           <span>Full screen</span>
         </button>
@@ -89,7 +89,7 @@
           <i class="fa-solid fa-qrcode"></i>
           <span>QR Code</span>
         </a>
-        <a class="layout-topbar-action" routerLink="/Import">
+        <a class="layout-topbar-action" routerLink="/import-data">
           <i class="fa-solid fa-file-import"></i>
           <span>Import</span>
         </a>

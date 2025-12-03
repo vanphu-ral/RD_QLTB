@@ -6,6 +6,7 @@ import { DashboardComponent } from './shared/pages/Dashboard/List/dashboard.comp
 import { DepartmentListComponent } from './shared/pages/Categories/Department/List/department-list.component';
 import { CallbackComponent } from './shared/core/auth/callback.component';
 import { ScanQrCodeComponent } from './shared/pages/Extension/ScanQRCode/pages/scan-qr-code.component';
+import { ImportDataComponent } from './shared/pages/Extension/ImportData/pages/import-data.component';
 
 export const routes: Routes = [
     {
@@ -141,6 +142,13 @@ export const routes: Routes = [
         component: AppLayout,
         children: [
             { path: '', component: ScanQrCodeComponent }
+        ]
+    },
+    {
+        path: 'import-data',
+        component: AppLayout,
+        children: [
+            { path: '', component: ImportDataComponent }
         ]
     },
     // Report Manager
