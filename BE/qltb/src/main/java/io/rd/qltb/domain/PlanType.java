@@ -19,6 +19,7 @@ import lombok.Setter;
 @Table(name = "PlanTypes")
 @Getter
 @Setter
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class PlanType {
 
     @Id

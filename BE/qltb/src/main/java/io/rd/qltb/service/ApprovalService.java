@@ -137,39 +137,39 @@ public class ApprovalService {
                 .orElseThrow(NotFoundException::new);
         mapToEntity(approvalDTO, approval);
         approvalRepository.save(approval);
-        // Cập nhật trạng thái của ApprovalRound dựa trên trạng thái của Approval
-        Integer total = approvalRepository.countByRoundIdAndEntityId(approval.getRound().getId(),approval.getEntityId());
-        if(approval.getStatus() == 6){
-            ApprovalRound approvalRound = approvalRoundRepository.findById(approval.getRound().getId()).orElseThrow(()-> new NotFoundException("ApprovalRound not found"));
-            approvalRound.setStatus(6);
-                approvalRoundRepository.save(approvalRound);
-            String tableName = approval.getEntityType();
-            String sql = "update " + tableName + " set status = 6 WHERE id = ?";
-             jdbcTemplate.update(sql, approval.getEntityId());
-        }else if(approvalRepository.countByRoundIdAndEntityIdAndStatus(approval.getRound().getId(),approval.getEntityId(),6) >0){
-            ApprovalRound approvalRound = approvalRoundRepository.findById(approval.getRound().getId()).orElseThrow(()-> new NotFoundException("ApprovalRound not found"));
-            approvalRound.setStatus(6);
-            approvalRoundRepository.save(approvalRound);
-            String tableName = approval.getEntityType();
-            String sql = "update " + tableName + " set status = 6 WHERE id = ?";
-            jdbcTemplate.update(sql, approval.getEntityId());
-        } else if (approvalRepository.countByRoundIdAndEntityIdAndStatus(approval.getRound().getId(),approval.getEntityId(),6) ==0
-        && approvalRepository.countByRoundIdAndEntityIdAndStatus(approval.getRound().getId(),approval.getEntityId(),3) == total) {
-            ApprovalRound approvalRound = approvalRoundRepository.findById(approval.getRound().getId()).orElseThrow(()-> new NotFoundException("ApprovalRound not found"));
-            approvalRound.setStatus(3);
-            approvalRoundRepository.save(approvalRound);
-            String tableName = approval.getEntityType();
-            String sql = "update " + tableName + " set status = 3 WHERE id = ?";
-            jdbcTemplate.update(sql, approval.getEntityId());
-        } else if (approvalRepository.countByRoundIdAndEntityIdAndStatus(approval.getRound().getId(),approval.getEntityId(),6) ==0
-                && approvalRepository.countByRoundIdAndEntityIdAndStatus(approval.getRound().getId(),approval.getEntityId(),3) < total) {
-            ApprovalRound approvalRound = approvalRoundRepository.findById(approval.getRound().getId()).orElseThrow(()-> new NotFoundException("ApprovalRound not found"));
-            approvalRound.setStatus(2);
-            approvalRoundRepository.save(approvalRound);
-            String tableName = approval.getEntityType();
-            String sql = "update " + tableName + " set status = 2 WHERE id = ?";
-            jdbcTemplate.update(sql, approval.getEntityId());
-        }
+//        // Cập nhật trạng thái của ApprovalRound dựa trên trạng thái của Approval
+//        Integer total = approvalRepository.countByRoundIdAndEntityId(approval.getRound().getId(),approval.getEntityId());
+//        if(approval.getStatus() == 6){
+//            ApprovalRound approvalRound = approvalRoundRepository.findById(approval.getRound().getId()).orElseThrow(()-> new NotFoundException("ApprovalRound not found"));
+//            approvalRound.setStatus(6);
+//                approvalRoundRepository.save(approvalRound);
+//            String tableName = approval.getEntityType();
+//            String sql = "update " + tableName + " set status = 6 WHERE id = ?";
+//             jdbcTemplate.update(sql, approval.getEntityId());
+//        }else if(approvalRepository.countByRoundIdAndEntityIdAndStatus(approval.getRound().getId(),approval.getEntityId(),6) >0){
+//            ApprovalRound approvalRound = approvalRoundRepository.findById(approval.getRound().getId()).orElseThrow(()-> new NotFoundException("ApprovalRound not found"));
+//            approvalRound.setStatus(6);
+//            approvalRoundRepository.save(approvalRound);
+//            String tableName = approval.getEntityType();
+//            String sql = "update " + tableName + " set status = 6 WHERE id = ?";
+//            jdbcTemplate.update(sql, approval.getEntityId());
+//        } else if (approvalRepository.countByRoundIdAndEntityIdAndStatus(approval.getRound().getId(),approval.getEntityId(),6) ==0
+//        && approvalRepository.countByRoundIdAndEntityIdAndStatus(approval.getRound().getId(),approval.getEntityId(),3) == total) {
+//            ApprovalRound approvalRound = approvalRoundRepository.findById(approval.getRound().getId()).orElseThrow(()-> new NotFoundException("ApprovalRound not found"));
+//            approvalRound.setStatus(3);
+//            approvalRoundRepository.save(approvalRound);
+//            String tableName = approval.getEntityType();
+//            String sql = "update " + tableName + " set status = 3 WHERE id = ?";
+//            jdbcTemplate.update(sql, approval.getEntityId());
+//        } else if (approvalRepository.countByRoundIdAndEntityIdAndStatus(approval.getRound().getId(),approval.getEntityId(),6) ==0
+//                && approvalRepository.countByRoundIdAndEntityIdAndStatus(approval.getRound().getId(),approval.getEntityId(),3) < total) {
+//            ApprovalRound approvalRound = approvalRoundRepository.findById(approval.getRound().getId()).orElseThrow(()-> new NotFoundException("ApprovalRound not found"));
+//            approvalRound.setStatus(2);
+//            approvalRoundRepository.save(approvalRound);
+//            String tableName = approval.getEntityType();
+//            String sql = "update " + tableName + " set status = 2 WHERE id = ?";
+//            jdbcTemplate.update(sql, approval.getEntityId());
+//        }
     }
 
     public void delete(final Long id) {
@@ -180,29 +180,29 @@ public class ApprovalService {
 
     public void createScriptApproval(ApprovalRequestDTO approvalRequestDTO, String entityType, String userName){
         ApprovalWorkflow approvalWorkflow = approvalWorkflowRepository.findById(approvalRequestDTO.getWorkflowId()).orElseThrow(()-> new NotFoundException("approvalWorkflow not found"));
-        ApprovalRound newRound = new ApprovalRound();
-        if(approvalRequestDTO.getPreviousEntityId() != null){ //nếu có previousEntityId thì tạo vòng tiếp theo
-        ApprovalRound previousRound= approvalRoundRepository.findPreviousRoundIdByEntityTypeAndEntityId(entityType, approvalRequestDTO.getPreviousEntityId());
-            newRound.setEntityType(entityType);
-            newRound.setEntityId(approvalRequestDTO.getEntityId());
-            newRound.setRoundNumber(previousRound.getRoundNumber() + 1);
-            newRound.setPreviousRoundId(previousRound.getId());
-            newRound.setWorkflow(approvalWorkflow);
-            newRound.setStatus(1);
-            newRound.setCreatedAt(LocalDateTime.now());
-            newRound.setCreatedBy(userName);
-            approvalRoundRepository.save(newRound);
-        }else { //nếu không có previousEntityId thì tạo vòng đầu tiên
-            newRound.setEntityType(entityType);
-            newRound.setEntityId(approvalRequestDTO.getEntityId());
-            newRound.setRoundNumber(1);
-            newRound.setPreviousRoundId(null);
-            newRound.setWorkflow(approvalWorkflow);
-            newRound.setStatus(1);
-            newRound.setCreatedAt(LocalDateTime.now());
-            newRound.setCreatedBy(userName);
-            approvalRoundRepository.save(newRound);
-        }
+//        ApprovalRound newRound = new ApprovalRound();
+//        if(approvalRequestDTO.getPreviousEntityId() != null){ //nếu có previousEntityId thì tạo vòng tiếp theo
+//        ApprovalRound previousRound= approvalRoundRepository.findPreviousRoundIdByEntityTypeAndEntityId(entityType, approvalRequestDTO.getPreviousEntityId());
+//            newRound.setEntityType(entityType);
+//            newRound.setEntityId(approvalRequestDTO.getEntityId());
+//            newRound.setRoundNumber(previousRound.getRoundNumber() + 1);
+//            newRound.setPreviousRoundId(previousRound.getId());
+//            newRound.setWorkflow(approvalWorkflow);
+//            newRound.setStatus(1);
+//            newRound.setCreatedAt(LocalDateTime.now());
+//            newRound.setCreatedBy(userName);
+//            approvalRoundRepository.save(newRound);
+//        }else { //nếu không có previousEntityId thì tạo vòng đầu tiên
+//            newRound.setEntityType(entityType);
+//            newRound.setEntityId(approvalRequestDTO.getEntityId());
+//            newRound.setRoundNumber(1);
+//            newRound.setPreviousRoundId(null);
+//            newRound.setWorkflow(approvalWorkflow);
+//            newRound.setStatus(1);
+//            newRound.setCreatedAt(LocalDateTime.now());
+//            newRound.setCreatedBy(userName);
+//            approvalRoundRepository.save(newRound);
+//        }
         for(ApprovalGroup approvalGroup: approvalWorkflow.getWorkflowApprovalGroups()){
             for (ApprovalGroupUser approvalGroupUser:approvalGroup.getGroupApprovalGroupUsers()){
                 Approval approval = new Approval();
@@ -215,7 +215,7 @@ public class ApprovalService {
                 approval.setCreatedBy(userName);
                 approval.setGroup(approvalGroup);
                 approval.setWorkflow(approvalWorkflow);
-                approval.setRound(newRound);
+//                approval.setRound(newRound);
                 approvalRepository.save(approval);
             }
         }
