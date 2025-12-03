@@ -67,6 +67,14 @@ export class AppHeaderComponent {
     this.loginService.logout();
   }
 
+  toggleFullScreen() {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      document.documentElement.requestFullscreen();
+    }
+  }
+
 
   // notification
   get unreadCount(): number {

@@ -31,7 +31,7 @@
     <div class="row my-3">
       <div class="col-12">
         <textarea pTextarea class="form-control" rows="5" placeholder="Mô tả ..." id="description" name="description"
-          [(ngModel)]="model.description"></textarea>
+          [(ngModel)]="model.description" [disabled]="isViewMode"></textarea>
       </div>
     </div>
 
