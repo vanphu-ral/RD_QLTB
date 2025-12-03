@@ -12,6 +12,7 @@ import { RepairErrorDialog } from "../repair-error-dialog/repair-error.dialog";
 import { ErrorReport } from "../../../../../models/PlanManger/error-report.model";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { ErrorReportSeriousDialog } from "../error-report-serious-dialog/error-report-serious.dialog";
+import { Router } from "@angular/router";
 
 @Component({
     selector: 'app-list-error-dialog',
@@ -31,7 +32,8 @@ export class ListErrorDialog {
         private cdr: ChangeDetectorRef,
         private errorReportService: ErrorReportService,
         private comfirmService: ConfirmationService,
-        private messageService: MessageService
+        private messageService: MessageService,
+        private router: Router
     ) {
         this.data = config.data;
         console.log(this.data);
@@ -95,12 +97,24 @@ export class ListErrorDialog {
 
 
     acceptanceError(row: any) {
-        const ref = this.dialogService.open(ErrorReportSeriousDialog, {
-            header: `Tiếp nhận lỗi nghiêm trọng - ${row.name}`,
-            width: '50%',
-            data: {error: row, planDetail: this.data, IsAddMode: true},
-            closable: true
-        });
+        // const ref = this.dialogService.open(ErrorReportSeriousDialog, {
+        //     header: `Tiếp nhận lỗi nghiêm trọng - ${row.name}`,
+        //     width: '50%',
+        //     data: {error: row, planDetail: this.data, IsAddMode: true},
+        //     closable: true
+        // });
+        this.ref.close();
+        this.router.navigate(
+            ['/ReportDeviceIncident/add'],
+            {
+                state: {
+                    error: row,
+                    planDetail: this.data,
+                    IsAddMode: true
+                }
+            }
+        );
+
     }
 
 

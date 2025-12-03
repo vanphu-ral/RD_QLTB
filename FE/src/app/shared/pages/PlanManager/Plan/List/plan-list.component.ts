@@ -15,6 +15,7 @@ import { ListErrorDialog } from '../Dialogs/list-error-dialog/list-error.dialog'
 import { AcceptanceDialog } from '../Dialogs/acceptance-dialog/acceptance.dialog';
 import { PLANTYPE } from '../../../../enums/plan-type.enum';
 import { OptionApprovalDialog } from '../../SampleReport/Dialogs/option-approval-dialog/option-approval.dialog';
+import { AcceptanceService } from '../../../Reports/Acceptance/service/acceptance.service';
 
 @Component({
   selector: 'plan-list',
@@ -33,7 +34,9 @@ export class PlanListComponent {
   expandedRows = {};
   PLANTYPE = PLANTYPE;
 
-  constructor(public apiService: PlanService, private router: Router, private route: ActivatedRoute, private dialogService: DialogService, private cdr: ChangeDetectorRef, private messageService: MessageService, private confirmationService: ConfirmationService) { }
+  constructor(public apiService: PlanService, private router: Router, private route: ActivatedRoute, 
+    private dialogService: DialogService, private cdr: ChangeDetectorRef, private messageService: MessageService, 
+    private confirmationService: ConfirmationService, private acceptanceService: AcceptanceService) { }
 
   ngOnInit(): void {
     this.loadData();
@@ -179,7 +182,7 @@ export class PlanListComponent {
       header: `Danh sách lịch kiểm tra thiết bị`,
       width: 'auto',
       modal: true,
-      data: {planDetail: planDetail, plan: plan},
+      data: { planDetail: planDetail, plan: plan },
       closable: true,
     });
     this.ref.onClose.subscribe((result) => {
@@ -203,16 +206,20 @@ export class PlanListComponent {
   }
 
   acceptance(data: any, plan: any) {
-    this.ref = this.dialogService.open(AcceptanceDialog, {
-      header: `Biên bản nghiệm thu thiết bị`,
-      width: '70%',
-      modal: true,
-      data: { planResult: data, plan: plan, IsAddModel: true },
-      closable: true,
-    })
-    this.ref.onClose.subscribe((result) => {
-      if (result && result.length > 0) {
+    this.acceptanceService.checkExistByPlanDetailId(data.id).subscribe((res: any) => {
+      if (res.exists == 1) {
+        Util.ConfirmMessage('Phiếu nghiệm thu đã tồn tại cho phiếu này!', 'error');
+        return;
       }
+      this.router.navigate(
+        ['/Acceptance/add'],
+        {
+          state: {
+            planResult: data,
+            plan: plan
+          }
+        }
+      );
     });
   }
 

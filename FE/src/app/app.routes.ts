@@ -49,6 +49,11 @@ export const routes: Routes = [
         component: AppLayout,
         loadChildren: () => import('./shared/pages/Categories/Line/line.routes').then(m => m.default)
     },
+    {
+        path: 'DayOffCalendars',
+        component: AppLayout,
+        loadChildren: () => import('./shared/pages/Categories/DayOffCalendar/day-off-calendar.routes').then(m => m.default)
+    },
     // Device Manager
     {
         path: 'DeviceGroups',

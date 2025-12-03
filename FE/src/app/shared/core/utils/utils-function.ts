@@ -248,7 +248,7 @@ export class Util {
     const HH = String(d.getHours()).padStart(2, '0');
     const mm = String(d.getMinutes()).padStart(2, '0');
 
-    return `${dd}${MM}${yyyy}${HH}${mm}`;
+    return `${yyyy}${MM}${dd}${HH}${mm}`;
   }
 
 
@@ -513,5 +513,12 @@ export class Util {
    */
   static arrayToString(arr: any[], separator = ','): string {
     return arr.map(item => item.toString()).join(separator);
+  }
+
+  /**
+  * Danh sách ngày trong  tuần
+  */
+  static listDayOffWeeks(): string[] {
+    return [{code: 0, name: 'Chủ nhật'}, {code: 1, name: 'Thu hai'}, {code: 2, name: 'Thu ba'}, {code: 3, name: 'Thu tư'}, {code: 4, name: 'Thu năm'}, {code: 5, name: 'Thu sáu'}, {code: 6, name: 'Thu bảy'}].map(item => item.name);
   }
 }

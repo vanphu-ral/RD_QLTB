@@ -96,6 +96,8 @@ export class ApprovalListComponent {
     const routeMap: { [key: string]: string } = {
       'sample_reports': 'SampleReports',
       'plans': 'Plans',
+      'acceptances': 'Acceptance',
+      'report_device_incidents': 'ReportDeviceIncident',
       // thêm mapping nếu có entityType khác
     };
 
