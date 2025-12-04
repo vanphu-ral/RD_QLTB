@@ -69,14 +69,15 @@ public class SampleReportService {
         try {
             final SampleReport sampleReport = sampleReportRepository.findById(id)
                     .orElseThrow(NotFoundException::new);
-            List<KeyMapping> keyMappings = sampleReport.getSampleReportKeyMappings().stream().toList();
-            List<KeyMappingDTO> keyMappingDTOS = keyMappings.stream().map(km -> keyMappingService.mapToDTO(km, new KeyMappingDTO())).toList();
+//            List<KeyMapping> keyMappings = sampleReport.getSampleReportKeyMappings().stream().toList();
+//            List<KeyMappingDTO> keyMappingDTOS = keyMappings.stream().map(km -> keyMappingService.mapToDTO(km, new KeyMappingDTO())).toList();
+            SampleReportDTO existingSampleReportDTO = mapToDTO(sampleReport, new SampleReportDTO());
             // Khởi tạo ObjectMapper với hỗ trợ Java 8 Date/Time
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JavaTimeModule());
             mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
             // Convert Plan sang JSON
-            String sampleReportConvert = mapper.writeValueAsString(keyMappingDTOS);
+            String sampleReportConvert = mapper.writeValueAsString(existingSampleReportDTO);
             // Tạo DetailLog
             Integer countLog = detailLogRepository.countByEntityTypeAndEntityId("sample_reports", id);
             DetailLogDTO detailLog = new DetailLogDTO();
