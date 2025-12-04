@@ -79,8 +79,8 @@ export class SampleReportListComponent {
     });
     ref.onClose.subscribe((result) => {
       if (result) {
-        console.log(result);
-        this.dataService.updateData(result);  
+        const data = JSON.parse(result.detail);
+        this.dataService.updateData(data);   
         this.router.navigate(['/SampleReports/view-history']);
         
       }

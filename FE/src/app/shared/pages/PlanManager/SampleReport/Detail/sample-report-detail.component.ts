@@ -58,8 +58,6 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
     
     if(this.isViewHistory) {
       this.mode = 'view';
-      this.listCriterialBySample = JSON.parse(_.get(this.model, 'detail') || '');
-      this.model = (this.model as any).data;
     }
     forkJoin({
       branchs: this.branchService.getAll(),
