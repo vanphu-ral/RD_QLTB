@@ -101,4 +101,29 @@ public class Plan {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private ApprovalWorkflow approvalWorkflow;
 
+    public Plan() {
+    }
+
+    public Plan(Long id, String code, String name, String frequency, String planNumber, String userPerformer, LocalDateTime fromDate, LocalDateTime toDate, String description, String createdBy, LocalDateTime createdAt, LocalDateTime updatedAt, String updatedBy, Integer status, PlanType planType, Factory factory, Branch branch, Team team, Set<PlanDetail> planPlanDetails, ApprovalWorkflow approvalWorkflow) {
+        this.id = id;
+        this.code = code;
+        this.name = name;
+        this.frequency = frequency;
+        this.planNumber = planNumber;
+        this.userPerformer = userPerformer;
+        this.fromDate = fromDate;
+        this.toDate = toDate;
+        this.description = description;
+        this.createdBy = createdBy;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.updatedBy = updatedBy;
+        this.status = status;
+        this.planType = planType;
+        this.factory = factory;
+        this.branch = branch;
+        this.team = team;
+        this.planPlanDetails = planPlanDetails;
+        this.approvalWorkflow = approvalWorkflow;
+    }
 }

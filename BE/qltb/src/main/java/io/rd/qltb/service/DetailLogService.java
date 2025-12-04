@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -45,10 +46,10 @@ public class DetailLogService {
     }
     public DetailLogResponseDTO getAllByEntityTypeAndEntityId(String entityType, Long entityId) {
         DetailLogResponseDTO responseDTO = new DetailLogResponseDTO();
-        var detailLogs = detailLogRepository.findAllByEntityTypeAndEntityId(entityType, entityId);
-        var detailLogDTOs = detailLogs.stream().map(this::mapToDTO).toList();
+        List<DetailLog> detailLogs = detailLogRepository.findAllByEntityTypeAndEntityId(entityType, entityId);
+        List<DetailLogDTO> detailLogDTOs = detailLogs.stream().map(this::mapToDTO).toList();
         responseDTO.setDetailLog(detailLogDTOs);
-        String sql  = "SELECT * FROM detail_log WHERE entity_type = '" + entityType + "' AND entity_id = " + entityId;
+        String sql  = "SELECT * FROM "+ entityType +" WHERE  id = " + entityId;
         Map<String,Object> data = jdbcTemplate.queryForMap(sql);
         if (data != null) {
             responseDTO.setData(data);

@@ -15,7 +15,10 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
@@ -72,4 +75,22 @@ public class Team {
     @JsonIgnore
     private Set<Device> teamDevices = new HashSet<>();
 
+    public Team() {
+    }
+
+    public Team(Long id, String code, String name, String description, String manager, LocalDateTime createdAt, LocalDateTime updatedAt, String createdBy, String updatedBy, Integer status, Branch branch, Set<Line> teamLines, Set<Device> teamDevices) {
+        this.id = id;
+        this.code = code;
+        this.name = name;
+        this.description = description;
+        this.manager = manager;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.createdBy = createdBy;
+        this.updatedBy = updatedBy;
+        this.status = status;
+        this.branch = branch;
+        this.teamLines = teamLines;
+        this.teamDevices = teamDevices;
+    }
 }
