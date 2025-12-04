@@ -59,6 +59,8 @@
             (onClick)="editItem(row)"></p-button>
           <p-button icon="pi pi-eye" styleClass="p-button-sm p-button-rounded p-button-info m-1"
             (onClick)="viewItem(row)"></p-button>
+          <p-button icon="pi pi-history" styleClass="p-button-sm p-button-rounded p-button-warn m-1"
+            (onClick)="viewHistory(row)"></p-button>
           <p-button icon="pi pi-trash" *ngIf="!isLocked(row)" styleClass="p-button-sm p-button-rounded p-button-danger m-1"
             (onClick)="deleteItem(row, $event)"></p-button>
         </td>

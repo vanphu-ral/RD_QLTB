@@ -1,0 +1,36 @@
+<div class="p-1">
+    <div class="table-responsive">
+        <p-table [value]="listHistory" responsiveLayout="scroll">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>STT</th>
+                    <th>Lần thay đổi</th>
+                    <th>thời gian thay đổi</th>
+                    <th>Thao tác</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-row let-i="rowIndex">
+                <tr>
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ row.version }}</td>
+                    <td>{{ row.loggedAt | date: 'dd-MM-yyyy' }}</td>
+                    <td class="text-center">
+                        <p-button icon="pi pi-eye" severity="info" class="m-1"
+                            (onClick)="viewData(i)">
+                        </p-button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="99" class="text-center">Chưa có đợt kiểm tra nào</td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+    </div>
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <p-button label="Đóng" (onClick)="close()"></p-button>
+    </div>
+</div>

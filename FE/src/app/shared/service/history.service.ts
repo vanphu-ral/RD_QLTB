@@ -1,6 +1,8 @@
 // src/app/shared/services/history.service.ts
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
+import { Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 @Injectable({
@@ -8,8 +10,9 @@ import { filter } from 'rxjs/operators';
 })
 export class HistoryService {
   private history: string[] = [];
+  private url = `http://localhost:8081/api/detail-logs`;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, protected http: HttpClient) {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
@@ -22,5 +25,13 @@ export class HistoryService {
       return this.history[this.history.length - 2];
     }
     return null;
+  }
+
+  public getHistoryData(entityType: string, entityId: number): Observable<any> {
+    const params = new HttpParams()
+      .set('entityType', entityType)
+      .set('entityId', entityId);
+
+    return this.http.get<any>(this.url, { params, withCredentials: true });
   }
 }

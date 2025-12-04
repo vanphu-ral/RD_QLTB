@@ -16,6 +16,7 @@ import { AcceptanceDialog } from '../Dialogs/acceptance-dialog/acceptance.dialog
 import { PLANTYPE } from '../../../../enums/plan-type.enum';
 import { OptionApprovalDialog } from '../../SampleReport/Dialogs/option-approval-dialog/option-approval.dialog';
 import { AcceptanceService } from '../../../Reports/Acceptance/service/acceptance.service';
+import { ListHistoryChangeDataDialog } from '../Dialogs/list-history-change-data-dialog/list-history-change-data.dialog';
 
 @Component({
   selector: 'plan-list',
@@ -180,24 +181,16 @@ export class PlanListComponent {
         });
       }
     );
-    // this.ref = this.dialogService.open(OptionApprovalDialog, {
-    //   header: `Duyệt mẫu biên bản`,
-    //   width: '400px',
-    //   modal: true,
-    //   data: { data: data, type: 'plans' },
-    //   closable: true
-    // });
-    // this.ref.onClose.subscribe((res) => {
-    //   if (res) {
-    //     this.apiService.updateStatus(data.id, 2).subscribe({
-    //       next: (res) => {
-    //         this.loadData();
-    //         this.cdr.detectChanges();
-    //         Util.ConfirmMessage('Gửi duyệt thành công', 'success');
-    //       },
-    //     });
-    //   }
-    // });
+  }
+
+  viewHistory(data: any) {
+    const ref = this.dialogService.open(ListHistoryChangeDataDialog, {
+      header: 'Lịch sửa đổi bản ghi',
+      width: 'auto',
+      modal: true,
+      data: data,
+      closable: true,
+    });
   }
 
   // function table child
