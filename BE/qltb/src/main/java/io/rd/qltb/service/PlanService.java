@@ -43,13 +43,14 @@ public class PlanService {
     private final DeviceService deviceService;
     private final PlanDetailService planDetailService;
 private final DetailLogService detailLogService;
+private final DetailLogRepository detailLogRepository;
     public PlanService(EntityManager entityManager, final PlanRepository planRepository,
                        final PlanTypeRepository planTypeRepository,
                        final FactoryRepository factoryRepository,
                        final BranchRepository branchRepository,
                        final TeamRepository teamRepository,
                        final ApprovalWorkflowRepository approvalWorkflowRepository,
-                       final ApplicationEventPublisher publisher, PlanDetailRepository planDetailRepository, DeviceRepository deviceRepository, DeviceGroupRepository deviceGroupRepository, SampleReportRepository sampleReportRepository, DeviceGroupService deviceGroupService, SampleReportService sampleReportService, DeviceService deviceService, PlanDetailService planDetailService, DetailLogService detailLogService) {
+                       final ApplicationEventPublisher publisher, PlanDetailRepository planDetailRepository, DeviceRepository deviceRepository, DeviceGroupRepository deviceGroupRepository, SampleReportRepository sampleReportRepository, DeviceGroupService deviceGroupService, SampleReportService sampleReportService, DeviceService deviceService, PlanDetailService planDetailService, DetailLogService detailLogService, DetailLogRepository detailLogRepository) {
         this.entityManager = entityManager;
         this.planRepository = planRepository;
         this.planTypeRepository = planTypeRepository;
@@ -67,6 +68,7 @@ private final DetailLogService detailLogService;
         this.deviceService = deviceService;
         this.planDetailService = planDetailService;
         this.detailLogService = detailLogService;
+        this.detailLogRepository = detailLogRepository;
     }
 
     @Transactional
@@ -299,7 +301,7 @@ private final DetailLogService detailLogService;
             System.out.println("Mã kế hoạch đã tồn tại :: "+ planRequest.getPlan().getCode() + " :: " + planRequest.getPlan().getName());
             Plan plan = planRepository.findById(planRequest.getPlan().getId()).orElseThrow();
             //tạo log detail cho plans
-            Integer countLog = detailLogService.getAllByEntityTypeAndEntityId("plans", planRequest.getPlan().getId()).getDetailLog().size();
+            Integer countLog = detailLogRepository.countByEntityTypeAndEntityId("plans", planRequest.getPlan().getId());
             DetailLogDTO detailLog = new DetailLogDTO();
             detailLog.setEntityType("plans");
             detailLog.setEntityId(planRequest.getPlan().getId());

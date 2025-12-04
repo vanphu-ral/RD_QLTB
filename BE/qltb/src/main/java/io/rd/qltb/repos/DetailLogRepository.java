@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface DetailLogRepository  extends JpaRepository<DetailLog, Long> {
     List<DetailLog> findAllByEntityTypeAndEntityId(String entityType, Long entityId);
+    Integer countByEntityTypeAndEntityId(String entityType, Long entityId);
 }
