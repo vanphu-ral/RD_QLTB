@@ -1,5 +1,9 @@
 package io.rd.qltb.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.rd.qltb.domain.*;
 import io.rd.qltb.events.BeforeDeletePlan;
 import io.rd.qltb.events.BeforeDeletePlanType;
@@ -26,7 +30,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class PlanService {
     @PersistenceContext
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
     private final PlanRepository planRepository;
     private final PlanTypeRepository planTypeRepository;
     private final FactoryRepository factoryRepository;
@@ -42,8 +46,9 @@ public class PlanService {
     private final SampleReportService sampleReportService;
     private final DeviceService deviceService;
     private final PlanDetailService planDetailService;
-private final DetailLogService detailLogService;
-private final DetailLogRepository detailLogRepository;
+    private final DetailLogService detailLogService;
+    private final DetailLogRepository detailLogRepository;
+
     public PlanService(EntityManager entityManager, final PlanRepository planRepository,
                        final PlanTypeRepository planTypeRepository,
                        final FactoryRepository factoryRepository,
@@ -298,47 +303,87 @@ private final DetailLogRepository detailLogRepository;
 
             }
         } else {
-            System.out.println("Mã kế hoạch đã tồn tại :: "+ planRequest.getPlan().getCode() + " :: " + planRequest.getPlan().getName());
+            System.out.println("Mã kế hoạch đã tồn tại :: " + planRequest.getPlan().getCode() + " :: " + planRequest.getPlan().getName());
             Plan plan = planRepository.findById(planRequest.getPlan().getId()).orElseThrow();
-            //tạo log detail cho plans
-            Integer countLog = detailLogRepository.countByEntityTypeAndEntityId("plans", planRequest.getPlan().getId());
-            DetailLogDTO detailLog = new DetailLogDTO();
-            detailLog.setEntityType("plans");
-            detailLog.setEntityId(planRequest.getPlan().getId());
-            detailLog.setDetail(plan.toString());
-            detailLog.setVersion(countLog + 1 + "");
-            detailLog.setCreatedAt(java.time.LocalDateTime.now());
-            detailLog.setLoggedAt(java.time.LocalDateTime.now());
-            detailLog.setCreatedBy(userName);
-            detailLog.setStatus(1);
-            detailLogService.create(detailLog);
-            // Lưu Plan trước
-            plan.setUpdatedAt(java.time.LocalDateTime.now());
-            plan.setApprovalWorkflow(planRequest.getPlan().getApprovalWorkflow());
-            plan.setBranch(planRequest.getPlan().getBranch());
-            plan.setFactory(planRequest.getPlan().getFactory());
-            plan.setTeam(planRequest.getPlan().getTeam());
-            plan.setCode(planRequest.getPlan().getCode());
-            plan.setName(planRequest.getPlan().getName());
-            plan.setFrequency(planRequest.getPlan().getFrequency());
-            plan.setPlanNumber(planRequest.getPlan().getPlanNumber());
-            plan.setUserPerformer(planRequest.getPlan().getUserPerformer());
-            plan.setDescription(planRequest.getPlan().getDescription());
-            plan.setStatus(planRequest.getPlan().getStatus());
-            plan.setFromDate(planRequest.getPlan().getFromDate());
-            plan.setToDate(planRequest.getPlan().getToDate());
-            plan.setUpdatedBy(userName);
-            planRepository.save(plan);
-            List<PlanDetail> planDetailSend = new ArrayList<>();
-            // Gán Plan đã lưu cho từng PlanDetail và lưu chúng
+            try {
+                // Khởi tạo ObjectMapper với hỗ trợ Java 8 Date/Time
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.registerModule(new JavaTimeModule());
+                mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+                PlanDTO planDTO = mapToDTO(plan, new PlanDTO());
+                // Convert Plan sang JSON
+                String planJson = mapper.writeValueAsString(planDTO.getPlanDetails());
 
-            for (DeviceRequest deviceRequest : planRequest.getDevices()) {
-                PlanDetail planDetail = planDetailRepository.findById(deviceRequest.getPlanDetailId()).orElse(null);
-                Device deviceSave = deviceRepository.findById(deviceRequest.getDevice().getId())
-                        .orElseThrow(() -> new NotFoundException("Device not found"));
-                if (planDetail != null) {
+                // Tạo DetailLog
+                Integer countLog = detailLogRepository.countByEntityTypeAndEntityId("plans", planRequest.getPlan().getId());
+                DetailLogDTO detailLog = new DetailLogDTO();
+                detailLog.setEntityType("plans");
+                detailLog.setEntityId(planRequest.getPlan().getId());
+                detailLog.setDetail(planJson);
+                detailLog.setVersion(String.valueOf(countLog + 1));
+                detailLog.setCreatedAt(java.time.LocalDateTime.now());
+                detailLog.setLoggedAt(java.time.LocalDateTime.now());
+                detailLog.setCreatedBy(userName);
+                detailLog.setStatus(1);
+                detailLogService.create(detailLog);
+
+                // Cập nhật Plan
+                Plan planRequestData = planRequest.getPlan();
+                plan.setUpdatedAt(java.time.LocalDateTime.now());
+                plan.setApprovalWorkflow(planRequestData.getApprovalWorkflow());
+                plan.setBranch(planRequestData.getBranch());
+                plan.setFactory(planRequestData.getFactory());
+                plan.setTeam(planRequestData.getTeam());
+                plan.setCode(planRequestData.getCode());
+                plan.setName(planRequestData.getName());
+                plan.setFrequency(planRequestData.getFrequency());
+                plan.setPlanNumber(planRequestData.getPlanNumber());
+                plan.setUserPerformer(planRequestData.getUserPerformer());
+                plan.setDescription(planRequestData.getDescription());
+                plan.setStatus(planRequestData.getStatus());
+                plan.setFromDate(planRequestData.getFromDate());
+                plan.setToDate(planRequestData.getToDate());
+                plan.setUpdatedBy(userName);
+                planRepository.save(plan);
+
+                // Cập nhật PlanDetail
+                for (DeviceRequest deviceRequest : planRequest.getDevices()) {
+                    if(deviceRequest.getPlanDetailId() == null){
+                        for (PLanDetailRequest detail : planRequest.getPlanDetails()) {
+                                if (deviceRequest.getDevice().getGroup().getId() == detail.getDeviceGroup().getId()) {
+                                    PlanDetail planDetail = new PlanDetail();
+                                    planDetail.setPlan(plan);
+                                    planDetail.setCreatedAt(java.time.LocalDateTime.now());
+                                    planDetail.setUpdatedAt(java.time.LocalDateTime.now());
+                                    planDetail.setCreatedBy(userName);
+                                    planDetail.setUpdatedBy(null);
+                                    planDetail.setStatus(1);
+                                    planDetail.setEstimatedTime(deviceRequest.getEstimatedTime());
+                                    planDetail.setNameDetail(deviceRequest.getNameDetail());
+                                    planDetail.setNote(deviceRequest.getNote());
+                                    planDetail.setManager(deviceRequest.getManager());
+                                    planDetail.setSerial(deviceRequest.getSerialNumber());
+                                    Device device = deviceRepository.findById(deviceRequest.getDevice().getId())
+                                            .orElseThrow(() -> new NotFoundException("Device not found"));
+                                    planDetail.setDevice(device);
+                                    DeviceGroup deviceGroup = deviceGroupRepository.findById(detail.getDeviceGroup().getId())
+                                            .orElseThrow(() -> new NotFoundException("DeviceGroup not found"));
+                                    planDetail.setDeviceGroup(deviceGroup);
+                                    SampleReport sampleReport = sampleReportRepository.findById(detail.getSampleReport().getId())
+                                            .orElseThrow(() -> new NotFoundException("SampleReport not found"));
+                                    planDetail.setSampleReport(sampleReport);
+                                    planDetailRepository.save(planDetail);
+                                }
+                            }
+                    }else {
+                    PlanDetail planDetail = planDetailRepository.findById(deviceRequest.getPlanDetailId()).orElse(null);
+                    if (planDetail == null) continue;
+
+                    Device deviceSave = deviceRepository.findById(deviceRequest.getDevice().getId())
+                            .orElseThrow(() -> new NotFoundException("Device not found"));
+
                     for (PLanDetailRequest detail : planRequest.getPlanDetails()) {
-                        if (deviceSave.getGroup().getId() == detail.getDeviceGroup().getId()) {
+                        if (deviceSave.getGroup().getId().equals(detail.getDeviceGroup().getId())) {
                             planDetail.setDeviceGroup(deviceSave.getGroup());
                             planDetail.setSampleReport(sampleReportRepository.findById(detail.getSampleReport().getId())
                                     .orElseThrow(() -> new NotFoundException("SampleReport not found")));
@@ -353,9 +398,12 @@ private final DetailLogRepository detailLogRepository;
                             planDetailRepository.save(planDetail);
                         }
                     }
+                    }
                 }
-            }
 
+            } catch (Exception e) {
+                throw new RuntimeException("Error while processing Plan update", e);
+            }
         }
     }
 
@@ -373,10 +421,11 @@ private final DetailLogRepository detailLogRepository;
         publisher.publishEvent(new BeforeDeletePlan(id));
         planRepository.delete(plan);
     }
+
     public void deleteByPlanId(final Long planId) {
         List<PlanDetail> plans = planDetailRepository.findAllByPlanId(planId);
         planDetailRepository.deleteAll(plans);
-            planRepository.deleteById(planId);
+        planRepository.deleteById(planId);
     }
 
 
@@ -426,34 +475,34 @@ private final DetailLogRepository detailLogRepository;
 
             // Map children (PlanDetail → PlanDetailDTO)
             List<PlanDetailListDTO> details = plan.getPlanPlanDetails().stream().map(detail -> {
-                PlanDetailListDTO d = new PlanDetailListDTO();
-                d.setId(detail.getId());
-                d.setSerial(detail.getSerial());
-                d.setManager(detail.getManager());
-                d.setStatus(detail.getStatus());
-                d.setCreatedBy(detail.getCreatedBy());
-                d.setUpdatedBy(detail.getUpdatedBy());
-                d.setCreatedAt(detail.getCreatedAt());
-                d.setUpdatedAt(detail.getUpdatedAt());
+                        PlanDetailListDTO d = new PlanDetailListDTO();
+                        d.setId(detail.getId());
+                        d.setSerial(detail.getSerial());
+                        d.setManager(detail.getManager());
+                        d.setStatus(detail.getStatus());
+                        d.setCreatedBy(detail.getCreatedBy());
+                        d.setUpdatedBy(detail.getUpdatedBy());
+                        d.setCreatedAt(detail.getCreatedAt());
+                        d.setUpdatedAt(detail.getUpdatedAt());
 
-                if (detail.getDevice() != null) {
-                    d.setDeviceId(detail.getDevice().getId());
-                    d.setDeviceCode(detail.getDevice().getCode());
-                    d.setDeviceName(detail.getDevice().getName());
-                }
-                if (detail.getDeviceGroup() != null) {
-                    d.setDeviceGroupId(detail.getDeviceGroup().getId());
-                    d.setDeviceGroupCode(detail.getDeviceGroup().getCode());
-                    d.setDeviceGroupName(detail.getDeviceGroup().getName());
-                }
-                if (detail.getSampleReport() != null) {
-                    d.setSampleReportId(detail.getSampleReport().getId());
-                    d.setSampleReportCode(detail.getSampleReport().getCode());
-                    d.setSampleReportName(detail.getSampleReport().getName());
-                }
+                        if (detail.getDevice() != null) {
+                            d.setDeviceId(detail.getDevice().getId());
+                            d.setDeviceCode(detail.getDevice().getCode());
+                            d.setDeviceName(detail.getDevice().getName());
+                        }
+                        if (detail.getDeviceGroup() != null) {
+                            d.setDeviceGroupId(detail.getDeviceGroup().getId());
+                            d.setDeviceGroupCode(detail.getDeviceGroup().getCode());
+                            d.setDeviceGroupName(detail.getDeviceGroup().getName());
+                        }
+                        if (detail.getSampleReport() != null) {
+                            d.setSampleReportId(detail.getSampleReport().getId());
+                            d.setSampleReportCode(detail.getSampleReport().getCode());
+                            d.setSampleReportName(detail.getSampleReport().getName());
+                        }
 
-                return d;
-            })
+                        return d;
+                    })
                     .sorted(Comparator.comparing(PlanDetailListDTO::getId).reversed())
                     .toList();
 
@@ -576,7 +625,7 @@ private final DetailLogRepository detailLogRepository;
         } else {
             dto.setApprovalWorkflow(null);
         }
-        if(plan.getPlanPlanDetails() != null){
+        if (plan.getPlanPlanDetails() != null) {
             List<PlanDetailDTO> planDetailDTOS = plan.getPlanPlanDetails().stream()
                     .map(planDetail -> planDetailService.mapToDTO(planDetail, new PlanDetailDTO()))
                     .toList();
@@ -627,12 +676,14 @@ private final DetailLogRepository detailLogRepository;
 
         return plan;
     }
- public void  inactiveatePlan(Long id) {
+
+    public void inactiveatePlan(Long id) {
         Plan plan = planRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Plan not found"));
         plan.setStatus(0); // Giả sử 0 là trạng thái không hoạt động
         planRepository.save(plan);
     }
+
     @EventListener(BeforeDeletePlanType.class)
     public void on(final BeforeDeletePlanType event) {
         final ReferencedException referencedException = new ReferencedException();
@@ -643,11 +694,13 @@ private final DetailLogRepository detailLogRepository;
             throw referencedException;
         }
     }
+
     public PlanDTO getById(final Long id) {
         return planRepository.findById(id)
                 .map(plan -> mapToDTO(plan, new PlanDTO()))
                 .orElseThrow(NotFoundException::new);
     }
+
     public ApplicationEventPublisher getPublisher() {
         return publisher;
     }
