@@ -51,7 +51,7 @@ export class ListHistoryChangeDataDialog {
     }
 
     viewData(row: any) {
-        this.ref.close({plan: this.history.data, detail: row.detail});
+        this.ref.close({data: this.history.data, detail: row.detail});
     }
 
 

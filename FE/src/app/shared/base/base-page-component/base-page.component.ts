@@ -73,7 +73,6 @@ export abstract class BasePageComponent<T> implements OnInit {
     }
 
     if(this.isViewHistory) {
-      this.mode = 'view';
       this.dataService.data$.subscribe((res: any) => {
         if (res) {
           this.model = res;  

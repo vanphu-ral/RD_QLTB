@@ -10,6 +10,8 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { OptionApprovalDialog } from '../Dialogs/option-approval-dialog/option-approval.dialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ListHistoryChangeDataDialog } from '../../Plan/Dialogs/list-history-change-data-dialog/list-history-change-data.dialog';
+import { DataService } from '../../../../service/send-data.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'sample-report-list',
@@ -33,7 +35,7 @@ export class SampleReportListComponent {
     { Field: 'updatedAt', Header: 'Ngày cập nhật', IsSearch: true, TypeSearch: 'date', style: { 'min-width': '150px' } },
   ];
 
-  constructor(public apiService: SampleReportService, private dialogService: DialogService, private cdr: ChangeDetectorRef, private comfirmService: ConfirmationService, private messageService: MessageService) { }
+  constructor(public apiService: SampleReportService, private dialogService: DialogService, private cdr: ChangeDetectorRef, private comfirmService: ConfirmationService, private messageService: MessageService, private dataService: DataService, private router: Router) { }
 
   statusToString(status: number) {
     return Util.statusToString(status);
@@ -74,6 +76,14 @@ export class SampleReportListComponent {
       modal: true,
       data: { data: data, type: 'sample_reports' },
       closable: true,
+    });
+    ref.onClose.subscribe((result) => {
+      if (result) {
+        console.log(result);
+        this.dataService.updateData(result);  
+        this.router.navigate(['/SampleReports/view-history']);
+        
+      }
     });
   }
 

@@ -37,6 +37,14 @@ const sampleReportRoute: Routes = [
     resolve: {
       data: SampleReportResolve,
     },
+  },
+  {
+    path: 'view-history',
+    component: SampleReportDetailComponent,
+    data: { mode: 'view-history' },
+    resolve: {
+      data: SampleReportResolve,
+    },
   }
 ];
 
