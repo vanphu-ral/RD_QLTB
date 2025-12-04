@@ -30,6 +30,8 @@ public class DetailLogService {
         dto.setVersion(detailLog.getVersion());
         dto.setCreatedBy(detailLog.getCreatedBy());
         dto.setStatus(detailLog.getStatus());
+        dto.setLoggedAt(detailLog.getLoggedAt());
+        dto.setCreatedAt(detailLog.getCreatedAt());
         return dto;
     }
 
