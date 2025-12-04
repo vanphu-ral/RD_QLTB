@@ -31,8 +31,7 @@ public class PlanWithDetailsDTO {
 
     private Long branchId;
     private String branchName;
-    private LocalDateTime fromDate;
-    private LocalDateTime toDate;
+
     private Long approvalWorkflowId;
     private String approvalWorkflowName;
     private ApprovalWorkflowDTO approvalWorkflow;
