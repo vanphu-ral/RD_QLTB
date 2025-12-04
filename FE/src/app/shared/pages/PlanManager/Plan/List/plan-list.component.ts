@@ -194,9 +194,8 @@ export class PlanListComponent {
     });
     ref.onClose.subscribe((result) => {
       if (result) {
-        console.log(JSON.parse(result.detail));
         const data = JSON.parse(result.detail);
-        this.dataService.updateData(data);    // Set object vào service
+        this.dataService.updateData(data);  
         this.router.navigate(['/Plans/view-history']);
       }
     });

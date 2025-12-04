@@ -87,6 +87,7 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
       })
       this.cdr.detectChanges();
     })
+    if(this.isViewHistory)  this.mode = 'view';
   }
 
   override initNewModel(): void {
