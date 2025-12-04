@@ -1,18 +1,17 @@
 package io.rd.qltb.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.rd.qltb.domain.*;
 import io.rd.qltb.events.BeforeDeleteDeviceGroup;
 import io.rd.qltb.events.BeforeDeleteSampleReport;
-import io.rd.qltb.model.KeyMappingDTO;
+import io.rd.qltb.model.DetailLogDTO;
 import io.rd.qltb.model.SampleReportDTO;
-import io.rd.qltb.repos.ApprovalWorkflowRepository;
-import io.rd.qltb.repos.BranchRepository;
-import io.rd.qltb.repos.DeviceGroupRepository;
-import io.rd.qltb.repos.SampleReportRepository;
+import io.rd.qltb.repos.*;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
@@ -28,17 +27,20 @@ public class SampleReportService {
     private final BranchRepository branchRepository;
     private final ApprovalWorkflowRepository approvalWorkflowRepository;
     private final ApplicationEventPublisher publisher;
-
+    private final DetailLogService detailLogService;
+    private final DetailLogRepository detailLogRepository;
     public SampleReportService(final SampleReportRepository sampleReportRepository,
-            final DeviceGroupRepository deviceGroupRepository,
-            final BranchRepository branchRepository,
-            final ApprovalWorkflowRepository approvalWorkflowRepository,
-            final ApplicationEventPublisher publisher) {
+                               final DeviceGroupRepository deviceGroupRepository,
+                               final BranchRepository branchRepository,
+                               final ApprovalWorkflowRepository approvalWorkflowRepository,
+                               final ApplicationEventPublisher publisher, DetailLogService detailLogService, DetailLogRepository detailLogRepository) {
         this.sampleReportRepository = sampleReportRepository;
         this.deviceGroupRepository = deviceGroupRepository;
         this.branchRepository = branchRepository;
         this.approvalWorkflowRepository = approvalWorkflowRepository;
         this.publisher = publisher;
+        this.detailLogService = detailLogService;
+        this.detailLogRepository = detailLogRepository;
     }
 
     public List<SampleReportDTO> findAll() {
@@ -60,11 +62,35 @@ public class SampleReportService {
         return sampleReportRepository.save(sampleReport).getId();
     }
 
-    public void update(final Long id, final SampleReportDTO sampleReportDTO) {
-        final SampleReport sampleReport = sampleReportRepository.findById(id)
-                .orElseThrow(NotFoundException::new);
-        mapToEntity(sampleReportDTO, sampleReport);
+    public void update(final Long id, final SampleReportDTO sampleReportDTO,String userName) {
+        try {
+            final SampleReport sampleReport = sampleReportRepository.findById(id)
+                    .orElseThrow(NotFoundException::new);
+            SampleReportDTO sampleReportOld = mapToDTO(sampleReport, new SampleReportDTO());
+            // Khởi tạo ObjectMapper với hỗ trợ Java 8 Date/Time
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new JavaTimeModule());
+            mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+            // Convert Plan sang JSON
+            String sampleReportConvert = mapper.writeValueAsString(sampleReportOld);
+            // Tạo DetailLog
+            Integer countLog = detailLogRepository.countByEntityTypeAndEntityId("sample_reports", id);
+            DetailLogDTO detailLog = new DetailLogDTO();
+            detailLog.setEntityType("sample_reports");
+            detailLog.setEntityId(id);
+            detailLog.setDetail(sampleReportConvert);
+            detailLog.setVersion(String.valueOf(countLog + 1));
+            detailLog.setCreatedAt(java.time.LocalDateTime.now());
+            detailLog.setLoggedAt(java.time.LocalDateTime.now());
+            detailLog.setCreatedBy(userName);
+            detailLog.setStatus(1);
+            detailLogService.create(detailLog);
+            mapToEntity(sampleReportDTO, sampleReport);
         sampleReportRepository.save(sampleReport);
+        } catch (Exception e) {
+            throw new RuntimeException("Error while processing Plan update", e);
+        }
+
     }
 
     public void delete(final Long id) {

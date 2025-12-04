@@ -8,6 +8,8 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,8 +51,9 @@ public class SampleReportResource {
 
     @PutMapping("/{id}")
     public ResponseEntity<Long> updateSampleReport(@PathVariable(name = "id") final Long id,
-            @RequestBody @Valid final SampleReportDTO sampleReportDTO) {
-        sampleReportService.update(id, sampleReportDTO);
+                                                   @RequestBody @Valid final SampleReportDTO sampleReportDTO,
+                                                   @AuthenticationPrincipal OidcUser oidcUser) {
+        sampleReportService.update(id, sampleReportDTO,oidcUser.getName());
         return ResponseEntity.ok(id);
     }
 
