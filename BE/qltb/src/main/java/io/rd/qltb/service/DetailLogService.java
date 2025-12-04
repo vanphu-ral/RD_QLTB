@@ -39,6 +39,8 @@ public class DetailLogService {
         entity.setVersion(dto.getVersion());
         entity.setCreatedBy(dto.getCreatedBy());
         entity.setStatus(dto.getStatus());
+        entity.setLoggedAt(java.time.LocalDateTime.now());
+        entity.setCreatedAt(java.time.LocalDateTime.now());
         return entity;
     }
     public DetailLogResponseDTO getAllByEntityTypeAndEntityId(String entityType, Long entityId) {
