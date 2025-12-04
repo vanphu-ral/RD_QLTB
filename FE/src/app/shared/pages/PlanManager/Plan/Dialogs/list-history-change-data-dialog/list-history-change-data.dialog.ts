@@ -24,20 +24,17 @@ import { HistoryService } from "../../../../../service/history.service";
 export class ListHistoryChangeDataDialog {
 
     data: any;
-    listHistory: any[] = [];
+    type: any;
+    history: any = {};
 
     constructor(
         public ref: DynamicDialogRef,
         public config: DynamicDialogConfig,
-        private dialogService: DialogService,
         private cdr: ChangeDetectorRef,
-        private errorReportService: ErrorReportService,
-        private comfirmService: ConfirmationService,
-        private messageService: MessageService,
-        private router: Router,
         private historyService: HistoryService
     ) {
-        this.data = config.data;
+        this.data = config.data.data;
+        this.type = config.data.type;
     }
 
     ngOnInit() {
@@ -45,8 +42,8 @@ export class ListHistoryChangeDataDialog {
     }
 
     loadErrorList() {
-        this.historyService.getHistoryData('plans', this.data.id).subscribe((data) => {
-            this.listHistory = data;
+        this.historyService.getHistoryData(this.type, this.data.id).subscribe((data) => {
+            this.history = data;
             console.log(data);
             
             this.cdr.detectChanges();
@@ -54,7 +51,7 @@ export class ListHistoryChangeDataDialog {
     }
 
     viewData(row: any) {
-
+        this.ref.close({plan: this.history.data, detail: row.detail});
     }
 
 

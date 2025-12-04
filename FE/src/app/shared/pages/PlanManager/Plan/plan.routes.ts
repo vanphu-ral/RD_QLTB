@@ -7,6 +7,7 @@ import { model } from '@angular/core';
 import { PlanDetailResolve } from './Resolve/plan-detail-resolve.service';
 import { ViewPlanMaintancePage } from './ViewPlanMaintance/view-plan-maintance.page';
 import { PlanMaintanceResolve } from './Resolve/plan-maintance-resolve.service';
+import { PlanViewHistoryResolver } from './Resolve/view-history-resolve.service';
 
 
 const planRoute: Routes = [
@@ -57,6 +58,14 @@ const planRoute: Routes = [
     data: { mode: 'approval' },
     resolve: {
       data: PlanResolve,
+    },
+  },
+  {
+    path: 'view-history',
+    component: PlanDetailComponent,
+    data: { mode: 'view-history' },
+    resolve: {
+      data: PlanViewHistoryResolver,
     },
   }
 ];

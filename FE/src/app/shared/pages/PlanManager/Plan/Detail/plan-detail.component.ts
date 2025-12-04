@@ -60,8 +60,6 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
 
   override ngOnInit(): void {
     super.ngOnInit();
-    console.log(this.model);
-
     if (this.isEditMode) this.oldPlanRequest = _.cloneDeep(this.model);
     forkJoin({
       branchs: this.branchService.getAll(),

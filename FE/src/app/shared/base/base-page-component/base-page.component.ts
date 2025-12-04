@@ -17,7 +17,7 @@ export abstract class BasePageComponent<T> implements OnInit {
   public model: T = {} as T;
   public approvalModel: any = {};
   
-  public mode!: 'add' | 'view' | 'edit' | 'approval';
+  public mode!: 'add' | 'view' | 'edit' | 'approval' | 'view-history';
   
   public get isAddMode(): boolean {
     return this.mode === 'add';
@@ -33,6 +33,10 @@ export abstract class BasePageComponent<T> implements OnInit {
 
   public get isApprovalMode(): boolean {
     return this.mode === 'approval';
+  }
+
+  public get isViewHistory(): boolean {
+    return this.mode === 'view-history';
   }
 
   listStatus: any[] = [
@@ -66,6 +70,15 @@ export abstract class BasePageComponent<T> implements OnInit {
     if (this.isAddMode) {
       this.initNewModel();
       _.set(this.model as any, 'status', 1);
+    }
+
+    if(this.isViewHistory) {
+      this.mode = 'view';
+      this.dataService.data$.subscribe((res: any) => {
+        if (res) {
+          this.model = res;  
+        }
+      });
     }
 
     if(this.isApprovalMode) {
