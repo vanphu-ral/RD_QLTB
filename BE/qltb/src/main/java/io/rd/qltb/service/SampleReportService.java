@@ -13,6 +13,7 @@ import io.rd.qltb.repos.*;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
@@ -65,38 +66,47 @@ public class SampleReportService {
         return sampleReportRepository.save(sampleReport).getId();
     }
 
-    public void update(final Long id, final SampleReportDTO sampleReportDTO,String userName) {
+    public void update(final Long id, final SampleReportDTO sampleReportDTO, String userName) {
         try {
+            // 1. Lấy entity gốc từ DB
             final SampleReport sampleReport = sampleReportRepository.findById(id)
                     .orElseThrow(NotFoundException::new);
-//            List<KeyMapping> keyMappings = sampleReport.getSampleReportKeyMappings().stream().toList();
-//            List<KeyMappingDTO> keyMappingDTOS = keyMappings.stream().map(km -> keyMappingService.mapToDTO(km, new KeyMappingDTO())).toList();
-            SampleReportDTO existingSampleReportDTO = mapToDTO(sampleReport, new SampleReportDTO());
-            // Khởi tạo ObjectMapper với hỗ trợ Java 8 Date/Time
+
+            // 2. Map sang DTO để tạo snapshot trước khi update
+            SampleReportDTO beforeUpdateDTO = mapToDTO(sampleReport, new SampleReportDTO());
+
+            // 3. Convert snapshot sang JSON (log dữ liệu cũ)
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JavaTimeModule());
             mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-            // Convert Plan sang JSON
-            String sampleReportConvert = mapper.writeValueAsString(existingSampleReportDTO);
-            // Tạo DetailLog
+            String snapshotJson = mapper.writeValueAsString(beforeUpdateDTO);
+
+            // 4. Tạo bản ghi log
             Integer countLog = detailLogRepository.countByEntityTypeAndEntityId("sample_reports", id);
             DetailLogDTO detailLog = new DetailLogDTO();
             detailLog.setEntityType("sample_reports");
             detailLog.setEntityId(id);
-            detailLog.setDetail(sampleReportConvert);
+            detailLog.setDetail(snapshotJson); // dữ liệu trước update
             detailLog.setVersion(String.valueOf(countLog + 1));
-            detailLog.setCreatedAt(java.time.LocalDateTime.now());
-            detailLog.setLoggedAt(java.time.LocalDateTime.now());
+            detailLog.setCreatedAt(LocalDateTime.now());
+            detailLog.setLoggedAt(LocalDateTime.now());
             detailLog.setCreatedBy(userName);
             detailLog.setStatus(1);
-            detailLogService.create(detailLog);
-            mapToEntity(sampleReportDTO, sampleReport);
-        sampleReportRepository.save(sampleReport);
-        } catch (Exception e) {
-            throw new RuntimeException("Error while processing Plan update", e);
-        }
 
+            // 5. Lưu log trước khi thay đổi entity
+            detailLogService.create(detailLog);
+
+            // 6. Áp dữ liệu mới vào entity
+            mapToEntity(sampleReportDTO, sampleReport);
+
+            // 7. Lưu entity đã update
+            sampleReportRepository.save(sampleReport);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error while processing SampleReport update", e);
+        }
     }
+
 
     public void delete(final Long id) {
         final SampleReport sampleReport = sampleReportRepository.findById(id)
