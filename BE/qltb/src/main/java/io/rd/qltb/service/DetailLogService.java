@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,6 +47,24 @@ public class DetailLogService {
         entity.setCreatedAt(java.time.LocalDateTime.now());
         return entity;
     }
+    // Hàm convert snake_case -> camelCase
+    private String toCamelCase(String snake) {
+        StringBuilder result = new StringBuilder();
+        boolean nextUpper = false;
+        for (char c : snake.toCharArray()) {
+            if (c == '_') {
+                nextUpper = true;
+            } else {
+                if (nextUpper) {
+                    result.append(Character.toUpperCase(c));
+                    nextUpper = false;
+                } else {
+                    result.append(c);
+                }
+            }
+        }
+        return result.toString();
+    }
     public DetailLogResponseDTO getAllByEntityTypeAndEntityId(String entityType, Long entityId) {
         DetailLogResponseDTO responseDTO = new DetailLogResponseDTO();
         List<DetailLog> detailLogs = detailLogRepository.findAllByEntityTypeAndEntityId(entityType, entityId);
@@ -53,6 +72,12 @@ public class DetailLogService {
         responseDTO.setDetailLog(detailLogDTOs);
         String sql  = "SELECT * FROM "+ entityType +" WHERE  id = " + entityId;
         Map<String,Object> data = jdbcTemplate.queryForMap(sql);
+        // Convert keys từ snake_case sang camelCase
+        Map<String, Object> convertedData = new HashMap<>();
+        data.forEach((key, value) -> {
+            String camelKey = toCamelCase(key);
+            convertedData.put(camelKey, value);
+        });
         if (data != null) {
             responseDTO.setData(data);
         }else {

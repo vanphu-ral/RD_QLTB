@@ -89,7 +89,6 @@ public class Plan {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @NotFound(action = NotFoundAction.IGNORE)
     private Team team;
 
     @OneToMany(mappedBy = "plan")

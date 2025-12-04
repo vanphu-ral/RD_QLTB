@@ -15,13 +15,4 @@ public class PlanRequest {
     private Plan plan;
     private List<PLanDetailRequest> planDetails;
     private List<DeviceRequest> devices;
-
-    public PlanRequest() {
-    }
-
-    public PlanRequest(Plan plan, List<PLanDetailRequest> planDetails, List<DeviceRequest> devices) {
-        this.plan = plan;
-        this.planDetails = planDetails;
-        this.devices = devices;
-    }
 }
