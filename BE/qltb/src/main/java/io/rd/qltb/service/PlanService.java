@@ -312,7 +312,7 @@ public class PlanService {
                 mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
                 PlanDTO planDTO = mapToDTO(plan, new PlanDTO());
                 // Convert Plan sang JSON
-                String planJson = mapper.writeValueAsString(planDTO.getPlanDetails());
+                String planJson = mapper.writeValueAsString(getPlanDetail(planRequest.getPlan().getId()));
 
                 // Tạo DetailLog
                 Integer countLog = detailLogRepository.countByEntityTypeAndEntityId("plans", planRequest.getPlan().getId());
