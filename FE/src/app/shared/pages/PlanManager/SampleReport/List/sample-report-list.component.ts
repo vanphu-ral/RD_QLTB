@@ -9,6 +9,7 @@ import { Util } from '../../../../core/utils/utils-function';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { OptionApprovalDialog } from '../Dialogs/option-approval-dialog/option-approval.dialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { ListHistoryChangeDataDialog } from '../../Plan/Dialogs/list-history-change-data-dialog/list-history-change-data.dialog';
 
 @Component({
   selector: 'sample-report-list',
@@ -64,26 +65,16 @@ export class SampleReportListComponent {
         });
       }
     );
-    // this.ref = this.dialogService.open(OptionApprovalDialog, {
-    //   header: `Duyệt mẫu biên bản`,
-    //   width: '400px',
-    //   modal: true,
-    //   data: { data: data, type: 'sample_reports' },
-    //   closable: true
-    // });
-    // this.ref.onClose.subscribe((res) => {
-    //   if (res) {
-    //     data.status = 2;
-    //     this.apiService.update(data.id, data).subscribe({
-    //       next: (res) => {
-    //         console.log(res);
-    //         Object.assign(data, res);
-    //         this.cdr.detectChanges();
-    //         Util.ConfirmMessage('Gửi duyệt thành công', 'success');
-    //       }
-    //     });
-    //   }
-    // });
+  }
+
+  viewHistory(data: any) {
+    const ref = this.dialogService.open(ListHistoryChangeDataDialog, {
+      header: 'Lịch sửa đổi bản ghi',
+      width: 'auto',
+      modal: true,
+      data: { data: data, type: 'sample_reports' },
+      closable: true,
+    });
   }
 
   actionCondition = (row: any) => {

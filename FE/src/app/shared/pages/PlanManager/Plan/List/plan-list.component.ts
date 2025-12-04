@@ -17,6 +17,7 @@ import { PLANTYPE } from '../../../../enums/plan-type.enum';
 import { OptionApprovalDialog } from '../../SampleReport/Dialogs/option-approval-dialog/option-approval.dialog';
 import { AcceptanceService } from '../../../Reports/Acceptance/service/acceptance.service';
 import { ListHistoryChangeDataDialog } from '../Dialogs/list-history-change-data-dialog/list-history-change-data.dialog';
+import { DataService } from '../../../../service/send-data.service';
 
 @Component({
   selector: 'plan-list',
@@ -37,7 +38,7 @@ export class PlanListComponent {
 
   constructor(public apiService: PlanService, private router: Router, private route: ActivatedRoute,
     private dialogService: DialogService, private cdr: ChangeDetectorRef, private messageService: MessageService,
-    private confirmationService: ConfirmationService, private acceptanceService: AcceptanceService) { }
+    private confirmationService: ConfirmationService, private acceptanceService: AcceptanceService, private dataService: DataService) { }
 
   ngOnInit(): void {
     this.loadData();
@@ -188,8 +189,16 @@ export class PlanListComponent {
       header: 'Lịch sửa đổi bản ghi',
       width: 'auto',
       modal: true,
-      data: data,
+      data: { data: data, type: 'plans' },
       closable: true,
+    });
+    ref.onClose.subscribe((result) => {
+      if (result) {
+        console.log(JSON.parse(result.detail));
+        const data = JSON.parse(result.detail);
+        this.dataService.updateData(data);    // Set object vào service
+        this.router.navigate(['/Plans/view-history']);
+      }
     });
   }
 
