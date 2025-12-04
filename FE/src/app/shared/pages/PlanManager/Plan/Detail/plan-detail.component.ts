@@ -7,7 +7,7 @@ import { PlanService } from '../Service/plan.service';
 import { Util } from '../../../../core/utils/utils-function';
 import { Plan } from '../../../../models/PlanManger/plan.model';
 import { PlanTypeService } from '../../PlanType/Service/plan-type.service';
-import { forkJoin } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
 import { BranchService } from '../../../Categories/Branch/Service/branch.service';
 import { ApprovalWorlflowService } from '../../../ApprovalManager/ApprovalWorkflow/Service/approval-workflow.service';
 import { DeviceGroupService } from '../../../DeviceManager/DeviceGroup/Service/device-group.service';
@@ -19,6 +19,7 @@ import { DeviceDetail, PlanRequest } from '../../../../models/PlanManger/plan-re
 import { BaseApprovalComponent } from "../../../../base/base-approval-component/base-approval.component";
 import { TeamService } from '../../../Categories/Team/Service/team.service';
 import { ConfirmationService } from 'primeng/api';
+import { PlanDetailService } from '../Service/plan-detail.service';
 
 @Component({
   selector: 'app-plan-detail',
@@ -38,6 +39,8 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
   listTeams: any[] = [];
   listTeamsFiltered: any[] = [];
 
+  oldPlanRequest: PlanRequest = new PlanRequest();
+
   @ViewChild(ListDeviceComponent) listDeviceComponent?: ListDeviceComponent;
 
   constructor(
@@ -46,6 +49,7 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
     private approvalWorkflowService: ApprovalWorlflowService,
     private deviceGroupService: DeviceGroupService,
     private planTypeService: PlanTypeService,
+    private planDetailService: PlanDetailService,
     private factoryService: FactoryService,
     private teamService: TeamService,
     private confirmationService: ConfirmationService
@@ -56,7 +60,9 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
 
   override ngOnInit(): void {
     super.ngOnInit();
+    console.log(this.model);
 
+    if (this.isEditMode) this.oldPlanRequest = _.cloneDeep(this.model);
     forkJoin({
       branchs: this.branchService.getAll(),
       workflows: this.approvalWorkflowService.getAll(),
@@ -124,48 +130,66 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
     return planRequest;
   }
 
+  findDeletedDevices(oldPlanRequest: any, newPlanRequest: any) {
+    const oldDevices = oldPlanRequest.devices || [];
+    const newDevices = newPlanRequest.devices || [];
+    const newDeviceIds = newDevices.map((d: any) => d.device.id);
+    const deletedDevices = oldDevices.filter(
+      (od: any) => !newDeviceIds.includes(od.device.id)
+    );
+    return deletedDevices;
+  }
+
 
   public override save(): void {
-    if (this.model) {
-      this.model.plan = Util.prepareModel(this.model.plan)
-      this.model = this.cleanPlanRequest(this.model)
-      const handleError = (error: any) => {
-        let message = 'Thêm mới thất bại';
-        if (error?.error?.message) {
-          message = error.error.message;
-        } else if (error?.message) {
-          message = error.message;
-        } else if (typeof error === 'string') {
-          message = error;
-        }
-        if (message.includes('No _valueDeserializer assigned')) {
-          message = 'Lỗi dữ liệu trả về từ máy chủ. Vui lòng kiểm tra lại thông tin hoặc liên hệ quản trị hệ thống.';
-        }
-        Util.ConfirmMessage(message, 'error');
-      };
-
-      if (this.isAddMode) {
-        this.apiService.createPlanWithDetails(this.model).subscribe({
-          next: () => {
-            Util.ConfirmMessage('Thêm mới thành công', 'success');
-          },
-          error: handleError
-        }).add(() => this.navigationService.back());
-      } else {
-        this.apiService.createPlanWithDetails(this.model).subscribe({
-          next: () => {
-            Util.ConfirmMessage('Cập nhật thành công', 'success');
-          },
-          error: handleError
-        }).add(() => this.navigationService.back());
+    if (!this.model) return;
+    this.model.plan = Util.prepareModel(this.model.plan);
+    this.model = this.cleanPlanRequest(this.model);
+    const deleted = this.findDeletedDevices(this.oldPlanRequest, this.model);
+    const deleteRequests = deleted.length
+      ? deleted.map((d: any) => this.planDetailService.delete(d.planDetailId))
+      : [of(null)];
+    const handleError = (error: any) => {
+      let message = 'Thêm mới thất bại';
+      if (error?.error?.message) {
+        message = error.error.message;
+      } else if (error?.message) {
+        message = error.message;
+      } else if (typeof error === 'string') {
+        message = error;
       }
-    }
+      if (message.includes('No _valueDeserializer assigned')) {
+        message = 'Lỗi dữ liệu trả về từ máy chủ. Vui lòng kiểm tra lại thông tin hoặc liên hệ quản trị hệ thống.';
+      }
+      Util.ConfirmMessage(message, 'error');
+    };
+    forkJoin(deleteRequests).subscribe({
+      next: () => {
+        const apiCall = this.isAddMode
+          ? this.apiService.createPlanWithDetails(this.model)
+          : this.apiService.createPlanWithDetails(this.model);
+        apiCall.subscribe({
+          next: () => {
+            Util.ConfirmMessage(
+              this.isAddMode ? 'Thêm mới thành công' : 'Cập nhật thành công',
+              'success'
+            );
+          },
+          error: handleError
+        }).add(() => this.navigationService.back());
+      },
+      error: (err) => {
+        Util.ConfirmMessage('Xoá dữ liệu cũ thất bại!', 'error');
+        console.error(err);
+      }
+    });
   }
+
 
   ApprovalAgain() {
     if (!this.model) return;
     this.model.plan = Util.prepareModel(this.model.plan)
-      this.model = this.cleanPlanRequest(this.model)
+    this.model = this.cleanPlanRequest(this.model)
     this.model.plan.status = 2;
     this.confirmationService.confirm({
       message: 'Bạn có chắc muốn sửa và gửi duyệt lại không?',
@@ -176,7 +200,7 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
       accept: () => {
         this.apiService.createPlanWithDetails(this.model).subscribe({
           next: (id) => {
-            this.apiService.createApprovalEntity({ entityId: this.model.plan.id, workflowId: this.model.plan.approvalWorkflow.id }, 'sample_reports').subscribe({
+            this.apiService.createApprovalEntity({ entityId: this.model.plan.id, workflowId: this.model.plan.approvalWorkflow.id }, 'plans').subscribe({
               next: () => {
                 Util.ConfirmMessage('Đã sửa và gửi duyệt thành công', 'success');
                 this.navigationService.back();
