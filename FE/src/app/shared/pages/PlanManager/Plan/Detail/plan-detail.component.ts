@@ -174,9 +174,9 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
       acceptLabel: 'Đồng ý',
       rejectLabel: 'Hủy',
       accept: () => {
-        this.apiService.update(this.model.plan.id!, this.model).subscribe({
+        this.apiService.createPlanWithDetails(this.model).subscribe({
           next: (id) => {
-            this.apiService.createApprovalEntity({ entityId: id, workflowId: this.model.plan.approvalWorkflow.id }, 'sample_reports').subscribe({
+            this.apiService.createApprovalEntity({ entityId: this.model.plan.id, workflowId: this.model.plan.approvalWorkflow.id }, 'sample_reports').subscribe({
               next: () => {
                 Util.ConfirmMessage('Đã sửa và gửi duyệt thành công', 'success');
                 this.navigationService.back();
