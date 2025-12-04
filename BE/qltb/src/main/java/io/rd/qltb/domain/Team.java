@@ -64,6 +64,7 @@ public class Team {
 
     @OneToMany(mappedBy = "team")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnore
     private Set<Line> teamLines = new HashSet<>();
 
     @OneToMany(mappedBy = "team")
