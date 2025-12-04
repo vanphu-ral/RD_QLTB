@@ -259,7 +259,7 @@ public class PlanService {
             plan.setBranch(planRequest.getPlan().getBranch());
             plan.setFactory(planRequest.getPlan().getFactory());
             plan.setCode(planRequest.getPlan().getCode());
-            plan.setTeam(planRequest.getPlan().getTeam());
+            plan.setTeam(planRequest.getPlan().getTeam() == null? planRequest.getPlan().getTeam() : null);
             plan.setName(planRequest.getPlan().getName());
             plan.setFrequency(planRequest.getPlan().getFrequency());
             plan.setPlanNumber(planRequest.getPlan().getPlanNumber());
