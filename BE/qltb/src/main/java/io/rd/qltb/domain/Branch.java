@@ -57,7 +57,7 @@ public class Branch {
     private Integer status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "factory_id", nullable = false)
+    @JoinColumn(name = "factory_id")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Factory factory;
 

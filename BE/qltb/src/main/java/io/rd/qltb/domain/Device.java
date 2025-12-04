@@ -94,17 +94,17 @@ public class Device {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @JoinColumn(name = "group_id", nullable = false)
+    @JoinColumn(name = "group_id")
     private DeviceGroup group;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @JoinColumn(name = "line_id", nullable = false)
+    @JoinColumn(name = "line_id")
     private Line line;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @JoinColumn(name = "branch_id", nullable = false)
+    @JoinColumn(name = "branch_id")
     private Branch branch;
 
     @OneToMany(mappedBy = "device")
