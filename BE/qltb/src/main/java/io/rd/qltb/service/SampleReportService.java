@@ -7,6 +7,7 @@ import io.rd.qltb.domain.*;
 import io.rd.qltb.events.BeforeDeleteDeviceGroup;
 import io.rd.qltb.events.BeforeDeleteSampleReport;
 import io.rd.qltb.model.DetailLogDTO;
+import io.rd.qltb.model.KeyMappingDTO;
 import io.rd.qltb.model.SampleReportDTO;
 import io.rd.qltb.repos.*;
 import io.rd.qltb.util.NotFoundException;
@@ -29,11 +30,12 @@ public class SampleReportService {
     private final ApplicationEventPublisher publisher;
     private final DetailLogService detailLogService;
     private final DetailLogRepository detailLogRepository;
+    private final KeyMappingService keyMappingService;
     public SampleReportService(final SampleReportRepository sampleReportRepository,
                                final DeviceGroupRepository deviceGroupRepository,
                                final BranchRepository branchRepository,
                                final ApprovalWorkflowRepository approvalWorkflowRepository,
-                               final ApplicationEventPublisher publisher, DetailLogService detailLogService, DetailLogRepository detailLogRepository) {
+                               final ApplicationEventPublisher publisher, DetailLogService detailLogService, DetailLogRepository detailLogRepository, KeyMappingService keyMappingService) {
         this.sampleReportRepository = sampleReportRepository;
         this.deviceGroupRepository = deviceGroupRepository;
         this.branchRepository = branchRepository;
@@ -41,6 +43,7 @@ public class SampleReportService {
         this.publisher = publisher;
         this.detailLogService = detailLogService;
         this.detailLogRepository = detailLogRepository;
+        this.keyMappingService = keyMappingService;
     }
 
     public List<SampleReportDTO> findAll() {
@@ -66,13 +69,14 @@ public class SampleReportService {
         try {
             final SampleReport sampleReport = sampleReportRepository.findById(id)
                     .orElseThrow(NotFoundException::new);
-            SampleReportDTO sampleReportOld = mapToDTO(sampleReport, new SampleReportDTO());
+            List<KeyMapping> keyMappings = sampleReport.getSampleReportKeyMappings().stream().toList();
+            List<KeyMappingDTO> keyMappingDTOS = keyMappings.stream().map(km -> keyMappingService.mapToDTO(km, new KeyMappingDTO())).toList();
             // Khởi tạo ObjectMapper với hỗ trợ Java 8 Date/Time
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JavaTimeModule());
             mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
             // Convert Plan sang JSON
-            String sampleReportConvert = mapper.writeValueAsString(sampleReportOld);
+            String sampleReportConvert = mapper.writeValueAsString(keyMappingDTOS);
             // Tạo DetailLog
             Integer countLog = detailLogRepository.countByEntityTypeAndEntityId("sample_reports", id);
             DetailLogDTO detailLog = new DetailLogDTO();
