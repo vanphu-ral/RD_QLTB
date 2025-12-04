@@ -216,6 +216,7 @@ public class ApprovalService {
                 approval.setGroup(approvalGroup);
                 approval.setWorkflow(approvalWorkflow);
 //                approval.setRound(newRound);
+                approval.setRound(null);
                 approvalRepository.save(approval);
             }
         }

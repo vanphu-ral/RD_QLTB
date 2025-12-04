@@ -250,7 +250,6 @@ public class PlanService {
     public void createPlanWithDetails(final PlanRequest planRequest, String userName) {
         // check plan
         if (planRequest.getPlan().getId() == null) {
-            System.out.println("Mã kế hoạch chưa tồn tại :: " + planRequest.getPlan().getCode() + " :: " + planRequest.getPlan().getName());
             // Lưu Plan trước
             Plan plan = planRequest.getPlan();
             plan.setCreatedBy(userName);

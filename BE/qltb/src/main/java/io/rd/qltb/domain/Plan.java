@@ -47,10 +47,10 @@ public class Plan {
     @Column(length = 50)
     private String userPerformer;
 
-    @Column(nullable = true)
+    @Column
     private LocalDateTime fromDate;
 
-    @Column(nullable = true)
+    @Column
     private LocalDateTime toDate;
 
     @Column(length = 500, name = "\"description\"")
@@ -87,7 +87,7 @@ public class Plan {
     private Branch branch;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "team_id", nullable = false)
+    @JoinColumn(name = "team_id")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @NotFound(action = NotFoundAction.IGNORE)
     private Team team;
