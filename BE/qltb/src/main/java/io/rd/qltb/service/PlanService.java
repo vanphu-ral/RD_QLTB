@@ -42,14 +42,15 @@ public class PlanService {
     private final SampleReportService sampleReportService;
     private final DeviceService deviceService;
     private final PlanDetailService planDetailService;
-
-    public PlanService(final PlanRepository planRepository,
+private final DetailLogService detailLogService;
+    public PlanService(EntityManager entityManager, final PlanRepository planRepository,
                        final PlanTypeRepository planTypeRepository,
                        final FactoryRepository factoryRepository,
                        final BranchRepository branchRepository,
                        final TeamRepository teamRepository,
                        final ApprovalWorkflowRepository approvalWorkflowRepository,
-                       final ApplicationEventPublisher publisher, PlanDetailRepository planDetailRepository, DeviceRepository deviceRepository, DeviceGroupRepository deviceGroupRepository, SampleReportRepository sampleReportRepository, DeviceGroupService deviceGroupService, SampleReportService sampleReportService, DeviceService deviceService, PlanDetailService planDetailService) {
+                       final ApplicationEventPublisher publisher, PlanDetailRepository planDetailRepository, DeviceRepository deviceRepository, DeviceGroupRepository deviceGroupRepository, SampleReportRepository sampleReportRepository, DeviceGroupService deviceGroupService, SampleReportService sampleReportService, DeviceService deviceService, PlanDetailService planDetailService, DetailLogService detailLogService) {
+        this.entityManager = entityManager;
         this.planRepository = planRepository;
         this.planTypeRepository = planTypeRepository;
         this.factoryRepository = factoryRepository;
@@ -65,6 +66,7 @@ public class PlanService {
         this.sampleReportService = sampleReportService;
         this.deviceService = deviceService;
         this.planDetailService = planDetailService;
+        this.detailLogService = detailLogService;
     }
 
     @Transactional
@@ -250,12 +252,15 @@ public class PlanService {
             plan.setBranch(planRequest.getPlan().getBranch());
             plan.setFactory(planRequest.getPlan().getFactory());
             plan.setCode(planRequest.getPlan().getCode());
+            plan.setTeam(planRequest.getPlan().getTeam());
             plan.setName(planRequest.getPlan().getName());
             plan.setFrequency(planRequest.getPlan().getFrequency());
             plan.setPlanNumber(planRequest.getPlan().getPlanNumber());
             plan.setUserPerformer(planRequest.getPlan().getUserPerformer());
             plan.setDescription(planRequest.getPlan().getDescription());
             plan.setStatus(planRequest.getPlan().getStatus());
+            plan.setFromDate(planRequest.getPlan().getFromDate());
+            plan.setToDate(planRequest.getPlan().getToDate());
             plan.setUpdatedBy(null);
             plan = planRepository.save(plan);
             List<PlanDetail> planDetailSend = new ArrayList<>();
@@ -292,12 +297,25 @@ public class PlanService {
             }
         } else {
             System.out.println("Mã kế hoạch đã tồn tại :: "+ planRequest.getPlan().getCode() + " :: " + planRequest.getPlan().getName());
-            // Lưu Plan trước
             Plan plan = planRepository.findById(planRequest.getPlan().getId()).orElseThrow();
+            //tạo log detail cho plans
+            Integer countLog = detailLogService.getAllByEntityTypeAndEntityId("plans", planRequest.getPlan().getId()).getDetailLog().size();
+            DetailLogDTO detailLog = new DetailLogDTO();
+            detailLog.setEntityType("plans");
+            detailLog.setEntityId(planRequest.getPlan().getId());
+            detailLog.setDetail(plan.toString());
+            detailLog.setVersion(countLog + 1 + "");
+            detailLog.setCreatedAt(java.time.LocalDateTime.now());
+            detailLog.setLoggedAt(java.time.LocalDateTime.now());
+            detailLog.setCreatedBy(userName);
+            detailLog.setStatus(1);
+            detailLogService.create(detailLog);
+            // Lưu Plan trước
             plan.setUpdatedAt(java.time.LocalDateTime.now());
             plan.setApprovalWorkflow(planRequest.getPlan().getApprovalWorkflow());
             plan.setBranch(planRequest.getPlan().getBranch());
             plan.setFactory(planRequest.getPlan().getFactory());
+            plan.setTeam(planRequest.getPlan().getTeam());
             plan.setCode(planRequest.getPlan().getCode());
             plan.setName(planRequest.getPlan().getName());
             plan.setFrequency(planRequest.getPlan().getFrequency());
@@ -305,6 +323,8 @@ public class PlanService {
             plan.setUserPerformer(planRequest.getPlan().getUserPerformer());
             plan.setDescription(planRequest.getPlan().getDescription());
             plan.setStatus(planRequest.getPlan().getStatus());
+            plan.setFromDate(planRequest.getPlan().getFromDate());
+            plan.setToDate(planRequest.getPlan().getToDate());
             plan.setUpdatedBy(userName);
             planRepository.save(plan);
             List<PlanDetail> planDetailSend = new ArrayList<>();
@@ -341,6 +361,7 @@ public class PlanService {
         final Plan plan = planRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(planDTO, plan);
+
         planRepository.save(plan);
     }
 
@@ -373,6 +394,8 @@ public class PlanService {
             dto.setCreatedAt(plan.getCreatedAt());
             dto.setUpdatedAt(plan.getUpdatedAt());
             dto.setUpdatedBy(plan.getUpdatedBy());
+            dto.setFromDate(plan.getFromDate());
+            dto.setToDate(plan.getToDate());
             dto.setStatus(plan.getStatus());
 
             if (plan.getPlanType() != null) {
