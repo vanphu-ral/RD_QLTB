@@ -47,6 +47,6 @@ public class SampleReportDTO {
     private Branch branch;
 
     private ApprovalWorkflow approvalWorkflow;
-
+    private List<KeyMappingDTO> sampleReportKeyMappings;
 
 }

@@ -74,7 +74,8 @@ public class SampleReportService {
 
             // 2. Map sang DTO để tạo snapshot trước khi update
             SampleReportDTO beforeUpdateDTO = mapToDTO(sampleReport, new SampleReportDTO());
-
+            List<KeyMappingDTO> keyMappingDTOS = keyMappingService.getBySampleReportId(id);
+            beforeUpdateDTO.setSampleReportKeyMappings(keyMappingDTOS);
             // 3. Convert snapshot sang JSON (log dữ liệu cũ)
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JavaTimeModule());
