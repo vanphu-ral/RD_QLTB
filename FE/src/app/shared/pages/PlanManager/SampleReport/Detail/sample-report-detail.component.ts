@@ -55,7 +55,7 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
   override ngOnInit(): void {
     super.ngOnInit();
     console.log(this.model);
-  
+
     forkJoin({
       branchs: this.branchService.getAll(),
       workflows: this.approvalWorkflowService.getAll(),
@@ -71,7 +71,7 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
       this.listCriterial = result.criterials;
       this.listTypes = result.planTypes;
       this.cdr.detectChanges();
-      if (this.isAddMode || this.isEditMode) {
+      if (this.isAddMode || this.isEditMode || this.isViewMode) {
         this.keyMappingService.getBySampleReport(this.model.id!).subscribe(res => {
           this.listCriterialBySample = res.map(x => {
             const group = x.criterial?.criterialGroup || null;
@@ -104,9 +104,23 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
         this.model.documentNumber = `${countFormatted}.${yearShort}`;
       })
     }
-      
-    if(this.isViewHistory) {
+
+    if (this.isViewHistory) {
       this.mode = 'view';
+      this.listCriterialBySample = _.get(this.model, 'sampleReportKeyMappings', []).map((x: any) => {
+        const group = x.criterial?.criterialGroup || null;
+        const criterials = group
+          ? this.listCriterial.filter(c => c.criterialGroup?.id === group.id)
+          : [];
+        return {
+          id: x.id,
+          group: group,
+          criterial: x.criterial || null,
+          criterials: criterials,
+          frequency: x.frequency || null
+        };
+      });
+      this.cdr.detectChanges();
     }
   }
 
