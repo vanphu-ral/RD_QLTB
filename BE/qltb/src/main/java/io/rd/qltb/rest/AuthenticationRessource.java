@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 
+import static io.rd.qltb.config.GlobalConfig.IP_ADDRESS_FRONTEND;
+
 @RestController
 @RequestMapping(value = "/api/auth", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthenticationRessource {
@@ -27,7 +29,7 @@ public class AuthenticationRessource {
 
         // Logout URL Keycloak
         String logoutUrl = "http://192.168.68.90:8080/auth/realms/QLSX/protocol/openid-connect/logout"
-                + "?redirect_uri=http://localhost:4200";
+                + "?redirect_uri="+IP_ADDRESS_FRONTEND;
 
         Map<String, String> res = new HashMap<>();
         res.put("logoutUrl", logoutUrl);

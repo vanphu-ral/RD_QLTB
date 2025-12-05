@@ -13,6 +13,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+import static io.rd.qltb.config.GlobalConfig.IP_ADDRESS_FRONTEND;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -34,11 +36,11 @@ public class SecurityConfig {
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/oauth2/authorization/keycloak")
-                        .defaultSuccessUrl("http://localhost:4200", true)
+                        .defaultSuccessUrl(IP_ADDRESS_FRONTEND, true)
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("http://localhost:4200/login")
+                        .logoutSuccessUrl(IP_ADDRESS_FRONTEND+"/login")
                 );
         return http.build();
     }
@@ -46,7 +48,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:4200")); // không dùng "*"
+        configuration.setAllowedOrigins(List.of(IP_ADDRESS_FRONTEND)); // không dùng "*"
         configuration.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true); // phải có để gửi cookie
