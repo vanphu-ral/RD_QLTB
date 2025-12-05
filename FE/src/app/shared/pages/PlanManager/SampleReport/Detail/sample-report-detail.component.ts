@@ -226,16 +226,34 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
       accept: () => {
         this.apiService.update(this.model.id!, this.model).subscribe({
           next: (id) => {
-            this.apiService.createApprovalEntity({ entityId: id, workflowId: this.model.approvalWorkflow.id }, 'sample_reports').subscribe({
-              next: () => {
-                Util.ConfirmMessage('Đã sửa và gửi duyệt thành công', 'success');
-                this.navigationService.back();
-              },
-              error: () => {
-                Util.ConfirmMessage('Thất bại', 'error');
-              }
-            });
+            const keyMappings: keyMapping[] = this.listCriterialBySample.map(item => ({
+              id: item.id,
+              sampleReport: { id: id },
+              criterial: { id: item.criterial?.id },
+              frequency: item.frequency
+            }));
+            if (keyMappings.length > 0) {
+              this.keyMappingService.createList(keyMappings).subscribe({
+                next: () => {
+                  this.apiService.createApprovalEntity({ entityId: this.model.id, workflowId: this.model.approvalWorkflow.id }, 'sample_reports').subscribe({
+                    next: () => {
+                      Util.ConfirmMessage('Đã sửa và gửi duyệt thành công', 'success');
+                      this.navigationService.back();
+                    },
+                    error: () => {
+                      Util.ConfirmMessage('Thất bại', 'error');
+                    }
+                  });
+                },
+              });
+            } else {
+              Util.ConfirmMessage('Cập nhật thành công', 'success');
+              this.navigationService.back();
+            }
           },
+          error: () => {
+            Util.ConfirmMessage('Cập nhật thất bại', 'error');
+          }
         });
       },
       reject: () => {
