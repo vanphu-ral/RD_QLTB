@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { map, Observable, switchMap } from 'rxjs';
 import { AccountService } from '../core/auth/account/account.service';
+import { environment } from '../../../environments/environment';
 
 export type CreateEntity<T> = Omit<T, 'id'> & { id?: number | string };
 
@@ -10,9 +11,9 @@ export abstract class BaseApiService<T> {
   protected accountService = inject(AccountService);
   private tokenUrl = 'http://192.168.68.90:8080/auth/realms/QLSX/protocol/openid-connect/token';
   private usersUrl = 'http://192.168.68.90:8080/auth/admin/realms/QLSX/users?first=0&max=2000';
-  private approvalUrl = `http://localhost:8081/api/approvals`;
+  private approvalUrl = `${environment.apiBaseUrl}/api/approvals`;
   constructor(protected http: HttpClient, protected baseUrl: string) {
-    this.fullBaseUrl = `http://localhost:8081/${this.baseUrl}`;
+    this.fullBaseUrl = `${environment.apiBaseUrl}/${this.baseUrl}`;
   }
 
   getAll(): Observable<T[]> {

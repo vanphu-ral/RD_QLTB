@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApplicationConfigService {
-  private endpointPrefix = 'http://localhost:8081/';
+  private endpointPrefix = '${environment.apiBaseUrl}/';
   private microfrontend = false;
 
   setEndpointPrefix(endpointPrefix: string): void {

@@ -4,13 +4,14 @@ import { Injectable } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HistoryService {
   private history: string[] = [];
-  private url = `http://localhost:8081/api/detail-logs`;
+  private url = `${environment.apiBaseUrl}/api/detail-logs`;
 
   constructor(private router: Router, protected http: HttpClient) {
     this.router.events
