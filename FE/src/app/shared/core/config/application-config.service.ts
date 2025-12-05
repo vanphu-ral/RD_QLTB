@@ -5,7 +5,7 @@ import { environment } from '../../../../environments/environment';
   providedIn: 'root',
 })
 export class ApplicationConfigService {
-  private endpointPrefix = '${environment.apiBaseUrl}/';
+  private endpointPrefix = `${environment.apiBaseUrl}/`;
   private microfrontend = false;
 
   setEndpointPrefix(endpointPrefix: string): void {
