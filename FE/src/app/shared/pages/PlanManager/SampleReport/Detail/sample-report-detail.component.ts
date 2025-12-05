@@ -55,10 +55,7 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
   override ngOnInit(): void {
     super.ngOnInit();
     console.log(this.model);
-    
-    if(this.isViewHistory) {
-      this.mode = 'view';
-    }
+  
     forkJoin({
       branchs: this.branchService.getAll(),
       workflows: this.approvalWorkflowService.getAll(),
@@ -74,7 +71,7 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
       this.listCriterial = result.criterials;
       this.listTypes = result.planTypes;
       this.cdr.detectChanges();
-      if (!this.isAddMode) {
+      if (this.isAddMode || this.isEditMode) {
         this.keyMappingService.getBySampleReport(this.model.id!).subscribe(res => {
           this.listCriterialBySample = res.map(x => {
             const group = x.criterial?.criterialGroup || null;
@@ -106,6 +103,10 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
         const yearShort = currentYear.toString().slice(-2);
         this.model.documentNumber = `${countFormatted}.${yearShort}`;
       })
+    }
+      
+    if(this.isViewHistory) {
+      this.mode = 'view';
     }
   }
 
