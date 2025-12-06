@@ -18,7 +18,8 @@ public class DetailLog {
     private String entityType;
     @Column
     private Long entityId;
-    @Column
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String detail;
     @Column
     private String version;
