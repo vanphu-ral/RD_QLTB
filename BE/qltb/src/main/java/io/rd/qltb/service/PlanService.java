@@ -1,6 +1,5 @@
 package io.rd.qltb.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -12,6 +11,10 @@ import io.rd.qltb.repos.*;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -48,6 +51,8 @@ public class PlanService {
     private final PlanDetailService planDetailService;
     private final DetailLogService detailLogService;
     private final DetailLogRepository detailLogRepository;
+    private final PlanResultService planResultService;
+    private final PlanResultRepository planResultRepository;
 
     public PlanService(EntityManager entityManager, final PlanRepository planRepository,
                        final PlanTypeRepository planTypeRepository,
@@ -55,7 +60,7 @@ public class PlanService {
                        final BranchRepository branchRepository,
                        final TeamRepository teamRepository,
                        final ApprovalWorkflowRepository approvalWorkflowRepository,
-                       final ApplicationEventPublisher publisher, PlanDetailRepository planDetailRepository, DeviceRepository deviceRepository, DeviceGroupRepository deviceGroupRepository, SampleReportRepository sampleReportRepository, DeviceGroupService deviceGroupService, SampleReportService sampleReportService, DeviceService deviceService, PlanDetailService planDetailService, DetailLogService detailLogService, DetailLogRepository detailLogRepository) {
+                       final ApplicationEventPublisher publisher, PlanDetailRepository planDetailRepository, DeviceRepository deviceRepository, DeviceGroupRepository deviceGroupRepository, SampleReportRepository sampleReportRepository, DeviceGroupService deviceGroupService, SampleReportService sampleReportService, DeviceService deviceService, PlanDetailService planDetailService, DetailLogService detailLogService, DetailLogRepository detailLogRepository, PlanResultService planResultService, PlanResultRepository planResultRepository) {
         this.entityManager = entityManager;
         this.planRepository = planRepository;
         this.planTypeRepository = planTypeRepository;
@@ -74,6 +79,8 @@ public class PlanService {
         this.planDetailService = planDetailService;
         this.detailLogService = detailLogService;
         this.detailLogRepository = detailLogRepository;
+        this.planResultService = planResultService;
+        this.planResultRepository = planResultRepository;
     }
 
     @Transactional
@@ -109,52 +116,6 @@ public class PlanService {
         // Nếu cần tổng số bản ghi để phân trang, hãy query count riêng
         return new PageImpl<>(dtos, PageRequest.of(page, 10), dtos.size());
     }
-
-//    public Page<PlanDTO> findPlansPaged(Map<String, Object> filters, int page) {
-//        var cb = entityManager.getCriteriaBuilder();
-//        var cq = cb.createQuery(Plan.class);
-//        var root = cq.from(Plan.class);
-//
-//        List<Predicate> predicates = new ArrayList<>();
-//        filters.forEach((key, value) -> {
-//            if (value != null) {
-//                switch (key) {
-//                    case "code", "name", "frequency", "planNumber", "userPerformer", "description", "createdBy", "updatedBy" ->
-//                            predicates.add((Predicate) cb.like(root.get(key), "%" + value + "%"));
-//                    case "status" ->
-//                            predicates.add((Predicate) cb.equal(root.get(key), value));
-//                    case "planTypeId" ->
-//                            predicates.add((Predicate) cb.equal(root.get("planType").get("id"), value));
-//                    case "factoryId" ->
-//                            predicates.add((Predicate) cb.equal(root.get("factory").get("id"), value));
-//                    case "branchId" ->
-//                            predicates.add((Predicate) cb.equal(root.get("branch").get("id"), value));
-//                    case "approvalWorkflowId" ->
-//                            predicates.add((Predicate) cb.equal(root.get("approvalWorkflow").get("id"), value));
-//                    // Thêm các trường khác nếu cần
-//                }
-//            }
-//        });
-//
-//        cq.where(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
-//        cq.orderBy(cb.desc(root.get("id")));
-//        var query = entityManager.createQuery(cq);
-//        query.setFirstResult(page * 10);
-//        query.setMaxResults(10);
-//
-//        List<Plan> plans = query.getResultList();
-//        List<PlanDTO> dtos = plans.stream()
-//                .map(plan -> mapToDTO(plan, new PlanDTO()))
-//                .toList();
-//        for (PlanDTO dto : dtos) {
-//            List<PlanDetail> details = planDetailRepository.findAllByPlanId(dto.getId());
-//            dto.setPlanDetails(details.stream()
-//                    .map(detail -> planDetailService.mapToDTO(detail, new PlanDetailDTO()))
-//                    .toList());
-//        }
-//        // Nếu cần tổng số bản ghi để phân trang, hãy query count riêng
-//        return new PageImpl<>(dtos, PageRequest.of(page, 10), dtos.size());
-//    }
 
     public List<PlanDTO> findAll() {
         final List<Plan> plans = planRepository.findAll(Sort.by("id"));
@@ -298,6 +259,33 @@ public class PlanService {
                                 .orElseThrow(() -> new NotFoundException("SampleReport not found"));
                         planDetail.setSampleReport(sampleReport);
                         planDetailSend.add(planDetailRepository.save(planDetail));
+                        // Duyệt từng ngày trong tháng
+                        if(planRequest.getPlan().getPlanType().getCode().equals("AUDIT")) {
+                            // tạo plan Result cho tháng hiện tại
+                            // Lấy tháng hiện tại
+                            YearMonth currentMonth = YearMonth.now();
+                            Duration duration = Duration.between(plan.getFromDate(), plan.getToDate());
+                            Integer startDay = plan.getFromDate().getDayOfMonth();
+                            // Duyệt từng ngày trong tháng
+                            for (int day = 1; day <= duration.toDays(); day++) {
+                                LocalDate date = currentMonth.atDay(startDay);
+                                // Trả về LocalDateTime lúc 00:00 của ngày đó
+                                LocalDateTime dateTime = date.atTime(17, 00, 00);
+                                PlanResult planResult = new PlanResult();
+                                planResult.setPlanDetail(planDetail);
+                                planResult.setCreatedAt(java.time.LocalDateTime.now());
+                                planResult.setUpdatedAt(java.time.LocalDateTime.now());
+                                planResult.setCreatedBy(userName);
+                                planResult.setUpdatedBy(null);
+                                planResult.setStatus(1);
+                                planResult.setStatusRepair("1");
+                                planResult.setNote("");
+                                planResult.setDateTest(dateTime);
+                                planResult.setUserTest(deviceRequest.getDevice().getUserManager());
+                                planResultService.create(planResultService.mapToDTO(planResult, new PlanResultDTO()));
+                                startDay++;
+                            }
+                        }
                     }
                 }
 
@@ -373,6 +361,33 @@ public class PlanService {
                                             .orElseThrow(() -> new NotFoundException("SampleReport not found"));
                                     planDetail.setSampleReport(sampleReport);
                                     planDetailRepository.save(planDetail);
+
+                                    if(planRequestData.getPlanType().getCode().equals("AUDIT")) {
+                                    // tạo plan Result cho tháng hiện tại
+                                    // Lấy tháng hiện tại
+                                        YearMonth currentMonth = YearMonth.now();
+                                        Duration duration = Duration.between(plan.getFromDate(), plan.getToDate());
+                                        Integer startDay = plan.getFromDate().getDayOfMonth();
+                                    // Duyệt từng ngày trong tháng
+                                        for (int day = 1; day <= duration.toDays(); day++) {
+                                            LocalDate date = currentMonth.atDay(startDay);
+                                            // Trả về LocalDateTime lúc 00:00 của ngày đó
+                                            LocalDateTime dateTime = date.atTime(17, 00, 00);
+                                            PlanResult planResult = new PlanResult();
+                                            planResult.setPlanDetail(planDetail);
+                                            planResult.setCreatedAt(java.time.LocalDateTime.now());
+                                            planResult.setUpdatedAt(java.time.LocalDateTime.now());
+                                            planResult.setCreatedBy(userName);
+                                            planResult.setUpdatedBy(null);
+                                            planResult.setStatus(1);
+                                            planResult.setStatusRepair("1");
+                                            planResult.setNote("");
+                                            planResult.setDateTest(dateTime);
+                                            planResult.setUserTest(deviceRequest.getDevice().getUserManager());
+                                            planResultService.create(planResultService.mapToDTO(planResult, new PlanResultDTO()));
+                                            startDay++;
+                                        }
+                                    }
                                 }
                             }
                     }else {

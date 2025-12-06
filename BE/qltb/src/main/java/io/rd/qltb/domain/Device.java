@@ -85,6 +85,8 @@ public class Device {
 
     @Column
     private String createdBy;
+//    @Column
+//    private String qrCode;
 
     @Column
     private String updatedBy;

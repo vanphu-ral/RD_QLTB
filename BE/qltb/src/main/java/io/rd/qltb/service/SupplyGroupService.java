@@ -1,5 +1,6 @@
 package io.rd.qltb.service;
 
+import io.rd.qltb.config.GlobalConfig;
 import io.rd.qltb.domain.SupplyGroup;
 import io.rd.qltb.events.BeforeDeleteSupplyGroup;
 import io.rd.qltb.model.SupplyGroupDTO;
@@ -16,11 +17,12 @@ public class SupplyGroupService {
 
     private final SupplyGroupRepository supplyGroupRepository;
     private final ApplicationEventPublisher publisher;
-
+private final GlobalConfig globalConfig;
     public SupplyGroupService(final SupplyGroupRepository supplyGroupRepository,
-            final ApplicationEventPublisher publisher) {
+                              final ApplicationEventPublisher publisher, GlobalConfig globalConfig) {
         this.supplyGroupRepository = supplyGroupRepository;
         this.publisher = publisher;
+        this.globalConfig = globalConfig;
     }
 
     public List<SupplyGroupDTO> findAll() {
@@ -39,6 +41,8 @@ public class SupplyGroupService {
     public Long create(final SupplyGroupDTO supplyGroupDTO) {
         final SupplyGroup supplyGroup = new SupplyGroup();
         mapToEntity(supplyGroupDTO, supplyGroup);
+        SupplyGroup savedSupplyGroup = supplyGroupRepository.save(supplyGroup);
+        savedSupplyGroup.setCode(supplyGroupDTO.getCode() +"-"+globalConfig.createNumberPrefix(savedSupplyGroup.getId(), 4));
         return supplyGroupRepository.save(supplyGroup).getId();
     }
 

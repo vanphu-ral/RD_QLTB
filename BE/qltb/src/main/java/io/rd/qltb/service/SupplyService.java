@@ -1,5 +1,6 @@
 package io.rd.qltb.service;
 
+import io.rd.qltb.config.GlobalConfig;
 import io.rd.qltb.domain.Supply;
 import io.rd.qltb.domain.SupplyGroup;
 import io.rd.qltb.events.BeforeDeleteSupply;
@@ -25,7 +26,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -38,13 +38,16 @@ public class SupplyService {
     private final SupplyRepository supplyRepository;
     private final SupplyGroupRepository supplyGroupRepository;
     private final ApplicationEventPublisher publisher;
+    private final GlobalConfig globalConfig;
 
-    public SupplyService(final SupplyRepository supplyRepository,
-            final SupplyGroupRepository supplyGroupRepository,
-            final ApplicationEventPublisher publisher) {
+    public SupplyService(EntityManager entityManager, final SupplyRepository supplyRepository,
+                         final SupplyGroupRepository supplyGroupRepository,
+                         final ApplicationEventPublisher publisher, GlobalConfig globalConfig) {
+        this.entityManager = entityManager;
         this.supplyRepository = supplyRepository;
         this.supplyGroupRepository = supplyGroupRepository;
         this.publisher = publisher;
+        this.globalConfig = globalConfig;
     }
 
     public List<SupplyDTO> findAll() {
@@ -102,7 +105,9 @@ public class SupplyService {
     public Long create(final SupplyDTO supplyDTO) {
         final Supply supply = new Supply();
         mapToEntity(supplyDTO, supply);
-        return supplyRepository.save(supply).getId();
+        Supply savedSupply = supplyRepository.save(supply);
+        savedSupply.setCode(supplyDTO.getCode()+"-"+ globalConfig.createNumberPrefix(savedSupply.getId(),6));
+        return supplyRepository.save(savedSupply).getId();
     }
 
     public void update(final Long id, final SupplyDTO supplyDTO) {

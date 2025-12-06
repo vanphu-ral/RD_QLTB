@@ -1,5 +1,6 @@
 package io.rd.qltb.service;
 
+import io.rd.qltb.config.GlobalConfig;
 import io.rd.qltb.domain.PrameterGroup;
 import io.rd.qltb.events.BeforeDeletePrameterGroup;
 import io.rd.qltb.model.PrameterGroupDTO;
@@ -16,11 +17,13 @@ public class PrameterGroupService {
 
     private final PrameterGroupRepository prameterGroupRepository;
     private final ApplicationEventPublisher publisher;
+    private final GlobalConfig globalConfig;
 
     public PrameterGroupService(final PrameterGroupRepository prameterGroupRepository,
-            final ApplicationEventPublisher publisher) {
+                                final ApplicationEventPublisher publisher, GlobalConfig globalConfig) {
         this.prameterGroupRepository = prameterGroupRepository;
         this.publisher = publisher;
+        this.globalConfig = globalConfig;
     }
 
     public List<PrameterGroupDTO> findAll() {
@@ -39,7 +42,9 @@ public class PrameterGroupService {
     public Long create(final PrameterGroupDTO prameterGroupDTO) {
         final PrameterGroup prameterGroup = new PrameterGroup();
         mapToEntity(prameterGroupDTO, prameterGroup);
-        return prameterGroupRepository.save(prameterGroup).getId();
+        PrameterGroup savedPrameterGroup = prameterGroupRepository.save(prameterGroup);
+        savedPrameterGroup.setCode(prameterGroupDTO.getCode() +"-"+ globalConfig.createNumberPrefix (savedPrameterGroup.getId(),4));
+        return prameterGroupRepository.save(savedPrameterGroup).getId();
     }
 
     public void update(final Long id, final PrameterGroupDTO prameterGroupDTO) {
