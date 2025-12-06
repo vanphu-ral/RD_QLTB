@@ -1,5 +1,6 @@
 package io.rd.qltb.service;
 
+import io.rd.qltb.config.GlobalConfig;
 import io.rd.qltb.domain.*;
 import io.rd.qltb.events.BeforeDeleteBranch;
 import io.rd.qltb.events.BeforeDeleteDevice;
@@ -7,7 +8,6 @@ import io.rd.qltb.events.BeforeDeleteDeviceGroup;
 import io.rd.qltb.events.BeforeDeleteLine;
 import io.rd.qltb.events.BeforeDeleteTeam;
 import io.rd.qltb.model.DeviceDTO;
-import io.rd.qltb.model.DeviceSupplyUsageDTO;
 import io.rd.qltb.repos.BranchRepository;
 import io.rd.qltb.repos.DeviceGroupRepository;
 import io.rd.qltb.repos.DeviceRepository;
@@ -48,17 +48,20 @@ public class DeviceService {
     private final BranchRepository branchRepository;
     private final TeamRepository teamRepository;
     private final ApplicationEventPublisher publisher;
+    private final GlobalConfig globalConfig ;
 
-    public DeviceService(final DeviceRepository deviceRepository,
-            final DeviceGroupRepository deviceGroupRepository, final LineRepository lineRepository,
-            final BranchRepository branchRepository, final TeamRepository teamRepository,
-            final ApplicationEventPublisher publisher) {
+    public DeviceService(EntityManager entityManager, final DeviceRepository deviceRepository,
+                         final DeviceGroupRepository deviceGroupRepository, final LineRepository lineRepository,
+                         final BranchRepository branchRepository, final TeamRepository teamRepository,
+                         final ApplicationEventPublisher publisher, GlobalConfig globalConfig) {
+        this.entityManager = entityManager;
         this.deviceRepository = deviceRepository;
         this.deviceGroupRepository = deviceGroupRepository;
         this.lineRepository = lineRepository;
         this.branchRepository = branchRepository;
         this.teamRepository = teamRepository;
         this.publisher = publisher;
+        this.globalConfig = globalConfig;
     }
     @Transactional
     public Page<DeviceDTO> findDevicesPaged(Map<String, Object> filters, int page) {
@@ -138,7 +141,9 @@ public class DeviceService {
     public Long create(final DeviceDTO deviceDTO) {
         final Device device = new Device();
         mapToEntity(deviceDTO, device);
-        return deviceRepository.save(device).getId();
+        Device savedDevice = deviceRepository.save(device);
+       savedDevice.setCode(deviceDTO.getCode()+"-"+globalConfig.createNumberPrefix(savedDevice.getId(),6)); // Tạo mã thiết bị theo định dạng
+        return deviceRepository.save(savedDevice).getId();
     }
     public List<Long> creates(final List<DeviceDTO> deviceDTO) {
         List<Long> createdIds = new ArrayList<>();
@@ -151,6 +156,8 @@ public class DeviceService {
             }
             mapToEntity(dto, entity);
             Device saved = deviceRepository.save(entity);
+            saved.setCode(dto.getCode()+"-"+globalConfig.createNumberPrefix(saved.getId(),6)); // Tạo mã thiết bị theo định dạng
+            deviceRepository.save(saved);
             createdIds.add(saved.getId());
         }
         return createdIds;

@@ -1,5 +1,6 @@
 package io.rd.qltb.service;
 
+import io.rd.qltb.config.GlobalConfig;
 import io.rd.qltb.domain.Device;
 import io.rd.qltb.domain.DeviceGroup;
 import io.rd.qltb.events.BeforeDeleteDeviceGroup;
@@ -17,11 +18,13 @@ public class DeviceGroupService {
 
     private final DeviceGroupRepository deviceGroupRepository;
     private final ApplicationEventPublisher publisher;
+    private final GlobalConfig globalConfig;
 
     public DeviceGroupService(final DeviceGroupRepository deviceGroupRepository,
-            final ApplicationEventPublisher publisher) {
+                              final ApplicationEventPublisher publisher, GlobalConfig globalConfig) {
         this.deviceGroupRepository = deviceGroupRepository;
         this.publisher = publisher;
+        this.globalConfig = globalConfig;
     }
 
     public List<DeviceGroupDTO> findAll() {
@@ -40,7 +43,9 @@ public class DeviceGroupService {
     public Long create(final DeviceGroupDTO deviceGroupDTO) {
         final DeviceGroup deviceGroup = new DeviceGroup();
         mapToEntity(deviceGroupDTO, deviceGroup);
-        return deviceGroupRepository.save(deviceGroup).getId();
+        DeviceGroup savedDeviceGroup = deviceGroupRepository.save(deviceGroup);
+        savedDeviceGroup.setCode(deviceGroupDTO.getCode()+"-"+globalConfig.createNumberPrefix(savedDeviceGroup.getId(),4));
+        return deviceGroupRepository.save(savedDeviceGroup).getId();
     }
 
     public void update(final Long id, final DeviceGroupDTO deviceGroupDTO) {

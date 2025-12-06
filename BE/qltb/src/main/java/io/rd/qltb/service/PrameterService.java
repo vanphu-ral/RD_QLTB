@@ -1,12 +1,9 @@
 package io.rd.qltb.service;
 
-import io.rd.qltb.domain.Device;
-import io.rd.qltb.domain.DeviceSupplyUsage;
+import io.rd.qltb.config.GlobalConfig;
 import io.rd.qltb.domain.Prameter;
 import io.rd.qltb.domain.PrameterGroup;
-import io.rd.qltb.events.BeforeDeleteDevice;
 import io.rd.qltb.events.BeforeDeletePrameterGroup;
-import io.rd.qltb.model.DeviceSupplyUsageDTO;
 import io.rd.qltb.model.PrameterDTO;
 import io.rd.qltb.repos.DeviceRepository;
 import io.rd.qltb.repos.PrameterGroupRepository;
@@ -14,7 +11,6 @@ import io.rd.qltb.repos.PrameterRepository;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
@@ -27,13 +23,15 @@ public class PrameterService {
     private final PrameterRepository prameterRepository;
     private final PrameterGroupRepository prameterGroupRepository;
     private final DeviceRepository deviceRepository;
+    private final GlobalConfig globalConfig;
 
     public PrameterService(final PrameterRepository prameterRepository,
-            final PrameterGroupRepository prameterGroupRepository,
-            final DeviceRepository deviceRepository) {
+                           final PrameterGroupRepository prameterGroupRepository,
+                           final DeviceRepository deviceRepository, GlobalConfig globalConfig) {
         this.prameterRepository = prameterRepository;
         this.prameterGroupRepository = prameterGroupRepository;
         this.deviceRepository = deviceRepository;
+        this.globalConfig = globalConfig;
     }
 
     public List<PrameterDTO> findAll() {
@@ -52,7 +50,9 @@ public class PrameterService {
     public Long create(final PrameterDTO prameterDTO) {
         final Prameter prameter = new Prameter();
         mapToEntity(prameterDTO, prameter);
-        return prameterRepository.save(prameter).getId();
+        Prameter savedPrameter = prameterRepository.save(prameter);
+        savedPrameter.setCode(prameterDTO.getCode()+"-"+globalConfig.createNumberPrefix(savedPrameter.getId(),6));
+        return prameterRepository.save(savedPrameter).getId();
     }
 
     public void update(final Long id, final PrameterDTO prameterDTO) {
