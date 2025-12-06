@@ -145,6 +145,7 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
   public override save(): void {
     if (!this.model) return;
     this.model = Util.prepareModel(this.model);
+    this.model = Util.simplifyMany(this.model, ['team']);
     if (!_.isEmpty(this.model.maintenanceCycle)) {
       this.model.maintenanceCycle = _.join(
         _.map(this.model.maintenanceCycle, 'code'),
