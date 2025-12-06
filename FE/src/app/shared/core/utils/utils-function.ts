@@ -368,8 +368,8 @@ export class Util {
     if (!text) return '';
     return text
       .trim()
-      .split(/\s+/)                
-      .map(word => word[0].toUpperCase())  
+      .split(/\s+/)
+      .map(word => word[0].toUpperCase())
       .join('');
   }
 
@@ -519,6 +519,25 @@ export class Util {
   * Danh sách ngày trong  tuần
   */
   static listDayOffWeeks(): string[] {
-    return [{code: 0, name: 'Chủ nhật'}, {code: 1, name: 'Thu hai'}, {code: 2, name: 'Thu ba'}, {code: 3, name: 'Thu tư'}, {code: 4, name: 'Thu năm'}, {code: 5, name: 'Thu sáu'}, {code: 6, name: 'Thu bảy'}].map(item => item.name);
+    return [{ code: 0, name: 'Chủ nhật' }, { code: 1, name: 'Thu hai' }, { code: 2, name: 'Thu ba' }, { code: 3, name: 'Thu tư' }, { code: 4, name: 'Thu năm' }, { code: 5, name: 'Thu sáu' }, { code: 6, name: 'Thu bảy' }].map(item => item.name);
+  }
+
+  /**
+   * đơn giản hóa trường con trong obj cha
+   * @param obj dữ liệu cha truyền vào
+   * @param keys các trường con cần biến đổi trong dữ liệu cha
+   * @returns chả về dữ liệu cha với các trường con đơn giản hóa 
+   */
+  static simplifyMany(obj: any, keys: string[]) {
+    let result = { ...obj };
+
+    keys.forEach(key => {
+      const v = result[key];
+      if (v && typeof v === 'object' && v.id !== undefined) {
+        result[key] = { id: v.id };
+      }
+    });
+
+    return result;
   }
 }
