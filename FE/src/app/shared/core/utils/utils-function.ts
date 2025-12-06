@@ -22,6 +22,23 @@ export class Util {
     return `${initials}-${timestamp}`;
   }
 
+  /**
+   * Sinh mã code từ tên + thời gian (ddMMyyyyHHmm)
+   * @param name Chuỗi tên (ví dụ: "Nguyen Van A")
+   * @returns Ví dụ: "NVA-260820250929"
+   * Chỉ lấy 10 ký tự
+   */
+  static generateCodeParent(name: string): string {
+    const initials = _.chain(name)
+      .split(' ')
+      .map(w => w.charAt(0))
+      .join('')
+      .toUpper()
+      .value()
+      .slice(0, 10);
+    return `${initials}`;
+  }
+
 
   /**
    * Format ngày giờ theo pattern
@@ -52,6 +69,16 @@ export class Util {
   static prepareModel<T extends { id?: any; code?: string; name?: string }>(model: T): T {
     if (!model.code && model.name) {
       model.code = Util.generateCode(model.name);
+    }
+    return model;
+  }
+
+  /**
+   * Tự động GenCode cho nhóm thiết bị và nhóm thông số
+ */
+  static prepareParentCoedModel<T extends { id?: any; code?: string; name?: string }>(model: T): T {
+    if (!model.code && model.name) {
+      model.code = Util.generateCodeParent(model.name);
     }
     return model;
   }

@@ -1,6 +1,6 @@
 export enum PLANTYPE {
-  AUDIT = 'AUDIT',
-  MAINTENANCE = 'MAINTENANCE',
-  REPAIR = 'REPAIR',
+  AUDIT = 'AUDIT', //Kiểm tra
+  MAINTENANCE = 'MAINTENANCE', // Bảo trì
+  REPAIR = 'REPAIR', //Sửa chữa
   OTHER = 'OTHER'
 }

@@ -3,15 +3,15 @@
 
   <form #f="ngForm" *ngIf="model">
     <div class="row my-3">
-      <div class="col-6">
+      <div class="col-6" *ngIf="!isAddMode">
         <p-floatlabel variant="on">
-          <input pInputText id="code" name="code" [(ngModel)]="model.code" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
+          <input pInputText id="code" name="code" [(ngModel)]="model.code" autocomplete="off" [disabled]="true" [fluid]="true"/>
           <label for="code">Mã thiết bị</label>
         </p-floatlabel>
       </div>
-      <div class="col-6">
+      <div [ngClass]="isAddMode ? 'col-12' : 'col-6'">
         <p-floatlabel variant="on">
-          <input pInputText id="name" name="name" [(ngModel)]="model.name" required required [invalid]="!model.name" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
+          <input pInputText id="name" name="name" [(ngModel)]="model.name" required [invalid]="!model.name" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
           <label for="name">Tên thiết bị</label>
         </p-floatlabel>
       </div>
@@ -110,7 +110,7 @@
     <div class="row my-3">
       <div class="col-4">
         <p-floatlabel variant="on">
-          <input pInputText id="unit" name="unit" [(ngModel)]="model.unit" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
+          <input pInputText id="unit" name="unit" [(ngModel)]="model.unit" required [invalid]="!model.name" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
           <label for="unit">Đơn vị tính</label>
         </p-floatlabel>
       </div>
@@ -166,7 +166,7 @@
     <div class="row my-3">
       <div class="col-12">
         <textarea pTextarea class="form-control" rows="5" placeholder="Mô tả ..." id="description" name="description"
-          [(ngModel)]="model.description"></textarea>
+          [(ngModel)]="model.description" [disabled]="isViewMode"></textarea>
       </div>
     </div>
 

@@ -76,16 +76,6 @@ export const routes: Routes = [
         component: AppLayout,
         loadChildren: () => import('./shared/pages/DeviceManager/Device/device.routes').then(m => m.default)
     },
-    {
-        path: 'ParameterGroups',
-        component: AppLayout,
-        loadChildren: () => import('./shared/pages/DeviceManager/ParameterGroup/parameter-group.routes').then(m => m.default)
-    },
-    {
-        path: 'Parameters',
-        component: AppLayout,
-        loadChildren: () => import('./shared/pages/DeviceManager/Parameter/parameter.routes').then(m => m.default)
-    },
     // Plan Manager
     {
         path: 'PlanTypes',
@@ -134,6 +124,16 @@ export const routes: Routes = [
         path: 'Signatures',
         component: AppLayout,
         loadChildren: () => import('./shared/pages/SystemManager/Signature/signature.routes').then(m => m.default)
+    },
+    {
+        path: 'ParameterGroups',
+        component: AppLayout,
+        loadChildren: () => import('./shared/pages/SystemManager/ParameterGroup/parameter-group.routes').then(m => m.default)
+    },
+    {
+        path: 'Parameters',
+        component: AppLayout,
+        loadChildren: () => import('./shared/pages/SystemManager/Parameter/parameter.routes').then(m => m.default)
     },
 
     // Extension

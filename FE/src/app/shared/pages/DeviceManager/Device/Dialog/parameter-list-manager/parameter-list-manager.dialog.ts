@@ -4,7 +4,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { SharedModule } from '../../../../../../share.module';
 import { Util } from '../../../../../core/utils/utils-function';
 import { DeviceParameterUse } from '../../../../../models/DeviceManager/device-parameter-use.model';
-import { ParameterService } from '../../../Parameter/Service/parameter.service';
+import { ParameterService } from '../../../../SystemManager/Parameter/Service/parameter.service';
 import { DeviceParameterUseService } from '../../Service/device-parameter-use.service';
 import _ from 'lodash';
 
