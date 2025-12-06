@@ -3,13 +3,13 @@
 
   <form #f="ngForm" *ngIf="model">
     <div class="row my-3">
-      <div class="col-6">
+      <div class="col-6" *ngIf="!isAddMode">
         <p-floatlabel variant="on">
-          <input pInputText id="code" name="code" [(ngModel)]="model.code" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
+          <input pInputText id="code" name="code" [(ngModel)]="model.code" autocomplete="off" [disabled]="true" [fluid]="true"/>
           <label for="code">Mã kịch bản phê duyệt</label>
         </p-floatlabel>
       </div>
-      <div class="col-6">
+      <div [ngClass]="isAddMode ? 'col-12' : 'col-6'">
         <p-floatlabel variant="on">
           <input pInputText id="name" name="name" [(ngModel)]="model.name" required [invalid]="!model.name" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
           <label for="name">Tên kịch bản phê duyệt</label>
@@ -23,61 +23,6 @@
         <p-button *ngIf="!isViewMode" label="Thêm Nhóm" icon="pi pi-plus-circle" (click)="addNewApprovalGroup()"
           styleClass="p-button-success p-button-outlined"></p-button>
       </div>
-    
-      <!-- <div *ngFor="let group of model.approvalGroups; let i = index">
-        <div class="group-box my-4">
-          <div class="header-group-name row">
-            <div class="col-12">
-              <p-floatlabel variant="on">
-                <p-select [(ngModel)]="group.groupApprovalName" [options]="listApprovalGroupsName" optionLabel="name"
-                  [fluid]="true" [disabled]="isViewMode" [showClear]="true" [appendTo]="'body'" id="groupApprovalName"
-                  name="groupApprovalName-{{i}}" required [invalid]="!group.groupApprovalName" dataKey="id">
-                </p-select>
-                <label for="groupApprovalName">Tên nhóm phê duyệt</label>
-              </p-floatlabel>
-            </div>
-          </div>
-      
-          <div class="row">
-            <div class="col-10">
-              <p-card>
-                <ng-template #header>
-                  <div class="d-flex align-items-center justify-content-between p-3">
-                    <h6>Danh sách người phê duyệt</h6>
-                    <p-button *ngIf="!isViewMode" icon="pi pi-user-plus" (onClick)="addNewApprovalUser(i)"
-                      styleClass="p-button-success p-button-outlined"></p-button>
-                  </div>
-                </ng-template>
-                <div class="content-group row mb-3" *ngFor="let user of group.approvalGroupUser; let j = index">
-                  <div class="col-11">
-                    <p-floatlabel variant="on">
-                      <p-select [(ngModel)]="user.username" [filter]="true" [options]="listUsers" optionLabel="name"
-                        optionValue="username" [fluid]="true" [disabled]="isViewMode" [showClear]="true" [appendTo]="'body'"
-                        id="username" name="username-{{i}}-{{j}}" required [invalid]="!user.username">
-                      </p-select>
-                      <label for="username">Người phê duyệt</label>
-                    </p-floatlabel>
-                  </div>
-                  <div class="col-1">
-                    <p-button icon="pi pi-trash" *ngIf="!isViewMode"
-                      styleClass="p-button-sm p-button-rounded p-button-danger m-1"
-                      (onClick)="confirmDeleteUser(i, j)"></p-button>
-                  </div>
-                </div>
-              </p-card>
-            </div>
-            <div class="col-2">
-              <div class="d-flex h-100 w-100 align-items-center justify-content-around">
-                <p-checkbox inputId="isRequired" [disabled]="isViewMode" [(ngModel)]="group.isRequired" [binary]="true"
-                  name="isRequired-{{i}}" />
-                <label for="isRequired" class="">Bắt buộc</label>
-                <p-button icon="pi pi-trash" *ngIf="!isViewMode" styleClass="p-button-sm p-button-rounded p-button-danger m-1"
-                  (onClick)="confirmDeleteGroup(i)"></p-button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> -->
       <div cdkDropList [cdkDropListData]="model.approvalGroups" (cdkDropListDropped)="dropGroup($event)"
         class="d-flex flex-column gap-3">
         <div *ngFor="let group of model.approvalGroups; let i = index; trackBy: trackByGroupId" cdkDrag
@@ -143,7 +88,7 @@
     <div class="row my-3">
       <div class="col-12">
         <textarea pTextarea class="form-control" rows="5" placeholder="Mô tả ..." id="description" name="description"
-          [(ngModel)]="model.description"></textarea>
+          [(ngModel)]="model.description" [disabled]="isViewMode"></textarea>
       </div>
     </div>
 

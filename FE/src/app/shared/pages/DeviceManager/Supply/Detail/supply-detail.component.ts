@@ -36,6 +36,8 @@ export class SupplyDetailComponent extends BasePageComponent<Supply> {
     })
     if(this.isEditMode || this.isViewMode) {
       this.loadData();
+    }else {
+      this.listSerials.push({ status: 1 });
     }
   }
 
@@ -92,7 +94,8 @@ export class SupplyDetailComponent extends BasePageComponent<Supply> {
 
   public override save(): void {
     if (this.model) {
-      this.model = Util.prepareModel(this.model);
+      // this.model = Util.prepareModel(this.model);
+      this.model.code = this.model.group.code;
 
       if (this.isAddMode) {
         this.apiService.create(this.model).subscribe({
