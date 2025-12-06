@@ -3,14 +3,14 @@
 
   <form #f="ngForm" *ngIf="model">
     <div class="row my-3">
-      <div class="col-6">
+      <div class="col-6" *ngIf="!isAddMode">
         <p-floatlabel variant="on">
-          <input pInputText id="code" name="code" [(ngModel)]="model.code" autocomplete="off" [disabled]="isViewMode"
+          <input pInputText id="code" name="code" [(ngModel)]="model.code" autocomplete="off" [disabled]="true"
             [fluid]="true" />
           <label for="code">Mã vật tư</label>
         </p-floatlabel>
       </div>
-      <div class="col-6">
+      <div [ngClass]="isAddMode ? 'col-12' : 'col-6'">
         <p-floatlabel variant="on">
           <input pInputText id="name" name="name" [(ngModel)]="model.name" required required [invalid]="!model.name" autocomplete="off"
             [disabled]="isViewMode" [fluid]="true" />
@@ -32,7 +32,21 @@
     </div>
 
     <div class="row my-3">
-      <div class="col-12">
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <input pInputText id="erp" name="erp" [(ngModel)]="model.erp" autocomplete="off"
+            [disabled]="isViewMode" [fluid]="true" />
+          <label for="erp">ERP</label>
+        </p-floatlabel>
+      </div>
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <input pInputText id="sapCode" name="sapCode" [(ngModel)]="model.sapCode" autocomplete="off"
+            [disabled]="isViewMode" [fluid]="true" />
+          <label for="sapCode">SAP Code</label>
+        </p-floatlabel>
+      </div>
+      <div class="col-4">
         <p-floatlabel variant="on">
           <input pInputText id="source" name="source" [(ngModel)]="model.source" autocomplete="off"
             [disabled]="isViewMode" [fluid]="true" />
@@ -56,6 +70,8 @@
             <th>xuất xứ</th>
             <th>đơn vị</th>
             <th>giá</th>
+            <th>loại tiền tệ</th>
+            <th>số lượng</th>
             <th>Trạng thái</th>
             <th>Thao tác</th>
           </tr>
@@ -70,13 +86,12 @@
             <td><input type="text" pInputText [(ngModel)]="row.supplier" name="supplier-{{i}}" [disabled]="isViewMode"></td>
             <td><input type="text" pInputText [(ngModel)]="row.unit" name="unit-{{i}}" [disabled]="isViewMode"></td>
             <td><p-inputnumber id="price" name="price-{{i}}" [(ngModel)]="row.price" autocomplete="off" [disabled]="isViewMode" [fluid]="true" mode="decimal"/></td>
+            <td><input type="text" pInputText [(ngModel)]="row.currency" name="currency-{{i}}" [disabled]="isViewMode"></td>
+            <td><p-inputnumber id="quantity" name="quantity-{{i}}" [(ngModel)]="row.quantity" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/></td>
             <td>
-              <p-floatlabel variant="on">
-                <p-select [(ngModel)]="row.status" [options]="listStatus" optionLabel="label" [fluid]="true" [disabled]="isViewMode"
-                  optionValue="value" [showClear]="true" [appendTo]="'body'" id="status-{{i}}" name="status-{{i}}">
-                </p-select>
-                <label for="status-{{i}}">Trạng thái</label>
-              </p-floatlabel>
+              <p-select [(ngModel)]="row.status" [options]="listStatus" optionLabel="label" [fluid]="true" [disabled]="isViewMode"
+                optionValue="value" [showClear]="true" [appendTo]="'body'" id="status-{{i}}" name="status-{{i}}">
+              </p-select>
             </td>
             <td class="text-center">
               <p-button icon="pi pi-trash" severity="danger" (onClick)="deleteRow(i)"></p-button>
@@ -89,7 +104,7 @@
     <div class="row my-3">
       <div class="col-12">
         <textarea pTextarea class="form-control" rows="5" placeholder="Mô tả ..." id="description" name="description"
-          [(ngModel)]="model.description"></textarea>
+          [(ngModel)]="model.description" [disabled]="isViewMode"></textarea>
       </div>
     </div>
 

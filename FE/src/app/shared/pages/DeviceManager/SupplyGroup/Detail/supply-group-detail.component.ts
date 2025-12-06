@@ -26,7 +26,7 @@ export class SupplyGroupDetailComponent extends BasePageComponent<SupplyGroup> {
 
   public override save(): void {
     if (this.model) {
-      this.model = Util.prepareModel(this.model);
+      this.model = Util.prepareParentCoedModel(this.model);
 
       if (this.isAddMode) {
         this.apiService.create(this.model).subscribe({

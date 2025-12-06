@@ -32,8 +32,6 @@ export const MENU_ITEMS: MenuItem[] = [
                     { label: 'Danh mục thiết bị', icon: 'fa-solid fa-tablet', routerLink: ['/Devices'] },
                     { label: 'Danh mục nhóm vật tư', icon: 'fa-solid fa-layer-group', routerLink: ['/SupplyGroups'] },
                     { label: 'Danh mục vật tư, phụ tùng', icon: 'fa-solid fa-wrench', routerLink: ['/Supplies'] },
-                    { label: 'Danh mục nhóm thông số', icon: 'fa-solid fa-layer-group', routerLink: ['/ParameterGroups']},
-                    { label: 'Danh mục thông số', icon: 'fa-solid fa-calculator', routerLink: ['/Parameters']}
                 ]
             },
             {
@@ -63,14 +61,16 @@ export const MENU_ITEMS: MenuItem[] = [
                 icon: 'fa-brands fa-windows',
                 items: [
                     { label: 'Quản lý chữ ký số', icon: 'fa-solid fa-signature', routerLink: ['/Signatures'] },
-                    { label: 'Nhóm người dùng', icon: 'fa-solid fa-users', routerLink: ['/Role'] },
-                    { label: 'Người dùng', icon: 'fa-solid fa-user-gear', routerLink: ['/User'] },
-                    { label: 'Lịch sử đăng nhập', icon: 'fa-solid fa-clock-rotate-left', routerLink: ['/UserLogin'] },
-                    { label: 'Tra cứu hoạt động', icon: 'fa-solid fa-clock-rotate-left', routerLink: ['/ActiveLog'] },
-                    { label: 'Nhật ký lỗi', icon: 'fa-solid fa-bug', routerLink: ['/ErorrLog'] },
-                    { label: 'Thiết lập cấu hình', icon: 'fa-solid fa-screwdriver-wrench', routerLink: ['/Config'] },
-                    { label: 'Thiết lập GT ngưỡng cảnh báo', icon: 'fa-solid fa-list-check', routerLink: ['/Threshold'] },
-                    { label: 'Thiết lập thông báo cảnh báo', icon: 'fa-solid fa-bullhorn', routerLink: ['/Alert'] }
+                    { label: 'Danh mục nhóm thông số', icon: 'fa-solid fa-layer-group', routerLink: ['/ParameterGroups']},
+                    { label: 'Danh mục thông số', icon: 'fa-solid fa-calculator', routerLink: ['/Parameters']},
+                    // { label: 'Nhóm người dùng', icon: 'fa-solid fa-users', routerLink: ['/Role'] },
+                    // { label: 'Người dùng', icon: 'fa-solid fa-user-gear', routerLink: ['/User'] },
+                    // { label: 'Lịch sử đăng nhập', icon: 'fa-solid fa-clock-rotate-left', routerLink: ['/UserLogin'] },
+                    // { label: 'Tra cứu hoạt động', icon: 'fa-solid fa-clock-rotate-left', routerLink: ['/ActiveLog'] },
+                    // { label: 'Nhật ký lỗi', icon: 'fa-solid fa-bug', routerLink: ['/ErorrLog'] },
+                    // { label: 'Thiết lập cấu hình', icon: 'fa-solid fa-screwdriver-wrench', routerLink: ['/Config'] },
+                    // { label: 'Thiết lập GT ngưỡng cảnh báo', icon: 'fa-solid fa-list-check', routerLink: ['/Threshold'] },
+                    // { label: 'Thiết lập thông báo cảnh báo', icon: 'fa-solid fa-bullhorn', routerLink: ['/Alert'] }
                 ]
             },
             {

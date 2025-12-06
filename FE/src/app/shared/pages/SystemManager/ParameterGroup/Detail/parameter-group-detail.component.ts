@@ -3,40 +3,30 @@ import { SharedModule } from '../../../../../share.module';
 import { CommonModule } from '@angular/common';
 import { BasePageComponent } from '../../../../base/base-page-component/base-page.component';
 import { Util } from '../../../../core/utils/utils-function';
-import { ParameterService } from '../Service/parameter.service';
-import { Parameter } from '../../../../models/DeviceManager/parameter.model';
-import { ParameterGroupService } from '../../ParameterGroup/Service/parameter-group.service';
+import { ParameterGroupService } from '../Service/parameter-group.service';
+import { ParameterGroup } from '../../../../models/DeviceManager/parameter-group.model';
 
 @Component({
-  selector: 'app-parameter-detail',
+  selector: 'app-parameter-group-detail',
   standalone: true,
   imports: [SharedModule, CommonModule],
-  templateUrl: './parameter-detail.component.html',
-  styleUrls: ['./parameter-detail.component.scss']
+  templateUrl: './parameter-group-detail.component.html',
+  styleUrls: ['./parameter-group-detail.component.scss']
 })
-export class ParameterDetailComponent extends BasePageComponent<Parameter> {
+export class ParameterGroupDetailComponent extends BasePageComponent<ParameterGroup> {
 
-  listParameterGroup: any[] = [];
+  listFactories: any[] = [];
 
   constructor(
-    protected override apiService: ParameterService,
-    private parameterGroupService: ParameterGroupService
+    protected override apiService: ParameterGroupService,
   ) {
     super(apiService);
-  }
-
-  override ngOnInit(): void {
-    super.ngOnInit();
-    this.parameterGroupService.getAll().subscribe(res => {
-      this.listParameterGroup = res
-      this.cdr.detectChanges();
-    })
   }
 
 
   public override save(): void {
     if (this.model) {
-      this.model = Util.prepareModel(this.model);
+      this.model = Util.prepareParentCoedModel(this.model);
 
       if (this.isAddMode) {
         this.apiService.create(this.model).subscribe({
