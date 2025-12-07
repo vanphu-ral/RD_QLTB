@@ -99,7 +99,6 @@ public class Plan {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "approval_workflow_id", nullable = false)
-    @JsonIgnore
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private ApprovalWorkflow approvalWorkflow;
 
