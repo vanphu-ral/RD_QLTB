@@ -548,7 +548,7 @@ public class PlanService {
     }
 
     @Transactional
-    public Plan updatePlan(Long id, PlanRequest request) {
+    public String updatePlan(Long id, PlanRequest request) {
 
         Plan exist = planRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Plan not found"));
@@ -558,48 +558,66 @@ public class PlanService {
 
         List<PlanDetail> newDetails = buildPlanDetails(exist, request);
         // xoa tat ca plan result lien quan den nhieu plan detail cua plan
+        String result = "";
        for (PlanDetail oldDetail : exist.getPlanPlanDetails()) {
-               try {
-                   planResultRepository.deleteAllByPlanDetailId(oldDetail.getId());
-               } catch (Exception e) {
-                   System.out.println("Không xoá được do thiết bị có kết quả kiểm tra !!!  ");
-               }
+                   Boolean delete = true;
+                     List<PlanResult> planResults = planResultRepository.findByPlanDetailId(oldDetail.getId());
+                     for (PlanResult planResult : planResults) {
+                         if (planResult.getPlanResultPlanResultDetails().size()>0) {
+                             delete = false;
+                             result += "Không thể xóa thiết bị " + oldDetail.getDevice().getName() + " vì có dữ liệu kiểm tra !!!";
+                             break;
+                         }
+                     }
+                        if (delete) {
+                            planResultRepository.deleteAllByPlanDetailId(oldDetail.getId());
+                            planDetailRepository.delete(oldDetail);
+                            result +="Success";
+                        }
        }
-        planDetailRepository.deleteAllByPlanId(id);
+
         planDetailRepository.saveAll(newDetails);
-        autoCreatePlanResult(newDetails);
-        return exist;
+        result = autoCreatePlanResult(newDetails);
+        return result;
     }
- public void autoCreatePlanResult(List<PlanDetail> planDetails ) {
-        for (PlanDetail planDetail : planDetails) {
-            Plan plan = planDetail.getPlan();
-            if(plan.getPlanType().getCode().equals("AUDIT")) {
-                // tạo plan Result cho tháng hiện tại
-                // Lấy tháng hiện tại
-                YearMonth currentMonth = YearMonth.now();
-                Duration duration = Duration.between(plan.getFromDate(), plan.getToDate());
-                Integer startDay = plan.getFromDate().getDayOfMonth();
-                // Duyệt từng ngày trong tháng
-                for (int day = 0; day <= duration.toDays(); day++) {
-                    LocalDate date = currentMonth.atDay(startDay);
-                    // Trả về LocalDateTime lúc 00:00 của ngày đó
-                    LocalDateTime dateTime = date.atTime(17, 00, 00);
-                    PlanResult planResult = new PlanResult();
-                    planResult.setPlanDetail(planDetail);
-                    planResult.setCreatedAt(java.time.LocalDateTime.now());
-                    planResult.setUpdatedAt(java.time.LocalDateTime.now());
-                    planResult.setCreatedBy("system");
-                    planResult.setUpdatedBy(null);
-                    planResult.setStatus(1);
-                    planResult.setStatusRepair("1");
-                    planResult.setNote("");
-                    planResult.setDateTest(dateTime);
-                    planResult.setUserTest(planDetail.getDevice().getUserManager());
-                    planResultService.create(planResultService.mapToDTO(planResult, new PlanResultDTO()));
-                    startDay++;
+ public String autoCreatePlanResult(List<PlanDetail> planDetails ) {
+        String result = "Success";
+        try {
+            for (PlanDetail planDetail : planDetails) {
+                Plan plan = planDetail.getPlan();
+                if (plan.getPlanType().getCode().equals("AUDIT")) {
+                    // tạo plan Result cho tháng hiện tại
+                    // Lấy tháng hiện tại
+                    YearMonth currentMonth = YearMonth.now();
+                    Duration duration = Duration.between(plan.getFromDate(), plan.getToDate());
+                    Integer startDay = plan.getFromDate().getDayOfMonth();
+                    // Duyệt từng ngày trong tháng
+                    for (int day = 0; day <= duration.toDays(); day++) {
+                        LocalDate date = currentMonth.atDay(startDay);
+                        // Trả về LocalDateTime lúc 00:00 của ngày đó
+                        LocalDateTime dateTime = date.atTime(17, 00, 00);
+                        PlanResult planResult = new PlanResult();
+                        planResult.setPlanDetail(planDetail);
+                        planResult.setCreatedAt(java.time.LocalDateTime.now());
+                        planResult.setUpdatedAt(java.time.LocalDateTime.now());
+                        planResult.setCreatedBy("system");
+                        planResult.setUpdatedBy(null);
+                        planResult.setStatus(1);
+                        planResult.setStatusRepair("1");
+                        planResult.setNote("");
+                        planResult.setDateTest(dateTime);
+                        planResult.setUserTest(planDetail.getDevice().getUserManager());
+                        planResultService.create(planResultService.mapToDTO(planResult, new PlanResultDTO()));
+                        startDay++;
+                    }
                 }
             }
+        } catch (Exception e) {
+            // Nếu có lỗi thì trả về "Error"
+            result = "Error";
+            throw new RuntimeException("Error while processing PlanResult creation", e);
         }
+        return result;
     }
 // ================================================================
 // COMMON SUPPORT METHODS
