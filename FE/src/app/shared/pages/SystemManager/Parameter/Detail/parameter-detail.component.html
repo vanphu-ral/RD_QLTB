@@ -48,7 +48,7 @@
     
     <div class="d-flex justify-content-end mt-3">
       <p-button label="Quay lại" severity="info" (click)="onBack()" icon="pi pi-arrow-left" class="me-2"></p-button>
-      <p-button *ngIf="!isViewMode" label="Lưu" icon="pi pi-save" severity="success" [disableIfInvalid]="f" class="w-full max-w-[17.35rem]" (click)="save()"
+      <p-button *ngIf="!isViewMode" label="Lưu" icon="pi pi-save" severity="success" [disabled]="!f.valid" class="w-full max-w-[17.35rem]" (click)="save()"
             styleClass="w-full mx-auto" />
     </div>
   </form>
