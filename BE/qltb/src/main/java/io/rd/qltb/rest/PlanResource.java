@@ -124,10 +124,6 @@ public class PlanResource {
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id,
                                     @RequestBody PlanRequest request) {
-        if(planService.updatePlan(id, request).equals("Success")){
-            return ResponseEntity.ok("Success");
-        }else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(planService.updatePlan(id, request));
-        }
+        return ResponseEntity.ok(planService.updatePlan(id, request));
     }
 }
