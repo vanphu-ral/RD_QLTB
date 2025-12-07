@@ -556,9 +556,20 @@ public class PlanService {
         updatePlanFields(exist, request.getPlan());
         planRepository.save(exist);
 
-        planDetailRepository.deleteAllByPlanId(id);
-
         List<PlanDetail> newDetails = buildPlanDetails(exist, request);
+        // xoa tat ca plan result lien quan den nhieu plan detail cua plan
+       for (DeviceRequest oldDetail : request.getDevices()) {
+           if(oldDetail.getPlanDetailId() == null){
+               continue;
+           }else {
+               try {
+                   planResultRepository.deleteAllByPlanDetailId(oldDetail.getPlanDetailId());
+               } catch (Exception e) {
+                   System.out.println("Không xoá được do thiết bị có kết quả kiểm tra !!!  ");
+               }
+           }
+       }
+        planDetailRepository.deleteAllByPlanId(id);
         planDetailRepository.saveAll(newDetails);
         autoCreatePlanResult(newDetails);
         return exist;
@@ -573,7 +584,7 @@ public class PlanService {
                 Duration duration = Duration.between(plan.getFromDate(), plan.getToDate());
                 Integer startDay = plan.getFromDate().getDayOfMonth();
                 // Duyệt từng ngày trong tháng
-                for (int day = 1; day <= duration.toDays(); day++) {
+                for (int day = 0; day <= duration.toDays(); day++) {
                     LocalDate date = currentMonth.atDay(startDay);
                     // Trả về LocalDateTime lúc 00:00 của ngày đó
                     LocalDateTime dateTime = date.atTime(17, 00, 00);
