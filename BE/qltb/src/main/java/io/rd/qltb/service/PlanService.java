@@ -12,6 +12,7 @@ import io.rd.qltb.repos.*;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -517,6 +518,196 @@ public class PlanService {
 
         plan.setStatus(status);
         planRepository.save(plan);
+    }
+
+    @Transactional
+    public Plan createPlan(PlanRequest request) {
+
+        Plan plan = preparePlanForCreate(request.getPlan());
+        plan = planRepository.save(plan);
+
+        List<PlanDetail> details = buildPlanDetails(plan, request);
+        planDetailRepository.saveAll(details);
+
+        return plan;
+    }
+
+    @Transactional
+    public Plan updatePlan(Long id, PlanRequest request) {
+
+        Plan exist = planRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Plan not found"));
+
+        updatePlanFields(exist, request.getPlan());
+        planRepository.save(exist);
+
+        planDetailRepository.deleteAllByPlanId(id);
+
+        List<PlanDetail> newDetails = buildPlanDetails(exist, request);
+        planDetailRepository.saveAll(newDetails);
+
+        return exist;
+    }
+
+// ================================================================
+// COMMON SUPPORT METHODS
+// ================================================================
+
+    private Plan preparePlanForCreate(Plan p) {
+        p.setId(null);
+        p.setCreatedAt(LocalDateTime.now());
+        p.setUpdatedAt(LocalDateTime.now());
+        return p;
+    }
+
+    private void updatePlanFields(Plan exist, Plan newValue) {
+        exist.setName(newValue.getName());
+        exist.setCode(newValue.getCode());
+        exist.setFrequency(newValue.getFrequency());
+        exist.setPlanNumber(newValue.getPlanNumber());
+        exist.setFromDate(newValue.getFromDate());
+        exist.setToDate(newValue.getToDate());
+        exist.setDescription(newValue.getDescription());
+        exist.setPlanType(newValue.getPlanType());
+        exist.setApprovalWorkflow(newValue.getApprovalWorkflow());
+        exist.setBranch(newValue.getBranch());
+        exist.setFactory(newValue.getFactory());
+        exist.setTeam(newValue.getTeam());
+        exist.setUserPerformer(newValue.getUserPerformer());
+        exist.setUpdatedAt(LocalDateTime.now());
+    }
+
+// ================================================================
+// CORE: Build PlanDetails — ĐÃ THỐNG NHẤT HOÀN TOÀN
+// ================================================================
+
+    private List<PlanDetail> buildPlanDetails(Plan plan, PlanRequest request) {
+
+        List<PlanDetail> list = new ArrayList<>();
+        // Dùng Set để lưu ID của các Device đã được xử lý trong Trường hợp 1
+        Set<Long> processedDeviceIds = new HashSet<>();
+
+        // -----------------------------
+        // 1. Trường hợp group + sample (Tạo PlanDetail dựa trên PlanDetailRequest và DeviceRequest)
+        //    Cần đảm bảo request.getDevices() không null để vòng lặp lồng nhau hoạt động
+        // -----------------------------
+        if (request.getPlanDetails() != null && !request.getPlanDetails().isEmpty() &&
+                request.getDevices() != null && !request.getDevices().isEmpty()) {
+
+            for (PLanDetailRequest detailRequest : request.getPlanDetails()) {
+                // Lặp qua tất cả DeviceRequest, mỗi DeviceRequest sẽ được gán
+                // với DeviceGroup và SampleReport từ detailRequest hiện tại.
+                for (DeviceRequest deviceRequest: request.getDevices()) {
+                    PlanDetail d = new PlanDetail();
+
+                    d.setPlan(plan);
+                    // Dùng convertDeviceGroup và convertSampleReport từ PLanDetailRequest
+                    d.setDeviceGroup(convertDeviceGroup(detailRequest.getDeviceGroup()));
+                    d.setSampleReport(convertSampleReport(detailRequest.getSampleReport()));
+
+                    // Set Device (nếu có) và thêm ID vào Set để đánh dấu đã xử lý
+                    if (deviceRequest.getDevice() != null && deviceRequest.getDevice().getId() != null) {
+                        d.setDevice(convertDevice(deviceRequest.getDevice()));
+                        processedDeviceIds.add(deviceRequest.getDevice().getId());
+                    }
+
+                    // COMMON FIELDS
+                    d.setNameDetail(deviceRequest.getNameDetail());
+                    d.setNote(deviceRequest.getNote());
+                    d.setEstimatedTime(deviceRequest.getEstimatedTime());
+                    d.setManager(deviceRequest.getManager());
+                    d.setSerial(deviceRequest.getSerialNumber()); // Thêm serial từ DeviceRequest
+
+                    // TIMESTAMP & STATUS
+                    d.setCreatedAt(LocalDateTime.now());
+                    d.setUpdatedAt(LocalDateTime.now());
+                    d.setStatus(1);
+                    list.add(d);
+                }
+            }
+        }
+
+        // ---
+
+        // -----------------------------
+        // 2. Trường hợp thiết bị (Chỉ xử lý các DeviceRequest CHƯA được xử lý ở Trường hợp 1)
+        // -----------------------------
+        if (request.getDevices() != null) {
+            for (DeviceRequest dr : request.getDevices()) {
+
+                // Lấy ID của Device nếu có
+                Long currentDeviceId = (dr.getDevice() != null) ? dr.getDevice().getId() : null;
+
+                // BỎ QUA nếu Device này đã được xử lý trong Trường hợp 1
+                if (currentDeviceId != null && processedDeviceIds.contains(currentDeviceId)) {
+                    continue;
+                }
+
+                PlanDetail d = new PlanDetail();
+                d.setPlan(plan);
+
+                // DEVICE
+                if (dr.getDevice() != null) {
+                    d.setDevice(convertDevice(dr.getDevice()));
+                }
+
+                // DEVICE GROUP (lấy từ device.group nếu có)
+                if (dr.getDevice() != null && dr.getDevice().getGroup() != null) {
+                    d.setDeviceGroup(convertDeviceGroup(dr.getDevice().getGroup()));
+                }
+
+                // LƯU Ý: Trường hợp 2 không có SampleReport (cần kiểm tra logic nghiệp vụ)
+                // d.setSampleReport(...) // Cần xem xét cách thiết lập SampleReport nếu cần
+
+                // COMMON FIELDS
+                d.setManager(dr.getManager());
+                d.setSerial(dr.getSerialNumber());
+                d.setEstimatedTime(dr.getEstimatedTime());
+                d.setNameDetail(dr.getNameDetail());
+                d.setNote(dr.getNote());
+
+                d.setCreatedAt(LocalDateTime.now());
+                d.setUpdatedAt(LocalDateTime.now());
+                d.setStatus(1);
+
+                list.add(d);
+            }
+        }
+
+        // List đã chứa kết quả gộp từ cả hai trường hợp
+        return list;
+    }
+
+// ================================================================
+// DTO → ENTITY MAPPING
+// ================================================================
+
+    private DeviceGroup convertDeviceGroup(DeviceGroupDTO dto) {
+        if (dto == null) return null;
+        DeviceGroup g = new DeviceGroup();
+        g.setId(dto.getId());
+        return g;
+    }
+
+    private DeviceGroup convertDeviceGroup(DeviceGroup entity) {
+        if (entity == null) return null;
+        DeviceGroup g = new DeviceGroup();
+        g.setId(entity.getId());
+        return g;
+    }
+
+    private SampleReport convertSampleReport(SampleReportDTO dto) {
+        if (dto == null) return null;
+        SampleReport s = new SampleReport();
+        s.setId(dto.getId());
+        return s;
+    }
+
+    private Device convertDevice(DeviceDTO dto) {
+        if (dto == null) return null;
+        Device d = new Device();
+        d.setId(dto.getId());
+        return d;
     }
 
     private PlanDTO mapToDTO(final Plan plan, final PlanDTO dto) {

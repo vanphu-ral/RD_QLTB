@@ -60,4 +60,31 @@ export class PlanService extends BaseApiService<PlanRequest> {
   updateStatus(id: number, value: number) {
     return this.http.put<void>(`${this['fullBaseUrl']}/${id}/status?value=${value}`, {}, {withCredentials: true});
   }
+
+  override create(entity: CreateEntity<PlanRequest>): Observable<PlanRequest> {
+    const now = new Date();
+    const isoLocalVN = now.getFullYear() + '-' +
+      String(now.getMonth() + 1).padStart(2, '0') + '-' +
+      String(now.getDate()).padStart(2, '0') + 'T' +
+      String(now.getHours()).padStart(2, '0') + ':' +
+      String(now.getMinutes()).padStart(2, '0') + ':' +
+      String(now.getSeconds()).padStart(2, '0');
+    const newEntity = { ...entity, plan: { ...entity.plan, createdAt: isoLocalVN, updatedAt: isoLocalVN, createdBy: this.accountService.getUser()?.fullName ?? 'unknown' } };
+    return this.http.post<PlanRequest>(this['fullBaseUrl'], newEntity, { withCredentials: true });
+  }
+
+  override update(id: number | string, data: PlanRequest): Observable<PlanRequest> {
+    const now = new Date();
+    const updatedAtVN = now.getFullYear() + '-' +
+                    String(now.getMonth() + 1).padStart(2, '0') + '-' +
+                    String(now.getDate()).padStart(2, '0') + 'T' +
+                    String(now.getHours()).padStart(2, '0') + ':' +
+                    String(now.getMinutes()).padStart(2, '0') + ':' +
+                    String(now.getSeconds()).padStart(2, '0');
+    const updatedEntity = {
+      ...data,
+      plan: { ...data.plan, updatedAt: updatedAtVN, updatedBy: this.accountService.getUser()?.fullName ?? 'unknown' },
+    };
+    return this.http.put<PlanRequest>(`${this['fullBaseUrl']}/${id}`, updatedEntity, { withCredentials: true });
+  }
 }
