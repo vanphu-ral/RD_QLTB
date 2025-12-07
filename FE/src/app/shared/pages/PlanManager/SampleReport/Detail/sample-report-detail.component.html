@@ -3,14 +3,21 @@
 
   <form #f="ngForm" *ngIf="model">
     <div class="row my-3">
-      <div class="col-6">
+      <div class="col-4" *ngIf="!isAddMode">
         <p-floatlabel variant="on">
           <input pInputText id="code" name="code" [(ngModel)]="model.code" autocomplete="off" [disabled]="isViewMode || isApprovalMode"
             [fluid]="true" />
           <label for="code">Mã mẫu biên bản</label>
         </p-floatlabel>
       </div>
-      <div class="col-6">
+      <div [ngClass]="isAddMode ? 'col-6' : 'col-4'">
+        <p-floatlabel variant="on">
+          <input pInputText id="formCode" name="formCode" [(ngModel)]="model.formCode" required [invalid]="!model.formCode" autocomplete="off"
+            [disabled]="isViewMode || isApprovalMode" [fluid]="true" />
+          <label for="formCode">Biểu mẫu</label>
+        </p-floatlabel>
+      </div>
+      <div [ngClass]="isAddMode ? 'col-6' : 'col-4'">
         <p-floatlabel variant="on">
           <input pInputText id="name" name="name" [(ngModel)]="model.name" required [invalid]="!model.name" autocomplete="off"
             [disabled]="isViewMode || isApprovalMode" [fluid]="true" />

@@ -133,6 +133,21 @@
     </div>
 
     <div class="row my-3">
+      <div class="col-10">
+        <p-floatlabel variant="on">
+          <input pInputText id="scadaQrCode" name="scadaQrCode" [(ngModel)]="model.scadaQrCode" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
+          <label for="scadaQrCode">Scada QR code</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="col-2 d-flex align-items-center justify-content-around">
+        <p-checkbox inputId="isMappingScada" [disabled]="isViewMode" [(ngModel)]="model.isMappingScada" [binary]="true"
+          name="isMappingScada"></p-checkbox>
+        <label for="isMappingScada">Mapping với SCADA</label>
+      </div>
+    </div>
+
+    <div class="row my-3">
       <div class="col-6">
         <p-card>
           <ng-template #subtitle>Ảnh QR Code</ng-template>
