@@ -542,6 +542,7 @@ public class PlanService {
 
         List<PlanDetail> details = buildPlanDetails(plan, request);
         planDetailRepository.saveAll(details);
+        autoCreatePlanResult(details);
 
         return plan;
     }
@@ -559,10 +560,40 @@ public class PlanService {
 
         List<PlanDetail> newDetails = buildPlanDetails(exist, request);
         planDetailRepository.saveAll(newDetails);
-
+        autoCreatePlanResult(newDetails);
         return exist;
     }
-
+ public void autoCreatePlanResult(List<PlanDetail> planDetails ) {
+        for (PlanDetail planDetail : planDetails) {
+            Plan plan = planDetail.getPlan();
+            if(plan.getPlanType().getCode().equals("AUDIT")) {
+                // tạo plan Result cho tháng hiện tại
+                // Lấy tháng hiện tại
+                YearMonth currentMonth = YearMonth.now();
+                Duration duration = Duration.between(plan.getFromDate(), plan.getToDate());
+                Integer startDay = plan.getFromDate().getDayOfMonth();
+                // Duyệt từng ngày trong tháng
+                for (int day = 1; day <= duration.toDays(); day++) {
+                    LocalDate date = currentMonth.atDay(startDay);
+                    // Trả về LocalDateTime lúc 00:00 của ngày đó
+                    LocalDateTime dateTime = date.atTime(17, 00, 00);
+                    PlanResult planResult = new PlanResult();
+                    planResult.setPlanDetail(planDetail);
+                    planResult.setCreatedAt(java.time.LocalDateTime.now());
+                    planResult.setUpdatedAt(java.time.LocalDateTime.now());
+                    planResult.setCreatedBy("system");
+                    planResult.setUpdatedBy(null);
+                    planResult.setStatus(1);
+                    planResult.setStatusRepair("1");
+                    planResult.setNote("");
+                    planResult.setDateTest(dateTime);
+                    planResult.setUserTest(planDetail.getDevice().getUserManager());
+                    planResultService.create(planResultService.mapToDTO(planResult, new PlanResultDTO()));
+                    startDay++;
+                }
+            }
+        }
+    }
 // ================================================================
 // COMMON SUPPORT METHODS
 // ================================================================
