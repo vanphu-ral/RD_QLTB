@@ -4,6 +4,7 @@ export class SampleReport {
     id?: number;
     name?: string;
     code?: string;
+    formCode?: string
     frequency?: string;
     type?: string
     description?: string;

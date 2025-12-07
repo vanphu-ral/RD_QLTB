@@ -143,7 +143,7 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
   public override save(): void {
     if (!this.model) return;
     this.model.plan = Util.prepareModel(this.model.plan);
-    this.model.plan = Util.simplifyMany(this.model.plan, ['team']);
+    this.model.plan = Util.simplifyMany(this.model.plan, ['team', 'planType', 'branch']);
     this.model = this.cleanPlanRequest(this.model);
     const deleted = this.findDeletedDevices(this.oldPlanRequest, this.model);
     const deleteRequests = deleted.length
@@ -166,8 +166,8 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
     forkJoin(deleteRequests).subscribe({
       next: () => {
         const apiCall = this.isAddMode
-          ? this.apiService.createPlanWithDetails(this.model)
-          : this.apiService.createPlanWithDetails(this.model);
+          ? this.apiService.create(this.model)
+          : this.apiService.update(this.model.plan.id!, this.model);
         apiCall.subscribe({
           next: () => {
             Util.ConfirmMessage(
@@ -176,7 +176,7 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
             );
           },
           error: handleError
-        }).add(() => this.navigationService.back());
+        });
       },
       error: (err) => {
         Util.ConfirmMessage('Xoá dữ liệu cũ thất bại!', 'error');

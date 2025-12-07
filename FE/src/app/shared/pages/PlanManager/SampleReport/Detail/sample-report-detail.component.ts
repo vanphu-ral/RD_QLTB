@@ -98,10 +98,10 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
           const year = new Date(item.createdAt).getFullYear();
           return year === currentYear;
         });
-        const count = recordsThisYear.length + 1;
-        const countFormatted = count.toString().padStart(2, '0');
-        const yearShort = currentYear.toString().slice(-2);
-        this.model.documentNumber = `${countFormatted}.${yearShort}`;
+        // const count = recordsThisYear.length + 1;
+        // const countFormatted = count.toString().padStart(2, '0');
+        // const yearShort = currentYear.toString().slice(-2);
+        // this.model.documentNumber = `${countFormatted}.${yearShort}`;
       })
     }
 
@@ -230,7 +230,9 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
   ApprovalAgain() {
     if (!this.model) return;
     this.prepareModel();
-    this.model = Util.prepareModel(this.model);
+    // this.model = Util.prepareModel(this.model);
+    this.model.code = `BMBB-${Util.dateToCode()}`
+    this.model.documentNumber = `${this.model.formCode}-${this.model.code}`
     this.model.status = 2;
     this.confirmationService.confirm({
       message: 'Bạn có chắc muốn sửa và gửi duyệt lại không?',

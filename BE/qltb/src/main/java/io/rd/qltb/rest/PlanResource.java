@@ -56,12 +56,12 @@ public class PlanResource {
         return ResponseEntity.ok(planService.getPlanDetail(id));
     }
 
-    @PostMapping
-    @ApiResponse(responseCode = "201")
-    public ResponseEntity<Long> createPlan(@RequestBody @Valid final PlanDTO planDTO) {
-        final Long createdId = planService.create(planDTO);
-        return new ResponseEntity<>(createdId, HttpStatus.CREATED);
-    }
+//    @PostMapping
+//    @ApiResponse(responseCode = "201")
+//    public ResponseEntity<Long> createPlan(@RequestBody @Valid final PlanDTO planDTO) {
+//        final Long createdId = planService.create(planDTO);
+//        return new ResponseEntity<>(createdId, HttpStatus.CREATED);
+//    }
     @PostMapping("/create")
     @ApiResponse(responseCode = "201")
     public void createPlanWithDetails(
@@ -80,12 +80,12 @@ public class PlanResource {
         planService.createPlan2(planRequest);
 //        return new ResponseEntity<>(planWithDetails, HttpStatus.CREATED);
     }
-    @PutMapping("/{id}")
-    public ResponseEntity<Long> updatePlan(@PathVariable(name = "id") final Long id,
-            @RequestBody @Valid final PlanDTO planDTO) {
-        planService.update(id, planDTO);
-        return ResponseEntity.ok(id);
-    }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<Long> updatePlan(@PathVariable(name = "id") final Long id,
+//            @RequestBody @Valid final PlanDTO planDTO) {
+//        planService.update(id, planDTO);
+//        return ResponseEntity.ok(id);
+//    }
 
     @DeleteMapping("/{id}")
     @ApiResponse(responseCode = "204")
@@ -114,5 +114,16 @@ public class PlanResource {
             @RequestParam Integer value) {
         planService.updateStatus(id, value);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping
+    public ResponseEntity<?> create(@RequestBody PlanRequest request) {
+        return ResponseEntity.ok(planService.createPlan(request));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable Long id,
+                                    @RequestBody PlanRequest request) {
+        return ResponseEntity.ok(planService.updatePlan(id, request));
     }
 }
