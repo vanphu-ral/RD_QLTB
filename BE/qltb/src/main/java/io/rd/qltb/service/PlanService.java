@@ -655,7 +655,7 @@ public class PlanService {
                 // với DeviceGroup và SampleReport từ detailRequest hiện tại.
                 for (DeviceRequest deviceRequest: request.getDevices()) {
                     PlanDetail d = new PlanDetail();
-
+                    if(deviceRequest.getDevice().getGroup().getId() == detailRequest.getDeviceGroup().getId()){
                     d.setPlan(plan);
                     // Dùng convertDeviceGroup và convertSampleReport từ PLanDetailRequest
                     d.setDeviceGroup(convertDeviceGroup(detailRequest.getDeviceGroup()));
@@ -679,6 +679,7 @@ public class PlanService {
                     d.setUpdatedAt(LocalDateTime.now());
                     d.setStatus(1);
                     list.add(d);
+                }
                 }
             }
         }
