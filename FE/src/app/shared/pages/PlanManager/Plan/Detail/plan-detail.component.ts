@@ -143,7 +143,7 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
   public override save(): void {
     if (!this.model) return;
     this.model.plan = Util.prepareModel(this.model.plan);
-    this.model.plan = Util.simplifyMany(this.model.plan, ['team', 'planType', 'branch', 'approvalWorkflow']);
+    this.model.plan = Util.simplifyMany(this.model.plan, ['team', 'branch', 'approvalWorkflow']);
     this.model = this.cleanPlanRequest(this.model);
     const deleted = this.findDeletedDevices(this.oldPlanRequest, this.model);
     const deleteRequests = deleted.length
