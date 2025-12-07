@@ -558,16 +558,12 @@ public class PlanService {
 
         List<PlanDetail> newDetails = buildPlanDetails(exist, request);
         // xoa tat ca plan result lien quan den nhieu plan detail cua plan
-       for (DeviceRequest oldDetail : request.getDevices()) {
-           if(oldDetail.getPlanDetailId() == null){
-               continue;
-           }else {
+       for (PlanDetail oldDetail : exist.getPlanPlanDetails()) {
                try {
-                   planResultRepository.deleteAllByPlanDetailId(oldDetail.getPlanDetailId());
+                   planResultRepository.deleteAllByPlanDetailId(oldDetail.getId());
                } catch (Exception e) {
                    System.out.println("Không xoá được do thiết bị có kết quả kiểm tra !!!  ");
                }
-           }
        }
         planDetailRepository.deleteAllByPlanId(id);
         planDetailRepository.saveAll(newDetails);
