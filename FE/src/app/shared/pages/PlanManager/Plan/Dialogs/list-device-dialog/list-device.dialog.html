@@ -28,7 +28,7 @@
                         </p-select>
                     </td>
                     <td>
-                        <input type="text" pInputText [(ngModel)]="row.serialNumber" />
+                        <input type="text" pInputText [(ngModel)]="row.serialNumber" [disabled]="true"/>
                     </td>
                     <td *ngIf="plan.planType.id === 2">
                         <p-datepicker [(ngModel)]="row.estimatedTime" [dateFormat]="'dd-mm-yy'" appDateConvert

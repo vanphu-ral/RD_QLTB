@@ -165,7 +165,7 @@ export class PlanListComponent {
     Util.confirmAndExecute(
       event,
       'Bạn có chắc muốn gửi duyệt bản ghi này?',
-      () => this.apiService.createApprovalEntity(modelApproval, 'sample_reports'),
+      () => this.apiService.createApprovalEntity(modelApproval, 'plans'),
       'Gửi duyệt thành công !',
       'Lỗi gửi duyệt',
       this.confirmationService,
