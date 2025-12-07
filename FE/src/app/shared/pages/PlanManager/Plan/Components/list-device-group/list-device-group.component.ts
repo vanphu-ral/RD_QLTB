@@ -127,7 +127,8 @@ export class ListDeviceComponent implements OnInit {
             closable: true,
             data: {
                 device: arrDeviceEdit,
-                plan: this.model.plan
+                plan: this.model.plan,
+                deviceGroup: this.model.planDetails[index].deviceGroup
             },
         });
         this.ref.onClose.subscribe((result) => {

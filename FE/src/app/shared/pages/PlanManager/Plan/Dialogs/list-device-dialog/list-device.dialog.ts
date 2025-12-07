@@ -17,6 +17,7 @@ export class ListDeviceDialog {
 
     data: any;
     plan: any;
+    group: any;
     ListDevice: any[] = []
     listDeviceOptions: any[] = []
     listManagers: any[] = []
@@ -29,11 +30,16 @@ export class ListDeviceDialog {
     ) {
         this.data = config.data.device;
         this.plan = config.data.plan;
+        this.group = config.data.deviceGroup;
     }
 
     ngOnInit() {
         this.ListDevice = _.map(this.data, device => { return { ...device, manager: device.manager ? device.manager : device.device.userManager, serialNumber: device.serialNumber ? device.serialNumber : device.device.serialNumber }})
         this.listDeviceOptions = _.map(this.data, item => { return { ...item.device }});
+        this.deviceService.getByGroupId(this.group.id).subscribe(devices => {
+            this.listDeviceOptions = devices;
+            this.cdr.detectChanges();
+        })
         this.deviceService.getUsers().subscribe(users => {
             this.listManagers = _.map(users, user => {
                 const firstName = user.firstName ?? '';
