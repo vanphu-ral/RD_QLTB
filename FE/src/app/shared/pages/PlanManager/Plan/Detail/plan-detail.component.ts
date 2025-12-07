@@ -87,7 +87,7 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
       })
       this.cdr.detectChanges();
     })
-    if(this.isViewHistory)  this.mode = 'view';
+    if (this.isViewHistory) this.mode = 'view';
   }
 
   override initNewModel(): void {
@@ -145,10 +145,6 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
     this.model.plan = Util.prepareModel(this.model.plan);
     this.model.plan = Util.simplifyMany(this.model.plan, ['team', 'branch', 'approvalWorkflow']);
     this.model = this.cleanPlanRequest(this.model);
-    const deleted = this.findDeletedDevices(this.oldPlanRequest, this.model);
-    const deleteRequests = deleted.length
-      ? deleted.map((d: any) => this.planDetailService.delete(d.planDetailId))
-      : [of(null)];
     const handleError = (error: any) => {
       let message = 'Thêm mới thất bại';
       if (error?.error?.message) {
@@ -163,26 +159,18 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
       }
       Util.ConfirmMessage(message, 'error');
     };
-    forkJoin(deleteRequests).subscribe({
+    const apiCall = this.isAddMode
+      ? this.apiService.create(this.model)
+      : this.apiService.update(this.model.plan.id!, this.model);
+    apiCall.subscribe({
       next: () => {
-        const apiCall = this.isAddMode
-          ? this.apiService.create(this.model)
-          : this.apiService.update(this.model.plan.id!, this.model);
-        apiCall.subscribe({
-          next: () => {
-            Util.ConfirmMessage(
-              this.isAddMode ? 'Thêm mới thành công' : 'Cập nhật thành công',
-              'success'
-            );
-          },
-          error: handleError
-        });
+        Util.ConfirmMessage(
+          this.isAddMode ? 'Thêm mới thành công' : 'Cập nhật thành công',
+          'success'
+        );
       },
-      error: (err) => {
-        Util.ConfirmMessage('Xoá dữ liệu cũ thất bại!', 'error');
-        console.error(err);
-      }
-    });
+      error: handleError
+    }).add(() => this.navigationService.back());
   }
 
 
@@ -198,7 +186,7 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
       acceptLabel: 'Đồng ý',
       rejectLabel: 'Hủy',
       accept: () => {
-        this.apiService.createPlanWithDetails(this.model).subscribe({
+        this.apiService.update(this.model.plan.id!, this.model).subscribe({
           next: (id) => {
             this.apiService.createApprovalEntity({ entityId: this.model.plan.id, workflowId: this.model.plan.approvalWorkflow.id }, 'plans').subscribe({
               next: () => {
@@ -210,7 +198,7 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
               }
             });
           },
-        });
+        }).add(() => this.navigationService.back());
       },
       reject: () => {
       }
