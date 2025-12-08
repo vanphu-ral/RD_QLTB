@@ -41,7 +41,15 @@ public class DeviceResource {
         }
         return ResponseEntity.ok(devices);
     }
-
+    @GetMapping("/group")
+    public ResponseEntity<List<DeviceDTO>> getDevicesByGroupIdAndPlanID(@RequestParam Long groupId,
+                                                                        @RequestParam Long planId) {
+        List<DeviceDTO> devices = deviceService.getDevicesByGroupIdAndPlanID(groupId, planId);
+        if (devices.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(devices);
+    }
     @GetMapping("/{id}")
     public ResponseEntity<DeviceDTO> getDevice(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(deviceService.get(id));

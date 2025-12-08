@@ -8,11 +8,7 @@ import io.rd.qltb.events.BeforeDeleteDeviceGroup;
 import io.rd.qltb.events.BeforeDeleteLine;
 import io.rd.qltb.events.BeforeDeleteTeam;
 import io.rd.qltb.model.DeviceDTO;
-import io.rd.qltb.repos.BranchRepository;
-import io.rd.qltb.repos.DeviceGroupRepository;
-import io.rd.qltb.repos.DeviceRepository;
-import io.rd.qltb.repos.LineRepository;
-import io.rd.qltb.repos.TeamRepository;
+import io.rd.qltb.repos.*;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
 
@@ -49,11 +45,12 @@ public class DeviceService {
     private final TeamRepository teamRepository;
     private final ApplicationEventPublisher publisher;
     private final GlobalConfig globalConfig ;
+    private final PlanResultDetailRepository planResultDetailRepository;
 
     public DeviceService(EntityManager entityManager, final DeviceRepository deviceRepository,
                          final DeviceGroupRepository deviceGroupRepository, final LineRepository lineRepository,
                          final BranchRepository branchRepository, final TeamRepository teamRepository,
-                         final ApplicationEventPublisher publisher, GlobalConfig globalConfig) {
+                         final ApplicationEventPublisher publisher, GlobalConfig globalConfig, PlanResultDetailRepository planResultDetailRepository) {
         this.entityManager = entityManager;
         this.deviceRepository = deviceRepository;
         this.deviceGroupRepository = deviceGroupRepository;
@@ -62,6 +59,7 @@ public class DeviceService {
         this.teamRepository = teamRepository;
         this.publisher = publisher;
         this.globalConfig = globalConfig;
+        this.planResultDetailRepository = planResultDetailRepository;
     }
     @Transactional
     public Page<DeviceDTO> findDevicesPaged(Map<String, Object> filters, int page) {
@@ -131,7 +129,22 @@ public class DeviceService {
                 .map(device -> mapToDTO(device, new DeviceDTO()))
                 .toList();
     }
+    public List<DeviceDTO> getDevicesByGroupIdAndPlanID(Long groupId,Long planId) {
+        final List<Device> devices = deviceRepository.findByGroupId(groupId);
+        List<DeviceDTO> deviceDTOS =  devices.stream()
+                .map(device -> mapToDTO(device, new DeviceDTO()))
+                .toList();
+        for (DeviceDTO dto : deviceDTOS) {
+            Integer count = planResultDetailRepository.countByDeviceIdAndPlanId(dto.getId(),planId);
+            if (count != null && count > 0) {
+                dto.setIsHadDataPlanReport(1);
+            } else {
+                dto.setIsHadDataPlanReport(0);
+            }
+        }
 
+        return deviceDTOS;
+    }
     public DeviceDTO get(final Long id) {
         return deviceRepository.findById(id)
                 .map(device -> mapToDTO(device, new DeviceDTO()))

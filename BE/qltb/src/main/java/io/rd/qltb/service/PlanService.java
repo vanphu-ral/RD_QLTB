@@ -558,22 +558,22 @@ public class PlanService {
 
         List<PlanDetail> newDetails = buildPlanDetails(exist, request);
         // xoa tat ca plan result lien quan den nhieu plan detail cua plan
-        String result = "";
-       for (PlanDetail oldDetail : exist.getPlanPlanDetails()) {
-                   Boolean delete = true;
-                     List<PlanResult> planResults = planResultRepository.findByPlanDetailId(oldDetail.getId());
-                     for (PlanResult planResult : planResults) {
-                         if (planResult.getPlanResultPlanResultDetails() != null) {
-                             delete = false;
-                             result += "Không thể xóa thiết bị " + oldDetail.getDevice().getName() + " vì có dữ liệu kiểm tra !!!";
-                             break;
-                         }
-                     }
-                        if (delete) {
-                            planResultRepository.deleteAllByPlanDetailId(oldDetail.getId());
-                        }
-       }
-        planDetailRepository.deleteAllByPlanId(id);
+//        String result = "";
+//       for (PlanDetail oldDetail : exist.getPlanPlanDetails()) {
+//                   Boolean delete = true;
+//                     List<PlanResult> planResults = planResultRepository.findByPlanDetailId(oldDetail.getId());
+//                     for (PlanResult planResult : planResults) {
+//                         if (planResult.getPlanResultPlanResultDetails() != null) {
+//                             delete = false;
+//                             result += "Không thể xóa thiết bị " + oldDetail.getDevice().getName() + " vì có dữ liệu kiểm tra !!!";
+//                             break;
+//                         }
+//                     }
+//                        if (delete) {
+//                            planResultRepository.deleteAllByPlanDetailId(oldDetail.getId());
+//                        }
+//       }
+//        planDetailRepository.deleteAllByPlanId(id);
         planDetailRepository.saveAll(newDetails);
         autoCreatePlanResult(newDetails);
         return exist;

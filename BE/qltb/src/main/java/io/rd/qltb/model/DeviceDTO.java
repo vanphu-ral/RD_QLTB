@@ -76,5 +76,5 @@ public class DeviceDTO {
     private Branch branch;
 
     private Team team;
-
+    private Integer isHadDataPlanReport;
 }
