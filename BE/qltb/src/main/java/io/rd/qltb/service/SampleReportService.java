@@ -124,6 +124,8 @@ public class SampleReportService {
         dto.setFrequency(sampleReport.getFrequency());
         dto.setType(sampleReport.getType());
         dto.setDocumentNumber(sampleReport.getDocumentNumber());
+        dto.setFormCode(sampleReport.getFormCode());
+        dto.setNumberOfIssuances(sampleReport.getNumberOfIssuances());
         dto.setDescription(sampleReport.getDescription());
         dto.setCreatedAt(sampleReport.getCreatedAt());
         dto.setUpdatedAt(sampleReport.getUpdatedAt());
@@ -205,6 +207,8 @@ public class SampleReportService {
         sampleReport.setFrequency(sampleReportDTO.getFrequency());
         sampleReport.setType(sampleReportDTO.getType());
         sampleReport.setDocumentNumber(sampleReportDTO.getDocumentNumber());
+        sampleReport.setFormCode(sampleReportDTO.getFormCode());
+        sampleReport.setNumberOfIssuances(sampleReportDTO.getNumberOfIssuances());
         sampleReport.setDescription(sampleReportDTO.getDescription());
         sampleReport.setCreatedAt(sampleReportDTO.getCreatedAt());
         sampleReport.setUpdatedAt(sampleReportDTO.getUpdatedAt());

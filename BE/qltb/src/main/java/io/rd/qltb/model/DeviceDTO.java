@@ -47,7 +47,11 @@ public class DeviceDTO {
 
     private Integer status;
 
-    private String qrcode;
+    private String qrCode;
+
+    private String qrCodeImg;
+
+    private Boolean isMappingScada;
 
     private String img;
 

@@ -37,6 +37,12 @@ public class SampleReport {
     private String name;
 
     @Column
+    private String formCode;
+
+    @Column
+    private Integer numberOfIssuances;
+
+    @Column
     private String frequency;
 
     @Column

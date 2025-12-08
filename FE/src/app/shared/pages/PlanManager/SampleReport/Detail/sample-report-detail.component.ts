@@ -167,7 +167,8 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
   public override save(): void {
     if (!this.model) return;
     this.prepareModel();
-    this.model = Util.prepareModel(this.model);
+    this.model.code = `BMBB-${Util.dateToCode()}`
+    this.model.documentNumber = `${this.model.formCode}-${this.model.code}`
     if (this.isAddMode) {
       this.apiService.create(this.model).subscribe({
         next: (id) => {
@@ -230,9 +231,6 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
   ApprovalAgain() {
     if (!this.model) return;
     this.prepareModel();
-    // this.model = Util.prepareModel(this.model);
-    this.model.code = `BMBB-${Util.dateToCode()}`
-    this.model.documentNumber = `${this.model.formCode}-${this.model.code}`
     this.model.status = 2;
     this.confirmationService.confirm({
       message: 'Bạn có chắc muốn sửa và gửi duyệt lại không?',

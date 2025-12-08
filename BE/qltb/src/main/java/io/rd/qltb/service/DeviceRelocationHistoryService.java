@@ -179,7 +179,8 @@ public class DeviceRelocationHistoryService {
             deviceCopy.setUnit(deviceRelocationHistory.getDevice().getUnit());
             deviceCopy.setPrice(deviceRelocationHistory.getDevice().getPrice());
             deviceCopy.setStatus(deviceRelocationHistory.getDevice().getStatus());
-            deviceCopy.setQrcode(deviceRelocationHistory.getDevice().getQrcode());
+            deviceCopy.setQrCode(deviceRelocationHistory.getDevice().getQrCode());
+            deviceCopy.setQrCodeImg(deviceRelocationHistory.getDevice().getQrCodeImg());
             deviceCopy.setImg(deviceRelocationHistory.getDevice().getImg());
             deviceCopy.setUserManager(deviceRelocationHistory.getDevice().getUserManager());
             deviceCopy.setCreatedAt(deviceRelocationHistory.getDevice().getCreatedAt());

@@ -22,7 +22,7 @@ public class SupplyDTO {
 
     private String description;
 
-    private String source;
+    private String sapCode;
 
     private LocalDateTime createdAt;
 

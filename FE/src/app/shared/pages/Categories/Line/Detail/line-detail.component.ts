@@ -56,6 +56,7 @@ export class LineDetailComponent extends BasePageComponent<Line> {
     if (this.model) {
       if (this.isAddMode) {
         this.model = Util.prepareModel(this.model);
+        this.model = Util.simplifyMany(this.model, ['team']);
         this.apiService.create(this.model).subscribe({
           next: () => {
             Util.ConfirmMessage('Thêm mới thành công', 'success');

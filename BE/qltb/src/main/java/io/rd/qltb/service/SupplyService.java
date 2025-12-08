@@ -129,7 +129,7 @@ public class SupplyService {
         dto.setCode(supply.getCode());
         dto.setName(supply.getName());
         dto.setDescription(supply.getDescription());
-        dto.setSource(supply.getSource());
+        dto.setSapCode(supply.getSapCode());
         dto.setCreatedAt(supply.getCreatedAt());
         dto.setUpdatedAt(supply.getUpdatedAt());
         dto.setCreatedBy(supply.getCreatedBy());
@@ -165,7 +165,7 @@ public class SupplyService {
         supply.setCode(supplyDTO.getCode());
         supply.setName(supplyDTO.getName());
         supply.setDescription(supplyDTO.getDescription());
-        supply.setSource(supplyDTO.getSource());
+        supply.setSapCode(supplyDTO.getSapCode());
         supply.setCreatedAt(supplyDTO.getCreatedAt());
         supply.setUpdatedAt(supplyDTO.getUpdatedAt());
         supply.setCreatedBy(supplyDTO.getCreatedBy());

@@ -66,7 +66,13 @@ public class Device {
     private Integer status;
 
     @Column(length = 100)
-    private String qrcode;
+    private String qrCode;
+
+    @Column(length = 100)
+    private String qrCodeImg;
+
+    @Column(columnDefinition = "tinyint", length = 1)
+    private Boolean isMappingScada;
 
     @Column
     private String img;

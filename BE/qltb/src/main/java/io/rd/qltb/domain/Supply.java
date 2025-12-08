@@ -41,7 +41,7 @@ public class Supply {
     private String description;
 
     @Column
-    private String source;
+    private String sapCode;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;

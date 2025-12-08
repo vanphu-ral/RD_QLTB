@@ -103,7 +103,7 @@ public class SupplyDetailService {
             supplyCopy.setCode(supplyDetail.getSupply().getCode());
             supplyCopy.setName(supplyDetail.getSupply().getName());
             supplyCopy.setDescription(supplyDetail.getSupply().getDescription());
-            supplyCopy.setSource(supplyDetail.getSupply().getSource());
+            supplyCopy.setSapCode(supplyDetail.getSupply().getSapCode());
             supplyCopy.setCreatedAt(supplyDetail.getSupply().getCreatedAt());
             supplyCopy.setUpdatedAt(supplyDetail.getSupply().getUpdatedAt());
             supplyCopy.setCreatedBy(supplyDetail.getSupply().getCreatedBy());

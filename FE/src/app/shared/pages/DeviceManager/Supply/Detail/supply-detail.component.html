@@ -20,7 +20,7 @@
     </div>
 
     <div class="row my-3">
-      <div class="col-12">
+      <div class="col-6">
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.group" [options]="listSupplyGroups" optionLabel="name" [fluid]="true"
             [disabled]="isViewMode" [showClear]="true" [appendTo]="'body'" id="group" name="group" required
@@ -29,28 +29,12 @@
           <label for="group">Tên nhóm vật tư</label>
         </p-floatlabel>
       </div>
-    </div>
 
-    <div class="row my-3">
-      <div class="col-4">
-        <p-floatlabel variant="on">
-          <input pInputText id="erp" name="erp" [(ngModel)]="model.erp" autocomplete="off"
-            [disabled]="isViewMode" [fluid]="true" />
-          <label for="erp">ERP</label>
-        </p-floatlabel>
-      </div>
-      <div class="col-4">
+      <div class="col-6">
         <p-floatlabel variant="on">
           <input pInputText id="sapCode" name="sapCode" [(ngModel)]="model.sapCode" autocomplete="off"
             [disabled]="isViewMode" [fluid]="true" />
           <label for="sapCode">SAP Code</label>
-        </p-floatlabel>
-      </div>
-      <div class="col-4">
-        <p-floatlabel variant="on">
-          <input pInputText id="source" name="source" [(ngModel)]="model.source" autocomplete="off"
-            [disabled]="isViewMode" [fluid]="true" />
-          <label for="source">Nguồn vật tư</label>
         </p-floatlabel>
       </div>
     </div>

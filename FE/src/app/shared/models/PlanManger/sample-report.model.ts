@@ -8,7 +8,8 @@ export class SampleReport {
     frequency?: string;
     type?: string
     description?: string;
-    documentNumber?: string
+    documentNumber?: string;
+    numberOfIssuances?: number;
     createdBy?: string;
     updatedBy?: string;
     createdAt?: Date;

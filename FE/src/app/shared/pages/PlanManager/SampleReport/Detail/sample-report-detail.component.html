@@ -3,25 +3,44 @@
 
   <form #f="ngForm" *ngIf="model">
     <div class="row my-3">
-      <div class="col-4" *ngIf="!isAddMode">
+      <div class="col-6" *ngIf="!isAddMode">
         <p-floatlabel variant="on">
           <input pInputText id="code" name="code" [(ngModel)]="model.code" autocomplete="off" [disabled]="isViewMode || isApprovalMode"
             [fluid]="true" />
           <label for="code">Mã mẫu biên bản</label>
         </p-floatlabel>
       </div>
-      <div [ngClass]="isAddMode ? 'col-6' : 'col-4'">
+      
+      <div [ngClass]="isAddMode ? '12' : 'col-6'">
+        <p-floatlabel variant="on">
+          <input pInputText id="name" name="name" [(ngModel)]="model.name" required [invalid]="!model.name" autocomplete="off"
+            [disabled]="isViewMode || isApprovalMode" [fluid]="true" />
+          <label for="name">Tên mẫu biên bản</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <div class="row my-3">
+      <div class="col-4">
         <p-floatlabel variant="on">
           <input pInputText id="formCode" name="formCode" [(ngModel)]="model.formCode" required [invalid]="!model.formCode" autocomplete="off"
             [disabled]="isViewMode || isApprovalMode" [fluid]="true" />
           <label for="formCode">Biểu mẫu</label>
         </p-floatlabel>
       </div>
-      <div [ngClass]="isAddMode ? 'col-6' : 'col-4'">
+
+      <div class="col-4">
         <p-floatlabel variant="on">
-          <input pInputText id="name" name="name" [(ngModel)]="model.name" required [invalid]="!model.name" autocomplete="off"
-            [disabled]="isViewMode || isApprovalMode" [fluid]="true" />
-          <label for="name">Tên mẫu biên bản</label>
+          <p-inputnumber id="numberOfIssuances" name="numberOfIssuances" [(ngModel)]="model.numberOfIssuances" [invalid]="!model.numberOfIssuances" required autocomplete="off" [disabled]="isViewMode" [fluid]="true" mode="decimal"/>
+          <label for="numberOfIssuances">Lần ban hành</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <input pInputText id="documentNumber" name="documentNumber" [(ngModel)]="model.documentNumber"
+            [invalid]="!model.documentNumber" required  autocomplete="off" [disabled]="true" [fluid]="true" />
+          <label for="documentNumber">Số hiệu biên bản</label>
         </p-floatlabel>
       </div>
     </div>
@@ -57,7 +76,7 @@
     </div>
 
     <div class="row my-3">
-      <div class="col-4">
+      <div class="col-6">
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.branch" [options]="listBranchs" optionLabel="name" [fluid]="true"
             [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="branch" name="branch" dataKey="id">
@@ -66,15 +85,7 @@
         </p-floatlabel>
       </div>
 
-      <div class="col-4">
-        <p-floatlabel variant="on">
-          <input pInputText id="documentNumber" name="documentNumber" [(ngModel)]="model.documentNumber"
-            [invalid]="!model.documentNumber" required  autocomplete="off" [disabled]="isViewMode || isApprovalMode" [fluid]="true" />
-          <label for="documentNumber">Số hiệu biên bản</label>
-        </p-floatlabel>
-      </div>
-
-      <div class="col-4">
+      <div class="col-6">
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.approvalWorkflow" [options]="listApprovalWorkflow" optionLabel="name"
             [fluid]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="approvalWorkflow"

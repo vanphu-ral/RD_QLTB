@@ -23,6 +23,10 @@ public class SampleReportDTO {
 
     private String name;
 
+    private String formCode;
+
+    private Integer numberOfIssuances;
+
     private String frequency;
     private String type;
 
