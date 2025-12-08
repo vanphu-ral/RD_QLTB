@@ -42,4 +42,12 @@ export class DeviceService extends BaseApiService<Device> {
     const params = new HttpParams().set('serialNumber', serialNumber);
     return this.http.get<Device>(`${this['fullBaseUrl']}/by-serial`, { params, withCredentials: true });
   }
+
+  checkDeviceHasDataEvaluation(groupId: number, planId: number): Observable<any[]> {
+    const params = new HttpParams()
+      .set('groupId', groupId)
+      .set('planId', planId);
+
+    return this.http.get<any[]>(`${this['fullBaseUrl']}/group`, { params, withCredentials: true });
+  }
 }

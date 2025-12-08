@@ -115,7 +115,7 @@ export class ListDeviceComponent implements OnInit {
     }
 
     editRow(index: number) {
-        if(!this.model.plan.planType) {
+        if (!this.model.plan.planType) {
             Util.toastMessage('Vui lòng chọn loại kế hoạch', 'error');
             return
         }
@@ -157,8 +157,30 @@ export class ListDeviceComponent implements OnInit {
     }
 
     deleteRow(index: number) {
-        this.model.planDetails.splice(index, 1)
+        const item: any = this.model.planDetails[index];
+        if (!item) return;
+        const groupDevices = item.deviceGroup.groupDevices || [];
+        const violatedDevices = groupDevices
+            .map((groupDevice: any) => {
+                const found: any = this.model.devices!.find(
+                    d => d.device?.id === groupDevice.id
+                );
+                return (found && found.device.isHadDataPlanReport === 1)
+                    ? found.device
+                    : null;
+            })
+            .filter((x: any) => x !== null);
+        if (violatedDevices.length > 0) {
+            const deviceNames = violatedDevices.map((d: any) => d.name).join(', ');
+            Util.ConfirmMessage(
+                `Không thể xóa nhóm thiết bị ${item.deviceGroup.name} do các thiết bị sau đã có dữ liệu kiểm tra: ${deviceNames}`,
+                'error'
+            );
+            return;
+        }
+        this.model.planDetails = this.model.planDetails.filter(x => x !== item);
     }
+
 
 
 }

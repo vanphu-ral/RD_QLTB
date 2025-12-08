@@ -32,7 +32,7 @@
       <div class="col-4">
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.branch" [options]="listBranches" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
-            [showClear]="true" [appendTo]="'body'" id="branch" name="branch" dataKey="id">
+            [showClear]="true" [appendTo]="'body'" id="branch" name="branch" dataKey="id" required [invalid]="!model.branch">
           </p-select>
           <label for="branch">Tên ngành sản xuất</label>
         </p-floatlabel>
@@ -41,7 +41,7 @@
       <div class="col-4">
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.line" [options]="listLines" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
-            [showClear]="true" [appendTo]="'body'" id="line" name="line" dataKey="id">
+            [showClear]="true" [appendTo]="'body'" id="line" name="line" dataKey="id" required [invalid]="!model.line">
           </p-select>
           <label for="line">Tên dây truyền sản xuất</label>
         </p-floatlabel>
@@ -60,7 +60,7 @@
     <div class="row my-3">
       <div class="col-4">
         <p-floatlabel variant="on">
-          <input pInputText id="serialNumber" name="serialNumber" [(ngModel)]="model.serialNumber" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
+          <input pInputText id="serialNumber" name="serialNumber" [(ngModel)]="model.serialNumber" autocomplete="off" [disabled]="isViewMode" [fluid]="true" required [invalid]="!model.serialNumber"/>
           <label for="serialNumber">Số serial</label>
         </p-floatlabel>
       </div>
@@ -143,7 +143,7 @@
       <div class="col-2 d-flex align-items-center justify-content-around">
         <p-checkbox inputId="isMappingScada" [disabled]="isViewMode" [(ngModel)]="model.isMappingScada" [binary]="true"
           name="isMappingScada"></p-checkbox>
-        <label for="isMappingScada">Mapping với SCADA</label>
+        <label for="isMappingScada" class="ms-2">Mapping với SCADA</label>
       </div>
     </div>
 
