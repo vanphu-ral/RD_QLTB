@@ -53,6 +53,7 @@ public class PlanService {
     private final DetailLogRepository detailLogRepository;
     private final PlanResultService planResultService;
     private final PlanResultRepository planResultRepository;
+    private final PlanResultDetailRepository planResultDetailRepository;
 
     public PlanService(EntityManager entityManager, final PlanRepository planRepository,
                        final PlanTypeRepository planTypeRepository,
@@ -60,7 +61,7 @@ public class PlanService {
                        final BranchRepository branchRepository,
                        final TeamRepository teamRepository,
                        final ApprovalWorkflowRepository approvalWorkflowRepository,
-                       final ApplicationEventPublisher publisher, PlanDetailRepository planDetailRepository, DeviceRepository deviceRepository, DeviceGroupRepository deviceGroupRepository, SampleReportRepository sampleReportRepository, DeviceGroupService deviceGroupService, SampleReportService sampleReportService, DeviceService deviceService, PlanDetailService planDetailService, DetailLogService detailLogService, DetailLogRepository detailLogRepository, PlanResultService planResultService, PlanResultRepository planResultRepository) {
+                       final ApplicationEventPublisher publisher, PlanDetailRepository planDetailRepository, DeviceRepository deviceRepository, DeviceGroupRepository deviceGroupRepository, SampleReportRepository sampleReportRepository, DeviceGroupService deviceGroupService, SampleReportService sampleReportService, DeviceService deviceService, PlanDetailService planDetailService, DetailLogService detailLogService, DetailLogRepository detailLogRepository, PlanResultService planResultService, PlanResultRepository planResultRepository, PlanResultDetailRepository planResultDetailRepository) {
         this.entityManager = entityManager;
         this.planRepository = planRepository;
         this.planTypeRepository = planTypeRepository;
@@ -81,6 +82,7 @@ public class PlanService {
         this.detailLogRepository = detailLogRepository;
         this.planResultService = planResultService;
         this.planResultRepository = planResultRepository;
+        this.planResultDetailRepository = planResultDetailRepository;
     }
 
     @Transactional
@@ -175,6 +177,7 @@ public class PlanService {
             if (!uniqueDevices.containsKey(deviceId)) {
                 DeviceRequest deviceRequest = new DeviceRequest();
                 deviceRequest.setDevice(deviceService.mapToDTO(planDetail.getDevice(), new DeviceDTO()));
+                deviceRequest.getDevice().setIsHadDataPlanReport(planResultDetailRepository.countByDeviceIdAndPlanId(deviceId, plan.getId()) > 0?1:0);
                 deviceRequest.setSerialNumber(planDetail.getSerial());
                 deviceRequest.setManager(planDetail.getManager());
                 deviceRequest.setEstimatedTime(planDetail.getEstimatedTime());
