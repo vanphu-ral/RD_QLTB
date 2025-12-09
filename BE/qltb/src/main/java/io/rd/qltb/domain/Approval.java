@@ -24,15 +24,15 @@ public class Approval {
     @Column(nullable = false)
     private Long entityId;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_approval_id", nullable = false)
     private ApprovalGroupUser userApproval;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workflow_id", nullable = false)
     private ApprovalWorkflow workflow;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = false)
     private ApprovalGroup group;
     @ManyToOne(fetch = FetchType.LAZY)
