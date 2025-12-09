@@ -613,6 +613,7 @@ public class PlanService {
                 // tạo plan Result cho tháng hiện tại
                 // Lấy tháng hiện tại
                 YearMonth currentMonth = YearMonth.now();
+                String manager = deviceRepository.findById(planDetail.getDevice().getId()).orElseThrow().getUserManager();
                 Duration duration = Duration.between(plan.getFromDate(), plan.getToDate());
                 Integer startDay = plan.getFromDate().getDayOfMonth();
                 // Duyệt từng ngày trong tháng
@@ -630,7 +631,7 @@ public class PlanService {
                     planResult.setStatusRepair("1");
                     planResult.setNote("");
                     planResult.setDateTest(dateTime);
-                    planResult.setUserTest(planDetail.getDevice().getUserManager());
+                    planResult.setUserTest(manager);
                     planResultService.create(planResultService.mapToDTO(planResult, new PlanResultDTO()));
                     startDay++;
                 }
