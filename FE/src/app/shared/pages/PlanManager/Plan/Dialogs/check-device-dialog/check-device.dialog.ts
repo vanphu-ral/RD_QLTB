@@ -53,18 +53,17 @@ export class CheckDeviceDialog {
     ngOnInit() {
         this.planResultService.getEvaluationByPlanDetailId(this.data.planResult.id).subscribe(res => {
             if(Util.isEmptyArray(res.planResultDetail)) {
-                this.keyMappingService.getBySampleReport(this.data.device.sampleReportId).subscribe(res => {
-                    this.model.planResultDetail = res.map(x => {
-                        return {
-                            criticalGroup: x.criterial.criterialGroup.name || null,
-                            criticalCode: x.criterial?.code || null,
-                            criticalName: x.criterial?.name || null,
-                            frequency: x.frequency,
-                            result: "OK",
-                            status: 1
-                        };
-                    });
-                    this.cdr.detectChanges();
+                const detail = JSON.parse(this.data.device.detail);
+                console.log(detail);
+                this.model.planResultDetail = detail.sampleReportKeyMappings.map((x: any) => {
+                    return {
+                        criticalGroup: x.criterial.criterialGroup.name || null,
+                        criticalCode: x.criterial?.code || null,
+                        criticalName: x.criterial?.name || null,
+                        frequency: x.frequency,
+                        result: "OK",
+                        status: 1
+                    };
                 });
             }else {
                 this.model = res;
@@ -72,13 +71,6 @@ export class CheckDeviceDialog {
             }
         });
         
-    }
-
-
-    addNewRow() {
-    }
-
-    deleteRow(index: number) {
     }
 
     declareSupplyReplacement() {

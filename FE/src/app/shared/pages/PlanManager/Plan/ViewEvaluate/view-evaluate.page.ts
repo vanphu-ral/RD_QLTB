@@ -8,26 +8,36 @@ import { SignatureService } from '../../../SystemManager/Signature/Service/signa
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { BaseApprovalComponent } from "../../../../base/base-approval-component/base-approval.component";
 
-interface DailyResult {
-  day: number;
-  results: string[]; // <-- dùng mảng để chứa nhiều kết quả cùng ngày (O, A, X, ...)
+// Danh sách các Ca kiểm tra mặc định
+const DEFAULT_SESSIONS = ['Đầu ca', 'Giữa ca', 'Cuối ca', 'Hằng tuần', 'Ngày'];
+
+// Định nghĩa mới: Kết quả cho một Ca kiểm tra cụ thể trong một ngày
+interface DailySessionResult {
+  session: string; // Tên Ca kiểm tra (Đầu ca, Giữa ca,...)
+  results: string[]; // Mảng kết quả (O, A, X, //) cho ca này vào ngày này
 }
 
-// Định nghĩa Interface cho chi tiết công việc duy nhất
+// Định nghĩa mới: Kết quả cho tất cả các Ca kiểm tra trong một ngày
+interface DayResults {
+  day: number;
+  sessionResults: DailySessionResult[]; // Mảng kết quả của 5 ca mặc định
+}
+
+// Định nghĩa lại Interface cho chi tiết công việc duy nhất
 interface UniqueDetail {
   tt: number; // Số thứ tự
   criticalName: string;
   criticalCode: string;
   frequency: string;
   userTest: string; // Người thực hiện
-  dailyResults: DailyResult[]; // Mảng kết quả cho 31 ngày
+  dailyResults: DayResults[]; // Thay đổi: Mảng kết quả cho 31 ngày (chứa các ca)
 }
 
-// Định nghĩa Interface cho nhóm công việc
+// Định nghĩa lại Interface cho nhóm công việc
 interface GroupedCritical {
   criticalGroup: string;
   details: UniqueDetail[];
-  rowspan: number;
+  rowspan: number; // Rowspan = Số chi tiết * Số ca (details.length * 5)
 }
 
 @Component({
@@ -41,7 +51,7 @@ interface GroupedCritical {
 export class ViewEvaluatePage extends BasePageComponent<any> {
 
   public groupedDetails: GroupedCritical[] = [];
-  public planInfo: any = {};
+  public planInfo: any = {}; // Có thể dùng model.planDetail.createdAt để tính ngày tháng
   public signature: any = {};
 
   listUserApproval: any[] = [];
@@ -49,6 +59,9 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
   listUsers: any[] = [];
   userMap: Record<string, string> = {};
   Math = Math;
+
+  // Dùng để lặp qua 5 ca kiểm tra trong HTML
+  public readonly DEFAULT_SESSIONS = DEFAULT_SESSIONS;
 
   constructor(
     protected override apiService: PlanDetailService,
@@ -110,7 +123,7 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
   }
 
   /**
-   * Nhóm các chi tiết kiểm tra theo Hạng mục chính và kết quả theo ngày (dateTest)
+   * Nhóm các chi tiết kiểm tra theo Hạng mục chính và kết quả theo ngày (dateTest) và Ca kiểm tra (inspectionSession)
    */
   groupPlanDetails(): void {
     const details = this.model.planResultDetail || [];
@@ -136,30 +149,49 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
     let runningTT = 1;
     this.groupedDetails = Array.from(uniqueGroups.entries()).map(([groupName, nameMap]) => {
       const groupDetails: UniqueDetail[] = Array.from(nameMap.entries()).map(([criticalName, items]) => {
-        // Khởi tạo mảng kết quả 31 ngày (mặc định rỗng => hiển thị '//')
-        const dailyResults: DailyResult[] = Array.from({ length: 31 }, (_, i) => ({
+
+        // Khởi tạo mảng kết quả 31 ngày, mỗi ngày có 5 ca mặc định (chưa có kết quả)
+        const dailyResults: DayResults[] = Array.from({ length: 31 }, (_, i) => ({
           day: i + 1,
-          results: []
+          sessionResults: DEFAULT_SESSIONS.map(session => ({
+            session: session,
+            results: [] // Mặc định rỗng
+          }))
         }));
 
-        // Lấp đầy kết quả thực tế vào mảng dailyResults
+        // Lấp đầy kết quả thực tế vào mảng dailyResults theo NGÀY VÀ CA
         items.forEach((res: any) => {
           const dateTest = res.planResult?.dateTest;
           const resultValue = this.mapResultToIcon(res.result);
+          // Lấy Ca kiểm tra từ dữ liệu. Có thể cần chuẩn hóa nếu dữ liệu đầu vào không khớp hoàn toàn
+          const inspectionSession = res.inspectionSession; 
 
-          if (dateTest) {
-            const day = new Date(dateTest).getDate();
-            if (day >= 1 && day <= 31) {
+          if (dateTest && resultValue && resultValue !== '//' && this.model.planDetail?.createdAt) {
+            const testDate = new Date(dateTest);
+            const planDate = new Date(this.model.planDetail.createdAt);
+
+            // Chỉ lấy kết quả nếu tháng & năm của dateTest khớp với tháng & năm của báo cáo
+            if (testDate.getMonth() === planDate.getMonth() && testDate.getFullYear() === planDate.getFullYear()) {
+              const day = testDate.getDate();
+
               const dayResult = dailyResults[day - 1];
-              // tránh duplicate cùng ký hiệu
-              if (resultValue && !dayResult.results.includes(resultValue)) {
-                dayResult.results.push(resultValue);
+              if (dayResult) {
+                // Tìm ca kiểm tra tương ứng trong ngày đó (So khớp không phân biệt chữ hoa/thường)
+                const sessionResult = dayResult.sessionResults.find(s => 
+                  s.session.toLowerCase() === (inspectionSession || '').toLowerCase().trim()
+                );
+
+                // Nếu tìm thấy ca và kết quả chưa có trong ca đó
+                // Lưu ý: Nếu inspectionSession rỗng/sai, nó sẽ KHÔNG được thêm vào kết quả
+                if (sessionResult && !sessionResult.results.includes(resultValue)) {
+                  sessionResult.results.push(resultValue);
+                }
               }
             }
           }
         });
 
-        // Lấy thông tin người thực hiện từ kết quả gần nhất (theo createdAt)
+        // Lấy thông tin người thực hiện từ kết quả gần nhất
         const latestResult = items
           .slice()
           .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0] || {};
@@ -177,7 +209,8 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
       return {
         criticalGroup: groupName,
         details: groupDetails,
-        rowspan: groupDetails.length,
+        // Rowspan = Số chi tiết * 5 Ca kiểm tra
+        rowspan: groupDetails.length * DEFAULT_SESSIONS.length,
       } as GroupedCritical;
     });
 
@@ -186,7 +219,7 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
 
   /**
    * Kiểm tra xem có bất kỳ chi tiết công việc nào có kết quả khác '//' trong ngày cụ thể.
-   * Dùng cho phần ký xác nhận của Người thực hiện.
+   * Logic đã được cập nhật để kiểm tra trong TẤT CẢ các ca trong ngày đó.
    * @param day Số ngày trong tháng (1-31)
    * @returns HTML icon nếu có kết quả, hoặc rỗng nếu không có.
    */
@@ -200,8 +233,11 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
       return group.details.some(detail => {
         const dayResult = detail.dailyResults.find(d => d.day === day);
         if (!dayResult) return false;
-        // Nếu có ít nhất một kết quả khác '//' => coi là có thực hiện
-        return dayResult.results.some(r => r && r !== '//');
+
+        // Kiểm tra xem có bất kỳ ca nào trong ngày đó có kết quả khác '//' không
+        return dayResult.sessionResults.some(sessionR => 
+          sessionR.results.some(r => r && r !== '//')
+        );
       });
     });
 
@@ -215,26 +251,16 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
   }
 
   /**
-   * Chuyển đổi kết quả 'result' thành ký hiệu/icon
-   * Trả về: 'O' | 'A' | 'X' | '//' (chuẩn hóa)
+   * Hàm trả về giá trị cho cột ngày (Dùng để hiển thị icon/ký tự)
+   * Đã được cập nhật để nhận thêm tham số session.
    */
-  mapResultToIcon(result: string | null | undefined): string {
-    if (!result) return '//';
-    const value = String(result).toUpperCase();
-    if (value === 'OK') {
-      return 'O'; // Dấu OK
-    } else if (value.includes('ADJUST') || value.includes('ĐIỀU CHỈNH') || value.includes('ĐÃ ĐIỀU CHỈNH')) {
-      return 'A'; // Dấu Điều chỉnh
-    } else if (value.includes('ERROR') || value.includes('BẤT THƯỜNG') || value.includes('CÓ BẤT THƯỜNG')) {
-      return 'X'; // Dấu Bất thường
-    }
-    return '//';
-  }
-
-  // Hàm trả về giá trị cho cột ngày (Dùng để hiển thị icon/ký tự)
-  getDailyResult(detail: UniqueDetail, day: number): string {
+  getDailyResult(detail: UniqueDetail, day: number, session: string): string {
     const dayResult = detail.dailyResults.find(d => d.day === day);
-    const results = dayResult ? dayResult.results : [];
+    if (!dayResult) return '//';
+
+    // Tìm kết quả của ca kiểm tra tương ứng trong ngày đó
+    const sessionResult = dayResult.sessionResults.find(s => s.session === session);
+    const results = sessionResult ? sessionResult.results : [];
 
     if (!results || results.length === 0) {
       return '//';
@@ -253,10 +279,24 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
       }
     }).filter(Boolean);
 
+    // Ghép các ký hiệu lại (nếu có nhiều kết quả trong cùng một ca/ngày)
     return icons.join(' ');
   }
+  
+  // Hàm mapResultToIcon và các hàm khác giữ nguyên...
+  mapResultToIcon(result: string | null | undefined): string {
+    if (!result) return '//';
+    const value = String(result).toUpperCase();
+    if (value === 'OK') {
+      return 'O'; 
+    } else if (value.includes('ADJUST') || value.includes('ĐIỀU CHỈNH') || value.includes('ĐÃ ĐIỀU CHỈNH')) {
+      return 'A'; 
+    } else if (value.includes('ERROR') || value.includes('BẤT THƯỜNG') || value.includes('CÓ BẤT THƯỜNG')) {
+      return 'X'; 
+    }
+    return '//';
+  }
 
-  // Hàm tạo mảng số ngày từ 1 đến 31 (hoặc theo tháng trong planInfo)
   getDaysArray(): number[] {
     if (this.planInfo.planMonth && this.planInfo.planYear) {
       const numDays = new Date(this.planInfo.planYear, this.planInfo.planMonth, 0).getDate();
@@ -265,7 +305,6 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
     return Array.from({ length: 31 }, (_, i) => i + 1);
   }
 
-  // nút In
   printDiv() {
     const printContents = document.getElementById('print-section')?.innerHTML;
     if (!printContents) return;
@@ -278,6 +317,7 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
         <head>
           <title>In báo cáo</title>
           <style>
+            /* Thêm các CSS cần thiết cho việc in ấn */
             table, th, td {
               border: 1px solid #000;
               border-collapse: collapse;
