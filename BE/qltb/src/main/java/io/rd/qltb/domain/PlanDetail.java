@@ -34,6 +34,8 @@ public class PlanDetail {
 
     @Column
     private String nameDetail;
+    @Column(columnDefinition = "LONGTEXT")
+    private String detail;
 
     @Column
     private String note;

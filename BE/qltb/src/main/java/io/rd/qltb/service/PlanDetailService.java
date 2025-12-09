@@ -9,7 +9,6 @@ import io.rd.qltb.repos.*;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.context.event.EventListener;
@@ -30,12 +29,13 @@ public class PlanDetailService {
     private final PlanResultDetailRepository planResultDetailRepository;
     private final PlanResultService planResultService;
     private final PlanResultDetailService planResultDetailService;
+    private final PlanResultRepository planResultRepository;
     private final ApprovalWorkflowRepository approvalWorkflowRepository;
 
     public PlanDetailService(final PlanDetailRepository planDetailRepository,
                              final PlanRepository planRepository, final DeviceRepository deviceRepository,
                              final SampleReportRepository sampleReportRepository,
-                             final DeviceGroupRepository deviceGroupRepository, ApprovalRepository approvalRepository, ApprovalService approvalService, PlanResultDetailRepository planResultDetailRepository, PlanResultService planResultService, PlanResultDetailService planResultDetailService, ApprovalWorkflowRepository approvalWorkflowRepository) {
+                             final DeviceGroupRepository deviceGroupRepository, ApprovalRepository approvalRepository, ApprovalService approvalService, PlanResultDetailRepository planResultDetailRepository, PlanResultService planResultService, PlanResultDetailService planResultDetailService, PlanResultRepository planResultRepository, ApprovalWorkflowRepository approvalWorkflowRepository) {
         this.planDetailRepository = planDetailRepository;
         this.planRepository = planRepository;
         this.deviceRepository = deviceRepository;
@@ -46,6 +46,7 @@ public class PlanDetailService {
         this.planResultDetailRepository = planResultDetailRepository;
         this.planResultService = planResultService;
         this.planResultDetailService = planResultDetailService;
+        this.planResultRepository = planResultRepository;
         this.approvalWorkflowRepository = approvalWorkflowRepository;
     }
 
@@ -165,6 +166,8 @@ public class PlanDetailService {
     }
 
     public void delete(final Long id) {
+        List<PlanResult> planResults = planResultRepository.findByPlanDetailId(id);
+        planResultRepository.deleteAll(planResults);
         final PlanDetail planDetail = planDetailRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         planDetailRepository.delete(planDetail);
@@ -175,6 +178,7 @@ public class PlanDetailService {
         dto.setSerial(planDetail.getSerial());
         dto.setEstimatedTime(planDetail.getEstimatedTime());
         dto.setNameDetail(planDetail.getNameDetail());
+        dto.setDetail(planDetail.getDetail());
         dto.setNote(planDetail.getNote());
         dto.setCreatedAt(planDetail.getCreatedAt());
         dto.setUpdatedAt(planDetail.getUpdatedAt());
@@ -296,6 +300,8 @@ public class PlanDetailService {
     public PlanDetail mapToEntity(final PlanDetailDTO planDetailDTO, final PlanDetail planDetail) {
         planDetail.setSerial(planDetailDTO.getSerial());
         planDetail.setEstimatedTime(planDetailDTO.getEstimatedTime());
+        planDetail.setNameDetail(planDetailDTO.getNameDetail());
+        planDetail.setDetail(planDetailDTO.getDetail());
         planDetail.setCreatedAt(planDetailDTO.getCreatedAt());
         planDetail.setUpdatedAt(planDetailDTO.getUpdatedAt());
         planDetail.setCreatedBy(planDetailDTO.getCreatedBy());

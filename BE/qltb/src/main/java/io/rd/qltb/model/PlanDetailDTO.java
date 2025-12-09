@@ -23,6 +23,7 @@ public class PlanDetailDTO {
     private LocalDateTime estimatedTime;
 
     private String nameDetail;
+    private String detail;
     private String note;
 
     private LocalDateTime updatedAt;
