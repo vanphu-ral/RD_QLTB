@@ -507,6 +507,7 @@ public class PlanService {
                         d.setId(detail.getId());
                         d.setSerial(detail.getSerial());
                         d.setManager(detail.getManager());
+                        d.setDetail(detail.getDetail());
                         d.setStatus(detail.getStatus());
                         d.setCreatedBy(detail.getCreatedBy());
                         d.setUpdatedBy(detail.getUpdatedBy());
