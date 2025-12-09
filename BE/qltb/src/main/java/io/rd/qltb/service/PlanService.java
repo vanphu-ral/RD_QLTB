@@ -549,12 +549,12 @@ public class PlanService {
     }
 
     @Transactional
-    public Plan createPlan(PlanRequest request) {
+    public Plan createPlan(PlanRequest request, String userName) {
 
         Plan plan = preparePlanForCreate(request.getPlan());
         plan = planRepository.save(plan);
 
-        List<PlanDetail> details = buildPlanDetails(plan, request);
+        List<PlanDetail> details = buildPlanDetails(plan, request,userName);
         List<PlanDetail> savedDetails = addDetailToSampleReport(details);// chuyển detail sang JSON
         planDetailRepository.saveAll(savedDetails);
         autoCreatePlanResult(details);
@@ -592,7 +592,7 @@ public class PlanService {
         return savedDetails;
     }
     @Transactional
-    public Plan updatePlan(Long id, PlanRequest request) {
+    public Plan updatePlan(Long id, String userName,PlanRequest request) {
 
         Plan exist = planRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Plan not found"));
@@ -600,7 +600,7 @@ public class PlanService {
         updatePlanFields(exist, request.getPlan());
         planRepository.save(exist);
 
-        List<PlanDetail> newDetails = buildPlanDetails(exist, request);
+        List<PlanDetail> newDetails = buildPlanDetails(exist, request,userName);
         ObjectMapper mapper = new ObjectMapper();
         List<PlanDetail> savedDetails = addDetailToSampleReport(newDetails);// chuyển detail sang JSON
         planDetailRepository.saveAll(savedDetails);
@@ -671,7 +671,7 @@ public class PlanService {
 // CORE: Build PlanDetails — ĐÃ THỐNG NHẤT HOÀN TOÀN
 // ================================================================
 
-    private List<PlanDetail> buildPlanDetails(Plan plan, PlanRequest request) {
+    private List<PlanDetail> buildPlanDetails(Plan plan, PlanRequest request,String userName) {
 
         List<PlanDetail> list = new ArrayList<>();
         // Dùng Set để lưu ID của các Device đã được xử lý trong Trường hợp 1
@@ -709,6 +709,8 @@ public class PlanService {
                     d.setEstimatedTime(deviceRequest.getEstimatedTime());
                     d.setManager(deviceRequest.getManager());
                     d.setSerial(deviceRequest.getSerialNumber()); // Thêm serial từ DeviceRequest
+                    d.setCreatedBy(userName);
+                    d.setUpdatedBy(userName);
 
                     // TIMESTAMP & STATUS
                     d.setCreatedAt(LocalDateTime.now());

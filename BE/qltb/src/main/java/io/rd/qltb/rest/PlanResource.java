@@ -117,13 +117,15 @@ public class PlanResource {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody PlanRequest request) {
-        return ResponseEntity.ok(planService.createPlan(request));
+    public ResponseEntity<?> create(@RequestBody PlanRequest request,
+    @AuthenticationPrincipal OidcUser oidcUser) {
+        return ResponseEntity.ok(planService.createPlan(request,oidcUser.getName()));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id,
+                                    @AuthenticationPrincipal OidcUser oidcUser,
                                     @RequestBody PlanRequest request) {
-        return ResponseEntity.ok(planService.updatePlan(id, request));
+        return ResponseEntity.ok(planService.updatePlan(id,oidcUser.getName(), request));
     }
 }
