@@ -14,6 +14,7 @@ import { PlanResultService } from "../../Service/plan-result.service";
 import { SupplyReplacementHistoryService } from "../../Service/supply-replace-history.service";
 import { SupplyReplacementHistory } from "../../../../../models/PlanManger/supply-replace-history.model";
 import { SupplyDetailService } from "../../../../DeviceManager/Supply/Service/supply-detail.service";
+import { DeviceService } from "../../../../DeviceManager/Device/Service/device.service";
 
 @Component({
     selector: 'app-check-device-dialog',
@@ -27,6 +28,7 @@ export class CheckDeviceDialog {
     model: PlanCheck = new PlanCheck();
     listCriterial: PlanResultDetail[] = [];
     listFrequencies: any[] = ["Ngày", "Tuần", "Tháng", "Quỹ", "6 Tháng", "Năm"];
+    listInspectionSessions: any[] = ["Đầu ca", "Giữa ca", "Cuối ca", "Hằng tuần", "Ngày"];
     listResult: any[] = ["OK", "Đã điều chỉnh", "Có bất thường"];
     listStatus: any[] = [{ label: 'Đã kiểm tra', value: 1 }, { label: 'Chưa kiểm tra', value: 2 }, { label: 'Không kiểm tra', value: 3 }];
     listSupplyReplaceHistory: SupplyReplacementHistory[] = [];
@@ -39,6 +41,7 @@ export class CheckDeviceDialog {
         private keyMappingService: KeyMappingService,
         private dialogService: DialogService,
         private planResultService: PlanResultService,
+        private deviceService: DeviceService,
         private supplyReplaceHistoryService: SupplyReplacementHistoryService,
         private supplyDetailService: SupplyDetailService,
     ) {
@@ -139,6 +142,12 @@ export class CheckDeviceDialog {
         this.listSupplyReplaceHistory.forEach(item => {
             this.supplyDetailService.update(item.oldSupplyDetail.id as number, item.oldSupplyDetail).subscribe();
         })
+        if(_.find(this.model.errorReport, x => x.severity === 0)) {
+            this.deviceService.updateStatusDevice(this.data.deviceId, 3).subscribe();
+        }
+        if(_.find(this.model.errorReport, x => (x.severity === 1) || (x.severity === 2))) {
+            this.deviceService.updateStatusDevice(this.data.deviceId, 2).subscribe();
+        }
     }
 
     close() {

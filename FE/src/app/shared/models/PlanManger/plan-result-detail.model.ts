@@ -4,6 +4,7 @@ export class PlanResultDetail {
     criticalName?: string;
     criticalCode?: string;
     frequency?: string;
+    inspectionSession?: string;
     type?: string;
     result?: string;
     note?: string;

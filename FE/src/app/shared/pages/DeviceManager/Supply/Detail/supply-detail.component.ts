@@ -20,6 +20,12 @@ export class SupplyDetailComponent extends BasePageComponent<Supply> {
 
   listSupplyGroups: any[] = [];
   listSerials: SerialSupply[] = [];
+  statusSerials: any[] = [
+    { label: 'Chưa sử dụng - Hoạt động tốt', value: 0 },
+    { label: 'Đang sử dụng - Hoạt động tốt', value: 1 },
+    { label: 'Chưa sử dụng - Hỏng', value: 2 },
+    { label: 'Đang sử dụng - Hỏng', value: 3 },
+  ];
 
   constructor(
     protected override apiService: SupplyService,
@@ -37,28 +43,23 @@ export class SupplyDetailComponent extends BasePageComponent<Supply> {
     if(this.isEditMode || this.isViewMode) {
       this.loadData();
     }else {
-      this.listSerials.push({ status: 1 });
+      this.listSerials.push({ status: 0 });
     }
   }
 
   loadData() {
     this.supplyDetailService.getBySupplyId(this.model!.id as number).subscribe((res) => {
-      if (Util.isEmptyArray(res)) {
-        this.listSerials.push({ status: 1 });
-        return;
-      } else {
-        this.listSerials = res.map((item: any) => ({
-          ...item,
-          importDate: item.importDate ? new Date(item.importDate) : undefined,
-          supply: this.model
-        }));
-      }
+      this.listSerials = res.map((item: any) => ({
+        ...item,
+        importDate: item.importDate ? new Date(item.importDate) : undefined,
+        supply: this.model
+      }));
       this.cdr.detectChanges();
     });
   }
 
   addNewRow() {
-    this.listSerials.push({ status: 1 });
+    this.listSerials.push({ status: 0 });
   }
 
   deleteRow(index: number) {

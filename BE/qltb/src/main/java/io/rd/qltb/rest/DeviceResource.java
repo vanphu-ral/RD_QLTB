@@ -103,4 +103,12 @@ public class DeviceResource {
         return ResponseEntity.ok(device);
     }
 
+    @PutMapping("/{id}/status")
+    public ResponseEntity<Void> updateStatus(
+            @PathVariable Long id,
+            @RequestParam Integer value) {
+        deviceService.updateStatus(id, value);
+        return ResponseEntity.ok().build();
+    }
+
 }

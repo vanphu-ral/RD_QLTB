@@ -528,6 +528,25 @@ export class Util {
     }
   }
 
+  static statusDeviceToString(status: number): string {
+    switch (status) {
+      case 0:
+        return 'Dừng hoạt động';
+      case 1:
+        return 'Đang hoạt động';
+      case 2:
+        return 'Có sự cố';
+      case 3:
+        return 'Sự cố nghiêm trọng';
+      case 4:
+        return 'Đang bảo dưỡng';
+      case 5:
+        return 'Đã thanh lý';
+      default:
+        return '';
+    }
+  }
+
   /**
    * Get user by username
    */

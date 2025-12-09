@@ -2,7 +2,7 @@ export class ErrorReport {
     id?: number;
     code?: string;
     name?: string;
-    severity?: number;
+    severity?: number; //0: nghiêm trọng, 1: bất thường, 2: nhẹ
     errorDescription?: string;
     reportedBy?: string;
     timeReported?: Date;

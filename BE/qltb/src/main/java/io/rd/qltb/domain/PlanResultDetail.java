@@ -36,6 +36,9 @@ public class PlanResultDetail {
     private String frequency;
 
     @Column
+    private String inspectionSession; //Ca kiểm tra
+
+    @Column
     private String type;
 
     @Column

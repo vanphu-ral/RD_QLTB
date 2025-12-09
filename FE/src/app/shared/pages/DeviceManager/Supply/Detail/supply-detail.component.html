@@ -73,7 +73,7 @@
             <td><input type="text" pInputText [(ngModel)]="row.currency" name="currency-{{i}}" [disabled]="isViewMode"></td>
             <td><p-inputnumber id="quantity" name="quantity-{{i}}" [(ngModel)]="row.quantity" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/></td>
             <td>
-              <p-select [(ngModel)]="row.status" [options]="listStatus" optionLabel="label" [fluid]="true" [disabled]="isViewMode"
+              <p-select [(ngModel)]="row.status" [options]="statusSerials" optionLabel="label" [fluid]="true" [disabled]="isViewMode"
                 optionValue="value" [showClear]="true" [appendTo]="'body'" id="status-{{i}}" name="status-{{i}}">
               </p-select>
             </td>

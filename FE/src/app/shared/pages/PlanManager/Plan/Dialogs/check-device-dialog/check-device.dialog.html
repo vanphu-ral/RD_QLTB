@@ -68,6 +68,7 @@
                     <th>Nhóm tiêu trí</th>
                     <th>Tên tiêu trí</th>
                     <th>Tần suất</th>
+                    <th>Ca kiểm tra</th>
                     <th [ngStyle]="data.plan.planTypeCode == PLANTYPE.MAINTENANCE ? {} : {'min-width': '600px'}">Mô tả</th>
                     <th *ngIf="data.plan.planTypeCode == PLANTYPE.MAINTENANCE">Ghi chú</th>
                     <th *ngIf="data.plan.planTypeCode == PLANTYPE.MAINTENANCE">Bộ phận thực hiện</th>
@@ -85,6 +86,11 @@
                     <td>
                         <p-select [(ngModel)]="row.frequency" [options]="listFrequencies" [fluid]="true"
                             [showClear]="true" [appendTo]="'body'" id="frequency" name="frequency">
+                        </p-select>
+                    </td>
+                    <td>
+                        <p-select [(ngModel)]="row.inspectionSession" [options]="listInspectionSessions" [fluid]="true"
+                            [showClear]="true" [appendTo]="'body'" id="inspectionSession" name="inspectionSession">
                         </p-select>
                     </td>
                     <td>

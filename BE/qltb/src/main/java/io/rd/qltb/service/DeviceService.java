@@ -195,6 +195,14 @@ public class DeviceService {
                 .orElseThrow(NotFoundException::new);
     }
 
+    public void updateStatus(Long id, Integer status) {
+        Device device = deviceRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Plan not found"));
+
+        device.setStatus(status);
+        deviceRepository.save(device);
+    }
+
     public DeviceDTO mapToDTO(final Device device, final DeviceDTO deviceDTO) {
         deviceDTO.setId(device.getId());
         deviceDTO.setCode(device.getCode());

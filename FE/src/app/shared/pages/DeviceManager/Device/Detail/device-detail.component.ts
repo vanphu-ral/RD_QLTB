@@ -48,6 +48,14 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
   listMaterialCurrent: DeviceSupplyUse[] = [];
   listParameter: DeviceParameterUse[] = [];
   listUsers: any[] = [];
+  override listStatus: any[] = [
+    { label: 'Vô hiệu hóa', value: 0 },
+    { label: 'Đang hoạt động', value: 1 },
+    { label: 'Có sự cố', value: 2 },
+    { label: 'Sự cố nghiêm trọng', value: 3 },
+    { label: 'Đang bảo dưỡng', value: 4 },
+    { label: 'Đã thanh lý', value: 5 },
+  ];
   ref?: DynamicDialogRef;
 
 

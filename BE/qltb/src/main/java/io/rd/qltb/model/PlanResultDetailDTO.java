@@ -26,6 +26,8 @@ public class PlanResultDetailDTO {
 
     private String result;
 
+    private String inspectionSession;
+
     private String note;
 
     private String unit;
