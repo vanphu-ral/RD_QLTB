@@ -56,6 +56,15 @@ public class Device {
     @Column
     private LocalDateTime dateManufacture;
 
+    @Column
+    private Integer maintenanceTime;
+
+    @Column
+    private Integer depreciationPeriod;
+
+    @Column
+    private Integer depreciationPercentage;
+
     @Column(nullable = false, length = 50)
     private String unit;
 

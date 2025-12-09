@@ -171,8 +171,7 @@ export class PlanListComponent {
       this.confirmationService,
       this.messageService,
       () => {
-        data.status = 2;
-        this.apiService.update(data.id, data).subscribe({
+        this.apiService.updateStatus(data.id, 2).subscribe({
           next: (res) => {
             console.log(res);
             Object.assign(data, res);
