@@ -8,6 +8,9 @@ export class Device {
     installationDate?: Date;
     maintenanceCycle?: any;
     dateManufacture?: Date;
+    maintenanceTime?: number; // Thời gian bảo trì (ngày)
+    depreciationPeriod?: number; // Thời gian khấu hao
+    depreciationPercentage?: number; // phần trăm khấu hao
     unit?: string;
     price?: number; 
     status?: number;

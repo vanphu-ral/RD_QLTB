@@ -38,6 +38,12 @@ public class DeviceDTO {
 
     private LocalDateTime dateManufacture;
 
+    private Integer maintenanceTime;
+
+    private Integer depreciationPeriod;
+
+    private Integer depreciationPercentage;
+
     private String unit;
 
     @Digits(integer = 12, fraction = 2)

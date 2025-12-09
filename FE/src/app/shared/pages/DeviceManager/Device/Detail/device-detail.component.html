@@ -110,6 +110,29 @@
     <div class="row my-3">
       <div class="col-4">
         <p-floatlabel variant="on">
+          <p-inputnumber id="maintenanceTime" name="maintenanceTime" [(ngModel)]="model.maintenanceTime" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
+          <label for="maintenanceTime">Thời gian bảo trì</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <p-inputnumber id="depreciationPeriod" name="depreciationPeriod" [(ngModel)]="model.depreciationPeriod" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
+          <label for="depreciationPeriod">Thời gian khấu hao</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <p-inputnumber id="depreciationPercentage" name="depreciationPercentage" [(ngModel)]="model.depreciationPercentage" autocomplete="off" [disabled]="isViewMode" [fluid]="true" prefix="%"/>
+          <label for="depreciationPercentage">% khấu hao</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <div class="row my-3">
+      <div class="col-4">
+        <p-floatlabel variant="on">
           <input pInputText id="unit" name="unit" [(ngModel)]="model.unit" required [invalid]="!model.name" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
           <label for="unit">Đơn vị tính</label>
         </p-floatlabel>
