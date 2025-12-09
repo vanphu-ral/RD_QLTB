@@ -145,6 +145,10 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
     this.model.plan = Util.prepareModel(this.model.plan);
     this.model.plan = Util.simplifyMany(this.model.plan, ['team', 'branch', 'approvalWorkflow']);
     this.model = this.cleanPlanRequest(this.model);
+    const deleted = this.findDeletedDevices(this.oldPlanRequest, this.model);
+    const deleteRequests = deleted.length
+      ? deleted.map((d: any) => this.planDetailService.delete(d.planDetailId))
+      : [of(null)];
     const handleError = (error: any) => {
       let message = 'Thêm mới thất bại';
       if (error?.error?.message) {
@@ -159,18 +163,23 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
       }
       Util.ConfirmMessage(message, 'error');
     };
-    const apiCall = this.isAddMode
-      ? this.apiService.create(this.model)
-      : this.apiService.update(this.model.plan.id!, this.model);
-    apiCall.subscribe({
+    forkJoin(deleteRequests).subscribe({
       next: () => {
-        Util.ConfirmMessage(
-          this.isAddMode ? 'Thêm mới thành công' : 'Cập nhật thành công',
-          'success'
-        );
+        const apiCall = this.isAddMode
+          ? this.apiService.create(this.model)
+          : this.apiService.update(this.model.plan.id!, this.model);
+        apiCall.subscribe({
+          next: () => {
+            Util.ConfirmMessage(
+              this.isAddMode ? 'Thêm mới thành công' : 'Cập nhật thành công',
+              'success'
+            );
+          },
+          error: handleError
+        }).add(() => this.navigationService.back());
       },
       error: handleError
-    }).add(() => this.navigationService.back());
+    });
   }
 
 
