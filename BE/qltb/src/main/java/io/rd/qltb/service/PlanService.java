@@ -1,5 +1,6 @@
 package io.rd.qltb.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -21,12 +22,14 @@ import java.util.function.Predicate;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 
@@ -54,6 +57,10 @@ public class PlanService {
     private final PlanResultService planResultService;
     private final PlanResultRepository planResultRepository;
     private final PlanResultDetailRepository planResultDetailRepository;
+    private final KeyMappingRepository keyMappingRepository;
+    private final KeyMappingService keyMappingService;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     public PlanService(EntityManager entityManager, final PlanRepository planRepository,
                        final PlanTypeRepository planTypeRepository,
@@ -61,7 +68,7 @@ public class PlanService {
                        final BranchRepository branchRepository,
                        final TeamRepository teamRepository,
                        final ApprovalWorkflowRepository approvalWorkflowRepository,
-                       final ApplicationEventPublisher publisher, PlanDetailRepository planDetailRepository, DeviceRepository deviceRepository, DeviceGroupRepository deviceGroupRepository, SampleReportRepository sampleReportRepository, DeviceGroupService deviceGroupService, SampleReportService sampleReportService, DeviceService deviceService, PlanDetailService planDetailService, DetailLogService detailLogService, DetailLogRepository detailLogRepository, PlanResultService planResultService, PlanResultRepository planResultRepository, PlanResultDetailRepository planResultDetailRepository) {
+                       final ApplicationEventPublisher publisher, PlanDetailRepository planDetailRepository, DeviceRepository deviceRepository, DeviceGroupRepository deviceGroupRepository, SampleReportRepository sampleReportRepository, DeviceGroupService deviceGroupService, SampleReportService sampleReportService, DeviceService deviceService, PlanDetailService planDetailService, DetailLogService detailLogService, DetailLogRepository detailLogRepository, PlanResultService planResultService, PlanResultRepository planResultRepository, PlanResultDetailRepository planResultDetailRepository, KeyMappingRepository keyMappingRepository, KeyMappingService keyMappingService, JdbcTemplate jdbcTemplate) {
         this.entityManager = entityManager;
         this.planRepository = planRepository;
         this.planTypeRepository = planTypeRepository;
@@ -83,6 +90,9 @@ public class PlanService {
         this.planResultService = planResultService;
         this.planResultRepository = planResultRepository;
         this.planResultDetailRepository = planResultDetailRepository;
+        this.keyMappingRepository = keyMappingRepository;
+        this.keyMappingService = keyMappingService;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Transactional
@@ -544,12 +554,42 @@ public class PlanService {
         plan = planRepository.save(plan);
 
         List<PlanDetail> details = buildPlanDetails(plan, request);
-        planDetailRepository.saveAll(details);
+        List<PlanDetail> savedDetails = addDetailToSampleReport(details);// chuyển detail sang JSON
+        planDetailRepository.saveAll(savedDetails);
         autoCreatePlanResult(details);
 
         return plan;
     }
+    public List<PlanDetail> addDetailToSampleReport(List<PlanDetail> planDetails) {
+        ObjectMapper mapper = new ObjectMapper();
+        // Đăng ký module hỗ trợ Java 8 Date/Time
+        mapper.registerModule(new JavaTimeModule());
 
+// Tùy chọn: disable timestamp để xuất ra ISO-8601 thay vì số mili giây
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        List<PlanDetail> savedDetails = planDetails.stream()
+                .filter(detail -> detail.getSampleReport() != null)
+                .map(detail -> {// với mỗi detail, ta sẽ chuyển đổi detail.getDetail()
+                    try {
+                        // convert sampleReport sang JSON string
+                        SampleReport sampleReport =sampleReportRepository.findById(detail.getSampleReport().getId()).orElseThrow();// lấy lại đầy đủ sampleReport
+                        SampleReportDTO sampleReportDTO = sampleReportService.mapToDTO(sampleReport, new SampleReportDTO());// chuyển sang DTO
+                        List<KeyMappingDTO> keyMappingDTOS = keyMappingService.getBySampleReportId(sampleReport.getId());// lấy keyMapping theo sampleReportId
+                        sampleReportDTO.setSampleReportKeyMappings(keyMappingDTOS);// gán vào DTO
+                        String jsonString = mapper.writeValueAsString(sampleReportDTO);// chuyển DTO sang JSON
+                        // gán vào trường detail
+                        detail.setDetail(jsonString);
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                        // có thể gán giá trị mặc định nếu lỗi
+                        detail.setDetail("{}");
+                    }
+                    return detail; // phải return đối tượng
+                })
+                .toList();
+
+        return savedDetails;
+    }
     @Transactional
     public Plan updatePlan(Long id, PlanRequest request) {
 
@@ -560,26 +600,8 @@ public class PlanService {
         planRepository.save(exist);
 
         List<PlanDetail> newDetails = buildPlanDetails(exist, request);
-        // xoa tat ca plan result lien quan den nhieu plan detail cua plan
-//        String result = "";
-//       for (PlanDetail oldDetail : exist.getPlanPlanDetails()) {
-//                   Boolean delete = true;
-//                     List<PlanResult> planResults = planResultRepository.findByPlanDetailId(oldDetail.getId());
-//                     for (PlanResult planResult : planResults) {
-//                         if (planResult.getPlanResultPlanResultDetails() != null) {
-//                             delete = false;
-//                             result += "Không thể xóa thiết bị " + oldDetail.getDevice().getName() + " vì có dữ liệu kiểm tra !!!";
-//                             break;
-//                         }
-//                     }
-//                        if (delete) {
-//                            planResultRepository.deleteAllByPlanDetailId(oldDetail.getId());
-//                        }
-//       }
-//        planDetailRepository.deleteAllByPlanId(id);
-        List<PlanDetail> savedDetails = newDetails.stream()
-                .filter(detail -> detail.getSampleReport() != null)
-                .toList();
+        ObjectMapper mapper = new ObjectMapper();
+        List<PlanDetail> savedDetails = addDetailToSampleReport(newDetails);// chuyển detail sang JSON
         planDetailRepository.saveAll(savedDetails);
         autoCreatePlanResult(savedDetails);
         return exist;
