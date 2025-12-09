@@ -11,6 +11,7 @@ public class PlanDetailListDTO {
     private Long id;
     private String serial;
     private String manager;
+    private String detail;
     private Integer status;
     private String createdBy;
     private String updatedBy;
