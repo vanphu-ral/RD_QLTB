@@ -561,24 +561,27 @@ public class PlanService {
 
         List<PlanDetail> newDetails = buildPlanDetails(exist, request);
         // xoa tat ca plan result lien quan den nhieu plan detail cua plan
-        String result = "";
-       for (PlanDetail oldDetail : exist.getPlanPlanDetails()) {
-                   Boolean delete = true;
-                     List<PlanResult> planResults = planResultRepository.findByPlanDetailId(oldDetail.getId());
-                     for (PlanResult planResult : planResults) {
-                         if (planResult.getPlanResultPlanResultDetails() != null) {
-                             delete = false;
-                             result += "Không thể xóa thiết bị " + oldDetail.getDevice().getName() + " vì có dữ liệu kiểm tra !!!";
-                             break;
-                         }
-                     }
-                        if (delete) {
-                            planResultRepository.deleteAllByPlanDetailId(oldDetail.getId());
-                        }
-       }
-        planDetailRepository.deleteAllByPlanId(id);
-        planDetailRepository.saveAll(newDetails);
-        autoCreatePlanResult(newDetails);
+//        String result = "";
+//       for (PlanDetail oldDetail : exist.getPlanPlanDetails()) {
+//                   Boolean delete = true;
+//                     List<PlanResult> planResults = planResultRepository.findByPlanDetailId(oldDetail.getId());
+//                     for (PlanResult planResult : planResults) {
+//                         if (planResult.getPlanResultPlanResultDetails() != null) {
+//                             delete = false;
+//                             result += "Không thể xóa thiết bị " + oldDetail.getDevice().getName() + " vì có dữ liệu kiểm tra !!!";
+//                             break;
+//                         }
+//                     }
+//                        if (delete) {
+//                            planResultRepository.deleteAllByPlanDetailId(oldDetail.getId());
+//                        }
+//       }
+//        planDetailRepository.deleteAllByPlanId(id);
+        List<PlanDetail> savedDetails = newDetails.stream()
+                .filter(detail -> detail.getSampleReport() != null)
+                .toList();
+        planDetailRepository.saveAll(savedDetails);
+        autoCreatePlanResult(savedDetails);
         return exist;
     }
  public void autoCreatePlanResult(List<PlanDetail> planDetails ) {
@@ -661,6 +664,8 @@ public class PlanService {
                 // Lặp qua tất cả DeviceRequest, mỗi DeviceRequest sẽ được gán
                 // với DeviceGroup và SampleReport từ detailRequest hiện tại.
                 for (DeviceRequest deviceRequest: request.getDevices()) {
+                   Integer isHadDataPlanReport = deviceRequest.getDevice().getIsHadDataPlanReport()==null?0:deviceRequest.getDevice().getIsHadDataPlanReport();
+                    if (isHadDataPlanReport == 0 ) {
                     PlanDetail d = new PlanDetail();
                     if(deviceRequest.getDevice().getGroup().getId() == detailRequest.getDeviceGroup().getId()){
                     d.setPlan(plan);
@@ -686,7 +691,8 @@ public class PlanService {
                     d.setUpdatedAt(LocalDateTime.now());
                     d.setStatus(1);
                     list.add(d);
-                }
+                    }
+                    }
                 }
             }
         }
