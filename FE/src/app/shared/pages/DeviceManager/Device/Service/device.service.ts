@@ -50,4 +50,12 @@ export class DeviceService extends BaseApiService<Device> {
 
     return this.http.get<any[]>(`${this['fullBaseUrl']}/group`, { params, withCredentials: true });
   }
+
+  updateStatusDevice(id: number, value: number) {
+    return this.http.put<void>(
+      `${this['fullBaseUrl']}/${id}/status`,
+      {},
+      { params: { value: value }, withCredentials: true }
+    );
+  }
 }

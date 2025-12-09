@@ -33,7 +33,18 @@ export class ErrorReportDialog {
     ngOnInit() {
     }
 
-
+    sevirityStatus(status: number) {
+        switch (status) {
+            case 0:
+                return 'Nghiêm trọng';
+            case 1:
+                return 'Bất thường';
+            case 2:
+                return 'Nhẹ';
+            default:
+                return '';
+        }
+    }
 
     editRow(index: number) {
         this.data = this.listError[index];

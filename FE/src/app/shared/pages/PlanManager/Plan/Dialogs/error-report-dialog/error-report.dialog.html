@@ -58,7 +58,7 @@
           <td>{{ i + 1 }}</td>
           <td>{{ row.name }}</td>
           <td>{{ row.timeReported | date: 'dd/MM/yyyy' }}</td>
-          <td>{{ row.severity }}</td>
+          <td>{{ sevirityStatus(row.severity) }}</td>
           <td class="text-center">
             <p-button icon="pi pi-pencil" severity="warn" (onClick)="editRow(i)" styleClass="mx-2">
             </p-button>

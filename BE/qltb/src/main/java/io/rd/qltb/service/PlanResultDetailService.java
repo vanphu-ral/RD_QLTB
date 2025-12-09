@@ -65,6 +65,7 @@ public class PlanResultDetailService {
         dto.setCriticalGroup(planResultDetail.getCriticalGroup());
         dto.setCriticalName(planResultDetail.getCriticalName());
         dto.setFrequency(planResultDetail.getFrequency());
+        dto.setInspectionSession(planResultDetail.getInspectionSession());
         dto.setType(planResultDetail.getType());
         dto.setResult(planResultDetail.getResult());
         dto.setNote(planResultDetail.getNote());
@@ -115,6 +116,7 @@ public class PlanResultDetailService {
         planResultDetail.setCriticalGroup(planResultDetailDTO.getCriticalGroup());
         planResultDetail.setCriticalName(planResultDetailDTO.getCriticalName());
         planResultDetail.setFrequency(planResultDetailDTO.getFrequency());
+        planResultDetail.setInspectionSession(planResultDetailDTO.getInspectionSession());
         planResultDetail.setType(planResultDetailDTO.getType());
         planResultDetail.setResult(planResultDetailDTO.getResult());
         planResultDetail.setNote(planResultDetailDTO.getNote());
