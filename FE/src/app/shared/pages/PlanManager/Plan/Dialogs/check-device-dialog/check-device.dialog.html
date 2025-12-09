@@ -74,7 +74,6 @@
                     <th *ngIf="data.plan.planTypeCode == PLANTYPE.MAINTENANCE">Bộ phận thực hiện</th>
                     <th>Kết quả đánh giá</th>
                     <th>Trạng thái</th>
-                    <th>Thao tác</th>
                 </tr>
             </ng-template>
 
@@ -114,10 +113,6 @@
                         <p-select [(ngModel)]="row.status" [options]="listStatus" [fluid]="true" [showClear]="true"
                             [appendTo]="'body'" id="status" name="status" optionLabel="label" optionValue="value">
                         </p-select>
-                    </td>
-                    <td class="text-center">
-                        <p-button icon="pi pi-trash" severity="danger" (onClick)="deleteRow(i)">
-                        </p-button>
                     </td>
                 </tr>
             </ng-template>
