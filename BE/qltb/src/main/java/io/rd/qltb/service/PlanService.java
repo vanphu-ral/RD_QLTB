@@ -689,7 +689,7 @@ public class PlanService {
                 // với DeviceGroup và SampleReport từ detailRequest hiện tại.
                 for (DeviceRequest deviceRequest: request.getDevices()) {
                    Integer isHadDataPlanReport = deviceRequest.getDevice().getIsHadDataPlanReport()==null?0:deviceRequest.getDevice().getIsHadDataPlanReport();
-                    if (isHadDataPlanReport == 0 ) {
+                    if (isHadDataPlanReport == 0 && deviceRequest.getPlanDetailId() == null) {
                     PlanDetail d = new PlanDetail();
                     if(deviceRequest.getDevice().getGroup().getId() == detailRequest.getDeviceGroup().getId()){
                     d.setPlan(plan);
