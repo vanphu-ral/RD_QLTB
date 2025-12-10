@@ -9,10 +9,16 @@ import io.rd.qltb.model.SupplyReplacementHistoryDTO;
 import io.rd.qltb.repos.*;
 import io.rd.qltb.util.NotFoundException;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import static io.rd.qltb.config.GlobalConfig.COMPLETED;
+import static io.rd.qltb.config.GlobalConfig.IN_PROGRESS;
 
 
 @Service
@@ -32,9 +38,9 @@ public class PlanResultService {
     private final DeviceCurrentSupplyRepository deviceCurrentSupplyRepository;
     private final SupplyReplacementHistoryRepository supplyReplacementHistoryRepository;
     private final SupplyReplacementHistoryService supplyReplacementHistoryService;
-
+    private final PlanRepository planRepository;
     public PlanResultService(final PlanResultRepository planResultRepository,
-                             final ApplicationEventPublisher publisher, PlanResultDetailService planResultDetailService, ErrorReportService errorReportService, PlanResultDetailRepository planResultDetailRepository, SupplyReplacementService supplyReplacementService, SupplyReplacementRepository supplyReplacementRepository, ErrorReportRepository errorReportRepository, PlanDetailRepository planDetailRepository, DeviceCurrentSupplyService deviceCurrentSupplyService, DeviceCurrentSupplyRepository deviceCurrentSupplyRepository, SupplyReplacementHistoryRepository supplyReplacementHistoryRepository, SupplyReplacementHistoryService supplyReplacementHistoryService) {
+                             final ApplicationEventPublisher publisher, PlanResultDetailService planResultDetailService, ErrorReportService errorReportService, PlanResultDetailRepository planResultDetailRepository, SupplyReplacementService supplyReplacementService, SupplyReplacementRepository supplyReplacementRepository, ErrorReportRepository errorReportRepository, PlanDetailRepository planDetailRepository, DeviceCurrentSupplyService deviceCurrentSupplyService, DeviceCurrentSupplyRepository deviceCurrentSupplyRepository, SupplyReplacementHistoryRepository supplyReplacementHistoryRepository, SupplyReplacementHistoryService supplyReplacementHistoryService, PlanRepository planRepository) {
         this.planResultRepository = planResultRepository;
         this.publisher = publisher;
         this.planResultDetailService = planResultDetailService;
@@ -48,7 +54,9 @@ public class PlanResultService {
         this.deviceCurrentSupplyRepository = deviceCurrentSupplyRepository;
         this.supplyReplacementHistoryRepository = supplyReplacementHistoryRepository;
         this.supplyReplacementHistoryService = supplyReplacementHistoryService;
+        this.planRepository = planRepository;
     }
+    // Tách riêng hằng số
 
     public List<PlanResultDTO> findAll() {
         final List<PlanResult> planResults = planResultRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
@@ -91,9 +99,43 @@ public class PlanResultService {
         mapToEntity(planResultDTO, planResult);
         return planResultRepository.save(planResult).getId();
     }
+
+    public void updateStatus(Long idPlanResult, Integer status, String userName) {
+        PlanResult planResult = planResultRepository.findById(idPlanResult)
+                .orElseThrow(NotFoundException::new);
+
+        planResult.setStatus(status);
+        planResult.setUpdatedAt(LocalDateTime.now());
+        planResult.setUpdatedBy(userName);
+        planResultRepository.save(planResult);
+
+        PlanDetail planDetail = planResult.getPlanDetail();
+        if (planDetail != null) {
+            planDetail.setUpdatedAt(LocalDateTime.now());
+            planDetail.setUpdatedBy(userName);
+
+            boolean allPlanResultCompleted = planResultRepository.findByPlanDetailId(planDetail.getId())
+                    .stream()
+                    .allMatch(pr -> Objects.equals(pr.getStatus(), COMPLETED));
+
+            planDetail.setStatus(allPlanResultCompleted ? COMPLETED : IN_PROGRESS);
+            planDetailRepository.save(planDetail);
+
+            Plan plan = planDetail.getPlan();
+            plan.setUpdatedAt(LocalDateTime.now());
+            plan.setUpdatedBy(userName);
+
+            boolean allCompleted = planDetailRepository.findAllByPlanId(plan.getId())
+                    .stream()
+                    .allMatch(pd -> Objects.equals(pd.getStatus(), COMPLETED));
+
+            plan.setStatus(allCompleted ? COMPLETED : IN_PROGRESS);
+            planRepository.save(plan);
+        }
+    }
     public  void createUpdate(PlanCheckDTO planCheckDTO, String userName){
         PlanResult planResult = planResultRepository.findById(planCheckDTO.getPlanResult().getId()).orElse(new PlanResult());
-        if (planCheckDTO.getPlanResultDetail() != null && planCheckDTO.getPlanResultDetail().size() > 0) {
+        if (planCheckDTO.getPlanResultDetail() != null && planCheckDTO.getPlanResultDetail().size() > 0) { //     check null and size > 0
             planCheckDTO.getPlanResultDetail().forEach(item -> {
                 if(item.getId() != null){
                     System.out.println("Update PlanResultDetail ID: " + item.getId());
@@ -114,6 +156,8 @@ public class PlanResultService {
                 planResultDetailRepository.save(planResultDetail);
                 }
             });
+            // update status of planResult, planDetail, plan
+            updateStatus(planResult.getId(), 4,userName); // set planResult status to in progress
         }
         if(planCheckDTO.getSupplyReplacement() != null && planCheckDTO.getSupplyReplacement().size() > 0){
             planCheckDTO.getSupplyReplacement().forEach(item -> {

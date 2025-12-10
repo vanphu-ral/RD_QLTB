@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static io.rd.qltb.config.GlobalConfig.COMPLETED;
+
 
 @RestController
 @RequestMapping(value = "/api/planResults", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -43,6 +45,14 @@ public class PlanResultResource {
     @GetMapping("/plan-result/{id}")
     public ResponseEntity<PlanCheckDTO> getDetail(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(planResultService.getDetail(id));
+    }
+    @PostMapping("/update-status")
+    @ApiResponse(responseCode = "201")
+    public ResponseEntity<Long> updateStatus(
+            @AuthenticationPrincipal OidcUser oidcUser,
+            @PathVariable Long id) {
+         planResultService.updateStatus(id,COMPLETED,oidcUser.getName());
+        return new ResponseEntity<>( id, HttpStatus.CREATED);
     }
     @PostMapping
     @ApiResponse(responseCode = "201")
