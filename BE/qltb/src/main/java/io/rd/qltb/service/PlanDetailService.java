@@ -9,9 +9,7 @@ import io.rd.qltb.repos.*;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
@@ -109,52 +107,74 @@ public class PlanDetailService {
     }
 
     public List<PlanDTO> getByDetiveId(final String serial) {
-
         Device device = deviceRepository.findFirstBySerialNumber(serial);
-        List<Integer> statuses = Arrays.asList(DRAFF,IN_PROGRESS); // status cần lọc
-        List<PlanDetailDTO> planDetails = planDetailRepository.findAllByDeviceIdAndStatusIn(device.getId(), statuses).stream()
-                .map(planDetail -> mapToDTO(planDetail, new PlanDetailDTO()))
+        if (device == null) {
+            return Collections.emptyList();
+        }
+
+        List<Integer> statuses = Arrays.asList(DRAFF, IN_PROGRESS);
+
+        List<PlanDetailDTO> planDetails = planDetailRepository
+                .findAllByDeviceIdAndStatusIn(device.getId(), statuses)
+                .stream()
+                .map(pd -> mapToDTO(pd, new PlanDetailDTO()))
                 .toList();
-        List<PlanDTO> plans = new ArrayList<>();
+
+        Map<Long, PlanDTO> planMap = new LinkedHashMap<>();
+
         for (PlanDetailDTO planDetailDTO : planDetails) {
-            PlanDTO planDTO = new PlanDTO();
-            planDTO.setId(planDetailDTO.getPlan().getId());
-            planDTO.setName(planDetailDTO.getPlan().getName());
-            planDTO.setFrequency(planDetailDTO.getPlan().getFrequency());
-            planDTO.setPlanNumber(planDetailDTO.getPlan().getPlanNumber());
-            planDTO.setDescription(planDetailDTO.getPlan().getDescription());
-            planDTO.setCreatedBy(planDetailDTO.getPlan().getCreatedBy());
-            planDTO.setCreatedAt(planDetailDTO.getPlan().getCreatedAt());
-            planDTO.setUpdatedAt(planDetailDTO.getPlan().getUpdatedAt());
-            planDTO.setUpdatedBy(planDetailDTO.getPlan().getUpdatedBy());
-            planDTO.setStatus(planDetailDTO.getPlan().getStatus());
-            planDTO.setPlanType(planDetailDTO.getPlan().getPlanType());
-            List<PlanDetailDTO> planDetailDTOS = new ArrayList<>();
-            planDTO.setPlanDetails(planDetailDTOS.add(planDetailDTO) ? planDetailDTOS : null);
-            // lay du lieuj plan result
-            List<PlanResultDTO> planResultDTOS = planResultService.findAllByPlanDetailId(planDetailDTO.getId());//  lay du lieu plan result
-            for (PlanResultDTO planResultDTO : planResultDTOS) { // lay du lieu plan result detail
-                List<PlanResultDetailDTO> planResultDetailDTOS = planResultDetailService.findAllByPlanResultId(planResultDTO.getId()); // lay du lieu plan result detail
-                    planResultDTO.setPlanResultDetails(planResultDetailDTOS); // set du lieu plan result detail
+            if (planDetailDTO.getPlan() == null || planDetailDTO.getPlan().getId() == null) {
+                continue;
             }
-            List<PlanResultDTO> savePlanResults = planResultDTOS.stream().filter(planResultDTO -> planResultDTO.getPlanResultDetails().isEmpty()).toList();// loc du lieu plan result khong co plan result detail
-            if (!savePlanResults.isEmpty()) {// neu co du lieu thi set vao plan detail
-                planDetailDTO.setPlanResults(savePlanResults); // set du lieu plan result
+
+            // Lấy tất cả PlanResult của PlanDetail
+            List<PlanResultDTO> planResultDTOS = planResultService.findAllByPlanDetailId(planDetailDTO.getId());
+
+            // Gắn PlanResultDetails cho từng PlanResult
+            for (PlanResultDTO planResultDTO : planResultDTOS) {
+                List<PlanResultDetailDTO> planResultDetailDTOS =
+                        planResultDetailService.findAllByPlanResultId(planResultDTO.getId());
+                planResultDTO.setPlanResultDetails(planResultDetailDTOS);
             }
-            // check trùng
-            boolean isDuplicate = false;
-            for (PlanDTO existingPlan : plans) {
-                if (existingPlan.getId().equals(planDTO.getId())) {
-                    isDuplicate = true;
-                    break;
+
+            // Giữ lại chỉ những PlanResult KHÔNG có PlanResultDetail
+            List<PlanResultDTO> resultsWithoutDetails = planResultDTOS.stream()
+                    .filter(r -> r.getPlanResultDetails() == null || r.getPlanResultDetails().isEmpty())
+                    .toList();
+
+            // Nếu còn kết quả hợp lệ thì set vào planDetail
+            if (!resultsWithoutDetails.isEmpty()) {
+                planDetailDTO.setPlanResults(resultsWithoutDetails);
+
+                // Gom về PlanDTO
+                Long planId = planDetailDTO.getPlan().getId();
+                PlanDTO planDTO = planMap.get(planId);
+                if (planDTO == null) {
+                    planDTO = new PlanDTO();
+                    planDTO.setId(planDetailDTO.getPlan().getId());
+                    planDTO.setName(planDetailDTO.getPlan().getName());
+                    planDTO.setFrequency(planDetailDTO.getPlan().getFrequency());
+                    planDTO.setPlanNumber(planDetailDTO.getPlan().getPlanNumber());
+                    planDTO.setDescription(planDetailDTO.getPlan().getDescription());
+                    planDTO.setCreatedBy(planDetailDTO.getPlan().getCreatedBy());
+                    planDTO.setCreatedAt(planDetailDTO.getPlan().getCreatedAt());
+                    planDTO.setUpdatedAt(planDetailDTO.getPlan().getUpdatedAt());
+                    planDTO.setUpdatedBy(planDetailDTO.getPlan().getUpdatedBy());
+                    planDTO.setStatus(planDetailDTO.getPlan().getStatus());
+                    planDTO.setPlanType(planDetailDTO.getPlan().getPlanType());
+                    planDTO.setPlanDetails(new ArrayList<>());
+                    planMap.put(planId, planDTO);
                 }
-            }
-            if (!isDuplicate) {
-                plans.add(planDTO);
+                planDTO.getPlanDetails().add(planDetailDTO);
             }
         }
-        return plans;
+
+        return new ArrayList<>(planMap.values());
     }
+
+
+
+
 
     public PlanDetailDTO get(final Long id) {
         return planDetailRepository.findById(id)

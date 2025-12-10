@@ -157,7 +157,7 @@ public class PlanResultService {
                 }
             });
             // update status of planResult, planDetail, plan
-            updateStatus(planResult.getId(), 4,userName); // set planResult status to in progress
+            updateStatus(planResult.getId(),  IN_PROGRESS,userName); // set planResult status to in progress
         }
         if(planCheckDTO.getSupplyReplacement() != null && planCheckDTO.getSupplyReplacement().size() > 0){
             planCheckDTO.getSupplyReplacement().forEach(item -> {
