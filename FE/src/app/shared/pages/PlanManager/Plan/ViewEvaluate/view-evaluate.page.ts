@@ -55,10 +55,13 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
   public signature: any = {};
 
   listUserApproval: any[] = [];
+  listUserApprReport: any[] = [];
   listUserStatusAppr: any[] = [];
   listUsers: any[] = [];
   userMap: Record<string, string> = {};
   Math = Math;
+
+  sampleReport: any = {};
 
   // Dùng để lặp qua 5 ca kiểm tra trong HTML
   public readonly DEFAULT_SESSIONS = DEFAULT_SESSIONS;
@@ -73,6 +76,9 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
 
   override ngOnInit(): void {
     super.ngOnInit();
+    this.sampleReport = JSON.parse(this.model.planDetail.detail);
+    console.log(this.sampleReport);
+    this.planInfo = this.model.planDetail;
     this.signatureService.getByUsername('admin').subscribe((data) => {
       this.signature = data;
       this.groupPlanDetails();
@@ -80,7 +86,6 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
     this.approvalService
       .findApprovalsByEntityIdAndEntityType(this.model.planDetail.plan.id, 'plans')
       .subscribe((data) => {
-        console.log(data);
         this.listUserStatusAppr = data;
         const usernames = data.map(x => x.userApproval?.username);
         this.signatureService.getByListUsernames(usernames).subscribe(signatures => {
@@ -107,7 +112,39 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
             groupName: g.groupApprovalName.name,
             signatures: g.userApprovals.map((u: any) => u.imageLink)
           }));
-          console.log(this.listUserApproval);
+        });
+        this.cdr.detectChanges();
+      });
+
+    this.approvalService
+      .findApprovalsByEntityIdAndEntityType(this.sampleReport.approvalWorkflow.id, 'sample_reports')
+      .subscribe((data) => {
+        const usernames = data.map(x => x.userApproval?.username);
+        this.signatureService.getByListUsernames(usernames).subscribe(signatures => {
+          this.listUserApprReport = Object.values(
+            data.reduce((acc: any, item: any) => {
+              const groupId = item.group?.groupApprovalName?.id;
+              acc[groupId] ??= {
+                groupApprovalName: item.group.groupApprovalName,
+                items: [],
+                userApprovals: []
+              };
+              acc[groupId].items.push(item);
+              acc[groupId].userApprovals.push(item.userApproval);
+              return acc;
+            }, {})
+          ).map((group: any) => ({
+            ...group,
+            userApprovals: group.userApprovals.map((u: any) => ({
+              ...u,
+              imageLink: signatures.find((s: any) => s.username === u.username)?.imageLink || null
+            }))
+          }));
+          this.listUserApprReport = this.listUserApprReport.map(g => ({
+            groupName: g.groupApprovalName.name,
+            signatures: g.userApprovals.map((u: any) => u.imageLink)
+          }));
+          console.log(this.listUserApprReport);
         });
         this.cdr.detectChanges();
       });
@@ -164,7 +201,7 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
           const dateTest = res.planResult?.dateTest;
           const resultValue = this.mapResultToIcon(res.result);
           // Lấy Ca kiểm tra từ dữ liệu. Có thể cần chuẩn hóa nếu dữ liệu đầu vào không khớp hoàn toàn
-          const inspectionSession = res.inspectionSession; 
+          const inspectionSession = res.inspectionSession;
 
           if (dateTest && resultValue && resultValue !== '//' && this.model.planDetail?.createdAt) {
             const testDate = new Date(dateTest);
@@ -177,7 +214,7 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
               const dayResult = dailyResults[day - 1];
               if (dayResult) {
                 // Tìm ca kiểm tra tương ứng trong ngày đó (So khớp không phân biệt chữ hoa/thường)
-                const sessionResult = dayResult.sessionResults.find(s => 
+                const sessionResult = dayResult.sessionResults.find(s =>
                   s.session.toLowerCase() === (inspectionSession || '').toLowerCase().trim()
                 );
 
@@ -235,7 +272,7 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
         if (!dayResult) return false;
 
         // Kiểm tra xem có bất kỳ ca nào trong ngày đó có kết quả khác '//' không
-        return dayResult.sessionResults.some(sessionR => 
+        return dayResult.sessionResults.some(sessionR =>
           sessionR.results.some(r => r && r !== '//')
         );
       });
@@ -282,17 +319,17 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
     // Ghép các ký hiệu lại (nếu có nhiều kết quả trong cùng một ca/ngày)
     return icons.join(' ');
   }
-  
+
   // Hàm mapResultToIcon và các hàm khác giữ nguyên...
   mapResultToIcon(result: string | null | undefined): string {
     if (!result) return '//';
     const value = String(result).toUpperCase();
     if (value === 'OK') {
-      return 'O'; 
+      return 'O';
     } else if (value.includes('ADJUST') || value.includes('ĐIỀU CHỈNH') || value.includes('ĐÃ ĐIỀU CHỈNH')) {
-      return 'A'; 
+      return 'A';
     } else if (value.includes('ERROR') || value.includes('BẤT THƯỜNG') || value.includes('CÓ BẤT THƯỜNG')) {
-      return 'X'; 
+      return 'X';
     }
     return '//';
   }

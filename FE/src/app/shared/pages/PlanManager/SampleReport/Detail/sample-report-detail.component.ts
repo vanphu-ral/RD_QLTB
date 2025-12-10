@@ -71,7 +71,7 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
       this.listCriterial = result.criterials;
       this.listTypes = result.planTypes;
       this.cdr.detectChanges();
-      if (this.isAddMode || this.isEditMode || this.isViewMode) {
+      if (this.isAddMode || this.isEditMode || this.isViewMode || this.isApprovalMode) {
         this.keyMappingService.getBySampleReport(this.model.id!).subscribe(res => {
           this.listCriterialBySample = res.map(x => {
             const group = x.criterial?.criterialGroup || null;
@@ -90,20 +90,6 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
         });
       }
     });
-
-    if (this.isAddMode) {
-      this.apiService.getAll().subscribe(res => {
-        const currentYear = new Date().getFullYear();
-        const recordsThisYear = res.filter((item: any) => {
-          const year = new Date(item.createdAt).getFullYear();
-          return year === currentYear;
-        });
-        // const count = recordsThisYear.length + 1;
-        // const countFormatted = count.toString().padStart(2, '0');
-        // const yearShort = currentYear.toString().slice(-2);
-        // this.model.documentNumber = `${countFormatted}.${yearShort}`;
-      })
-    }
 
     if (this.isViewHistory) {
       this.mode = 'view';

@@ -6,11 +6,13 @@
                     <tr>
                         <th colspan="3"><img src="/assets/imgs/logo-rang-dong.png" style="width:150px;" /></th>
                         <th colspan="17"><b>BẢNG KIỂM TRA, BẢO DƯỠNG MÁY HÀNG NGÀY, HÀNG TUẦN</b></th>
-                        <th colspan="6">Số hiệu:<span id="spanPlanNumber"></span><span id="SpanDieuChinh">{{
-                                model.planDetail.sampleReport.documentNumber }}</span></th>
-                        <th colspan="4">Biên soạn</th>
+                        <th colspan="6">Số hiệu:<span id="spanPlanNumber"></span><span id="SpanDieuChinh">{{ sampleReport.documentNumber }}</span></th>
+                        <!-- <th colspan="4">Biên soạn</th>
                         <th colspan="4">Soát xét</th>
-                        <th colspan="4">Phê duyệt</th>
+                        <th colspan="4">Phê duyệt</th> -->
+                        <ng-container *ngFor="let appr of listUserApprReport">
+                            <th colspan="4" class="text-center">{{ appr.groupName }}</th>
+                        </ng-container>
                     </tr>
                     <tr>
                         <th colspan="6">Tên đơn vị: <span id="SpanPlanDonVi">{{
@@ -22,10 +24,18 @@
                             <p>Tháng: <span id="SpanPlanMonth">{{ model.planDetail.createdAt | date:'M' }}</span></p>
                             <p>Năm: <span id="SpanPlanYear">{{ model.planDetail.createdAt | date:'yyyy' }}</span></p>
                         </th>
-                        <th rowspan="2" colspan="6"><span id="spanMainDatePlan">Ngày / tháng / năm</span></th>
-                        <th rowspan="3" colspan="4" style="text-align:center;" id="idBranch">123</th>
+                        <th rowspan="2" colspan="6"><span id="spanMainDatePlan">Ngày {{ sampleReport.updatedAt | date:'dd' }} tháng {{ sampleReport.updatedAt | date:'M' }} năm {{ sampleReport.updatedAt | date:'yyyy' }}</span></th>
+                        <!-- <th rowspan="3" colspan="4" style="text-align:center;" id="idBranch">123</th>
                         <th rowspan="3" colspan="4" style="text-align:center;">456</th>
-                        <th rowspan="3" colspan="4" style="text-align:center;">789</th>
+                        <th rowspan="3" colspan="4" style="text-align:center;">789</th> -->
+                        <ng-container *ngFor="let appr of listUserApprReport">
+                            <th rowspan="3" colspan="4" style="text-align:center;" id="idBranch">
+                                <div *ngFor="let sig of appr.signatures" style="margin-bottom: 10px;">
+                                    <img *ngIf="sig" [src]="sig"
+                                        style="width: 120px; height: 60px; display: block; margin: 0 auto;">
+                                </div>
+                            </th>
+                        </ng-container>
                     </tr>
                     <tr>
                         <th colspan="6">Tên máy: <span id="spanDeviceName">{{ model.planDetail.device.name }}</span>
@@ -41,7 +51,7 @@
                             <i class="fa-solid fa-circle"></i>Hàng tuần
                         </th>
                         <th colspan="9">Tổ: <span id="spanTeamName">{{ model.planDetail.device.team.name }}</span></th>
-                        <th colspan="6"><span id="spanLanbanhanh_1">Ban hành lần 1</span></th>
+                        <th colspan="6"><span id="spanLanbanhanh_1">Ban hành lần {{ sampleReport.numberOfIssuances }}</span></th>
                     </tr>
                     <tr>
                         <th rowspan="2">TT</th>
@@ -112,6 +122,8 @@
                             </p>
                             <p>4. Gạch chéo ( // ) vào ngày không sử dụng.</p>
                             <p>5. Mục hàng tuần: Ghi rõ ngày thực hiện.</p>
+                            <p>(*) Ghi chú: Các đơn vị có thể bổ sung tùy theo đặc điểm từng máy móc công nghệ.</p>
+                            <p>{{ sampleReport.formCode }}. Ban hành lần {{ sampleReport.numberOfIssuances }}</p>
                         </td>
                         <td>Người thực hiện ký</td>
                         <td *ngFor="let day of getDaysArray()" style="padding:0px !important;">
@@ -153,7 +165,8 @@
             <thead>
                 <tr>
                     <th *ngFor="let h of listUserStatusAppr || []">
-                        {{ userMap[h.userApproval?.username] || h.userApproval?.username }} - {{ h.group.groupApprovalName.name }}
+                        {{ userMap[h.userApproval?.username] || h.userApproval?.username }} - {{
+                        h.group.groupApprovalName.name }}
                     </th>
                 </tr>
                 <tr>
