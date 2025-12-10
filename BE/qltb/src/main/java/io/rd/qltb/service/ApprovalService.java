@@ -55,7 +55,7 @@ public class ApprovalService {
     }
     public List<ApprovalResponseDTO> getAllFromTableByUserName(String userName) {
     //
-        List<ApprovalGroupUser> approvalGroupUsers = approvalGroupUserRepository.findByUsername(userName);
+        List<ApprovalGroupUser> approvalGroupUsers = approvalGroupUserRepository.findAllByUsername(userName);
         if(approvalGroupUsers.isEmpty()){
             throw new NotFoundException("User not found in any approval group");
         }else{

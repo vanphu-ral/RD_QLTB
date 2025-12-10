@@ -12,10 +12,7 @@ import io.rd.qltb.repos.*;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
 
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.YearMonth;
+import java.time.*;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -59,6 +56,9 @@ public class PlanService {
     private final PlanResultDetailRepository planResultDetailRepository;
     private final KeyMappingRepository keyMappingRepository;
     private final KeyMappingService keyMappingService;
+    private final ApprovalGroupUserRepository approvalGroupUserRepository;
+    private final ApprovalRepository approvalRepository;
+    private final ApprovalGroupRepository approvalGroupRepository;
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -68,7 +68,7 @@ public class PlanService {
                        final BranchRepository branchRepository,
                        final TeamRepository teamRepository,
                        final ApprovalWorkflowRepository approvalWorkflowRepository,
-                       final ApplicationEventPublisher publisher, PlanDetailRepository planDetailRepository, DeviceRepository deviceRepository, DeviceGroupRepository deviceGroupRepository, SampleReportRepository sampleReportRepository, DeviceGroupService deviceGroupService, SampleReportService sampleReportService, DeviceService deviceService, PlanDetailService planDetailService, DetailLogService detailLogService, DetailLogRepository detailLogRepository, PlanResultService planResultService, PlanResultRepository planResultRepository, PlanResultDetailRepository planResultDetailRepository, KeyMappingRepository keyMappingRepository, KeyMappingService keyMappingService, JdbcTemplate jdbcTemplate) {
+                       final ApplicationEventPublisher publisher, PlanDetailRepository planDetailRepository, DeviceRepository deviceRepository, DeviceGroupRepository deviceGroupRepository, SampleReportRepository sampleReportRepository, DeviceGroupService deviceGroupService, SampleReportService sampleReportService, DeviceService deviceService, PlanDetailService planDetailService, DetailLogService detailLogService, DetailLogRepository detailLogRepository, PlanResultService planResultService, PlanResultRepository planResultRepository, PlanResultDetailRepository planResultDetailRepository, KeyMappingRepository keyMappingRepository, KeyMappingService keyMappingService, ApprovalGroupUserRepository approvalGroupUserRepository, ApprovalRepository approvalRepository, ApprovalGroupRepository approvalGroupRepository, JdbcTemplate jdbcTemplate) {
         this.entityManager = entityManager;
         this.planRepository = planRepository;
         this.planTypeRepository = planTypeRepository;
@@ -92,6 +92,9 @@ public class PlanService {
         this.planResultDetailRepository = planResultDetailRepository;
         this.keyMappingRepository = keyMappingRepository;
         this.keyMappingService = keyMappingService;
+        this.approvalGroupUserRepository = approvalGroupUserRepository;
+        this.approvalRepository = approvalRepository;
+        this.approvalGroupRepository = approvalGroupRepository;
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -558,21 +561,52 @@ public class PlanService {
         List<PlanDetail> savedDetails = addDetailToSampleReport(details);// chuyển detail sang JSON
         planDetailRepository.saveAll(savedDetails);
         autoCreatePlanResult(details);
-
+        createApproveForManager(plan);
         return plan;
     }
     public void createApproveForManager(Plan plan) {
-        // Tạo các bước phê duyệt tự động cho người quản lý
-        ApprovalWorkflow workflow = plan.getApprovalWorkflow();
-        if (workflow != null) {
-            ApprovalWorkflowDTO workflowDTO = new ApprovalWorkflowDTO();
-            workflowDTO.setId(workflow.getId());
-            workflowDTO.setCode(workflow.getCode());
-            workflowDTO.setName(workflow.getName());
-            // Giả sử có một phương thức để tạo bước phê duyệt
-            // approvalService.createApprovalStepForManager(plan, workflowDTO, userName);
+        LocalDate fromDate = plan.getFromDate().toLocalDate();
+        LocalDate toDate = plan.getToDate().toLocalDate();
+        Branch branch = branchRepository.findById(plan.getBranch().getId()).orElseThrow();
+        List<ApprovalGroup> approvalGroups = approvalGroupRepository.findByWorkflowId(plan.getApprovalWorkflow().getId());
+        Long userId = null;
+        for (ApprovalGroup ag : approvalGroups) {
+            for (ApprovalGroupUser agu : ag.getGroupApprovalGroupUsers()) {
+                if (agu.getUsername().equals(branch.getManager())) {
+                    userId = agu.getId();
+                    break;
+                }
+            }
+        }
+        ApprovalGroupUser agUser = approvalGroupUserRepository.findById(userId).orElse(null);
+        if (agUser == null) {
+            return; // không tìm thấy user quản lý
+        }
+
+        LocalDate current = fromDate;
+        while (!current.isAfter(toDate)) {
+            if (current.getDayOfWeek() == DayOfWeek.SATURDAY) {
+                Approval approval = new Approval();
+                // Phân biệt bằng createdAt: gán theo ngày thứ 7
+                approval.setCreatedAt(current.atStartOfDay());
+                approval.setUpdatedAt(LocalDateTime.now());
+                approval.setCreatedBy("admin");
+                approval.setUpdatedBy(null);
+                approval.setStatus(1);
+                approval.setWorkflow(plan.getApprovalWorkflow());
+                approval.setGroup(agUser.getGroup());
+                approval.setEntityId(plan.getId());
+                approval.setEntityType("plans");
+                approval.setUserApproval(agUser);
+
+                approvalRepository.save(approval);
+            }
+            current = current.plusDays(1);
         }
     }
+
+
+
     public List<PlanDetail> addDetailToSampleReport(List<PlanDetail> planDetails) {
         ObjectMapper mapper = new ObjectMapper();
         // Đăng ký module hỗ trợ Java 8 Date/Time
