@@ -24,16 +24,18 @@ export class PlanService extends BaseApiService<PlanRequest> {
     super(http, 'api/plans');
   }
 
-  getPlans(filters: any, page: number): Observable<any> {
-    let params = new HttpParams().set('page', page.toString());
+  getPlans(page: number, size: number, filters: any): Observable<any> {
+    let params = new HttpParams()
+      .set('page', page)
 
-    Object.keys(filters).forEach(key => {
-      if (filters[key] !== null && filters[key] !== undefined) {
-        params = params.set(key, filters[key]);
+    Object.keys(filters).forEach((key) => {
+      const value = filters[key];
+      if (value !== null && value !== undefined && value !== '') {
+        params = params.set(key, value);
       }
     });
 
-    return this.http.get<Page<Plan>>(`${this['fullBaseUrl']}/paged`, { params, withCredentials: true });
+    return this.http.get<any>(`${this['fullBaseUrl']}/paged`, { params, withCredentials: true });
   }
 
   createPlanWithDetails(entity: CreateEntity<PlanRequest>): Observable<PlanRequest> {

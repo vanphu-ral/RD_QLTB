@@ -4,9 +4,12 @@
   <p-button [label]="'Thêm mới'" class="p-button-sm" (click)="addItem()" />
 </div>
 <div class="card">
-  <p-table [value]="plans" dataKey="id" [tableStyle]="{ 'min-width': '60rem' }" [expandedRowKeys]="expandedRows"
-    (onRowExpand)="onRowExpand($event)" (onRowCollapse)="onRowCollapse($event)" [responsiveLayout]="'scroll'" [scrollable]="true" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 20, 50]"
-  [showCurrentPageReport]="true" currentPageReportTemplate="Tổng: {totalRecords} bản ghi">
+  <p-table [value]="plans" [paginator]="true" [rows]="size" [totalRecords]="totalRecords" [lazy]="true"
+    [loading]="loading" (onLazyLoad)="onPageChange($event)" [showCurrentPageReport]="true"
+    currentPageReportTemplate="Từ {first} đến {last} trong {totalRecords} bản ghi"
+    [rowsPerPageOptions]="[5, 10, 20, 50]" dataKey="id" [tableStyle]="{ 'min-width': '60rem' }"
+    [expandedRowKeys]="expandedRows" (onRowExpand)="onRowExpand($event)" (onRowCollapse)="onRowCollapse($event)"
+    [responsiveLayout]="'scroll'" [scrollable]="true">
     <ng-template #header>
       <tr>
         <th></th>
@@ -40,10 +43,10 @@
         <td>{{ row.frequency }}</td>
         <td>{{ row.planNumber }}</td>
         <td>{{ row.userPerformer }}</td>
-        <td>{{ row.planTypeName }}</td>
-        <td>{{ row.factoryName }}</td>
-        <td>{{ row.branchName }}</td>
-        <td>{{ row.approvalWorkflowName }}</td>
+        <td>{{ row.planType.name }}</td>
+        <td>{{ row.factory.name }}</td>
+        <td>{{ row.branch.name }}</td>
+        <td>{{ row.approvalWorkflow.name }}</td>
         <td>{{ row.createdBy }}</td>
         <td>{{ row.updatedBy }}</td>
         <td>{{ row.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
@@ -52,16 +55,19 @@
           <p-tag [value]="getStatus(row.status)" [severity]="getSeverity(row.status)" />
         </td>
         <td>
-          <p-button icon="pi pi-file-check" *ngIf="row.status == 1" styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="approval(row, $event)"></p-button>
-          <p-button icon="pi pi-file-check" styleClass="p-button-sm p-button-rounded p-button-info m-1" *ngIf="row.planTypeCode == PLANTYPE.MAINTENANCE && !isLocked(row)"
+          <p-button icon="pi pi-file-check" *ngIf="row.status == 1"
+            styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="approval(row, $event)"></p-button>
+          <p-button icon="pi pi-file-check" styleClass="p-button-sm p-button-rounded p-button-info m-1"
+            *ngIf="row.planTypeCode == PLANTYPE.MAINTENANCE && !isLocked(row)"
             (onClick)="viewPlanMaintance(row)"></p-button>
-          <p-button icon="pi pi-pencil" *ngIf="!isLocked(row)" styleClass="p-button-sm p-button-rounded p-button-warn m-1"
-            (onClick)="editItem(row)"></p-button>
+          <p-button icon="pi pi-pencil" *ngIf="!isLocked(row)"
+            styleClass="p-button-sm p-button-rounded p-button-warn m-1" (onClick)="editItem(row)"></p-button>
           <p-button icon="pi pi-eye" styleClass="p-button-sm p-button-rounded p-button-info m-1"
             (onClick)="viewItem(row)"></p-button>
           <p-button icon="pi pi-history" styleClass="p-button-sm p-button-rounded p-button-warn m-1"
             (onClick)="viewHistory(row)"></p-button>
-          <p-button icon="pi pi-trash" *ngIf="!isLocked(row)" styleClass="p-button-sm p-button-rounded p-button-danger m-1"
+          <p-button icon="pi pi-trash" *ngIf="!isLocked(row)"
+            styleClass="p-button-sm p-button-rounded p-button-danger m-1"
             (onClick)="deleteItem(row, $event)"></p-button>
         </td>
       </tr>
@@ -91,9 +97,9 @@
       <tr>
         <th></th>
         <td>{{ i + 1 }}</td>
-        <td>{{ detail.deviceGroupName }}</td>
-        <td>{{ detail.deviceName }}</td>
-        <td>{{ detail.sampleReportName }}</td>
+        <td>{{ detail.deviceGroup.name }}</td>
+        <td>{{ detail.device.name }}</td>
+        <td>{{ detail.sampleReport.name }}</td>
         <td>{{ detail.serial }}</td>
         <td>{{ detail.manager }}</td>
         <td>{{ detail.createdBy }}</td>
@@ -104,15 +110,18 @@
           <p-tag [value]="getStatus(detail.status)" [severity]="getSeverity(detail.status)" />
         </td>
         <td>
-          <p-button icon="pi pi-file" styleClass="p-button-sm p-button-rounded p-button-secondary m-1"  *ngIf="(row.planTypeCode == PLANTYPE.MAINTENANCE || row.planTypeCode == PLANTYPE.REPAIR) && !isLocked(row)"
+          <p-button icon="pi pi-file" styleClass="p-button-sm p-button-rounded p-button-secondary m-1"
+            *ngIf="(row.planTypeCode == PLANTYPE.MAINTENANCE || row.planTypeCode == PLANTYPE.REPAIR) && !isLocked(row)"
             (onClick)="acceptance(detail, row)"></p-button>
-          <p-button icon="pi pi-check-square" *ngIf="!isLocked(row)" styleClass="p-button-sm p-button-rounded p-button-success m-1"
+          <p-button icon="pi pi-check-square" *ngIf="!isLocked(row)"
+            styleClass="p-button-sm p-button-rounded p-button-success m-1"
             (onClick)="deviceDateCheckList(detail, row)"></p-button>
-          <p-button icon="pi pi-wrench" *ngIf="!isLocked(row)" styleClass="p-button-sm p-button-rounded p-button-warn m-1"
-            (onClick)="repairDevice(detail)"></p-button>
-          <p-button icon="pi pi-eye" styleClass="p-button-sm p-button-rounded p-button-info m-1" *ngIf="row.planTypeCode == PLANTYPE.AUDIT"
-            (onClick)="viewEvaluateDevice(detail)"></p-button>
-          <p-button icon="pi pi-trash" *ngIf="!isLocked(row)" styleClass="p-button-sm p-button-rounded p-button-danger m-1"
+          <p-button icon="pi pi-wrench" *ngIf="!isLocked(row)"
+            styleClass="p-button-sm p-button-rounded p-button-warn m-1" (onClick)="repairDevice(detail)"></p-button>
+          <p-button icon="pi pi-eye" styleClass="p-button-sm p-button-rounded p-button-info m-1"
+            *ngIf="row.planTypeCode == PLANTYPE.AUDIT" (onClick)="viewEvaluateDevice(detail)"></p-button>
+          <p-button icon="pi pi-trash" *ngIf="!isLocked(row)"
+            styleClass="p-button-sm p-button-rounded p-button-danger m-1"
             (onClick)="deleteItem(row, $event)"></p-button>
         </td>
       </tr>
@@ -122,12 +131,12 @@
   </tr>
   </ng-template>
   <ng-template pTemplate="emptymessage">
-      <tr>
-        <td [attr.colspan]="999" class="text-center">
-          <p>Không có dữ liệu</p>
-        </td>
-      </tr>
-    </ng-template>
+    <tr>
+      <td [attr.colspan]="999" class="text-center">
+        <p>Không có dữ liệu</p>
+      </td>
+    </tr>
+  </ng-template>
   </p-table>
 </div>
 <p-toast />

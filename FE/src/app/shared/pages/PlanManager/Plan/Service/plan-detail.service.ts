@@ -28,4 +28,8 @@ export class PlanDetailService extends BaseApiService<PlanDetail> {
     const params = new HttpParams().set('serial', serial);
     return this.http.get<any[]>(`${this['fullBaseUrl']}/plans`, { params, withCredentials: true });
   }
+
+  getByPlanId(id: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this['fullBaseUrl']}/plan/${id}`, { withCredentials: true });
+  }
 }

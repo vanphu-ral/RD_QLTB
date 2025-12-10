@@ -45,6 +45,8 @@ export class SupplyReplacementDialog {
         private supplyDetailService: SupplyDetailService
     ) {
         this.data = config.data;
+        console.log(this.data);
+        
     }
 
     ngOnInit() {
@@ -53,17 +55,15 @@ export class SupplyReplacementDialog {
 
     loadData() {
         this.deviceSupplyUseService
-            .getListByDeviceId(this.data.device.deviceId)
+            .getListByDeviceId(this.data.device.device.id)
             .subscribe((res: any) => {
                 this.listSupplys = res;
                 this.cdr.detectChanges();
             });
 
-        this.deviceCurrentSupplyService.getListByDeviceId(this.data.device.deviceId)
+        this.deviceCurrentSupplyService.getListByDeviceId(this.data.device.device.id)
             .subscribe((res: any) => {
                 this.checkList = res;
-                console.log(res);
-                
                 this.cdr.detectChanges();
             });
     }
@@ -90,7 +90,7 @@ export class SupplyReplacementDialog {
             closable: true,
             data: {
                 supply: this.checkList[index],
-                device: this.data.device
+                device: this.data.device.device
             }
         });
         ref.onClose.subscribe((result: any) => {
@@ -99,7 +99,7 @@ export class SupplyReplacementDialog {
                     supplyDetail: result.serial,
                     quantity: result.quantityUsed,
                     note: result.description,
-                    planResult: this.data.planResult
+                    planResult: this.data.planResults
                 });
                 this.supplyReplaceHistory.quantityChange = result.quantityUsed;
                 this.supplyReplaceHistory.newSupplyDetail = result.serial;

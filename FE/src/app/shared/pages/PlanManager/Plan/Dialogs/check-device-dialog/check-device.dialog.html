@@ -3,7 +3,7 @@
     <div class="row my-3">
         <div class="col-4">
             <p-floatlabel variant="on">
-                <input pInputText id="deviceCode" name="deviceCode" [(ngModel)]="data.device.deviceCode"
+                <input pInputText id="deviceCode" name="deviceCode" [(ngModel)]="data.device.device.code"
                     autocomplete="off" [fluid]="true" [disabled]="true" />
                 <label for="deviceCode">Mã thiết bị</label>
             </p-floatlabel>
@@ -11,7 +11,7 @@
 
         <div class="col-4">
             <p-floatlabel variant="on">
-                <input pInputText id="deviceName" name="deviceName" [(ngModel)]="data.device.deviceName"
+                <input pInputText id="deviceName" name="deviceName" [(ngModel)]="data.device.device.name"
                     autocomplete="off" [fluid]="true" [disabled]="true" />
                 <label for="deviceName">Tên thiết bị</label>
             </p-floatlabel>
@@ -30,7 +30,7 @@
         <div class="col-4">
             <p-floatlabel variant="on">
                 <input pInputText id="sampleReportName" name="sampleReportName"
-                    [(ngModel)]="data.device.sampleReportName" autocomplete="off" [fluid]="true" [disabled]="true" />
+                    [(ngModel)]="data.device.sampleReport.name" autocomplete="off" [fluid]="true" [disabled]="true" />
                 <label for="sampleReportName">Mẫu biên bản</label>
             </p-floatlabel>
         </div>

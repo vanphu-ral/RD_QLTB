@@ -7,6 +7,9 @@ import { DeviceService } from '../../../../DeviceManager/Device/Service/device.s
 import { DeviceRelocationHistoryService } from '../../../../DeviceManager/Device/Service/device-relocation-histories.service';
 import { PlanDetailService } from '../../../../PlanManager/Plan/Service/plan-detail.service';
 import { ErrorReportService } from '../../../../PlanManager/Plan/Service/error-report.service';
+import { DialogService } from 'primeng/dynamicdialog';
+import { CheckDeviceDialog } from '../../../../PlanManager/Plan/Dialogs/check-device-dialog/check-device.dialog';
+import _ from 'lodash';
 
 @Component({
   selector: 'app-information-tab',
@@ -23,8 +26,9 @@ export class InformationTabComponent implements OnChanges {
   listHistory: any[] = []
   listError: any[] = []
   listRepaired: any[] = []
+  listPlanAudit: any[] = []
 
-  constructor(private cdr: ChangeDetectorRef, private deviceRelocationHistoryService: DeviceRelocationHistoryService, private planDetailService: PlanDetailService, private errorReportService: ErrorReportService) {
+  constructor(private cdr: ChangeDetectorRef, private deviceRelocationHistoryService: DeviceRelocationHistoryService, private planDetailService: PlanDetailService, private errorReportService: ErrorReportService, private dialogService: DialogService) {
   }
 
   ngOnInit() { this.activeTabIndex = "0"; }
@@ -90,9 +94,25 @@ export class InformationTabComponent implements OnChanges {
 
   loadPlan(serial: string) {
     this.planDetailService.getPlansBySerial(serial).subscribe(res => {
-      console.log(res);
+      res.forEach((plan, i) => {
+        plan.planDetails.forEach((detail: any) => {
+          // Mỗi ngày kiểm tra có nhiều kết quả (planResults)
+          detail.planResults?.forEach((result: any) => {
+            this.listPlanAudit.push({
+              stt: this.listPlanAudit.length + 1,
+              planName: plan.name,
+              deviceCode: detail.device?.code,
+              deviceName: detail.device?.name,
+              userPerformer: plan.userPerformer || detail.manager || 'N/A',
+              dateTest: result.dateTest,
+              planResultId: result.id,
+              plan: detail
+            });
+          });
+        });
+      });
+      console.log(this.listPlanAudit);
       
-      // this.listHistory = res;
       this.cdr.detectChanges();
     });
   }
@@ -109,6 +129,21 @@ export class InformationTabComponent implements OnChanges {
       default:
         return '';
     }
+  }
+
+  checkDevice(data: any) {
+    const planResult = _.find(data.plan.planResults, x => x.id === data.planResultId);
+    const childRef = this.dialogService.open(CheckDeviceDialog, {
+      header: `Kiểm tra thiết bị`,
+      width: '100%',
+      modal: true,
+      closable: true,
+      data: { planResult: planResult, device: data.plan.device, plan: data.plan },
+    });
+    childRef.onClose.subscribe((result) => {
+      if (result && result.length > 0) {
+      }
+    });
   }
 
 }

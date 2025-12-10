@@ -18,6 +18,8 @@ import { OptionApprovalDialog } from '../../SampleReport/Dialogs/option-approval
 import { AcceptanceService } from '../../../Reports/Acceptance/service/acceptance.service';
 import { ListHistoryChangeDataDialog } from '../Dialogs/list-history-change-data-dialog/list-history-change-data.dialog';
 import { DataService } from '../../../../service/send-data.service';
+import { PlanDetailService } from '../Service/plan-detail.service';
+import _ from 'lodash';
 
 @Component({
   selector: 'plan-list',
@@ -31,12 +33,25 @@ export class PlanListComponent {
 
   ref?: DynamicDialogRef;
   plans: any[] = [];
+  PLANTYPE = PLANTYPE;
+
+  // Page
+  loading: boolean = false;
+  page: number = 0;
+  size: number = 10;
+  totalRecords: number = 0;
   selectedPageSize: number = 10;
   pageSizeOptions: number[] = [5, 10, 20, 30, 50, 100];
   expandedRows = {};
-  PLANTYPE = PLANTYPE;
+  totalItems = 0;
+  currentPage = 0;
+  filters = {
+    name: '',
+    deviceCode: '',
+    executor: ''
+  };
 
-  constructor(public apiService: PlanService, private router: Router, private route: ActivatedRoute,
+  constructor(public apiService: PlanService, private router: Router, private route: ActivatedRoute, private planDetailService: PlanDetailService,
     private dialogService: DialogService, private cdr: ChangeDetectorRef, private messageService: MessageService,
     private confirmationService: ConfirmationService, private acceptanceService: AcceptanceService, private dataService: DataService) { }
 
@@ -45,11 +60,47 @@ export class PlanListComponent {
   }
 
   loadData() {
-    this.apiService.getAllWithDetails().subscribe((data) => {
-      this.plans = data;
-      this.cdr.detectChanges();
+    this.loading = true;
+    this.apiService.getPlans(this.page, this.size, this.filters).subscribe({
+      next: (res) => {
+        this.plans = res.content.map((item: any) => ({
+          ...item,
+          details: [] 
+        }));
+        this.totalRecords = res.totalElements;
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.loading = false;
+      }
     });
   }
+
+  onPageChange(event: any) {
+    this.page = event.first / event.rows;  // compute page index
+    this.size = event.rows;
+    this.loadData();
+  }
+
+  onSearch() {
+    this.page = 0; // reset về trang đầu
+    this.loadData();
+  }
+
+  onRowExpand(event: TableRowExpandEvent) {
+    const plan = event.data;
+    if (!plan || !plan.id) return;
+    if (plan.details && plan.details.length > 0) return;
+    this.planDetailService.getByPlanId(plan.id).subscribe({
+      next: (res) => {
+        _.map(res, (item: any) => item.sampleReport = JSON.parse(item.detail));
+        plan.details = res;      
+        this.cdr.detectChanges(); 
+      }
+    });
+  }
+  onRowCollapse(event: TableRowCollapseEvent) { }
 
   openEvaluateDialog(data: any) {
     this.ref = this.dialogService.open(EvaluateDeviceDialog, {
@@ -92,11 +143,6 @@ export class PlanListComponent {
   isLocked(row: any) {
     return row.status === 2 || row.status === 6;
   }
-
-
-  onRowExpand(event: TableRowExpandEvent) { }
-
-  onRowCollapse(event: TableRowCollapseEvent) { }
 
 
   // function table parent
