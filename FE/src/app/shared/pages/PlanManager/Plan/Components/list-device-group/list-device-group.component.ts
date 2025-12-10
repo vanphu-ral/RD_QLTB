@@ -44,6 +44,9 @@ export class ListDeviceComponent implements OnInit {
         })
         this.deviceGroupService.getAll().subscribe(res => {
             this.listDeviceGroupBase = res
+            if ((this.isEditMode || this.isViewMode) && this.model?.plan?.branch) {
+                this.handleBranchChange(this.model.plan.branch);
+            }
             this.cdr.detectChanges()
         })
         if (this.isEditMode) {
