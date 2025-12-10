@@ -16,6 +16,8 @@ import { DeviceService } from "../../../../DeviceManager/Device/Service/device.s
 import { Acceptance } from "../../../../../models/PlanManger/acceptance.model";
 import { PlanResultService } from "../../Service/plan-result.service";
 import { PlanDetailService } from "../../Service/plan-detail.service";
+import { ApprovalService } from "../../../../ApprovalManager/Approval/Service/approval.service";
+import { SignatureService } from "../../../../SystemManager/Signature/Service/signature.service";
 
 @Component({
     selector: 'app-plan-maintance-detail-dialog',
@@ -29,12 +31,15 @@ export class PlanMaintanceDetailDialog {
     plan: any = {};
     model: any = {};
     listApprovalWorkflow: any[] = []
+    listUserApprReport: any[] = [];
 
     constructor(
         public ref: DynamicDialogRef,
         public config: DynamicDialogConfig,
         private planDetailService: PlanDetailService,
         private approvalWorkflowService: ApprovalWorlflowService,
+        private approvalService: ApprovalService,
+        private signatureService: SignatureService,
         private cdr: ChangeDetectorRef,
         private ngZone: NgZone
     ) {
@@ -49,8 +54,40 @@ export class PlanMaintanceDetailDialog {
         this.planDetailService.getSummaryCheckDetail(this.data.id).subscribe(res => {
             this.ngZone.run(() => {
                 this.model = res;
+                this.model.planDetail.sampleReport = JSON.parse(this.model.planDetail.detail);
                 console.log(res);
-                
+                this.approvalService
+                    .findApprovalsByEntityIdAndEntityType(this.model.planDetail.sampleReport.approvalWorkflow.id, 'sample_reports')
+                    .subscribe((data) => {
+                        const usernames = data.map(x => x.userApproval?.username);
+                        this.signatureService.getByListUsernames(usernames).subscribe(signatures => {
+                            this.listUserApprReport = Object.values(
+                                data.reduce((acc: any, item: any) => {
+                                    const groupId = item.group?.groupApprovalName?.id;
+                                    acc[groupId] ??= {
+                                        groupApprovalName: item.group.groupApprovalName,
+                                        items: [],
+                                        userApprovals: []
+                                    };
+                                    acc[groupId].items.push(item);
+                                    acc[groupId].userApprovals.push(item.userApproval);
+                                    return acc;
+                                }, {})
+                            ).map((group: any) => ({
+                                ...group,
+                                userApprovals: group.userApprovals.map((u: any) => ({
+                                    ...u,
+                                    imageLink: signatures.find((s: any) => s.username === u.username)?.imageLink || null
+                                }))
+                            }));
+                            this.listUserApprReport = this.listUserApprReport.map(g => ({
+                                groupName: g.groupApprovalName.name,
+                                signatures: g.userApprovals.map((u: any) => u.imageLink)
+                            }));
+                            console.log(this.listUserApprReport);
+                        });
+                        this.cdr.detectChanges();
+                    });
                 this.cdr.detectChanges();
             });
         })

@@ -16,9 +16,9 @@
                   </b>
                   <br /><span id="spanCurentYear">2025</span>
                 </th>
-                <th>Người lập kế hoạch</th>
-                <th>Trưởng ngành</th>
-                <th>TĐV/UQ</th>
+                <ng-container *ngFor="let appr of listUserApprReport">
+                  <th class="text-center">{{ appr.groupName }}</th>
+                </ng-container>
               </tr>
               <tr>
                 <th>
@@ -26,9 +26,16 @@
                     <label for="selectFactory">Xưởng:</label><span id="spanCurentFactoryName">{{ plan?.factory?.name }}</span>
                   </div>
                 </th>
-                <td rowspan="2" style="text-align:center;" id="tdPlanCreate_detai"></td>
-                <td rowspan="2" style="text-align:center;" id="idBranch_detai"></td>
-                <td rowspan="2" style="text-align:center;" id="tdAuthority_detai"></td>
+                <!-- <td rowspan="2" style="text-align:center;" id="tdPlanCreate_detai">FSDFD</td>
+                <td rowspan="2" style="text-align:center;" id="idBranch_detai">SFSD</td>
+                <td rowspan="2" style="text-align:center;" id="tdAuthority_detai">fDS</td> -->
+                <ng-container *ngFor="let appr of listUserApprReport">
+                  <td rowspan="2" style="text-align:center;" id="idBranch">
+                    <div *ngFor="let sig of appr.signatures" style="margin-bottom: 10px;">
+                      <img *ngIf="sig" [src]="sig" style="width: 120px; height: 60px; display: block; margin: 0 auto;">
+                    </div>
+                  </td>
+                </ng-container>
               </tr>
               <tr>
                 <th>
@@ -38,13 +45,13 @@
                 </th>
               </tr>
               <tr>
-                <th>Số: <span id="spanCurentPlanDeviceNumber">{{ plan?.code }}-{{ model.planDetail.device.code }}</span></th>
+                <th>Số: <span id="spanCurentPlanDeviceNumber">{{ plan?.code }}-{{ model?.planDetail?.device?.code }}</span></th>
                 <th>
                   <div class="form-group">
                     <label for="Name">Thiết bị: <span id="spanCurentDeviceName"> {{ data.device.name }}</span></label>
                   </div>
                 </th>
-                <th><span id="spanCurentDatePlan">Ngày / tháng/ năm</span></th>
+                <th [attr.colspan]="listUserApprReport.length + 2"><span id="spanCurentDatePlan">Ngày {{ model.planDetail.sampleReport.updatedAt | date:'dd' }} tháng {{ model.planDetail.sampleReport.updatedAt | date:'M' }}  năm {{ model.planDetail.sampleReport.updatedAt | date:'yyyy' }}</span></th>
               </tr>
             </thead>
           </table>
