@@ -11,6 +11,7 @@ import io.rd.qltb.util.ReferencedException;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -49,8 +50,13 @@ public class PlanDetailService {
         this.planResultRepository = planResultRepository;
         this.approvalWorkflowRepository = approvalWorkflowRepository;
     }
-
-    public PlanCheckDTO getPlanCheckDetail(final Long id,String entityType) {
+    public List<PlanDetailDTO> getByPlanId (final Long planId) {
+        final List<PlanDetail> planDetails = planDetailRepository.findAllByPlanId(planId);
+        return planDetails.stream()
+                .map(planDetail -> mapToDTO(planDetail, new PlanDetailDTO()))
+                .toList();
+    }
+    public PlanCheckDTO getPlanCheckDetail(final Long id, String entityType) {
         // Lấy thông tin PlanDetail
         final PlanDetail planDetail = planDetailRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
@@ -90,19 +96,21 @@ public class PlanDetailService {
         planCheckDTO.setPlanResultDetail(planResultDetailDTOS);
         return planCheckDTO;
     }
+
     public List<PlanDetailDTO> findAll() {
-        final List<PlanDetail> planDetails = planDetailRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
+        final List<PlanDetail> planDetails = planDetailRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
         return planDetails.stream()
                 .map(planDetail -> mapToDTO(planDetail, new PlanDetailDTO()))
                 .toList();
     }
+
     public List<PlanDTO> getByDetiveId(final String serial) {
         Device device = deviceRepository.findFirstBySerialNumber(serial);
-        List<PlanDetailDTO> planDetails = planDetailRepository.findAllByDeviceIdAndStatus(device.getId(),4).stream()
+        List<PlanDetailDTO> planDetails = planDetailRepository.findAllByDeviceIdAndStatus(device.getId(), 4).stream()
                 .map(planDetail -> mapToDTO(planDetail, new PlanDetailDTO()))
                 .toList();
         List<PlanDTO> plans = new ArrayList<>();
-        for(PlanDetailDTO planDetailDTO : planDetails){
+        for (PlanDetailDTO planDetailDTO : planDetails) {
             PlanDTO planDTO = new PlanDTO();
             planDTO.setId(planDetailDTO.getPlan().getId());
             planDTO.setName(planDetailDTO.getPlan().getName());
@@ -116,31 +124,34 @@ public class PlanDetailService {
             planDTO.setStatus(planDetailDTO.getPlan().getStatus());
             planDTO.setPlanType(planDetailDTO.getPlan().getPlanType());
             List<PlanDetailDTO> planDetailDTOS = new ArrayList<>();
-            planDTO.setPlanDetails(planDetailDTOS.add(planDetailDTO)?planDetailDTOS:null);
+            planDTO.setPlanDetails(planDetailDTOS.add(planDetailDTO) ? planDetailDTOS : null);
             // lay du lieuj plan result
             List<PlanResultDTO> planResultDTOS = planResultService.findAllByPlanDetailId(planDetailDTO.getId());//  lay du lieu plan result
             for (PlanResultDTO planResultDTO : planResultDTOS) { // lay du lieu plan result detail
-            List<PlanResultDetailDTO> planResultDetailDTOS = planResultDetailService.findAllByPlanResultId(planResultDTO.getId()); // lay du lieu plan result detail
-            planResultDTO.setPlanResultDetails(planResultDetailDTOS); // set du lieu plan result detail
+                List<PlanResultDetailDTO> planResultDetailDTOS = planResultDetailService.findAllByPlanResultId(planResultDTO.getId()); // lay du lieu plan result detail
+                if (!planResultDetailDTOS.isEmpty()) {
+                    planResultDTO.setPlanResultDetails(planResultDetailDTOS); // set du lieu plan result detail
+                }
             }
-            List<PlanResultDTO> savePlanResults =  planResultDTOS.stream().filter(planResultDTO -> planResultDTO.getPlanResultDetails().isEmpty()).toList();// loc du lieu plan result khong co plan result detail
-            if (savePlanResults.isEmpty()) {// neu co du lieu thi set vao plan detail
-            planDetailDTO.setPlanResults(savePlanResults); // set du lieu plan result
+            List<PlanResultDTO> savePlanResults = planResultDTOS.stream().filter(planResultDTO -> planResultDTO.getPlanResultDetails().isEmpty()).toList();// loc du lieu plan result khong co plan result detail
+            if (!savePlanResults.isEmpty()) {// neu co du lieu thi set vao plan detail
+                planDetailDTO.setPlanResults(savePlanResults); // set du lieu plan result
             }
             // check trùng
             boolean isDuplicate = false;
-            for(PlanDTO existingPlan : plans){
-                if(existingPlan.getId().equals(planDTO.getId())){
+            for (PlanDTO existingPlan : plans) {
+                if (existingPlan.getId().equals(planDTO.getId())) {
                     isDuplicate = true;
                     break;
                 }
             }
-            if(!isDuplicate){
+            if (!isDuplicate) {
                 plans.add(planDTO);
             }
         }
         return plans;
     }
+
     public PlanDetailDTO get(final Long id) {
         return planDetailRepository.findById(id)
                 .map(planDetail -> mapToDTO(planDetail, new PlanDetailDTO()))
@@ -152,6 +163,7 @@ public class PlanDetailService {
         mapToEntity(planDetailDTO, planDetail);
         return planDetailRepository.save(planDetail).getId();
     }
+
     public List<Long> creates(final List<PlanDetailDTO> planDetailDTOS) {
         List<Long> createdIds = new ArrayList<>();
         for (PlanDetailDTO dto : planDetailDTOS) {
@@ -271,7 +283,7 @@ public class PlanDetailService {
             dto.setDeviceGroup(null);
         }
 
-        if(planDetail.getSampleReport() != null) {
+        if (planDetail.getSampleReport() != null) {
             SampleReport sampleReportCopy = new SampleReport();
             sampleReportCopy.setId(planDetail.getSampleReport().getId());
             sampleReportCopy.setCode(planDetail.getSampleReport().getCode());
@@ -285,11 +297,11 @@ public class PlanDetailService {
             sampleReportCopy.setBranch(null);
             sampleReportCopy.setApprovalWorkflow(null);
         }
-        if(planDetail.getPlanResults().isEmpty() || planDetail.getPlanResults() == null){
+        if (planDetail.getPlanResults().isEmpty() || planDetail.getPlanResults() == null) {
             dto.setPlanResults(new ArrayList<>());
         } else {
             List<PlanResultDTO> planResultDTOS = new ArrayList<>();
-            for(PlanResult planResult : planDetail.getPlanResults()){
+            for (PlanResult planResult : planDetail.getPlanResults()) {
                 PlanResultDTO planResultDTO = planResultService.mapToDTO(planResult, new PlanResultDTO());
                 // Xóa các quan hệ con không cần thiết
 
@@ -307,6 +319,7 @@ public class PlanDetailService {
                 .map(planDetail -> mapToDTO(planDetail, new PlanDetailDTO()))
                 .toList();
     }
+
     public PlanDetail mapToEntity(final PlanDetailDTO planDetailDTO, final PlanDetail planDetail) {
         planDetail.setSerial(planDetailDTO.getSerial());
         planDetail.setEstimatedTime(planDetailDTO.getEstimatedTime());

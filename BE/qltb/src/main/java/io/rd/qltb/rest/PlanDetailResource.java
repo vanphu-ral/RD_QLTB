@@ -76,4 +76,10 @@ public class PlanDetailResource {
         List<PlanDTO> deviceSupplyUsages = planDetailService.getByDetiveId( serial);
         return ResponseEntity.ok(deviceSupplyUsages);
     }
+    @GetMapping("/plan/{id}")
+    public ResponseEntity<List<PlanDetailDTO>> getByPlanId(
+            @PathVariable("id") Long id) {
+        List<PlanDetailDTO> planDetailDTOS = planDetailService.getByPlanId(id);
+        return ResponseEntity.ok(planDetailDTOS);
+    }
 }
