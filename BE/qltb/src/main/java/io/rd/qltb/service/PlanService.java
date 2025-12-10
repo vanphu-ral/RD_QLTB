@@ -561,6 +561,18 @@ public class PlanService {
 
         return plan;
     }
+    public void createApproveForManager(Plan plan) {
+        // Tạo các bước phê duyệt tự động cho người quản lý
+        ApprovalWorkflow workflow = plan.getApprovalWorkflow();
+        if (workflow != null) {
+            ApprovalWorkflowDTO workflowDTO = new ApprovalWorkflowDTO();
+            workflowDTO.setId(workflow.getId());
+            workflowDTO.setCode(workflow.getCode());
+            workflowDTO.setName(workflow.getName());
+            // Giả sử có một phương thức để tạo bước phê duyệt
+            // approvalService.createApprovalStepForManager(plan, workflowDTO, userName);
+        }
+    }
     public List<PlanDetail> addDetailToSampleReport(List<PlanDetail> planDetails) {
         ObjectMapper mapper = new ObjectMapper();
         // Đăng ký module hỗ trợ Java 8 Date/Time
