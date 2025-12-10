@@ -10,11 +10,15 @@ import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import static io.rd.qltb.config.GlobalConfig.DRAFF;
+import static io.rd.qltb.config.GlobalConfig.IN_PROGRESS;
 
 
 @Service
@@ -105,8 +109,10 @@ public class PlanDetailService {
     }
 
     public List<PlanDTO> getByDetiveId(final String serial) {
+
         Device device = deviceRepository.findFirstBySerialNumber(serial);
-        List<PlanDetailDTO> planDetails = planDetailRepository.findAllByDeviceIdAndStatus(device.getId(), 4).stream()
+        List<Integer> statuses = Arrays.asList(DRAFF,IN_PROGRESS); // status cần lọc
+        List<PlanDetailDTO> planDetails = planDetailRepository.findAllByDeviceIdAndStatusIn(device.getId(), statuses).stream()
                 .map(planDetail -> mapToDTO(planDetail, new PlanDetailDTO()))
                 .toList();
         List<PlanDTO> plans = new ArrayList<>();
@@ -129,9 +135,7 @@ public class PlanDetailService {
             List<PlanResultDTO> planResultDTOS = planResultService.findAllByPlanDetailId(planDetailDTO.getId());//  lay du lieu plan result
             for (PlanResultDTO planResultDTO : planResultDTOS) { // lay du lieu plan result detail
                 List<PlanResultDetailDTO> planResultDetailDTOS = planResultDetailService.findAllByPlanResultId(planResultDTO.getId()); // lay du lieu plan result detail
-                if (!planResultDetailDTOS.isEmpty()) {
                     planResultDTO.setPlanResultDetails(planResultDetailDTOS); // set du lieu plan result detail
-                }
             }
             List<PlanResultDTO> savePlanResults = planResultDTOS.stream().filter(planResultDTO -> planResultDTO.getPlanResultDetails().isEmpty()).toList();// loc du lieu plan result khong co plan result detail
             if (!savePlanResults.isEmpty()) {// neu co du lieu thi set vao plan detail
