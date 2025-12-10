@@ -3,6 +3,7 @@ package io.rd.qltb.service;
 import io.rd.qltb.domain.PlanResult;
 import io.rd.qltb.domain.PlanResultDetail;
 import io.rd.qltb.events.BeforeDeletePlanResult;
+import io.rd.qltb.model.PlanResultDTO;
 import io.rd.qltb.model.PlanResultDetailDTO;
 import io.rd.qltb.repos.PlanResultDetailRepository;
 import io.rd.qltb.repos.PlanResultRepository;
@@ -57,7 +58,12 @@ public class PlanResultDetailService {
                 .orElseThrow(NotFoundException::new);
         planResultDetailRepository.delete(planResultDetail);
     }
-
+    public List<PlanResultDetailDTO> findAllByPlanResultId(Long planDetailId) {
+        List<PlanResultDetail> planResultDetails = planResultDetailRepository.findByPlanResultId(planDetailId);
+        return planResultDetails.stream()
+                .map(planResultDetail -> mapToDTO(planResultDetail, new PlanResultDetailDTO()))
+                .toList();
+    }
     public PlanResultDetailDTO mapToDTO(final PlanResultDetail planResultDetail,
                                          final PlanResultDetailDTO dto) {
         dto.setId(planResultDetail.getId());

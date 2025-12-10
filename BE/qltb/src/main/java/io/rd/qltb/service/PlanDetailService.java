@@ -98,7 +98,7 @@ public class PlanDetailService {
     }
     public List<PlanDTO> getByDetiveId(final String serial) {
         Device device = deviceRepository.findFirstBySerialNumber(serial);
-        List<PlanDetailDTO> planDetails = planDetailRepository.findAllByDeviceId(device.getId()).stream()
+        List<PlanDetailDTO> planDetails = planDetailRepository.findAllByDeviceIdAndStatus(device.getId(),4).stream()
                 .map(planDetail -> mapToDTO(planDetail, new PlanDetailDTO()))
                 .toList();
         List<PlanDTO> plans = new ArrayList<>();
@@ -117,6 +117,16 @@ public class PlanDetailService {
             planDTO.setPlanType(planDetailDTO.getPlan().getPlanType());
             List<PlanDetailDTO> planDetailDTOS = new ArrayList<>();
             planDTO.setPlanDetails(planDetailDTOS.add(planDetailDTO)?planDetailDTOS:null);
+            // lay du lieuj plan result
+            List<PlanResultDTO> planResultDTOS = planResultService.findAllByPlanDetailId(planDetailDTO.getId());//  lay du lieu plan result
+            for (PlanResultDTO planResultDTO : planResultDTOS) { // lay du lieu plan result detail
+            List<PlanResultDetailDTO> planResultDetailDTOS = planResultDetailService.findAllByPlanResultId(planResultDTO.getId()); // lay du lieu plan result detail
+            planResultDTO.setPlanResultDetails(planResultDetailDTOS); // set du lieu plan result detail
+            }
+            List<PlanResultDTO> savePlanResults =  planResultDTOS.stream().filter(planResultDTO -> planResultDTO.getPlanResultDetails().isEmpty()).toList();// loc du lieu plan result khong co plan result detail
+            if (savePlanResults.isEmpty()) {// neu co du lieu thi set vao plan detail
+            planDetailDTO.setPlanResults(savePlanResults); // set du lieu plan result
+            }
             // check trùng
             boolean isDuplicate = false;
             for(PlanDTO existingPlan : plans){

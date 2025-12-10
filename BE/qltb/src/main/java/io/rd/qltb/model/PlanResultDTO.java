@@ -1,11 +1,15 @@
 package io.rd.qltb.model;
 
 import io.rd.qltb.domain.PlanDetail;
+import io.rd.qltb.domain.PlanResultDetail;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.aop.target.LazyInitTargetSource;
 
 
 @Getter
@@ -34,5 +38,5 @@ public class PlanResultDTO {
 
     private String statusRepair;
     private PlanDetail planDetail;
-
+    private List<PlanResultDetailDTO> planResultDetails;
 }
