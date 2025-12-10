@@ -41,8 +41,6 @@ export class InformationTabComponent implements OnChanges {
 
   // Tab change
   onTabChange(event: any) {
-    console.log(event);
-    
     // if (!this.model?.id) return;
     switch (event) {
       case "0":
@@ -93,9 +91,11 @@ export class InformationTabComponent implements OnChanges {
   }
 
   loadPlan(serial: string) {
+    this.listPlanAudit = [];
     this.planDetailService.getPlansBySerial(serial).subscribe(res => {
       res.forEach((plan, i) => {
         plan.planDetails.forEach((detail: any) => {
+          detail.sampleReport = JSON.parse(detail.detail);
           // Mỗi ngày kiểm tra có nhiều kết quả (planResults)
           detail.planResults?.forEach((result: any) => {
             this.listPlanAudit.push({
@@ -138,10 +138,11 @@ export class InformationTabComponent implements OnChanges {
       width: '100%',
       modal: true,
       closable: true,
-      data: { planResult: planResult, device: data.plan.device, plan: data.plan },
+      data: { planResult: planResult, device: data.plan, plan: data.plan.plan },
     });
     childRef.onClose.subscribe((result) => {
-      if (result && result.length > 0) {
+      if (result) {
+        this.loadPlan(this.model.serialNumber);
       }
     });
   }
