@@ -13,7 +13,7 @@
                     <th>Mã serial</th>
                     <th>Người thực hiện</th>
                     <th>Ngày kiểm tra</th>
-                    <!-- <th>Trạng thái</th> -->
+                    <th>Trạng thái</th>
                     <th>Thao tác</th>
                 </tr>
             </ng-template>
@@ -29,12 +29,16 @@
                         <p-datepicker [(ngModel)]="row.dateTest" appDateConvert [iconDisplay]="'input'" [showIcon]="true"
                             name="dateTest" inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body" />
                     </td>
-                    <!-- <td>{{ row.status }}</td> -->
+                    <td>
+                        <p-tag [value]="statusToString(row.status)" [severity]="getSeverity(row.status)" />
+                    </td>
                     <td class="text-center">
                         <p-button icon="pi pi-save" styleClass="m-1"
                             (onClick)="saveDeviceCheckDate(row)"></p-button>
                         <p-button icon="pi pi-check-circle" styleClass="m-1" severity="info"
                             (onClick)="checkDevice(row)" [disabled]="!row.id"></p-button>
+                        <p-button icon="pi pi-check" styleClass="m-1" severity="success"
+                            (onClick)="completeCheckDate(row, $event)" [disabled]="!row.id"></p-button>
                         <p-button icon="pi pi-trash" severity="danger"
                             (onClick)="deleteRow(i)">
                         </p-button>
@@ -54,3 +58,5 @@
         <p-button label="Đóng" (onClick)="close()"></p-button>
     </div>
 </div>
+<p-confirmDialog></p-confirmDialog>
+<p-toast></p-toast>

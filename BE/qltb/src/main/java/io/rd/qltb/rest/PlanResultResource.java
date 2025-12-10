@@ -46,7 +46,7 @@ public class PlanResultResource {
     public ResponseEntity<PlanCheckDTO> getDetail(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(planResultService.getDetail(id));
     }
-    @PostMapping("/update-status")
+    @PostMapping("/update-status/{id}")
     @ApiResponse(responseCode = "201")
     public ResponseEntity<Long> updateStatus(
             @AuthenticationPrincipal OidcUser oidcUser,

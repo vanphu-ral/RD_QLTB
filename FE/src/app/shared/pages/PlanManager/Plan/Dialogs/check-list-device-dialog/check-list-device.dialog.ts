@@ -7,6 +7,7 @@ import { Util } from "../../../../../core/utils/utils-function";
 import { PlanResult } from "../../../../../models/PlanManger/plan-result.model";
 import { CheckDeviceDialog } from "../check-device-dialog/check-device.dialog";
 import { PlanResultService } from "../../Service/plan-result.service";
+import { ConfirmationService, MessageService } from "primeng/api";
 
 @Component({
     selector: 'app-check-list-device-dialog',
@@ -25,6 +26,8 @@ export class CheckListDeviceDialog {
         public config: DynamicDialogConfig,
         private dialogService: DialogService,
         private planResultService: PlanResultService,
+        private comfirmService: ConfirmationService,
+        private messageService: MessageService,
         private cdr: ChangeDetectorRef,
     ) {
         this.data = config.data.planDetail;
@@ -56,7 +59,16 @@ export class CheckListDeviceDialog {
         }
     }
 
+    statusToString(status: number) {
+        return Util.statusToString(status);
+    }
+
+    getSeverity(status: number): string {
+       return Util.statusToSeverity(status);
+    }
+
     saveDeviceCheckDate(row: any) {
+        row = Util.simplifyMany(row, ['planDetail']);
         if(Util.isEmpty(row.id)) {
             this.planResultService.create(row).subscribe((res) => {
                 Object.assign(row, res);
@@ -68,6 +80,21 @@ export class CheckListDeviceDialog {
                 this.loadDeviceCheckList();
             });
         }
+    }
+
+    completeCheckDate(row: any, event: any) {
+        Util.confirmAndExecute(
+            event,
+            'Bạn có chắc đã hoàn thành đợt kiểm tra này này?',
+            () => {
+                return this.planResultService.updateStatus(row.id as number)
+            },
+            'Đã hoàn thành đợt kiểm tra',
+            'Lỗi khi hoàn thành',
+            this.comfirmService,
+            this.messageService,
+            () => this.loadDeviceCheckList()
+        )
     }
 
     checkDevice(data: any) {

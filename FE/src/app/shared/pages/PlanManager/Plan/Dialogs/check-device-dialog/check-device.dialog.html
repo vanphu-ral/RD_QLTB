@@ -68,10 +68,10 @@
                     <th>Nhóm tiêu trí</th>
                     <th>Tên tiêu trí</th>
                     <th>Tần suất</th>
-                    <th>Ca kiểm tra</th>
-                    <th [ngStyle]="data.plan.planTypeCode == PLANTYPE.MAINTENANCE ? {} : {'min-width': '600px'}">Mô tả</th>
-                    <th *ngIf="data.plan.planTypeCode == PLANTYPE.MAINTENANCE">Ghi chú</th>
-                    <th *ngIf="data.plan.planTypeCode == PLANTYPE.MAINTENANCE">Bộ phận thực hiện</th>
+                    <th *ngIf="data.plan.planType.code == PLANTYPE.AUDIT">Ca kiểm tra</th>
+                    <th [ngStyle]="data.plan.planType.code == PLANTYPE.MAINTENANCE ? {} : {'min-width': '600px'}">Mô tả</th>
+                    <th *ngIf="data.plan.planType.code == PLANTYPE.MAINTENANCE">Ghi chú</th>
+                    <th *ngIf="data.plan.planType.code == PLANTYPE.MAINTENANCE">Bộ phận thực hiện</th>
                     <th>Kết quả đánh giá</th>
                     <th>Trạng thái</th>
                 </tr>
@@ -87,7 +87,7 @@
                             [showClear]="true" [appendTo]="'body'" id="frequency" name="frequency">
                         </p-select>
                     </td>
-                    <td>
+                    <td *ngIf="data.plan.planType.code == PLANTYPE.AUDIT">
                         <p-select [(ngModel)]="row.inspectionSession" [options]="listInspectionSessions" [fluid]="true"
                             [showClear]="true" [appendTo]="'body'" id="inspectionSession" name="inspectionSession">
                         </p-select>
@@ -96,11 +96,11 @@
                         <input pInputText id="note" name="note" [(ngModel)]="row.note" autocomplete="off"
                             [fluid]="true" />
                     </td>
-                    <td *ngIf="data.plan.planTypeCode == PLANTYPE.MAINTENANCE">
+                    <td *ngIf="data.plan.planType.code == PLANTYPE.MAINTENANCE">
                         <input pInputText id="comment" name="comment" [(ngModel)]="row.comment" autocomplete="off"
                             [fluid]="true" />
                     </td>
-                    <td *ngIf="data.plan.planTypeCode == PLANTYPE.MAINTENANCE">
+                    <td *ngIf="data.plan.planType.code == PLANTYPE.MAINTENANCE">
                         <input pInputText id="committee" name="committee" [(ngModel)]="row.committee" autocomplete="off"
                             [fluid]="true" />
                     </td>
