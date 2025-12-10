@@ -41,8 +41,6 @@ export class InformationTabComponent implements OnChanges {
 
   // Tab change
   onTabChange(event: any) {
-    console.log(event);
-    
     // if (!this.model?.id) return;
     switch (event) {
       case "0":
@@ -143,7 +141,8 @@ export class InformationTabComponent implements OnChanges {
       data: { planResult: planResult, device: data.plan, plan: data.plan.plan },
     });
     childRef.onClose.subscribe((result) => {
-      if (result && result.length > 0) {
+      if (result) {
+        this.loadPlan(this.model.serialNumber);
       }
     });
   }
