@@ -29,6 +29,8 @@ export class ViewPlanMaintancePage extends BasePageComponent<any> {
 
   override ngOnInit(): void {
     super.ngOnInit();
+    console.log(this.model);
+    
   }
 
   getEstimatedMonth(planDetail: any): number {
