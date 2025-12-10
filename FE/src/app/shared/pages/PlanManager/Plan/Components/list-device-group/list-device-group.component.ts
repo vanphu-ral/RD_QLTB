@@ -28,7 +28,8 @@ export class ListDeviceComponent implements OnInit {
     @Input() model: PlanRequest = new PlanRequest();
 
     listSampleReport: any[] = []
-    listdeviceGroups: any[] = []
+    listDeviceGroupBase: any[] = []
+    listDeviceGroupByBranches: any[] = []
     deviceUpdates: { deviceId: number, serial?: string, manager?: string }[] = [];
     isDeviceGroupDuplicate: boolean[] = [];
     listDeviceDetail: DeviceDetail[] = []
@@ -42,12 +43,30 @@ export class ListDeviceComponent implements OnInit {
             this.cdr.detectChanges()
         })
         this.deviceGroupService.getAll().subscribe(res => {
-            this.listdeviceGroups = res
+            this.listDeviceGroupBase = res
             this.cdr.detectChanges()
         })
         if (this.isEditMode) {
             this.mapDevicesGroupOnEdit()
         }
+    }
+
+    handleBranchChange(data: any) {
+        const branchId = data?.id;
+        if (!branchId) {
+            return;
+        }
+        const filteredDeviceGroups = _.filter(this.listDeviceGroupBase, (deviceGroup) => {
+            const groupDevices = deviceGroup.groupDevices;
+            if (!groupDevices || groupDevices.length === 0) {
+                return false; 
+            }
+            return _.some(groupDevices, (device) => {
+                return _.get(device, 'branch.id') === branchId;
+            });
+        });
+        this.listDeviceGroupByBranches = filteredDeviceGroups;
+        this.cdr.detectChanges();
     }
 
     mapDevicesGroupOnEdit() {

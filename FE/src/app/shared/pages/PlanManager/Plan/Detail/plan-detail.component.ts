@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SharedModule } from '../../../../../share.module';
 import { CommonModule } from '@angular/common';
@@ -47,7 +47,6 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
     protected override apiService: PlanService,
     private branchService: BranchService,
     private approvalWorkflowService: ApprovalWorlflowService,
-    private deviceGroupService: DeviceGroupService,
     private planTypeService: PlanTypeService,
     private planDetailService: PlanDetailService,
     private factoryService: FactoryService,
@@ -64,7 +63,6 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
     forkJoin({
       branchs: this.branchService.getAll(),
       workflows: this.approvalWorkflowService.getAll(),
-      deviceGroups: this.deviceGroupService.getAll(),
       planTypes: this.planTypeService.getAll(),
       users: this.apiService.getUsers(),
       factories: this.factoryService.getAll(),
@@ -111,6 +109,8 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
     if (!this.listTeamsFiltered.some(x => x.id === this.model.plan.team)) {
       this.model.plan.team = null;
     }
+
+    this.listDeviceComponent!.handleBranchChange(this.model.plan.branch);
   }
 
 
