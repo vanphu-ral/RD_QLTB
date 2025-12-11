@@ -97,7 +97,7 @@
     </div>
 
     <div class="d-flex justify-content-between align-items-center my-3">
-      <h5 class="m-0 text-900 font-bold">Quản lý danh sách tiêu trí</h5>
+      <h5 class="m-0 text-900 font-bold">Quản lý danh sách Tiêu chí</h5>
       <p-button *ngIf="!(isViewMode ||isApprovalMode)" label="Thêm dòng" icon="pi pi-plus-circle"
         styleClass="p-button-success p-button-outlined" (onClick)="addRow()"></p-button>
     </div>
@@ -107,8 +107,8 @@
         <ng-template pTemplate="header">
           <tr>
             <th>STT</th>
-            <th>Nhóm tiêu trí</th>
-            <th>Tiêu trí</th>
+            <th>Nhóm Tiêu chí</th>
+            <th>Tiêu chí</th>
             <th>Tần suất</th>
             <th *ngIf="!(isViewMode ||isApprovalMode)">Thao tác</th>
           </tr>
@@ -140,7 +140,7 @@
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td colspan="6" class="text-center">Chưa có tiêu trí nào được thêm</td>
+            <td colspan="6" class="text-center">Chưa có Tiêu chí nào được thêm</td>
           </tr>
         </ng-template>
       </p-table>
