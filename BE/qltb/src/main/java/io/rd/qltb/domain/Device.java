@@ -35,7 +35,7 @@ public class Device {
     @Column(nullable = false, length = 50)
     private String code;
 
-    @Column(nullable = false, length = 150)
+    @Column(nullable = false, length = 150,unique = true)
     private String name;
 
     @Column
