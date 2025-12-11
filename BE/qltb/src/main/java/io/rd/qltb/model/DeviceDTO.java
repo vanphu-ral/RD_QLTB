@@ -59,6 +59,10 @@ public class DeviceDTO {
 
     private Boolean isMappingScada;
 
+    private Integer isImportant;
+
+    private LocalDateTime timeRecieve;
+
     private String img;
 
     private String userManager;

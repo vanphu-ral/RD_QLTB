@@ -84,6 +84,12 @@ public class Device {
     private Boolean isMappingScada;
 
     @Column
+    private Integer isImportant;
+
+    @Column
+    private LocalDateTime timeRecieve;
+
+    @Column
     private String img;
 
     @Column

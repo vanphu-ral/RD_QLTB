@@ -11,6 +11,8 @@ export class Device {
     maintenanceTime?: number; // Thời gian bảo trì (ngày)
     depreciationPeriod?: number; // Thời gian khấu hao
     depreciationPercentage?: number; // phần trăm khấu hao
+    isImportant?: number;
+    timeRecieve?: Date;
     unit?: string;
     price?: number; 
     status?: number;

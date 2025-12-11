@@ -60,8 +60,10 @@
     <div class="row my-3">
       <div class="col-4">
         <p-floatlabel variant="on">
-          <input pInputText id="serialNumber" name="serialNumber" [(ngModel)]="model.serialNumber" autocomplete="off" [disabled]="isViewMode" [fluid]="true" required [invalid]="!model.serialNumber"/>
-          <label for="serialNumber">Số serial</label>
+          <p-multiselect [options]="listMaintenanceCycles" [(ngModel)]="model.maintenanceCycle" name="maintenanceCycle" optionLabel="name"
+            [filter]="false" [maxSelectedLabels]="5" display="chip" class="w-100" [disabled]="isViewMode">
+          </p-multiselect>
+          <label for="maintenanceCycle">Chu kỳ bảo trì</label>
         </p-floatlabel>
       </div>
 
@@ -83,10 +85,9 @@
     <div class="row my-3">
       <div class="col-4">
         <p-floatlabel variant="on">
-          <p-multiselect [options]="listMaintenanceCycles" [(ngModel)]="model.maintenanceCycle" name="maintenanceCycle" optionLabel="name"
-            [filter]="false" [maxSelectedLabels]="5" display="chip" class="w-100" [disabled]="isViewMode">
-          </p-multiselect>
-          <label for="maintenanceCycle">Chu kỳ bảo trì</label>
+          <p-datepicker [(ngModel)]="model.timeRecieve" appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="timeRecieve"
+            inputId="icondisplay" [dateFormat]="'mm-yy'" view="month"  appendTo="body" [inputSize]="100" [disabled]="isViewMode"/>
+          <label for="timeRecieve">Ngày tiếp nhận</label>
         </p-floatlabel>
       </div>
 
@@ -156,17 +157,31 @@
     </div>
 
     <div class="row my-3">
-      <div class="col-10">
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <input pInputText id="serialNumber" name="serialNumber" [(ngModel)]="model.serialNumber" autocomplete="off" [disabled]="isViewMode" [fluid]="true" required [invalid]="!model.serialNumber"/>
+          <label for="serialNumber">Số serial</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="col-4">
         <p-floatlabel variant="on">
           <input pInputText id="qrCode" name="qrCode" [(ngModel)]="model.qrCode" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
           <label for="qrCode">QR code</label>
         </p-floatlabel>
       </div>
 
-      <div class="col-2 d-flex align-items-center justify-content-around">
+      <div class="col-2 d-flex align-items-center">
         <p-checkbox inputId="isMappingScada" [disabled]="isViewMode" [(ngModel)]="model.isMappingScada" [binary]="true"
           name="isMappingScada"></p-checkbox>
         <label for="isMappingScada" class="ms-2">Mapping với SCADA</label>
+      </div>
+
+      <div class="col-2 d-flex align-items-center">
+        <p-checkbox inputId="isImportant" [disabled]="isViewMode" [binary]="true" name="isImportant"
+          [ngModel]="model.isImportant === 1" (onChange)="model.isImportant = $event.checked ? 1 : 0">
+        </p-checkbox>
+        <label for="isImportant" class="ms-2">Là thiết bị quan trọng</label>
       </div>
     </div>
 
