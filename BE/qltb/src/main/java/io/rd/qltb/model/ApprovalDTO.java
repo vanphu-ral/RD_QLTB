@@ -46,4 +46,5 @@ public class ApprovalDTO {
     private String updatedBy;
     private ApprovalRound round;
     private Integer checkStatus;
+    private String username;
 }

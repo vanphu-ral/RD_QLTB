@@ -55,7 +55,7 @@ public class ApprovalService {
     }
     public List<ApprovalResponseDTO> getAllFromTableByUserName(String userName) {
     //
-        List<ApprovalGroupUser> approvalGroupUsers = approvalGroupUserRepository.findByUsername(userName);
+        List<ApprovalGroupUser> approvalGroupUsers = approvalGroupUserRepository.findAllByUsername(userName);
         if(approvalGroupUsers.isEmpty()){
             throw new NotFoundException("User not found in any approval group");
         }else{
@@ -236,6 +236,7 @@ public class ApprovalService {
         approvalDTO.setUpdatedAt(approval.getUpdatedAt());
         approvalDTO.setCreatedBy(approval.getCreatedBy());
         approvalDTO.setUpdatedBy(approval.getUpdatedBy());
+        approvalDTO.setUsername(approval.getUsername());
         // sao chep approvalRound có kiểm soát
 //        if (approval.getRound() != null) {
 //            ApprovalRound roundCopy = new ApprovalRound();
@@ -325,6 +326,7 @@ public class ApprovalService {
         approval.setUpdatedAt(approvalDTO.getUpdatedAt());
         approval.setCreatedBy(approvalDTO.getCreatedBy());
         approval.setUpdatedBy(approvalDTO.getUpdatedBy());
+        approval.setUsername(approvalDTO.getUsername());
 //        approval.setRound(approvalDTO.getRound());
         return approval;
     }

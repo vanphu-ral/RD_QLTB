@@ -36,7 +36,7 @@ public class Plan {
     @Column(nullable = false, length = 50)
     private String code;
 
-    @Column(nullable = false, length = 200)
+    @Column(nullable = false, length = 200,unique = true)
     private String name;
 
     @Column(length = 50)

@@ -25,22 +25,23 @@ public class Approval {
     private Long entityId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_approval_id", nullable = false)
+    @JoinColumn(name = "user_approval_id")
     private ApprovalGroupUser userApproval;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "workflow_id", nullable = false)
+    @JoinColumn(name = "workflow_id")
     private ApprovalWorkflow workflow;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id", nullable = false)
+    @JoinColumn(name = "group_id")
     private ApprovalGroup group;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "round_id" )
     private ApprovalRound round;
     @Column
     private Integer status;
-
+ @Column
+ private String username;
     @Column
     private LocalDateTime signedAt;
 
