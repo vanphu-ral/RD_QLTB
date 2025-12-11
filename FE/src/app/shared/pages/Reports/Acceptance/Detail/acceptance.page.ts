@@ -46,11 +46,11 @@ export class AcceptancePage extends BasePageComponent<Acceptance> {
     override ngOnInit() {
         super.ngOnInit();
         if (this.isAddMode) {
-            this.model.type = this.plan.planTypeCode == PLANTYPE.REPAIR ? 1 : (this.plan.planTypeCode == PLANTYPE.MAINTENANCE ? 2 : 3);
+            this.model.type = this.plan.planType.code == PLANTYPE.REPAIR ? 1 : (this.plan.planType.code == PLANTYPE.MAINTENANCE ? 2 : 3);
             forkJoin({
-                criterial: this.criterialService.getListBySampleReport(this.planResult.sampleReportId),
+                criterial: this.criterialService.getListBySampleReport(this.planResult.sampleReport.id),
                 workflows: this.approvalWorkflowService.getAll(),
-                device: this.deviceService.getById(this.planResult.deviceId || 0)
+                device: this.deviceService.getById(this.planResult.device.id || 0)
             }).subscribe(result => {
                 this.implementationContent = result.criterial;
                 this.listApprovalWorkflow = result.workflows;

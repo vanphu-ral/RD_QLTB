@@ -62,7 +62,7 @@ export class ListDeviceComponent implements OnInit {
         const filteredDeviceGroups = _.filter(this.listDeviceGroupBase, (deviceGroup) => {
             const groupDevices = deviceGroup.groupDevices;
             if (!groupDevices || groupDevices.length === 0) {
-                return false; 
+                return false;
             }
             return _.some(groupDevices, (device) => {
                 return _.get(device, 'branch.id') === branchId;
@@ -91,11 +91,12 @@ export class ListDeviceComponent implements OnInit {
         });
     }
 
-
-
     onDeviceGroupChange(row: any, currentIndex: number) {
         if (!row.deviceGroup) {
+            this.removeDevicesByGroup(this.model.planDetails[currentIndex].deviceGroup?.id);
             row.isDuplicate = false;
+            this.model.planDetails[currentIndex].deviceGroup = null;
+            this.cdr.detectChanges();
             return;
         }
         const hasDuplicate = this.model.planDetails.some((planDetail, index) => {
@@ -115,18 +116,49 @@ export class ListDeviceComponent implements OnInit {
                     this.cdr.detectChanges();
                 }, 0);
             });
+            return;
         } else {
             row.isDuplicate = false;
-            const newDevices: DeviceDetail[] = _.map(_.get(row, 'deviceGroup.groupDevices'), device => {
+            const devicesInNewGroup: DeviceDetail[] = _.map(_.get(row, 'deviceGroup.groupDevices'), device => {
                 device.group = { id: _.get(row, 'deviceGroup.id') }
+                const existingDeviceDetail = this.model.devices?.find(d =>
+                    d.device?.id === device.id && _.get(d.device, 'group.id') === device.group.id
+                );
+                if (existingDeviceDetail) {
+                    return existingDeviceDetail;
+                }
                 return {
                     device: device,
                     serialNumber: device.serialNumber,
                     manager: device.userManager
-                }
+                } as DeviceDetail;
             });
-            this.model.devices = this.updateDeviceDetails(this.model.devices!, newDevices);
+            this.model.devices = this.replaceGroupDevices(this.model.devices, devicesInNewGroup, _.get(row, 'deviceGroup.id'));
+            this.cdr.detectChanges();
         }
+    }
+
+    /**
+     * Loại bỏ các thiết bị thuộc một nhóm cụ thể khỏi this.model.devices.
+     */
+    removeDevicesByGroup(groupId?: number) {
+        if (!groupId || !this.model.devices) return;
+        this.model.devices = this.model.devices.filter(d =>
+            _.get(d, 'device.group.id') !== groupId
+        );
+    }
+
+    /**
+     * Thay thế tất cả các thiết bị thuộc nhóm hiện tại bằng danh sách thiết bị mới
+     * (giữ nguyên các thiết bị thuộc các nhóm khác).
+     */
+    replaceGroupDevices(currentDevices: DeviceDetail[] | null | undefined, newDevices: DeviceDetail[], newGroupId: number): DeviceDetail[] {
+        const devicesToKeep = (currentDevices || []).filter(d =>
+            _.get(d, 'device.group.id') !== newGroupId
+        );
+
+        devicesToKeep.push(...newDevices);
+        return devicesToKeep;
     }
 
     addRow() {
@@ -141,19 +173,47 @@ export class ListDeviceComponent implements OnInit {
             Util.toastMessage('Vui lòng chọn loại kế hoạch', 'error');
             return
         }
-        const arrDeviceEdit = _.filter(this.model.devices, item => item.device?.group.id == this.model.planDetails[index].deviceGroup.id)
+        const currentGroup = this.model.planDetails[index].deviceGroup;
+        if (!currentGroup) {
+            Util.toastMessage('Vui lòng chọn nhóm thiết bị', 'error');
+            return
+        }
+        const deviceIdsInGroup = new Set(
+            _.chain(currentGroup.groupDevices)
+                .filter(d => d.branch.id === this.model.plan.branch.id) // Lọc theo branch nếu cần
+                .map(d => d.id)
+                .value()
+        );
+        const arrDeviceEdit: DeviceDetail[] = this.model.devices
+            ? this.model.devices.filter(d => deviceIdsInGroup.has(d.device!.id))
+            : [];
+        if (arrDeviceEdit.length === 0) {
+            const initialDevices = _.chain(currentGroup.groupDevices)
+                .filter(d => d.branch.id === this.model.plan.branch.id)
+                .map(device => {
+                    device.group = { id: currentGroup.id };
+                    return {
+                        device: device,
+                        serialNumber: device.serialNumber,
+                        manager: device.userManager
+                    } as DeviceDetail;
+                })
+                .value();
+
+            arrDeviceEdit.push(...initialDevices);
+        }
         this.ref = this.dialogService.open(ListDeviceDialog, {
-            header: `Danh sách thiết bị thuộc nhóm ${this.model.planDetails[index].deviceGroup.name}`,
+            header: `Danh sách thiết bị thuộc nhóm ${currentGroup.name}`,
             width: 'auto',
             modal: true,
             closable: true,
             data: {
                 device: arrDeviceEdit,
                 plan: this.model.plan,
-                deviceGroup: this.model.planDetails[index].deviceGroup
+                deviceGroup: currentGroup
             },
         });
-        this.ref.onClose.subscribe((result) => {
+        this.ref.onClose.subscribe((result: DeviceDetail[] | undefined) => {
             if (result && result.length > 0) {
                 this.model.devices = this.updateDeviceDetails(this.model.devices!, result)
                 this.cdr.detectChanges();
@@ -162,21 +222,25 @@ export class ListDeviceComponent implements OnInit {
     }
 
 
-    updateDeviceDetails(listDeviceDetail: DeviceDetail[], edited: DeviceDetail[]): DeviceDetail[] {
-        const map = new Map<number, DeviceDetail>();
-        listDeviceDetail.forEach(d => {
-            if (d.device?.id) {
-                map.set(d.device.id, d);
+    updateDeviceDetails(listDeviceDetail: DeviceDetail[] | null | undefined, edited: DeviceDetail[]): DeviceDetail[] {
+        const currentDevices = listDeviceDetail || [];
+        if (!edited || edited.length === 0) {
+            return currentDevices;
+        }
+        const mapEdited = new Map(edited.map(e => [e.device!.id, e]));
+        let updatedDevices: DeviceDetail[] = currentDevices.map(d => {
+            const newData = mapEdited.get(d.device!.id);
+            if (newData) {
+                return { ...d, ...newData, device: newData.device };
             }
+            return d;
         });
-        edited.forEach(e => {
-            if (e.device?.id) {
-                const old = map.get(e.device.id);
-                map.set(e.device.id, { ...old, ...e, device: e.device });
-            }
-        });
-        return Array.from(map.values());
+        const currentIds = new Set(currentDevices.map(d => d.device!.id));
+        const newDevicesToAdd = edited.filter(e => !currentIds.has(e.device!.id));
+        updatedDevices.push(...newDevicesToAdd);
+        return updatedDevices;
     }
+
 
     deleteRow(index: number) {
         const item: any = this.model.planDetails[index];
@@ -202,7 +266,5 @@ export class ListDeviceComponent implements OnInit {
         }
         this.model.planDetails = this.model.planDetails.filter(x => x !== item);
     }
-
-
 
 }

@@ -59,6 +59,16 @@ export class ErrorReportSeriousPage extends BasePageComponent<ReportDeviceIncide
                 this.model.treatmentMeasure = this.data.repairDescription;
                 this.model.timeComplete = this.data.timeRepaired;
                 this.model.createdAt = new Date();
+                const requests = {
+                    workflows: this.approvalWorkflowService.getAll(),
+                    device: this.deviceService.getById(this.planDetail.device.id),
+                };
+                forkJoin(requests).subscribe(res => {
+                    this.listApprovalWorkflow = res.workflows;
+                    this.model.device = res.device;
+                    this.model.docNumber = `BBNTLTB-${Util.getInitials(this.model.device.branch.name)}-${this.model.device.code}-${Util.dateToCode()}`;
+                    this.cdr.detectChanges();
+                });
                 this.cdr.detectChanges();
             });
         }
@@ -83,18 +93,6 @@ export class ErrorReportSeriousPage extends BasePageComponent<ReportDeviceIncide
             ];
             this.cdr.detectChanges();
         })
-        if (this.isAddMode) {
-            const requests = {
-                workflows: this.approvalWorkflowService.getAll(),
-                device: this.deviceService.getById(this.planDetail.deviceId),
-            };
-            forkJoin(requests).subscribe(res => {
-                this.listApprovalWorkflow = res.workflows;
-                this.model.device = res.device;
-                this.model.docNumber = `BBNTLTB-${Util.getInitials(this.model.device.branch.name)}-${this.model.device.code}-${Util.dateToCode()}`;
-                this.cdr.detectChanges();
-            });
-        }
     }
 
     public override save(): void {
