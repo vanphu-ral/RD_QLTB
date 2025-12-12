@@ -14,7 +14,8 @@ import io.rd.qltb.util.ReferencedException;
 
 import java.time.*;
 import java.util.*;
-import java.util.function.Predicate;
+import jakarta.persistence.criteria.Predicate;
+
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -107,10 +108,10 @@ public class PlanService {
         List<Predicate> predicates = new ArrayList<>();
         filters.forEach((key, value) -> {
             if (value != null) {
-                // tất cả đều chuyển về LIKE
-                predicates.add((Predicate) cb.like(root.get(key).as(String.class), "%" + value + "%"));
+                predicates.add(cb.like(root.get(key).as(String.class), "%" + value + "%"));
             }
         });
+
 
         cq.where(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
         cq.orderBy(cb.desc(root.get("id")));
