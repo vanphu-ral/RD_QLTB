@@ -56,7 +56,7 @@ public class Line {
     private Integer status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "team_id", nullable = false)
+    @JoinColumn(name = "team_id")
     private Team team;
 
     @OneToMany(mappedBy = "line")
