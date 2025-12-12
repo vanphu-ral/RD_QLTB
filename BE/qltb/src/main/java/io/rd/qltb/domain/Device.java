@@ -65,7 +65,7 @@ public class Device {
     @Column
     private Integer depreciationPercentage;
 
-    @Column(nullable = false, length = 50)
+    @Column( length = 50)
     private String unit;
 
     @Column(precision = 12, scale = 2)
