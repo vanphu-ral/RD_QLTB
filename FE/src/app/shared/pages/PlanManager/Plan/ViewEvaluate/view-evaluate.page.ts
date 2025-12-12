@@ -77,12 +77,37 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
   override ngOnInit(): void {
     super.ngOnInit();
     this.sampleReport = JSON.parse(this.model.planDetail.detail);
-    console.log(this.sampleReport);
     this.planInfo = this.model.planDetail;
-    this.signatureService.getByUsername('admin').subscribe((data) => {
-      this.signature = data;
-      this.groupPlanDetails();
+    // this.signatureService.getByUsername('admin').subscribe((data) => {
+    //   this.signature = data;
+    //   this.groupPlanDetails();
+    // });
+    this.signatureService.getByUsername('admin').subscribe({
+        next: (data) => {
+            this.signature = data;
+        },
+        error: (err) => {
+            console.error('Không tìm thấy chữ ký của người thực hiện:', err);
+            this.signature = { imageLink: null }; // Đặt rỗng/null nếu lỗi
+        },
+        complete: () => {
+            // Sau khi cố gắng lấy chữ ký (dù thành công hay thất bại), gọi hàm chính
+            this.groupPlanDetails();
+        }
     });
+    this.loadApprovals();
+    this.approvalService.getUsers().subscribe(users => {
+        this.listUsers = users;
+        this.userMap = users.reduce((acc, u) => {
+            const fullName = [u.firstName, u.lastName].filter(Boolean).join(' ').trim();
+            acc[u.username] = fullName || u.username;
+            return acc;
+        }, {} as Record<string, string>);
+        this.cdr.detectChanges();
+    });
+  }
+
+  loadApprovals(): void {
     this.approvalService
       .findApprovalsByEntityIdAndEntityType(this.model.planDetail.plan.id, 'plans')
       .subscribe((data) => {
@@ -112,10 +137,12 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
             groupName: g.groupApprovalName.name,
             signatures: g.userApprovals.map((u: any) => u.imageLink)
           }));
+          this.cdr.detectChanges();
         });
         this.cdr.detectChanges();
       });
 
+    // Logic load listUserApprReport (giữ nguyên)
     this.approvalService
       .findApprovalsByEntityIdAndEntityType(this.sampleReport.approvalWorkflow.id, 'sample_reports')
       .subscribe((data) => {
@@ -144,19 +171,10 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
             groupName: g.groupApprovalName.name,
             signatures: g.userApprovals.map((u: any) => u.imageLink)
           }));
-          console.log(this.listUserApprReport);
+          this.cdr.detectChanges();
         });
         this.cdr.detectChanges();
       });
-    this.approvalService.getUsers().subscribe(users => {
-      this.listUsers = users;
-      this.userMap = users.reduce((acc, u) => {
-        const fullName = [u.firstName, u.lastName].filter(Boolean).join(' ').trim();
-        acc[u.username] = fullName || u.username;
-        return acc;
-      }, {} as Record<string, string>);
-      this.cdr.detectChanges();
-    });
   }
 
   /**
@@ -255,33 +273,42 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
   }
 
   /**
-   * Kiểm tra xem có bất kỳ chi tiết công việc nào có kết quả khác '//' trong ngày cụ thể.
-   * Logic đã được cập nhật để kiểm tra trong TẤT CẢ các ca trong ngày đó.
-   * @param day Số ngày trong tháng (1-31)
-   * @returns HTML icon nếu có kết quả, hoặc rỗng nếu không có.
-   */
+ * Kiểm tra xem có bất kỳ chi tiết công việc nào có kết quả khác '//' trong ngày cụ thể.
+ * @param day Số ngày trong tháng (1-31)
+ * @returns HTML icon (chữ ký) nếu có kết quả và có ảnh, hoặc chữ "Đã ký" nếu có kết quả nhưng không có ảnh.
+ */
   hasResultForDay(day: number): SafeHtml | '' {
     if (!this.groupedDetails || this.groupedDetails.length === 0) {
       return '';
     }
 
-    // Lặp qua tất cả các chi tiết công việc
+    // ... (Logic tìm kiếm 'found' giữ nguyên) ...
     const found = this.groupedDetails.some(group => {
       return group.details.some(detail => {
         const dayResult = detail.dailyResults.find(d => d.day === day);
         if (!dayResult) return false;
 
-        // Kiểm tra xem có bất kỳ ca nào trong ngày đó có kết quả khác '//' không
         return dayResult.sessionResults.some(sessionR =>
           sessionR.results.some(r => r && r !== '//')
         );
       });
     });
 
-    if (found && this.signature?.imageLink) {
-      return this.sanitizer.bypassSecurityTrustHtml(
-        `<img src="${this.signature.imageLink}" style="width: 30px; height: 16px; transform: rotate(90deg);">`
-      );
+    if (found) {
+      // Nếu tìm thấy kết quả trong ngày đó
+      if (this.signature?.imageLink) {
+        // Trường hợp 1: Có ảnh chữ ký -> Hiển thị ảnh
+        return this.sanitizer.bypassSecurityTrustHtml(
+          `<img src="${this.signature.imageLink}" style="width: 30px; height: 16px; transform: rotate(90deg);">`
+        );
+      } else {
+        // Trường hợp 2: Không có ảnh chữ ký (hoặc signature là null/rỗng) -> Hiển thị chữ
+        // Bạn có thể dùng thẻ div/span để căn giữa hoặc tạo kiểu nếu cần
+        return this.sanitizer.bypassSecurityTrustHtml(
+          `<span style="font-weight: bold;">Đã ký</span>`
+          // Có thể thay bằng chữ cái (V) hoặc ký hiệu khác tùy yêu cầu
+        );
+      }
     }
 
     return '';

@@ -45,10 +45,8 @@ export class PlanListComponent {
   expandedRows = {};
   totalItems = 0;
   currentPage = 0;
-  filters = {
-    name: '',
-    deviceCode: '',
-    executor: ''
+  filters: any = {
+
   };
 
   constructor(public apiService: PlanService, private router: Router, private route: ActivatedRoute, private planDetailService: PlanDetailService,
