@@ -30,9 +30,80 @@
         <th style="min-width: 150px;">Trạng thái</th>
         <th style="min-width: 150px;">Thao tác</th>
       </tr>
-    </ng-template>
-    <ng-template #body let-row let-expanded="expanded" let-index="rowIndex">
       <tr>
+        <th></th>
+        <th></th>
+        <th><p-columnFilter type="text">
+            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+              <input pInputText [(ngModel)]="filters.code" (keyup.enter)="filter($event)">
+            </ng-template>
+          </p-columnFilter></th>
+        <th><p-columnFilter type="text">
+            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+              <input pInputText [(ngModel)]="filters.name" (keyup.enter)="filter($event)">
+            </ng-template>
+          </p-columnFilter></th>
+        <th><p-columnFilter type="text">
+            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+              <input pInputText [(ngModel)]="filters.frequency" (keyup.enter)="filter($event)">
+            </ng-template>
+          </p-columnFilter></th>
+        <th><p-columnFilter type="text">
+            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+              <input pInputText [(ngModel)]="filters.planNumber" (keyup.enter)="filter($event)">
+            </ng-template>
+          </p-columnFilter></th>
+        <th><p-columnFilter type="text">
+            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+              <input pInputText [(ngModel)]="filters.userPerformer" (keyup.enter)="filter($event)">
+            </ng-template>
+          </p-columnFilter></th>
+        <th><p-columnFilter type="text">
+            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+              <input pInputText [(ngModel)]="filters.planType" (keyup.enter)="filter($event)">
+            </ng-template>
+          </p-columnFilter></th>
+        <th><p-columnFilter type="text">
+            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+              <input pInputText [(ngModel)]="filters.factory" (keyup.enter)="filter($event)">
+            </ng-template>
+          </p-columnFilter></th>
+        <th><p-columnFilter type="text">
+            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+              <input pInputText [(ngModel)]="filters.branch" (keyup.enter)="filter($event)">
+            </ng-template>
+          </p-columnFilter></th>
+        <th><p-columnFilter type="text">
+            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+              <input pInputText [(ngModel)]="filters.approvalWorkflow" (keyup.enter)="filter($event)">
+            </ng-template>
+          </p-columnFilter></th>
+        <th><p-columnFilter type="text">
+            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+              <input pInputText [(ngModel)]="filters.createdBy" (keyup.enter)="filter($event)">
+            </ng-template>
+          </p-columnFilter></th>
+        <th><p-columnFilter type="text">
+            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+              <input pInputText [(ngModel)]="filters.updatedBy" (keyup.enter)="filter($event)">
+            </ng-template>
+          </p-columnFilter></th>
+        <th><p-columnFilter type="text">
+            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+              <input pInputText [(ngModel)]="filters.createdAt" (keyup.enter)="filter($event)">
+            </ng-template>
+          </p-columnFilter></th>
+        <th><p-columnFilter type="text">
+            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+              <input pInputText [(ngModel)]="filters.updatedAt" (keyup.enter)="filter($event)">
+            </ng-template>
+          </p-columnFilter></th>
+        <th></th>
+        <th></th>
+      </tr>
+      </ng-template>
+      <ng-template #body let-row let-expanded="expanded" let-index="rowIndex">
+        <tr>
         <td>
           <p-button type="button" pRipple [pRowToggler]="row" [text]="true" severity="secondary" [rounded]="true"
             [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" />
