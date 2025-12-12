@@ -77,23 +77,29 @@ public class DeviceGroupService {
             for(Device device : deviceGroup.getGroupDevices()) {
                 device.setGroup(null);
                 // Loại bỏ các tham chiếu line
+                if (device.getLine() != null){
                 device.getLine().setTeam(null);
                 device.getLine().setLineDevices(null);
+                }
 
                 // Loại bỏ các tham chiếu branch
+                if (device.getBranch() != null){
                 device.getBranch().setFactory(null);
                 device.getBranch().setBranchTeams(null);
                 device.getBranch().setBranchDevices(null);
                 device.getBranch().setSampleReports(null);
+                }
 
                 device.setDeviceDeviceParameterUses(null);
                 device.setDeviceDeviceRelocationHistories(null);
                 device.setDeviceDeviceSupplyUsages(null);
                 device.setDevicePlanDetails(null);
                 // Loại bỏ các tham chiếu team
+                if (device.getTeam() != null){
                 device.getTeam().setBranch(null);
                 device.getTeam().setTeamLines(null);
                 device.getTeam().setTeamDevices(null);
+                }
             }
             deviceGroupDTO.setGroupDevices(
                     deviceGroup.getGroupDevices().stream().toList());
