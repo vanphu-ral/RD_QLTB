@@ -8,6 +8,7 @@ import io.rd.qltb.events.BeforeDeleteDeviceGroup;
 import io.rd.qltb.events.BeforeDeleteLine;
 import io.rd.qltb.events.BeforeDeleteTeam;
 import io.rd.qltb.model.DeviceDTO;
+import io.rd.qltb.model.DeviceGroupDTO;
 import io.rd.qltb.repos.*;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
@@ -40,6 +41,7 @@ public class DeviceService {
     private EntityManager entityManager;
     private final DeviceRepository deviceRepository;
     private final DeviceGroupRepository deviceGroupRepository;
+    private final DeviceGroupService deviceGroupService;
     private final LineRepository lineRepository;
     private final BranchRepository branchRepository;
     private final TeamRepository teamRepository;
@@ -48,12 +50,13 @@ public class DeviceService {
     private final PlanResultDetailRepository planResultDetailRepository;
 
     public DeviceService(EntityManager entityManager, final DeviceRepository deviceRepository,
-                         final DeviceGroupRepository deviceGroupRepository, final LineRepository lineRepository,
+                         final DeviceGroupRepository deviceGroupRepository, DeviceGroupService deviceGroupService, final LineRepository lineRepository,
                          final BranchRepository branchRepository, final TeamRepository teamRepository,
                          final ApplicationEventPublisher publisher, GlobalConfig globalConfig, PlanResultDetailRepository planResultDetailRepository) {
         this.entityManager = entityManager;
         this.deviceRepository = deviceRepository;
         this.deviceGroupRepository = deviceGroupRepository;
+        this.deviceGroupService = deviceGroupService;
         this.lineRepository = lineRepository;
         this.branchRepository = branchRepository;
         this.teamRepository = teamRepository;
@@ -128,6 +131,16 @@ public class DeviceService {
         return devices.stream()
                 .map(device -> mapToDTO(device, new DeviceDTO()))
                 .toList();
+    }
+    public List<DeviceGroupDTO> getListDeviceGroupsByBranch(String branchCode) {
+        List<Long> deviceGroupIds = deviceRepository.findDistinctBranchIdsByBranchCode(branchCode);
+        List<DeviceGroupDTO> deviceGroupDTOS = new ArrayList<>();
+        for (Long id : deviceGroupIds) {
+          DeviceGroupDTO dto = deviceGroupService.get(id);
+          dto.setGroupDevices(null); // Xóa danh sách thiết bị trong nhóm để tránh tải dư thừa
+            deviceGroupDTOS.add(dto);
+        }
+        return deviceGroupDTOS;
     }
     public List<DeviceDTO> getDevicesByGroupIdAndPlanID(Long groupId,Long planId) {
         final List<Device> devices = deviceRepository.findByGroupId(groupId);

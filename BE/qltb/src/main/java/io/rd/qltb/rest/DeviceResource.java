@@ -1,6 +1,7 @@
 package io.rd.qltb.rest;
 
 import io.rd.qltb.model.DeviceDTO;
+import io.rd.qltb.model.DeviceGroupDTO;
 import io.rd.qltb.model.DeviceSupplyUsageDTO;
 import io.rd.qltb.service.DeviceService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -50,6 +51,15 @@ public class DeviceResource {
         }
         return ResponseEntity.ok(devices);
     }
+    @GetMapping("groups/branch")
+    public ResponseEntity<List<DeviceGroupDTO>> getListDeviceGroupsByBranch(@RequestParam String branchCode) {
+        List<DeviceGroupDTO> deviceGroupDTOS = deviceService.getListDeviceGroupsByBranch(branchCode);
+        if (deviceGroupDTOS.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(deviceGroupDTOS);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<DeviceDTO> getDevice(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(deviceService.get(id));
