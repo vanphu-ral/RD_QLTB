@@ -66,11 +66,11 @@
 
       <div class="col-4">
         <p-floatlabel variant="on">
-          <p-select [(ngModel)]="model.deviceGroup" [options]="listDeviceGroup" optionLabel="name" [fluid]="true"
-            [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="deviceGroup" name="deviceGroup"
-            dataKey="id">
+          <p-select [(ngModel)]="model.approvalWorkflow" [options]="listApprovalWorkflow" optionLabel="name"
+            [fluid]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="approvalWorkflow"
+            name="approvalWorkflow" dataKey="id">
           </p-select>
-          <label for="deviceGroup">Nhóm thiết bị</label>
+          <label for="approvalWorkflow">Kịch bản phê duyệt</label>
         </p-floatlabel>
       </div>
     </div>
@@ -78,7 +78,7 @@
     <div class="row my-3">
       <div class="col-6">
         <p-floatlabel variant="on">
-          <p-select [(ngModel)]="model.branch" [options]="listBranchs" optionLabel="name" [fluid]="true"
+          <p-select [(ngModel)]="model.branch" [options]="listBranchs" optionLabel="name" [fluid]="true" (ngModelChange)="filterGroupDevice($event)"
             [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="branch" name="branch" dataKey="id">
           </p-select>
           <label for="branch">Ngành</label>
@@ -87,11 +87,11 @@
 
       <div class="col-6">
         <p-floatlabel variant="on">
-          <p-select [(ngModel)]="model.approvalWorkflow" [options]="listApprovalWorkflow" optionLabel="name"
-            [fluid]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="approvalWorkflow"
-            name="approvalWorkflow" dataKey="id">
+          <p-select [(ngModel)]="model.deviceGroup" [options]="listDeviceGroup" optionLabel="name" [fluid]="true"
+            [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="deviceGroup" name="deviceGroup"
+            dataKey="id">
           </p-select>
-          <label for="approvalWorkflow">Kịch bản phê duyệt</label>
+          <label for="deviceGroup">Nhóm thiết bị</label>
         </p-floatlabel>
       </div>
     </div>

@@ -24,7 +24,7 @@
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.plan.planType" [invalid]="!model.plan.planType" required [options]="listTypes"
             [fluid]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'"
-            id="planType" name="planType" optionLabel="name" dataKey="id" (ngModelChange)="generateCoede()" required>
+            id="planType" name="planType" optionLabel="name" dataKey="id" (ngModelChange)="generateCode()" required>
           </p-select>
           <label for="planType">Loại</label>
         </p-floatlabel>
@@ -66,7 +66,7 @@
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.plan.branch" [options]="listBranchs"
             [fluid]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="branch"
-            name="branch" optionLabel="name" dataKey="id" (ngModelChange)="generateCoede()">
+            name="branch" optionLabel="name" dataKey="id" (ngModelChange)="generateCode()">
           </p-select>
           <label for="branch">Ngành</label>
         </p-floatlabel>

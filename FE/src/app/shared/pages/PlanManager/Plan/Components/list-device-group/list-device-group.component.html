@@ -9,8 +9,8 @@
         <ng-template pTemplate="header">
             <tr>
                 <th>STT</th>
-                <th>Mẫu biên bản</th>
                 <th>Nhóm thiết bị</th>
+                <th>Mẫu biên bản</th>
                 <th *ngIf="!isViewMode">Thao tác</th>
             </tr>
         </ng-template>
@@ -18,15 +18,15 @@
             <tr>
                 <td>{{ i + 1 }}</td>
                 <td>
-                    <p-select [(ngModel)]="row.sampleReport" [options]="listSampleReport" optionLabel="name"
-                        [disabled]="isViewMode" [fluid]="true" [showClear]="true" [appendTo]="'body'"
-                        id="sampleReport-{{ i }}" name="sampleReport-{{ i }}" dataKey="id">
+                    <p-select [(ngModel)]="row.deviceGroup" [options]="listDeviceGroupByBranches" optionLabel="name" [fluid]="true"
+                        [disabled]="isViewMode" [showClear]="true" [appendTo]="'body'" id="deviceGroup-{{ i }}"
+                        name="deviceGroup-{{ i }}" dataKey="id" (ngModelChange)="onDeviceGroupChange(row, i)" (onClick)="checkBranch()">
                     </p-select>
                 </td>
                 <td>
-                    <p-select [(ngModel)]="row.deviceGroup" [options]="listDeviceGroupByBranches" optionLabel="name" [fluid]="true"
-                        [disabled]="isViewMode" [showClear]="true" [appendTo]="'body'" id="deviceGroup-{{ i }}"
-                        name="deviceGroup-{{ i }}" dataKey="id" (ngModelChange)="onDeviceGroupChange(row, i)">
+                    <p-select [(ngModel)]="row.sampleReport" [options]="row.sampleReports" optionLabel="name"
+                        [disabled]="isViewMode" [fluid]="true" [showClear]="true" [appendTo]="'body'"
+                        id="sampleReport-{{ i }}" name="sampleReport-{{ i }}" dataKey="id" (onClick)="onSampleReportChange(row, i)">
                     </p-select>
                 </td>
                 <td class="text-center" *ngIf="!isViewMode">

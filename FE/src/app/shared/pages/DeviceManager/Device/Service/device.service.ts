@@ -58,4 +58,14 @@ export class DeviceService extends BaseApiService<Device> {
       { params: { value: value }, withCredentials: true }
     );
   }
+
+  getDeviceGroupsByBranch(branchCode: string): Observable<any[]> {
+    const params = new HttpParams()
+      .set('branchCode', branchCode);
+
+    return this.http.get<any[]>(
+      `${this['fullBaseUrl']}/groups/branch`,
+      { params, withCredentials: true }
+    );
+  }
 }

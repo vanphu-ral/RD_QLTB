@@ -28,6 +28,7 @@ export class ListDeviceComponent implements OnInit {
     @Input() model: PlanRequest = new PlanRequest();
 
     listSampleReport: any[] = []
+    listSampleReportBase: any[] = []
     listDeviceGroupBase: any[] = []
     listDeviceGroupByBranches: any[] = []
     deviceUpdates: { deviceId: number, serial?: string, manager?: string }[] = [];
@@ -39,7 +40,7 @@ export class ListDeviceComponent implements OnInit {
 
     ngOnInit(): void {
         this.sampleReportService.getAll().subscribe(res => {
-            this.listSampleReport = res
+            this.listSampleReportBase = res
             this.cdr.detectChanges()
         })
         this.deviceGroupService.getAll().subscribe(res => {
@@ -159,6 +160,24 @@ export class ListDeviceComponent implements OnInit {
 
         devicesToKeep.push(...newDevices);
         return devicesToKeep;
+    }
+
+    checkBranch() {
+        if(!this.model.plan.branch){
+            Util.toastMessage('Vui lòng chọn ngành', 'error');
+            return;
+        }
+    }
+
+    onSampleReportChange(row: any, currentIndex: number) {
+        console.log(row);
+        if(row.deviceGroup){
+            row.sampleReports = this.listSampleReportBase.filter(sr =>
+                sr.deviceGroup?.id === row.deviceGroup.id
+            );
+        }else{
+            Util.toastMessage(`Vui lòng chọn nhóm thiết bị ở dòng ${currentIndex + 1}`, 'error');
+        }
     }
 
     addRow() {

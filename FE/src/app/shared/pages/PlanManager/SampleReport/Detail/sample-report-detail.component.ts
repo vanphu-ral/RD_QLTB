@@ -18,6 +18,7 @@ import { forkJoin } from 'rxjs';
 import { PlanTypeService } from '../../PlanType/Service/plan-type.service';
 import { BaseApprovalComponent } from "../../../../base/base-approval-component/base-approval.component";
 import { ConfirmationService } from 'primeng/api';
+import { DeviceService } from '../../../DeviceManager/Device/Service/device.service';
 
 @Component({
   selector: 'app-sample-report-detail',
@@ -33,6 +34,7 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
   listBranchs: any[] = [];
   listApprovalWorkflow: any[] = []
   listDeviceGroup: any[] = []
+  listDeviceGroupBase: any[] = []
   listCriterialBySample: any[] = []
   listCriterial: any[] = []
   listCriterialGroup: any[] = []
@@ -47,15 +49,14 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
     private criterialService: CriterialService,
     private keyMappingService: KeyMappingService,
     private planTypeService: PlanTypeService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private deviceService: DeviceService
   ) {
     super(apiService);
   }
 
   override ngOnInit(): void {
     super.ngOnInit();
-    console.log(this.model);
-
     forkJoin({
       branchs: this.branchService.getAll(),
       workflows: this.approvalWorkflowService.getAll(),
@@ -66,12 +67,13 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
     }).subscribe(result => {
       this.listBranchs = result.branchs;
       this.listApprovalWorkflow = result.workflows;
+      this.listDeviceGroupBase = result.deviceGroups;
       this.listDeviceGroup = result.deviceGroups;
       this.listCriterialGroup = result.criterialGroups;
       this.listCriterial = result.criterials;
       this.listTypes = result.planTypes;
       this.cdr.detectChanges();
-      if (this.isAddMode || this.isEditMode || this.isViewMode || this.isApprovalMode) {
+      if (this.isEditMode || this.isViewMode || this.isApprovalMode) {
         this.keyMappingService.getBySampleReport(this.model.id!).subscribe(res => {
           this.listCriterialBySample = res.map(x => {
             const group = x.criterial?.criterialGroup || null;
@@ -107,6 +109,17 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
         };
       });
       this.cdr.detectChanges();
+    }
+  }
+
+  filterGroupDevice(event: any) {
+    if(event) {
+      this.deviceService.getDeviceGroupsByBranch(event.code).subscribe(res => {
+        this.listDeviceGroup = res;
+        this.cdr.detectChanges();
+      });
+    }else{
+      this.listDeviceGroup = this.listDeviceGroupBase
     }
   }
 
