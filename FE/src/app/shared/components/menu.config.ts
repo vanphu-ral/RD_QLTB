@@ -52,8 +52,6 @@ export const MENU_ITEMS: MenuItem[] = [
                     { label: 'Danh mục tổ sản xuất', icon: 'fa-solid fa-object-ungroup', routerLink: ['/Teams'] },
                     { label: 'Danh mục dây chuyền sản xuất', icon: 'fa-solid fa-grip-lines', routerLink: ['/Lines'] },
                     { label: 'Quản lý ngày nghỉ', icon: 'fa-solid fa-calendar', routerLink: ['/DayOffCalendars'] },
-                    // { label: 'Danh mục ca sản xuất', icon: 'fa-solid fa-clock', routerLink: ['/Shift'] },
-                    // { label: 'Danh mục chức vụ', icon: 'fa-solid fa-crosshairs', routerLink: ['/Position'] }
                 ]
             },
             {
@@ -62,15 +60,7 @@ export const MENU_ITEMS: MenuItem[] = [
                 items: [
                     { label: 'Quản lý chữ ký số', icon: 'fa-solid fa-signature', routerLink: ['/Signatures'] },
                     { label: 'Danh mục nhóm thông số', icon: 'fa-solid fa-layer-group', routerLink: ['/ParameterGroups']},
-                    { label: 'Danh mục thông số', icon: 'fa-solid fa-calculator', routerLink: ['/Parameters']},
-                    // { label: 'Nhóm người dùng', icon: 'fa-solid fa-users', routerLink: ['/Role'] },
-                    // { label: 'Người dùng', icon: 'fa-solid fa-user-gear', routerLink: ['/User'] },
-                    // { label: 'Lịch sử đăng nhập', icon: 'fa-solid fa-clock-rotate-left', routerLink: ['/UserLogin'] },
-                    // { label: 'Tra cứu hoạt động', icon: 'fa-solid fa-clock-rotate-left', routerLink: ['/ActiveLog'] },
-                    // { label: 'Nhật ký lỗi', icon: 'fa-solid fa-bug', routerLink: ['/ErorrLog'] },
-                    // { label: 'Thiết lập cấu hình', icon: 'fa-solid fa-screwdriver-wrench', routerLink: ['/Config'] },
-                    // { label: 'Thiết lập GT ngưỡng cảnh báo', icon: 'fa-solid fa-list-check', routerLink: ['/Threshold'] },
-                    // { label: 'Thiết lập thông báo cảnh báo', icon: 'fa-solid fa-bullhorn', routerLink: ['/Alert'] }
+                    { label: 'Danh mục thông số', icon: 'fa-solid fa-calculator', routerLink: ['/Parameters']}
                 ]
             },
             {

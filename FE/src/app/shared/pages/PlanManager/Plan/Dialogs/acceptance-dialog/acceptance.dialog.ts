@@ -17,7 +17,7 @@ import { Acceptance } from "../../../../../models/PlanManger/acceptance.model";
 import { Device } from "../../../../../models/DeviceManager/device.model";
 import { PLANTYPE } from "../../../../../enums/plan-type.enum";
 import { CriterialService } from "../../../Criterial/Service/criterial.service";
-import { AcceptanceService } from "../../../../Reports/Acceptance/service/acceptance.service";
+import { AcceptanceService } from "../../../../Records/Acceptance/service/acceptance.service";
 import { forkJoin } from "rxjs/internal/observable/forkJoin";
 import { ɵɵDir } from "@angular/cdk/scrolling";
 

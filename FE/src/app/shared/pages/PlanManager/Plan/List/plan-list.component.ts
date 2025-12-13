@@ -15,7 +15,7 @@ import { ListErrorDialog } from '../Dialogs/list-error-dialog/list-error.dialog'
 import { AcceptanceDialog } from '../Dialogs/acceptance-dialog/acceptance.dialog';
 import { PLANTYPE } from '../../../../enums/plan-type.enum';
 import { OptionApprovalDialog } from '../../SampleReport/Dialogs/option-approval-dialog/option-approval.dialog';
-import { AcceptanceService } from '../../../Reports/Acceptance/service/acceptance.service';
+import { AcceptanceService } from '../../../Records/Acceptance/service/acceptance.service';
 import { ListHistoryChangeDataDialog } from '../Dialogs/list-history-change-data-dialog/list-history-change-data.dialog';
 import { DataService } from '../../../../service/send-data.service';
 import { PlanDetailService } from '../Service/plan-detail.service';
