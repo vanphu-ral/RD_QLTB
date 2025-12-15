@@ -586,4 +586,37 @@ export class Util {
 
     return result;
   }
+
+  /**
+   * Thông báo lỗi cho người dùng
+   */
+  static handleError(error: any) {
+    let rawMessage = 'Thao tác thất bại';
+    if (error?.error?.message) {
+      rawMessage = error.error.message;
+    } else if (error?.message) {
+      rawMessage = error.message;
+    } else if (typeof error === 'string') {
+      rawMessage = error;
+    }
+    let message = rawMessage;
+    if (rawMessage.includes('Duplicate entry')) {
+      const match = rawMessage.match(/Duplicate entry '(.+?)'/);
+      const duplicatedValue = match?.[1];
+      if (rawMessage.includes('name')) {
+        message = duplicatedValue
+          ? `Tên "${duplicatedValue}" đã tồn tại trong hệ thống`
+          : 'Tên đã tồn tại trong hệ thống';
+      } else {
+        message = 'Dữ liệu đã tồn tại trong hệ thống';
+      }
+    }
+    if (rawMessage.includes('No _valueDeserializer assigned')) {
+      message =
+        'Lỗi dữ liệu trả về từ máy chủ. Vui lòng kiểm tra lại thông tin hoặc liên hệ quản trị hệ thống.';
+    }
+    Util.ConfirmMessage(message, 'error');
+  }
+
+
 }

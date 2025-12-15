@@ -190,24 +190,26 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
         this.deviceSupplyUseService.createList(listMaterialForSave),
         this.deviceCurrentSupplyService.createList(listMaterialCurrentForSave),
       ]).subscribe({
-        next: () => Util.ConfirmMessage('Thao tác thành công', 'success'),
-        error: () => Util.ConfirmMessage('Có lỗi xảy ra khi lưu dữ liệu', 'error')
+        next: () => {
+          Util.ConfirmMessage('Thao tác thành công', 'success'),
+          this.navigationService.back()
+        } ,
+        error: Util.handleError
       });
     };
-    const handleError = (message: string) => Util.ConfirmMessage(message, 'error');
     if (this.isAddMode) {
       this.apiService.create(this.model).subscribe({
         next: (id) => {
           this.model.id = id as number;
           updateRelations();
         },
-        error: () => handleError('Thêm mới thất bại')
-      }).add(() => this.navigationService.back());
+        error: Util.handleError
+      })
     } else {
       this.apiService.update(this.model.id!, this.model).subscribe({
         next: () => updateRelations(),
-        error: () => handleError('Cập nhật thất bại')
-      }).add(() => this.navigationService.back());
+        error: () => Util.handleError
+      })
     }
   }
 }

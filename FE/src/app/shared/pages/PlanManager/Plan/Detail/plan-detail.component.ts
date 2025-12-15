@@ -149,20 +149,6 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
     const deleteRequests = deleted.length
       ? deleted.map((d: any) => this.planDetailService.delete(d.planDetailId))
       : [of(null)];
-    const handleError = (error: any) => {
-      let message = 'Thêm mới thất bại';
-      if (error?.error?.message) {
-        message = error.error.message;
-      } else if (error?.message) {
-        message = error.message;
-      } else if (typeof error === 'string') {
-        message = error;
-      }
-      if (message.includes('No _valueDeserializer assigned')) {
-        message = 'Lỗi dữ liệu trả về từ máy chủ. Vui lòng kiểm tra lại thông tin hoặc liên hệ quản trị hệ thống.';
-      }
-      Util.ConfirmMessage(message, 'error');
-    };
     forkJoin(deleteRequests).subscribe({
       next: () => {
         const apiCall = this.isAddMode
@@ -174,11 +160,12 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
               this.isAddMode ? 'Thêm mới thành công' : 'Cập nhật thành công',
               'success'
             );
+            this.navigationService.back(); 
           },
-          error: handleError
-        }).add(() => this.navigationService.back());
+          error: Util.handleError
+        });
       },
-      error: handleError
+      error: Util.handleError
     });
   }
 

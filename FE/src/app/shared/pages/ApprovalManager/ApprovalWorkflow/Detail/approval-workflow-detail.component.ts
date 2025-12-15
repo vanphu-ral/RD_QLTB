@@ -261,12 +261,10 @@ export class ApprovalWorkflowDetailComponent extends BasePageComponent<ApprovalW
     ).subscribe({
       next: () => {
         Util.ConfirmMessage('Lưu thành công!', 'success');
+        this.navigationService.back()
       },
-      error: (err) => {
-        Util.ConfirmMessage('Có lỗi xảy ra khi lưu', 'error');
-        console.error(err);
-      }
-    }).add(() => this.navigationService.back());
+      error: Util.handleError
+    })
   }
 
 

@@ -35,20 +35,17 @@ export class PlanTypeDetailComponent extends BasePageComponent<PlanType> {
         this.apiService.create(this.model).subscribe({
           next: () => {
             Util.ConfirmMessage('Thêm mới thành công', 'success');
+            this.navigationService.back()
           },
-          error: () => {
-            Util.ConfirmMessage('Thêm mới thất bại', 'error');
-          }
-        }).add(() => this.navigationService.back());
+          error: Util.handleError
+        })
       } else {
         this.apiService.update(this.model.id!, this.model).subscribe({
           next: () => {
             Util.ConfirmMessage('Cập nhật thành công', 'success');
           },
-          error: () => {
-            Util.ConfirmMessage('Cập nhật thất bại', 'error');
-          }
-        }).add(() => this.navigationService.back());
+          error: Util.handleError
+        })
       }
     }
   }

@@ -182,18 +182,14 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
                 Util.ConfirmMessage('Thêm mới thành công', 'success');
                 this.navigationService.back();
               },
-              error: () => {
-                Util.ConfirmMessage('Thêm mới thất bại khi lưu tiêu chí', 'error');
-              }
+              error: Util.handleError
             });
           } else {
             Util.ConfirmMessage('Thêm mới thành công', 'success');
             this.navigationService.back();
           }
         },
-        error: () => {
-          Util.ConfirmMessage('Thêm mới thất bại', 'error');
-        }
+        error: Util.handleError
       });
 
     } else {
@@ -211,18 +207,14 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
                 Util.ConfirmMessage('Cập nhật thành công', 'success');
                 this.navigationService.back();
               },
-              error: () => {
-                Util.ConfirmMessage('Cập nhật thất bại khi lưu tiêu chí', 'error');
-              }
+              error: Util.handleError
             });
           } else {
             Util.ConfirmMessage('Cập nhật thành công', 'success');
             this.navigationService.back();
           }
         },
-        error: () => {
-          Util.ConfirmMessage('Cập nhật thất bại', 'error');
-        }
+        error: Util.handleError
       });
     }
   }
