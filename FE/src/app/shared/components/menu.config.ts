@@ -69,11 +69,11 @@ export const MENU_ITEMS: MenuItem[] = [
                 items: [
                     { label: 'BCSD vật tư, phụ tùng', icon: 'fa-solid fa-supple', routerLink: ['/Report/Report1'] },
                     { label: 'Sổ theo dõi BD thiết bị', icon: 'fa-solid fa-supple', routerLink: ['/Report/Report2'] },
-                    { label: 'Sổ theo dõi SC thiết bị', icon: 'fa-solid fa-supple', routerLink: ['/Report/Report3'] },
-                    { label: 'BCTK Tình trạng thiết bị', icon: 'fa-solid fa-supple', routerLink: ['/Report/Report5'] },
-                    { label: 'BC sự cố và dừng thiết bị', icon: 'fa-solid fa-supple', routerLink: ['/Report/Report6'] },
-                    { label: 'BCKQ mục tiêu thiết bị', icon: 'fa-solid fa-supple', routerLink: ['/Report/Report7'] },
-                    { label: 'BC Chi tiết sự cố thiết bị', icon: 'fa-solid fa-supple', routerLink: ['/Report/Report4'] }
+                    // { label: 'Sổ theo dõi SC thiết bị', icon: 'fa-solid fa-supple', routerLink: ['/Report/Report3'] },
+                    // { label: 'BCTK Tình trạng thiết bị', icon: 'fa-solid fa-supple', routerLink: ['/Report/Report5'] },
+                    // { label: 'BC sự cố và dừng thiết bị', icon: 'fa-solid fa-supple', routerLink: ['/Report/Report6'] },
+                    // { label: 'BCKQ mục tiêu thiết bị', icon: 'fa-solid fa-supple', routerLink: ['/Report/Report7'] },
+                    // { label: 'BC Chi tiết sự cố thiết bị', icon: 'fa-solid fa-supple', routerLink: ['/Report/Report4'] }
                 ]
             }
         ]
