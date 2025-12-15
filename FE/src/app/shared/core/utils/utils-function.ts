@@ -11,7 +11,8 @@ export class Util {
    * Chỉ lấy 10 ký tự
    */
   static generateCode(name: string): string {
-    const initials = _.chain(name)
+    const normalizedName = this.removeVietnameseTones(name);
+    const initials = _.chain(normalizedName)
       .split(' ')
       .map(w => w.charAt(0))
       .join('')
@@ -37,6 +38,14 @@ export class Util {
       .value()
       .slice(0, 10);
     return `${initials}`;
+  }
+
+  static removeVietnameseTones(str: string): string {
+    return str
+      .normalize('NFD')                    // tách dấu ra khỏi chữ
+      .replace(/[\u0300-\u036f]/g, '')     // xóa dấu
+      .replace(/đ/g, 'd')
+      .replace(/Đ/g, 'D');
   }
 
 
