@@ -151,7 +151,7 @@ export const routes: Routes = [
             { path: '', component: ImportDataComponent }
         ]
     },
-    // Report Manager
+    // Record Manager
     {
         path: 'Acceptance',
         component: AppLayout,
@@ -161,5 +161,11 @@ export const routes: Routes = [
         path: 'ReportDeviceIncident',
         component: AppLayout,
         loadChildren: () => import('./shared/pages/Records/ReportDeviceIncident/report-device-incident.routes').then(m => m.default)
-    }
+    },
+    // Report Manager
+    {
+        path: 'Report',
+        component: AppLayout,
+        loadChildren: () => import('./shared/pages/Reports/report.routes').then(m => m.default)
+    },
 ];

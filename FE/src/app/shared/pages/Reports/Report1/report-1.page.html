@@ -1,0 +1,92 @@
+<div class="maintance-table">
+    <div class="card mt-3">
+        <div class="filter-box row my-3">
+            <div class="col">
+                <p-floatlabel variant="on">
+                    <p-select [(ngModel)]="filter.branch" [options]="listBranchs" optionLabel="name" [fluid]="true"
+                        [showClear]="true" [appendTo]="'body'" id="approvalWorkflow" name="approvalWorkflow"
+                        dataKey="id">
+                    </p-select>
+                    <label for="approvalWorkflow">Ngành</label>
+                </p-floatlabel>
+            </div>
+            <div class="col">
+                <p-floatlabel variant="on">
+                    <p-select [(ngModel)]="filter.team" [options]="listTeams" optionLabel="name" [fluid]="true"
+                        [showClear]="true" [appendTo]="'body'" id="approvalWorkflow" name="approvalWorkflow"
+                        dataKey="id">
+                    </p-select>
+                    <label for="approvalWorkflow">Tổ</label>
+                </p-floatlabel>
+            </div>
+            <div class="col">
+                <p-floatlabel variant="on">
+                    <p-datepicker [(ngModel)]="filter.fromDate" appDateConvert [iconDisplay]="'input'" [showIcon]="true"
+                        name="fromDate" inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body"
+                        [inputSize]="100" />
+                    <label for="fromDate">Thời gian bắt đầu</label>
+                </p-floatlabel>
+            </div>
+            <div class="col">
+                <p-floatlabel variant="on">
+                    <p-datepicker [(ngModel)]="filter.toDate" appDateConvert [iconDisplay]="'input'" [showIcon]="true"
+                        name="toDate" inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body"
+                        [inputSize]="100" />
+                    <label for="toDate">Thời gian kết thúc</label>
+                </p-floatlabel>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <p-table #dt [value]="data" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [rowsPerPageOptions]="[10,25,50]" [loading]="loading" class="p-datatable-gridlines text-sm">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th colspan="1">
+                            <img src="/assets/imgs/logo-rang-dong.png" style="width:150px;" />
+                        </th>
+                        <th colspan="6" class="text-center">
+                            <div>
+                                <div><strong>Vật tư sửa chữa, thay thế</strong></div>
+                                <div><span id="SpanPlanYear">12/2025</span></div>
+                            </div>
+                        </th>
+                        <th colspan="1">
+                            <label class="font-semibold">Đơn vị:&nbsp; Đơn vị: LED; Xưởng LED - Điện tử & TBCS</label>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>STT</th>
+                        <th>Mã SAP</th>
+                        <th>Tên vật tư</th>
+                        <th>Đơn vị tính</th>
+                        <th>Số lượng</th>
+                        <th>Đơn giá</th>
+                        <th>Thành tiền</th>
+                        <th>Mục đích sử dụng</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item>
+                    <tr>
+                        <td>{{item.date | date:'dd-MM-yyyy'}}</td>
+                        <td>{{item.branch.name}}</td>
+                        <td>{{item.fromDate | date:'dd-MM-yyyy'}}</td>
+                        <td>{{item.toDate | date:'dd-MM-yyyy'}}</td>
+                        <td>{{item.createdBy}}</td>
+                        <td>{{item.status}}</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="99" class="text-center">Không có dữ liệu</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+        <span>RĐ.QT15.BM02a. Ban hành lần 2</span>
+    </div>
+
+    <div class="d-flex justify-content-end mt-3">
+        <p-button label="Quay lại" severity="info" (click)="onBack()" icon="pi pi-arrow-left" class="me-2"></p-button>
+    </div>
+</div>
