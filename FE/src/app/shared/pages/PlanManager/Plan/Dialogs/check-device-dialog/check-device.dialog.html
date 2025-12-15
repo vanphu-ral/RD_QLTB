@@ -68,7 +68,7 @@
                     <th>Nhóm Tiêu chí</th>
                     <th>Tên Tiêu chí</th>
                     <th>Tần suất</th>
-                    <th *ngIf="data.plan.planType.code == PLANTYPE.AUDIT">Ca kiểm tra</th>
+                    <th *ngIf="data.plan.planType.code == PLANTYPE.DAILYCHECK">Ca kiểm tra</th>
                     <th [ngStyle]="data.plan.planType.code == PLANTYPE.MAINTENANCE ? {} : {'min-width': '600px'}">Mô tả</th>
                     <th *ngIf="data.plan.planType.code == PLANTYPE.MAINTENANCE">Ghi chú</th>
                     <th *ngIf="data.plan.planType.code == PLANTYPE.MAINTENANCE">Bộ phận thực hiện</th>
@@ -87,7 +87,7 @@
                             [showClear]="true" [appendTo]="'body'" id="frequency" name="frequency">
                         </p-select>
                     </td>
-                    <td *ngIf="data.plan.planType.code == PLANTYPE.AUDIT">
+                    <td *ngIf="data.plan.planType.code == PLANTYPE.DAILYCHECK">
                         <p-select [(ngModel)]="row.inspectionSession" [options]="listInspectionSessions" [fluid]="true"
                             [showClear]="true" [appendTo]="'body'" id="inspectionSession" name="inspectionSession">
                         </p-select>

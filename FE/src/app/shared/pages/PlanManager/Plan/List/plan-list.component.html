@@ -190,7 +190,7 @@
           <p-button icon="pi pi-wrench" *ngIf="!isLocked(row)"
             styleClass="p-button-sm p-button-rounded p-button-warn m-1" (onClick)="repairDevice(detail)"></p-button>
           <p-button icon="pi pi-eye" styleClass="p-button-sm p-button-rounded p-button-info m-1"
-            *ngIf="row.planType.code == PLANTYPE.AUDIT" (onClick)="viewEvaluateDevice(detail)"></p-button>
+            *ngIf="row.planType.code == PLANTYPE.DAILYCHECK" (onClick)="viewEvaluateDevice(detail)"></p-button>
           <p-button icon="pi pi-trash" *ngIf="!isLocked(row)"
             styleClass="p-button-sm p-button-rounded p-button-danger m-1"
             (onClick)="deleteItem(row, $event)"></p-button>
