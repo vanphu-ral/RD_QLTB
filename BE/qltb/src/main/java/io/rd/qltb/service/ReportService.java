@@ -6,8 +6,11 @@ import io.rd.qltb.model.TeamDTO;
 import io.rd.qltb.model.response.ReportDetailResponse;
 import io.rd.qltb.model.response.ReportResponse;
 import io.rd.qltb.model.response.ReportSupplyResponse;
+import io.rd.qltb.repos.PlanResultDetailRepository;
 import io.rd.qltb.repos.SupplyReplacementHistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,7 +24,8 @@ public class ReportService {
     private BranchService branchService;
     @Autowired
     private TeamService teamService;
-
+    @Autowired
+    private PlanResultDetailRepository planResultDetailRepository;
     @Autowired
     private SupplyReplacementHistoryRepository supplyReplacementHistoryRepository;
 
@@ -66,5 +70,8 @@ public class ReportService {
         }
         return reportResponses;
     }
-
+    public Page<Object[]> getMaintenanceReport(ReportFilter filter, Pageable pageable) {
+        Page<Object[]> page = planResultDetailRepository.getMaintenanceReportByBranchAndDateRange(filter.getBranchIds(), filter.getStartDate(), filter.getEndDate(), pageable);
+    return page;
+    }
 }

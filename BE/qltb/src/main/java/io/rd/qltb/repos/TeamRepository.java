@@ -10,6 +10,6 @@ import java.util.List;
 public interface TeamRepository extends JpaRepository<Team, Long> {
 
     Team findFirstByBranchId(Long id);
-    @Query(value="SELECT * FROM teams t WHERE t.branch.id = ?1 ;", nativeQuery = true)
+    @Query(value="SELECT * FROM teams t WHERE t.branch_id = ?1 ;", nativeQuery = true)
     List<Team> getAllByBranchid(Long id);
 }

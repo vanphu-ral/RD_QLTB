@@ -562,7 +562,9 @@ public class PlanService {
         List<PlanDetail> savedDetails = addDetailToSampleReport(details);// chuyển detail sang JSON
         planDetailRepository.saveAll(savedDetails);
         autoCreatePlanResult(details);
+        if(plan.getPlanType().getCode().equals("AUDIT")){
         createApproveForManager(plan, savedDetails);
+        }
         return plan;
     }
 
