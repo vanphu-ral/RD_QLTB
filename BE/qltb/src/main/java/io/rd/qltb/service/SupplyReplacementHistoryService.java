@@ -11,6 +11,7 @@ import io.rd.qltb.repos.SupplyRepository;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.context.event.EventListener;
@@ -54,11 +55,12 @@ public class SupplyReplacementHistoryService {
         return supplyReplacementHistoryRepository.save(supplyReplacementHistory).getId();
     }
 
-    public List<Long> createList(List<SupplyReplacementHistoryDTO> dtos) {
+    public List<Long> createList(List<SupplyReplacementHistoryDTO> dtos,String username) {
         return dtos.stream()
                 .map(dto -> {
                     SupplyReplacementHistory entity = new SupplyReplacementHistory();
                     mapToEntity(dto, entity);
+                    entity.setCreatedBy(username);
                     return supplyReplacementHistoryRepository.save(entity).getId();
                 })
                 .toList();
@@ -171,7 +173,7 @@ public class SupplyReplacementHistoryService {
         supplyReplacementHistory.setPlanId(supplyReplacementHistoryDTO.getPlanId());
         supplyReplacementHistory.setDeviceId(supplyReplacementHistoryDTO.getDeviceId());
         supplyReplacementHistory.setPlanResultId(supplyReplacementHistoryDTO.getPlanResultId());
-        supplyReplacementHistory.setCreatedAt(supplyReplacementHistoryDTO.getCreatedAt());
+        supplyReplacementHistory.setCreatedAt(supplyReplacementHistoryDTO.getCreatedAt()==null ? LocalDateTime.now() : supplyReplacementHistoryDTO.getCreatedAt());
         supplyReplacementHistory.setCreatedBy(supplyReplacementHistoryDTO.getCreatedBy());
         final SupplyDetail oldSupply = supplyReplacementHistoryDTO.getOldSupplyDetail() == null ? null : supplyDetailRepository.findById(supplyReplacementHistoryDTO.getOldSupplyDetail().getId())
                 .orElseThrow(() -> new NotFoundException("oldSupply not found"));

@@ -165,7 +165,7 @@ public class PlanResultService {
                     System.out.println("Update SupplyReplacement ID: " + item.getId());
                     SupplyReplacement supplyReplacement = supplyReplacementService.mapToEntity(item, supplyReplacementRepository.findById(item.getId()).orElse(new SupplyReplacement()));
                     item.setPlanResult(supplyReplacement.getPlanResult());
-                    item.setUpdatedAt(java.time.LocalDateTime.now());
+                    item.setUpdatedAt(LocalDateTime.now());
                     item.setUpdatedBy(userName);
                     SupplyReplacement supplyReplacementSave = supplyReplacementService.mapToEntity(item, new SupplyReplacement());
                     supplyReplacementSave.setId(item.getId());
@@ -174,8 +174,8 @@ public class PlanResultService {
                 }else {
                     System.out.println("Insert SupplyReplacement " );
                     item.setCreatedBy(userName);
-                    item.setCreatedAt(java.time.LocalDateTime.now());
-                    item.setUpdatedAt(java.time.LocalDateTime.now());
+                    item.setCreatedAt( LocalDateTime.now());
+                    item.setUpdatedAt(LocalDateTime.now());
                     item.setPlanResult(planResult);
                     SupplyReplacement supplyReplacement = supplyReplacementService.mapToEntity(item, new SupplyReplacement());
                     supplyReplacementRepository.save(supplyReplacement);
@@ -188,7 +188,7 @@ public class PlanResultService {
                     System.out.println("Update ErrorReport ID: " + item.getId());
                     ErrorReport errorReport = errorReportService.mapToEntity(item, errorReportRepository.findById(item.getId()).orElse(new ErrorReport()));
                     item.setPlanResult(errorReport.getPlanResult());
-                    item.setUpdatedAt(java.time.LocalDateTime.now());
+                    item.setUpdatedAt(LocalDateTime.now());
                     item.setUpdatedBy(userName);
                     ErrorReport errorReportSave = errorReportService.mapToEntity(item, new ErrorReport());
                     errorReportSave.setId(item.getId());
@@ -196,8 +196,8 @@ public class PlanResultService {
                 }else {
                     System.out.println("Insert ErrorReport " );
                     item.setCreatedBy(userName);
-                    item.setCreatedAt(java.time.LocalDateTime.now());
-                    item.setUpdatedAt(java.time.LocalDateTime.now());
+                    item.setCreatedAt(LocalDateTime.now());
+                    item.setUpdatedAt(LocalDateTime.now());
                     item.setPlanResult(planResult);
                     ErrorReport errorReport = errorReportService.mapToEntity(item, new ErrorReport());
                     errorReportRepository.save(errorReport);
@@ -209,15 +209,15 @@ public class PlanResultService {
                 if(item.getId() != null){
                     System.out.println("Update DeviceCurrentSupply ID: " + item.getId());
                     DeviceCurrentSupply existingDetail = deviceCurrentSupplyService.mapToEntity(item, deviceCurrentSupplyRepository.findById(item.getId()).orElse(new DeviceCurrentSupply()));
-                    item.setUpdatedAt(java.time.LocalDateTime.now());
+                    item.setUpdatedAt(LocalDateTime.now());
                     item.setUpdatedBy(userName);
                     DeviceCurrentSupply deviceCurrentSupply = deviceCurrentSupplyService.mapToEntity(item, existingDetail);
                     deviceCurrentSupply.setId(item.getId());
                     deviceCurrentSupplyRepository.save(deviceCurrentSupply);
                 }else{
                     item.setCreatedBy(userName);
-                    item.setCreatedAt(java.time.LocalDateTime.now());
-                    item.setUpdatedAt(java.time.LocalDateTime.now());
+                    item.setCreatedAt(LocalDateTime.now());
+                    item.setUpdatedAt(LocalDateTime.now());
                     DeviceCurrentSupply deviceCurrentSupply = deviceCurrentSupplyService.mapToEntity(item, new DeviceCurrentSupply());
                     deviceCurrentSupplyRepository.save(deviceCurrentSupply);
                     System.out.println("Insert DeviceCurrentSupply " );

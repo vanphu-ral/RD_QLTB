@@ -36,7 +36,12 @@ public class TeamService {
                 .map(team -> mapToDTO(team, new TeamDTO()))
                 .toList();
     }
-
+    public List<TeamDTO> findByBranchId(final Long branchId) {
+        final List<Team> teams = teamRepository.getAllByBranchid(branchId);
+        return teams.stream()
+                .map(team -> mapToDTO(team, new TeamDTO()))
+                .toList();
+    }
     public TeamDTO get(final Long id) {
         return teamRepository.findById(id)
                 .map(team -> mapToDTO(team, new TeamDTO()))
