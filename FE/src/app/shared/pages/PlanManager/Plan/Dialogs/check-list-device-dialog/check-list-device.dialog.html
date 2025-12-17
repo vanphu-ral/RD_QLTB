@@ -10,7 +10,7 @@
                     <th>STT</th>
                     <th>Mã thiết bị</th>
                     <th>Tên thiết bị</th>
-                    <th>Mã serial</th>
+                    <th>Mã QR code</th>
                     <th>Người thực hiện</th>
                     <th>Ngày kiểm tra</th>
                     <th>Trạng thái</th>
@@ -23,7 +23,7 @@
                     <td>{{ i + 1 }}</td>
                     <td>{{ data.device.code }}</td>
                     <td>{{ data.device.name }}</td>
-                    <td>{{ data.serial }}</td>
+                    <td>{{ data.qrCode }}</td>
                     <td>{{ row.userTest }}</td>
                     <td>
                         <p-datepicker [(ngModel)]="row.dateTest" appDateConvert [iconDisplay]="'input'" [showIcon]="true"

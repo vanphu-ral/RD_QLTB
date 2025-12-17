@@ -1,6 +1,6 @@
 export class PlanDetail {
     id?: number
-    serial?: string
+    qrCode?: string
     manager?: string
     createdBy?: string;
     updatedBy?: string;

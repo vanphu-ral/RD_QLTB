@@ -217,8 +217,7 @@ export class PlanListComponent {
       () => {
         this.apiService.updateStatus(data.id, 2).subscribe({
           next: (res) => {
-            console.log(res);
-            Object.assign(data, res);
+            this.loadData();
             this.cdr.detectChanges();
             Util.ConfirmMessage('Gửi duyệt thông', 'success');
           }

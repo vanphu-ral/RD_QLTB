@@ -9,7 +9,7 @@
                 <tr>
                     <th>STT</th>
                     <th>Tên thiết bị</th>
-                    <th>Mã serial</th>
+                    <th>QR code</th>
                     <th *ngIf="plan.planType.id === 2">Thời gian dự kiến</th>
                     <th *ngIf="plan.planType.id === 2">Tên bản kế hoạch BDSC đi kèm</th>
                     <th *ngIf="plan.planType.id === 2">Ghi chú</th>
@@ -28,7 +28,7 @@
                         </p-select>
                     </td>
                     <td>
-                        <input type="text" pInputText [(ngModel)]="row.serialNumber" [disabled]="true"/>
+                        <input type="text" pInputText [(ngModel)]="row.qrCode" [disabled]="true"/>
                     </td>
                     <td *ngIf="plan.planType.id === 2">
                         <p-datepicker [(ngModel)]="row.estimatedTime" [dateFormat]="'dd-mm-yy'" appDateConvert

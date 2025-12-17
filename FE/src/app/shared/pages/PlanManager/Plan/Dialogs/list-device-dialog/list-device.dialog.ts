@@ -34,7 +34,7 @@ export class ListDeviceDialog {
     }
 
     ngOnInit() {
-        this.ListDevice = _.map(this.data, device => { return { ...device, manager: device.manager ? device.manager : device.device.userManager, serialNumber: device.serialNumber ? device.serialNumber : device.device.serialNumber }})
+        this.ListDevice = _.map(this.data, device => { return { ...device, manager: device.manager ? device.manager : device.device.userManager, qrCode: device.qrCode ? device.qrCode : device.device.qrCode }})
         this.listDeviceOptions = _.map(this.data, item => { return { ...item.device }});
         this.deviceService.getByGroupId(this.group.id).subscribe(devices => {
             this.listDeviceOptions = devices;

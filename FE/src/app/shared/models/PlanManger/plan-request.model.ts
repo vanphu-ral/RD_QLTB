@@ -11,6 +11,6 @@ export class PlanRequest {
 export interface DeviceDetail {
     planDetailId?: number
     device?: Device
-    serialNumber?: string
+    qrCode?: string
     manager?: string
 }

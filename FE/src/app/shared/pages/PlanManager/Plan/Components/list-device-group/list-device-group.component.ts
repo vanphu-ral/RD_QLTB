@@ -48,6 +48,9 @@ export class ListDeviceComponent implements OnInit {
             if ((this.isEditMode || this.isViewMode) && this.model?.plan?.branch) {
                 this.handleBranchChange(this.model.plan.branch);
             }
+            if (this.isEditMode || this.isViewMode) {
+                this.mapSampleReportsOnEdit();
+            }
             this.cdr.detectChanges()
         })
         if (this.isEditMode) {
@@ -163,29 +166,41 @@ export class ListDeviceComponent implements OnInit {
     }
 
     checkBranch() {
-        if(!this.model.plan.branch){
+        if (!this.model.plan.branch) {
             Util.toastMessage('Vui lòng chọn ngành', 'error');
             return;
         }
     }
 
     onSampleReportChange(row: any, currentIndex: number) {
-        if(this.model.plan.planType) {
-            if(row.deviceGroup){
+        if (this.model.plan.planType) {
+            if (row.deviceGroup) {
                 const listSampleReport = this.listSampleReportBase.filter(sr =>
                     sr.deviceGroup?.id === row.deviceGroup.id && sr.type === this.model.plan.planType.code
                 );
-                if(listSampleReport.length > 0){
+                if (listSampleReport.length > 0) {
                     row.sampleReports = listSampleReport;
-                }else {
+                } else {
                     Util.toastMessage('Chưa có mẫu biên bản thuộc nhóm thiết bị này với loại kế hoạch', 'error');
                 }
-            }else{
+            } else {
                 Util.toastMessage(`Vui lòng chọn nhóm thiết bị ở dòng ${currentIndex + 1}`, 'error');
             }
-        }else {
+        } else {
             Util.toastMessage('Vui lòng chọn loại kế hoạch', 'error');
         }
+    }
+
+    mapSampleReportsOnEdit() {
+        if (!this.model?.planDetails || !this.model?.plan?.planType) return;
+        this.model.planDetails.forEach((row: any) => {
+            if (row.deviceGroup) {
+                row.sampleReports = this.listSampleReportBase.filter(sr =>
+                    sr.deviceGroup?.id === row.deviceGroup.id &&
+                    sr.type === this.model.plan.planType.code
+                );
+            }
+        });
     }
 
     addRow() {
@@ -265,7 +280,10 @@ export class ListDeviceComponent implements OnInit {
 
     deleteRow(index: number) {
         const item: any = this.model.planDetails[index];
-        if (!item) return;
+        if (_.isEmpty(item)) {
+            this.model.planDetails.splice(index, 1);
+            return;
+        } 
         const groupDevices = item.deviceGroup.groupDevices || [];
         const violatedDevices = groupDevices
             .map((groupDevice: any) => {
