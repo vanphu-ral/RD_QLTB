@@ -10,5 +10,5 @@ public class ReportFilter { // Báo cáo sử dụng vật tư filter
     private String startDate;
     private String endDate;
     private List<Long> branchIds;
-    private List<Long> teamIds;
+    private List<Long> groupIds;
 }

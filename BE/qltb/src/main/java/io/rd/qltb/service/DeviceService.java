@@ -78,36 +78,28 @@ public class DeviceService {
 
                 if (path.getJavaType().equals(LocalDateTime.class)) {
                     String v = value.toString();
-
                     LocalDateTime dateTime;
 
-                    // FE có thể gửi "2024-11-20" hoặc "2024-11-20T10:00" hoặc "2024-11-20T10:00:00"
                     if (v.length() == 10) {
-                        // yyyy-MM-dd
                         dateTime = LocalDate.parse(v).atStartOfDay();
                     } else {
-                        // yyyy-MM-ddTHH:mm hoặc yyyy-MM-ddTHH:mm:ss
                         dateTime = LocalDateTime.parse(v);
                     }
 
-                    // Lấy phần ngày
                     LocalDate date = dateTime.toLocalDate();
-
-                    // Tạo khoảng thời gian từ đầu ngày -> cuối ngày
                     LocalDateTime startOfDay = date.atStartOfDay();
                     LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
 
-                    // Quan trọng: so sánh theo khoảng ngày
                     predicates.add(cb.between(root.get(key), startOfDay, endOfDay));
-                }
-                else {
+                } else {
                     predicates.add(cb.like((Expression<String>) path, "%" + value + "%"));
                 }
-
             }
         });
 
         cq.where(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
+
+        // Query dữ liệu trang hiện tại
         var query = entityManager.createQuery(cq);
         query.setFirstResult(page * 10);
         query.setMaxResults(10);
@@ -117,9 +109,43 @@ public class DeviceService {
                 .map(device -> mapToDTO(device, new DeviceDTO()))
                 .toList();
 
-        // Không có tổng số trang, nếu cần thì phải query count riêng
-        return new org.springframework.data.domain.PageImpl<>(dtos, PageRequest.of(page, 10), dtos.size());
+        // Query tổng số bản ghi
+        var countQuery = cb.createQuery(Long.class);
+        var countRoot = countQuery.from(Device.class);
+        countQuery.select(cb.count(countRoot));
+        List<Predicate> countPredicates = new ArrayList<>();
+
+        filters.forEach((key, value) -> {
+            if (value != null) {
+                Path<?> path = countRoot.get(key);
+
+                if (path.getJavaType().equals(LocalDateTime.class)) {
+                    String v = value.toString();
+                    LocalDateTime dateTime;
+
+                    if (v.length() == 10) {
+                        dateTime = LocalDate.parse(v).atStartOfDay();
+                    } else {
+                        dateTime = LocalDateTime.parse(v);
+                    }
+
+                    LocalDate date = dateTime.toLocalDate();
+                    LocalDateTime startOfDay = date.atStartOfDay();
+                    LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
+
+                    countPredicates.add(cb.between(countRoot.get(key), startOfDay, endOfDay));
+                } else {
+                    countPredicates.add(cb.like((Expression<String>) path, "%" + value + "%"));
+                }
+            }
+        });
+
+        countQuery.where(countPredicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
+        Long totalRecords = entityManager.createQuery(countQuery).getSingleResult();
+
+        return new org.springframework.data.domain.PageImpl<>(dtos, PageRequest.of(page, 10), totalRecords);
     }
+
     public List<DeviceDTO> findAll() {
         final List<Device> devices = deviceRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return devices.stream()

@@ -1,6 +1,7 @@
 package io.rd.qltb.repos;
 
 import io.rd.qltb.domain.PlanResultDetail;
+import io.rd.qltb.model.response.Report2Response;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -41,7 +42,7 @@ public interface PlanResultDetailRepository extends JpaRepository<PlanResultDeta
                     "INNER JOIN device_management.branches b ON b.id = p.branch_id " +
                     "INNER JOIN device_management.plan_types pt ON pt.id = p.plan_type_id " +
                     "WHERE pt.code = 'MAINTENANCE' " +
-                    "AND (:branchIds IS NULL OR p.branch_id IN (:branchIds)) " +
+                    "AND (coalesce(:branchIds, null) IS NULL OR p.branch_id IN (:branchIds)) " +
                     "AND DATE_FORMAT(pr.date_test, '%Y-%m-%d') BETWEEN :startDate AND :endDate ",
             countQuery = "SELECT COUNT(*) " +
                     "FROM device_management.plan_result_details prd " +
@@ -52,11 +53,11 @@ public interface PlanResultDetailRepository extends JpaRepository<PlanResultDeta
                     "INNER JOIN device_management.branches b ON b.id = p.branch_id " +
                     "INNER JOIN device_management.plan_types pt ON pt.id = p.plan_type_id " +
                     "WHERE pt.code = 'MAINTENANCE' " +
-                    "AND (:branchIds IS NULL OR p.branch_id IN (:branchIds)) " +
+                    "AND (coalesce(:branchIds, null) IS NULL OR p.branch_id IN (:branchIds)) " +
                     "AND DATE_FORMAT(pr.date_test, '%Y-%m-%d') BETWEEN :startDate AND :endDate ",
             nativeQuery = true
     )
-    Page<Object[]> getMaintenanceReportByBranchAndDateRange(
+    Page<Report2Response> getMaintenanceReportByBranchAndDateRange(
             @Param("branchIds") List<Long> branchIds,
             @Param("startDate") String startDate,
             @Param("endDate") String endDate,
