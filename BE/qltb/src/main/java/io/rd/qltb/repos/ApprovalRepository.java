@@ -31,4 +31,7 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long> {
     Integer countByRoundIdAndEntityId(@Param("roundId") Long roundId, @Param("entityId") Long entityId);
     @Query(value="select count(*) from approvals a where a.status != 3 and group_id = ?1 and workflow_id = ?2  ;", nativeQuery = true)
     Integer countPendingByGroupIdAndWorkflowId(Long groupId, Long workflowId);
+    @Query(value = "select count(*) from approvals where entity_id = :entityId and entity_type = :entityType and status = 3 ;", nativeQuery = true)
+    public Integer  getNumberOfApproveEntity(@Param("entityId") Long entityId,
+                                            @Param("entityType") String entityType);
 }

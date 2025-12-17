@@ -136,6 +136,10 @@ public class ApprovalService {
         final Approval approval = approvalRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(approvalDTO, approval);
+        if(approvalRepository.getNumberOfApproveEntity(approval.getEntityId(),approval.getEntityType()) >0){
+        String query =" update " + approval.getEntityType() + " set status = 3  WHERE id = " + approval.getEntityId();
+        jdbcTemplate.update(query);
+        }
         approvalRepository.save(approval);
 //        // Cập nhật trạng thái của ApprovalRound dựa trên trạng thái của Approval
 //        Integer total = approvalRepository.countByRoundIdAndEntityId(approval.getRound().getId(),approval.getEntityId());
