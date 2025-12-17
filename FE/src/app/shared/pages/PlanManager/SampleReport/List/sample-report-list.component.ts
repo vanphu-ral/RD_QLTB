@@ -101,7 +101,7 @@ export class SampleReportListComponent {
       case 2: // Chờ duyệt
         return { showEdit: false, showView: true, showDelete: false };
       case 3: // Đã duyệt
-        return { showEdit: false, showView: true, showDelete: false };
+        return { showEdit: true, showView: true, showDelete: true };
       default:
         return { showEdit: false, showView: true, showDelete: false };
     }

@@ -7,6 +7,7 @@ import { PlanDetailService } from '../Service/plan-detail.service';
 import { SignatureService } from '../../../SystemManager/Signature/Service/signature.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { BaseApprovalComponent } from "../../../../base/base-approval-component/base-approval.component";
+import { catchError, of } from 'rxjs';
 
 // Danh sách các Ca kiểm tra mặc định
 const DEFAULT_SESSIONS = ['Đầu ca', 'Giữa ca', 'Cuối ca', 'Hằng tuần', 'Ngày'];
@@ -78,10 +79,6 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
     super.ngOnInit();
     this.sampleReport = JSON.parse(this.model.planDetail.detail);
     this.planInfo = this.model.planDetail;
-    // this.signatureService.getByUsername('admin').subscribe((data) => {
-    //   this.signature = data;
-    //   this.groupPlanDetails();
-    // });
     this.signatureService.getByUsername('admin').subscribe({
         next: (data) => {
             this.signature = data;
@@ -89,6 +86,7 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
         error: (err) => {
             console.error('Không tìm thấy chữ ký của người thực hiện:', err);
             this.signature = { imageLink: null }; // Đặt rỗng/null nếu lỗi
+            this.groupPlanDetails();
         },
         complete: () => {
             // Sau khi cố gắng lấy chữ ký (dù thành công hay thất bại), gọi hàm chính
@@ -113,7 +111,12 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
       .subscribe((data) => {
         this.listUserStatusAppr = data;
         const usernames = data.map(x => x.userApproval?.username);
-        this.signatureService.getByListUsernames(usernames).subscribe(signatures => {
+        this.signatureService.getByListUsernames(usernames).pipe(
+        catchError(err => {
+          console.error('Lỗi lấy danh sách chữ ký:', err);
+          return of([]); // Trả về mảng rỗng nếu lỗi
+        })
+      ).subscribe(signatures => {
           this.listUserApproval = Object.values(
             data.reduce((acc: any, item: any) => {
               const groupId = item.group?.groupApprovalName?.id;
@@ -147,7 +150,12 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
       .findApprovalsByEntityIdAndEntityType(this.sampleReport.approvalWorkflow.id, 'sample_reports')
       .subscribe((data) => {
         const usernames = data.map(x => x.userApproval?.username);
-        this.signatureService.getByListUsernames(usernames).subscribe(signatures => {
+        this.signatureService.getByListUsernames(usernames).pipe(
+        catchError(err => {
+          console.error('Lỗi lấy danh sách chữ ký:', err);
+          return of([]); // Trả về mảng rỗng nếu lỗi
+        })
+      ).subscribe(signatures => {
           this.listUserApprReport = Object.values(
             data.reduce((acc: any, item: any) => {
               const groupId = item.group?.groupApprovalName?.id;

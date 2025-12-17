@@ -151,9 +151,10 @@
                 </tr>
                 <tr>
                     <td *ngFor="let g of listUserApproval" class="">
-                        <div *ngFor="let sig of g.signatures" style="margin-bottom: 10px;">
+                        <div *ngFor="let sig of g.signatures" style="margin-bottom: 10px;text-align: center;">
                             <img *ngIf="sig" [src]="sig"
                                 style="width: 120px; height: 60px; display: block; margin: 0 auto;">
+                            <span *ngIf="!sig" style="font-weight: bold;">Đã ký</span>
                         </div>
                     </td>
                 </tr>
