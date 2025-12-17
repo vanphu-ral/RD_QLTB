@@ -3,37 +3,36 @@
         <div class="filter-box row my-3">
             <div class="col">
                 <p-floatlabel variant="on">
-                    <p-select [(ngModel)]="filter.branch" [options]="listBranchs" optionLabel="name" [fluid]="true"
-                        [showClear]="true" [appendTo]="'body'" id="approvalWorkflow" name="approvalWorkflow"
-                        dataKey="id">
-                    </p-select>
-                    <label for="approvalWorkflow">Ngành</label>
+                    <p-multiselect [options]="listBranchs" [(ngModel)]="filter.branchIds" optionValue="id" [fluid]="true"
+                        [maxSelectedLabels]="2" optionLabel="name" appendTo="body" dataKey="id" />
+                    <label for="branchIds">Ngành</label>
                 </p-floatlabel>
             </div>
             <div class="col">
                 <p-floatlabel variant="on">
-                    <p-select [(ngModel)]="filter.team" [options]="listTeams" optionLabel="name" [fluid]="true"
-                        [showClear]="true" [appendTo]="'body'" id="approvalWorkflow" name="approvalWorkflow"
-                        dataKey="id">
-                    </p-select>
-                    <label for="approvalWorkflow">Tổ</label>
+                    <p-multiselect [options]="listTeams" [(ngModel)]="filter.groupIds" optionValue="id" [fluid]="true"
+                        [maxSelectedLabels]="2" optionLabel="name" appendTo="body" dataKey="id" />
+                    <label for="groupIds">Tổ</label>
                 </p-floatlabel>
             </div>
             <div class="col">
                 <p-floatlabel variant="on">
-                    <p-datepicker [(ngModel)]="filter.fromDate" appDateConvert [iconDisplay]="'input'" [showIcon]="true"
-                        name="fromDate" inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body"
+                    <p-datepicker [(ngModel)]="filter.startDate" appDateConvert [iconDisplay]="'input'" [showIcon]="true"
+                        name="startDate" inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body"
                         [inputSize]="100" />
-                    <label for="fromDate">Thời gian bắt đầu</label>
+                    <label for="startDate">Thời gian bắt đầu</label>
                 </p-floatlabel>
             </div>
             <div class="col">
                 <p-floatlabel variant="on">
-                    <p-datepicker [(ngModel)]="filter.toDate" appDateConvert [iconDisplay]="'input'" [showIcon]="true"
-                        name="toDate" inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body"
+                    <p-datepicker [(ngModel)]="filter.endDate" appDateConvert [iconDisplay]="'input'" [showIcon]="true"
+                        name="endDate" inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body"
                         [inputSize]="100" />
-                    <label for="toDate">Thời gian kết thúc</label>
+                    <label for="endDate">Thời gian kết thúc</label>
                 </p-floatlabel>
+            </div>
+            <div class="col-1">
+                <p-button icon="pi pi-search" label="search" (click)="search()"></p-button>
             </div>
         </div>
         <div class="table-responsive">
