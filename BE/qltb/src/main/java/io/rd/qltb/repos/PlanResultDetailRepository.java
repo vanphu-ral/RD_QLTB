@@ -42,7 +42,7 @@ public interface PlanResultDetailRepository extends JpaRepository<PlanResultDeta
                     "INNER JOIN device_management.branches b ON b.id = p.branch_id " +
                     "INNER JOIN device_management.plan_types pt ON pt.id = p.plan_type_id " +
                     "WHERE pt.code = 'MAINTENANCE' " +
-                    "AND (coalesce(:branchIds, null) IS NULL OR p.branch_id IN (:branchIds)) " +
+                    "AND  p.branch_id IN (:branchIds) " +
                     "AND DATE_FORMAT(pr.date_test, '%Y-%m-%d') BETWEEN :startDate AND :endDate ",
             countQuery = "SELECT COUNT(*) " +
                     "FROM device_management.plan_result_details prd " +
@@ -53,7 +53,7 @@ public interface PlanResultDetailRepository extends JpaRepository<PlanResultDeta
                     "INNER JOIN device_management.branches b ON b.id = p.branch_id " +
                     "INNER JOIN device_management.plan_types pt ON pt.id = p.plan_type_id " +
                     "WHERE pt.code = 'MAINTENANCE' " +
-                    "AND (coalesce(:branchIds, null) IS NULL OR p.branch_id IN (:branchIds)) " +
+                    "AND  p.branch_id IN (:branchIds) " +
                     "AND DATE_FORMAT(pr.date_test, '%Y-%m-%d') BETWEEN :startDate AND :endDate ",
             nativeQuery = true
     )
