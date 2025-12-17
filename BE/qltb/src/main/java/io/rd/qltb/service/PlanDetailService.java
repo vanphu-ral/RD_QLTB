@@ -221,7 +221,7 @@ public class PlanDetailService {
 
     public PlanDetailDTO mapToDTO(final PlanDetail planDetail, final PlanDetailDTO dto) {
         dto.setId(planDetail.getId());
-        dto.setSerial(planDetail.getSerial());
+        dto.setQrCode(planDetail.getQrCode());
         dto.setEstimatedTime(planDetail.getEstimatedTime());
         dto.setNameDetail(planDetail.getNameDetail());
         dto.setDetail(planDetail.getDetail());
@@ -345,7 +345,7 @@ public class PlanDetailService {
     }
 
     public PlanDetail mapToEntity(final PlanDetailDTO planDetailDTO, final PlanDetail planDetail) {
-        planDetail.setSerial(planDetailDTO.getSerial());
+        planDetail.setQrCode(planDetailDTO.getQrCode());
         planDetail.setEstimatedTime(planDetailDTO.getEstimatedTime());
         planDetail.setNameDetail(planDetailDTO.getNameDetail());
         planDetail.setDetail(planDetailDTO.getDetail());

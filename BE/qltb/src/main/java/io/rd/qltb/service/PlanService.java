@@ -192,7 +192,7 @@ public class PlanService {
                 DeviceRequest deviceRequest = new DeviceRequest();
                 deviceRequest.setDevice(deviceService.mapToDTO(planDetail.getDevice(), new DeviceDTO()));
                 deviceRequest.getDevice().setIsHadDataPlanReport(planResultDetailRepository.countByDeviceIdAndPlanId(deviceId, plan.getId()) > 0 ? 1 : 0);
-                deviceRequest.setSerialNumber(planDetail.getSerial());
+                deviceRequest.setQrCode(planDetail.getQrCode());
                 deviceRequest.setManager(planDetail.getManager());
                 deviceRequest.setEstimatedTime(planDetail.getEstimatedTime());
                 deviceRequest.setNameDetail(planDetail.getNameDetail());
@@ -265,7 +265,7 @@ public class PlanService {
                         planDetail.setNameDetail(deviceRequest.getNameDetail());
                         planDetail.setNote(deviceRequest.getNote());
                         planDetail.setManager(deviceRequest.getManager());
-                        planDetail.setSerial(deviceRequest.getSerialNumber());
+                        planDetail.setQrCode(deviceRequest.getQrCode());
                         Device device = deviceRepository.findById(deviceRequest.getDevice().getId())
                                 .orElseThrow(() -> new NotFoundException("Device not found"));
                         planDetail.setDevice(device);
@@ -367,7 +367,7 @@ public class PlanService {
                                 planDetail.setNameDetail(deviceRequest.getNameDetail());
                                 planDetail.setNote(deviceRequest.getNote());
                                 planDetail.setManager(deviceRequest.getManager());
-                                planDetail.setSerial(deviceRequest.getSerialNumber());
+                                planDetail.setQrCode(deviceRequest.getQrCode());
                                 Device device = deviceRepository.findById(deviceRequest.getDevice().getId())
                                         .orElseThrow(() -> new NotFoundException("Device not found"));
                                 planDetail.setDevice(device);
@@ -424,7 +424,7 @@ public class PlanService {
                                 planDetail.setNameDetail(deviceRequest.getNameDetail());
                                 planDetail.setNote(deviceRequest.getNote());
                                 planDetail.setManager(deviceRequest.getManager());
-                                planDetail.setSerial(deviceRequest.getSerialNumber());
+                                planDetail.setQrCode(deviceRequest.getQrCode());
                                 planDetail.setUpdatedAt(java.time.LocalDateTime.now());
                                 planDetail.setUpdatedBy(userName);
                                 planDetailRepository.save(planDetail);
@@ -509,7 +509,7 @@ public class PlanService {
             List<PlanDetailListDTO> details = plan.getPlanPlanDetails().stream().map(detail -> {
                         PlanDetailListDTO d = new PlanDetailListDTO();
                         d.setId(detail.getId());
-                        d.setSerial(detail.getSerial());
+                        d.setSerial(detail.getQrCode());
                         d.setManager(detail.getManager());
                         d.setDetail(detail.getDetail());
                         d.setStatus(detail.getStatus());
@@ -766,7 +766,7 @@ public class PlanService {
                             d.setNote(deviceRequest.getNote());
                             d.setEstimatedTime(deviceRequest.getEstimatedTime());
                             d.setManager(deviceRequest.getManager());
-                            d.setSerial(deviceRequest.getSerialNumber()); // Thêm serial từ DeviceRequest
+                            d.setQrCode(deviceRequest.getQrCode()); // Thêm serial từ DeviceRequest
                             d.setCreatedBy(userName);
                             d.setUpdatedBy(userName);
 
@@ -815,7 +815,7 @@ public class PlanService {
 
                 // COMMON FIELDS
                 d.setManager(dr.getManager());
-                d.setSerial(dr.getSerialNumber());
+                d.setQrCode(dr.getQrCode());
                 d.setEstimatedTime(dr.getEstimatedTime());
                 d.setNameDetail(dr.getNameDetail());
                 d.setNote(dr.getNote());

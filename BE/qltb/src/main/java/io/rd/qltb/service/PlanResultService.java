@@ -278,7 +278,7 @@ public class PlanResultService {
         if(planResult.getPlanDetail() != null){
             PlanDetail planDetailCopy = new PlanDetail();
             planDetailCopy.setId(planResult.getPlanDetail().getId());
-            planDetailCopy.setSerial(planResult.getPlanDetail().getSerial());
+            planDetailCopy.setQrCode(planResult.getPlanDetail().getQrCode());
             planDetailCopy.setCreatedAt(planResult.getPlanDetail().getCreatedAt());
             planDetailCopy.setUpdatedAt(planResult.getPlanDetail().getUpdatedAt());
             planDetailCopy.setCreatedBy(planResult.getPlanDetail().getCreatedBy());

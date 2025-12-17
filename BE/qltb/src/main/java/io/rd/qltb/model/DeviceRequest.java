@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class DeviceRequest {
     private DeviceDTO device;
     private String manager;
-    private String serialNumber;
+    private String qrCode;
     private LocalDateTime estimatedTime;
     private String nameDetail;
     private String note;

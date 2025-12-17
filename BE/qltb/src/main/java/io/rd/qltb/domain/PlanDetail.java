@@ -22,7 +22,7 @@ public class PlanDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String serial;
+    private String qrCode;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;

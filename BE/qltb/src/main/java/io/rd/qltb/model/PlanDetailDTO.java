@@ -17,7 +17,7 @@ public class PlanDetailDTO {
     private Long id;
 
 
-    private String serial;
+    private String qrCode;
 
     private LocalDateTime createdAt;
     private LocalDateTime estimatedTime;
