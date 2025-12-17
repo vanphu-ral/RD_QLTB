@@ -277,7 +277,7 @@ public class PlanService {
                         planDetail.setSampleReport(sampleReport);
                         planDetailSend.add(planDetailRepository.save(planDetail));
                         // Duyệt từng ngày trong tháng
-                        if (planRequest.getPlan().getPlanType().getCode().equals("AUDIT")) {
+                        if (planRequest.getPlan().getPlanType().getCode().equals("DAILYCHECK")) {
                             // tạo plan Result cho tháng hiện tại
                             // Lấy tháng hiện tại
                             YearMonth currentMonth = YearMonth.now();
@@ -379,7 +379,7 @@ public class PlanService {
                                 planDetail.setSampleReport(sampleReport);
                                 planDetailRepository.save(planDetail);
 
-                                if (planRequestData.getPlanType().getCode().equals("AUDIT")) {
+                                if (planRequestData.getPlanType().getCode().equals("DAILYCHECK")) {
                                     // tạo plan Result cho tháng hiện tại
                                     // Lấy tháng hiện tại
                                     YearMonth currentMonth = YearMonth.now();
@@ -562,7 +562,7 @@ public class PlanService {
         List<PlanDetail> savedDetails = addDetailToSampleReport(details);// chuyển detail sang JSON
         planDetailRepository.saveAll(savedDetails);
         autoCreatePlanResult(details);
-        if(plan.getPlanType().getCode().equals("AUDIT")){
+        if(plan.getPlanType().getCode().equals("DAILYCHECK")){
         createApproveForManager(plan, savedDetails);
         }
         return plan;
@@ -668,7 +668,7 @@ public class PlanService {
     public void autoCreatePlanResult(List<PlanDetail> planDetails) {
         for (PlanDetail planDetail : planDetails) {
             Plan plan = planDetail.getPlan();
-            if (plan.getPlanType().getCode().equals("AUDIT")) {
+            if (plan.getPlanType().getCode().equals("DAILYCHECK")) {
                 // tạo plan Result cho tháng hiện tại
                 // Lấy tháng hiện tại
                 YearMonth currentMonth = YearMonth.now();
