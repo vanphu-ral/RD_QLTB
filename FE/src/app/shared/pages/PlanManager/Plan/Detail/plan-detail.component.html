@@ -106,7 +106,7 @@
       </div>
     </div>
 
-    <div class="row my-3">
+    <div class="row my-3" *ngIf="model.plan?.planType?.code != PLANTYPE.MAINTENANCE">
       <div class="col-6">
         <p-floatlabel variant="on">
           <p-datepicker [(ngModel)]="model.plan.fromDate" appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="fromDate"

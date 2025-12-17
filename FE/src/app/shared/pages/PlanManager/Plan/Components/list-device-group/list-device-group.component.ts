@@ -170,13 +170,21 @@ export class ListDeviceComponent implements OnInit {
     }
 
     onSampleReportChange(row: any, currentIndex: number) {
-        console.log(row);
-        if(row.deviceGroup){
-            row.sampleReports = this.listSampleReportBase.filter(sr =>
-                sr.deviceGroup?.id === row.deviceGroup.id
-            );
-        }else{
-            Util.toastMessage(`Vui lòng chọn nhóm thiết bị ở dòng ${currentIndex + 1}`, 'error');
+        if(this.model.plan.planType) {
+            if(row.deviceGroup){
+                const listSampleReport = this.listSampleReportBase.filter(sr =>
+                    sr.deviceGroup?.id === row.deviceGroup.id && sr.type === this.model.plan.planType.code
+                );
+                if(listSampleReport.length > 0){
+                    row.sampleReports = listSampleReport;
+                }else {
+                    Util.toastMessage('Chưa có mẫu biên bản thuộc nhóm thiết bị này với loại kế hoạch', 'error');
+                }
+            }else{
+                Util.toastMessage(`Vui lòng chọn nhóm thiết bị ở dòng ${currentIndex + 1}`, 'error');
+            }
+        }else {
+            Util.toastMessage('Vui lòng chọn loại kế hoạch', 'error');
         }
     }
 

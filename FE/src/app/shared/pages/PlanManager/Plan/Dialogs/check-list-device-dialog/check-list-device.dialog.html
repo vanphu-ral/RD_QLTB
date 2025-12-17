@@ -33,10 +33,10 @@
                         <p-tag [value]="statusToString(row.status)" [severity]="getSeverity(row.status)" />
                     </td>
                     <td class="text-center">
-                        <p-button icon="pi pi-save" styleClass="m-1"
+                        <p-button icon="pi pi-save" styleClass="m-1" *ngIf="row.status != 5"
                             (onClick)="saveDeviceCheckDate(row)"></p-button>
                         <p-button icon="pi pi-check-circle" styleClass="m-1" severity="info"
-                            (onClick)="checkDevice(row)" [disabled]="!row.id"></p-button>
+                            (onClick)="checkDevice(row)" [disabled]="!row.id" *ngIf="row.status != 5"></p-button>
                         <p-button icon="pi pi-check" styleClass="m-1" severity="success"
                             (onClick)="completeCheckDate(row, $event)" [disabled]="!row.id"></p-button>
                         <p-button icon="pi pi-trash" severity="danger"

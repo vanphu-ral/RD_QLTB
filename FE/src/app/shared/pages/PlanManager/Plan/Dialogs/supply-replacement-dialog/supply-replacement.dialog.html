@@ -84,5 +84,9 @@
         <p-button label="Đóng" (onClick)="close()"></p-button>
     </div>
 </div>
-<p-confirmDialog></p-confirmDialog>
+<p-confirmDialog 
+    [style]="{width: '500px'}" 
+    key="confirmDialog"
+    [baseZIndex]="10000">
+</p-confirmDialog>
 <p-toast></p-toast>

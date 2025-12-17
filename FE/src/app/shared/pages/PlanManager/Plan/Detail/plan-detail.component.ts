@@ -20,6 +20,7 @@ import { BaseApprovalComponent } from "../../../../base/base-approval-component/
 import { TeamService } from '../../../Categories/Team/Service/team.service';
 import { ConfirmationService } from 'primeng/api';
 import { PlanDetailService } from '../Service/plan-detail.service';
+import { PLANTYPE } from '../../../../enums/plan-type.enum';
 
 @Component({
   selector: 'app-plan-detail',
@@ -40,6 +41,8 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
   listTeamsFiltered: any[] = [];
 
   oldPlanRequest: PlanRequest = new PlanRequest();
+
+  PLANTYPE = PLANTYPE;
 
   @ViewChild(ListDeviceComponent) listDeviceComponent?: ListDeviceComponent;
 
