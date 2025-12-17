@@ -255,16 +255,10 @@ export class ListDeviceComponent implements OnInit {
             return currentDevices;
         }
         const mapEdited = new Map(edited.map(e => [e.device!.id, e]));
-        let updatedDevices: DeviceDetail[] = currentDevices.map(d => {
-            const newData = mapEdited.get(d.device!.id);
-            if (newData) {
-                return { ...d, ...newData, device: newData.device };
-            }
-            return d;
-        });
+        let updatedDevices: DeviceDetail[] = edited
         const currentIds = new Set(currentDevices.map(d => d.device!.id));
-        const newDevicesToAdd = edited.filter(e => !currentIds.has(e.device!.id));
-        updatedDevices.push(...newDevicesToAdd);
+        // const newDevicesToAdd = edited.filter(e => !currentIds.has(e.device!.id));
+        // updatedDevices.push(...newDevicesToAdd);
         return updatedDevices;
     }
 
