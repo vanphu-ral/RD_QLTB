@@ -1,6 +1,7 @@
 package io.rd.qltb.rest;
 
 import io.rd.qltb.model.ReportFilter;
+import io.rd.qltb.model.response.Report2Response;
 import io.rd.qltb.model.response.ReportResponse;
 import io.rd.qltb.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +24,11 @@ public class ReportResource {
     ) {
         return reportService.getSupplyReport(filter);
     }
-    /** * API lấy báo cáo bảo trì theo filter và phân trang */ 
+    /** * API lấy báo cáo bảo trì theo filter và phân trang */
     @PostMapping("/maintenance")
-    public ResponseEntity<Page<Object[]>> getMaintenanceReport(
+    public ResponseEntity<Page<Report2Response>> getMaintenanceReport(
             @RequestBody ReportFilter filter, Pageable pageable) {
-        Page<Object[]> page = reportService.getMaintenanceReport(filter, pageable);
+        Page<Report2Response> page = reportService.getMaintenanceReport(filter, pageable);
         return ResponseEntity.ok(page);
     }
 }
