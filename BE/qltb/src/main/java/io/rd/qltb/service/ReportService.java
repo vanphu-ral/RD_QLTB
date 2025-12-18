@@ -67,17 +67,19 @@ public class ReportService {
 
                         // ✅ Loại bỏ teamId đã xử lý
                         teamIds.remove(team.getId());
-
-                        continue;
                     }
                 }
             }
 
-            reportResponse.setTeamReports(teamReports);
-            reportResponses.add(reportResponse);
+            // Chỉ add nếu có dữ liệu teamReports
+            if (!teamReports.isEmpty()) {
+                reportResponse.setTeamReports(teamReports);
+                reportResponses.add(reportResponse);
+            }
         }
         return reportResponses;
     }
+
 
     public Page<Report2Response> getMaintenanceReport(ReportFilter filter, Pageable pageable) {
         List<Long> finalBranchIds = (filter.getBranchIds() == null || filter.getBranchIds().isEmpty()) ? null : filter.getBranchIds();
