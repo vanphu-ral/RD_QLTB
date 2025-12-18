@@ -118,13 +118,13 @@
             <td>{{ i + 1 }}</td>
             <td style="max-width: 200px;">
               <p-select [(ngModel)]="row.group" [options]="listCriterialGroup" optionLabel="name" [disabled]="isViewMode || isApprovalMode"
-                [fluid]="true" [showClear]="true" [appendTo]="'body'" (onChange)="onChangeGroup($event, i)"
+                [fluid]="true" [showClear]="true" [appendTo]="'body'" (onChange)="onChangeGroup($event, i)" [filter]="true"
                 id="group-{{ i }}" name="group-{{ i }}" dataKey="id">
               </p-select>
             </td>
             <td style="max-width: 200px;">
               <p-select [(ngModel)]="row.criterial" [options]="row.criterials" optionLabel="name" [fluid]="true" [disabled]="isViewMode || isApprovalMode"
-                [showClear]="true" [appendTo]="'body'" id="criterial-{{ i }}" name="criterial-{{ i }}" dataKey="id">
+                [showClear]="true" [appendTo]="'body'" id="criterial-{{ i }}" name="criterial-{{ i }}" dataKey="id" [filter]="true">
               </p-select>
             </td>
             <td>

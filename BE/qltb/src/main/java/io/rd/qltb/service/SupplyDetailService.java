@@ -88,6 +88,7 @@ public class SupplyDetailService {
                                      final SupplyDetailDTO dto) {
         dto.setId(supplyDetail.getId());
         dto.setSerial(supplyDetail.getSerial());
+        dto.setQrCode(supplyDetail.getQrCode());
         dto.setImportDate(supplyDetail.getImportDate());
         dto.setSupplier(supplyDetail.getSupplier());
         dto.setPrice(supplyDetail.getPrice());
@@ -127,6 +128,7 @@ public class SupplyDetailService {
     private SupplyDetail mapToEntity(final SupplyDetailDTO supplyDetailDTO,
             final SupplyDetail supplyDetail) {
         supplyDetail.setSerial(supplyDetailDTO.getSerial());
+        supplyDetail.setQrCode(supplyDetail.getQrCode());
         supplyDetail.setImportDate(supplyDetailDTO.getImportDate());
         supplyDetail.setSupplier(supplyDetailDTO.getSupplier());
         supplyDetail.setPrice(supplyDetailDTO.getPrice());

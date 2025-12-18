@@ -21,7 +21,7 @@
       <div class="col-12">
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.criterialGroup" [options]="listCriterialGroup" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
-            [showClear]="true" [appendTo]="'body'" id="criterialGroup" name="criterialGroup" dataKey="id">
+            [showClear]="true" [appendTo]="'body'" id="criterialGroup" name="criterialGroup" dataKey="id" [filter]="true">
           </p-select>
           <label for="criterialGroup">Tên nhóm Tiêu chí</label>
         </p-floatlabel>

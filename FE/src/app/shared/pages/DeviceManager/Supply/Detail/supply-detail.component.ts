@@ -20,12 +20,9 @@ export class SupplyDetailComponent extends BasePageComponent<Supply> {
 
   listSupplyGroups: any[] = [];
   listSerials: SerialSupply[] = [];
-  statusSerials: any[] = [
-    { label: 'Chưa sử dụng - Hoạt động tốt', value: 0 },
-    { label: 'Đang sử dụng - Hoạt động tốt', value: 1 },
-    { label: 'Chưa sử dụng - Hỏng', value: 2 },
-    { label: 'Đang sử dụng - Hỏng', value: 3 },
-  ];
+
+  statusSerials: any[] = Util.statusSerial();
+  listCurrency: any[] = Util.getCurrencyType();
 
   constructor(
     protected override apiService: SupplyService,
@@ -33,6 +30,7 @@ export class SupplyDetailComponent extends BasePageComponent<Supply> {
     private supplyDetailService: SupplyDetailService,
   ) {
     super(apiService);
+    
   }
 
   override ngOnInit(): void {
@@ -43,7 +41,7 @@ export class SupplyDetailComponent extends BasePageComponent<Supply> {
     if(this.isEditMode || this.isViewMode) {
       this.loadData();
     }else {
-      this.listSerials.push({ status: 0 });
+      this.listSerials.push({ quantity: 1, status: 0 });
     }
   }
 
@@ -59,7 +57,7 @@ export class SupplyDetailComponent extends BasePageComponent<Supply> {
   }
 
   addNewRow() {
-    this.listSerials.push({ status: 0 });
+    this.listSerials.push({ quantity: 1, status: 0 });
   }
 
   deleteRow(index: number) {
@@ -68,7 +66,6 @@ export class SupplyDetailComponent extends BasePageComponent<Supply> {
         next: () => {
           this.listSerials.splice(index, 1);
           this.loadData();
-          // this.messageService.add({ severity: 'info', summary: 'Đã xác nhận', detail: 'Xóa thành công!', life: 3000 });
         }
       });
     } else {
@@ -76,31 +73,23 @@ export class SupplyDetailComponent extends BasePageComponent<Supply> {
     }
   }
 
-  // saveSerials() {
-  //   this.supplyDetailService.createList(this.listSerials).subscribe({
-  //     next: (res: any) => {
-  //       this.listSerials = res.map((item: any) => ({
-  //         ...item,
-  //         importDate: item.importDate ? new Date(item.importDate) : undefined,
-  //         supply: this.data
-  //       }));
-  //       this.ref.close({ ListSerial: this.listSerials, item: this.data });
-  //       Util.toastMessage('Lưu thành công', 'success');
-  //     },
-  //     error: (err) => {
-  //       Util.handleApiError(err);
-  //     }
-  //   });
-  // }
+  saveSerials(id: number) {
+    this.listSerials = this.listSerials.map((item: any) => ({
+      ...item,
+      importDate: item.importDate ? new Date(item.importDate) : undefined,
+      supply: {id: id}
+    }));
+    this.supplyDetailService.createList(this.listSerials).subscribe();
+  }
 
   public override save(): void {
     if (this.model) {
       // this.model = Util.prepareModel(this.model);
       this.model.code = this.model.group.code;
-
       if (this.isAddMode) {
         this.apiService.create(this.model).subscribe({
-          next: () => {
+          next: (res: any) => {
+            this.saveSerials(res);
             Util.ConfirmMessage('Thêm mới thành công', 'success');
             this.navigationService.back()
           },
@@ -109,6 +98,7 @@ export class SupplyDetailComponent extends BasePageComponent<Supply> {
       } else {
         this.apiService.update(this.model.id!, this.model).subscribe({
           next: () => {
+            this.saveSerials(this.model.id!);
             Util.ConfirmMessage('Cập nhật thành công', 'success');
             this.navigationService.back()
           },

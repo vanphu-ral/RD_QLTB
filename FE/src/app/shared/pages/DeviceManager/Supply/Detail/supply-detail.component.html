@@ -49,35 +49,39 @@
       <table class="table table-bordered">
         <thead>
           <tr>
-            <th>mã serial</th>
+            <th>mã serial - qr code</th>
             <th style="min-width: 200px;">ngày nhập</th>
             <th>xuất xứ</th>
             <th>đơn vị</th>
+            <th>số lượng</th>
             <th>giá</th>
             <th>loại tiền tệ</th>
-            <th>số lượng</th>
             <th>Trạng thái</th>
-            <th>Thao tác</th>
+            <th *ngIf="!isViewMode">Thao tác</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let row of listSerials; let i = index">
             <td><input type="text" pInputText [(ngModel)]="row.serial" name="serial-{{i}}" [disabled]="isViewMode"></td>
             <td><p-datepicker [(ngModel)]="row.importDate" [iconDisplay]="'input'" [showIcon]="true"
-                name="importDate-{{i}}" inputId="icondisplay" [dateFormat]="'yy-mm-dd'" [showTime]="true"
+                name="importDate-{{i}}" inputId="icondisplay" [dateFormat]="'yy-mm-dd'"
                 appendTo="body" [disabled]="isViewMode"/>
             </td>
-            <td><input type="text" pInputText [(ngModel)]="row.supplier" name="supplier-{{i}}" [disabled]="isViewMode"></td>
-            <td><input type="text" pInputText [(ngModel)]="row.unit" name="unit-{{i}}" [disabled]="isViewMode"></td>
+            <td><input type="text" pInputText [(ngModel)]="row.supplier" name="supplier-{{i}}" [disabled]="isViewMode" style="max-width: 100px !important;"></td>
+            <td><input type="text" pInputText [(ngModel)]="row.unit" name="unit-{{i}}" [disabled]="isViewMode" style="max-width: 100px !important;"></td>
+            <td><p-inputnumber id="quantity" name="quantity-{{i}}" [(ngModel)]="row.quantity" autocomplete="off" [disabled]="isViewMode" [fluid]="true" style="max-width: 100px !important;"/></td>
             <td><p-inputnumber id="price" name="price-{{i}}" [(ngModel)]="row.price" autocomplete="off" [disabled]="isViewMode" [fluid]="true" mode="decimal"/></td>
-            <td><input type="text" pInputText [(ngModel)]="row.currency" name="currency-{{i}}" [disabled]="isViewMode"></td>
-            <td><p-inputnumber id="quantity" name="quantity-{{i}}" [(ngModel)]="row.quantity" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/></td>
             <td>
-              <p-select [(ngModel)]="row.status" [options]="statusSerials" optionLabel="label" [fluid]="true" [disabled]="isViewMode"
-                optionValue="value" [showClear]="true" [appendTo]="'body'" id="status-{{i}}" name="status-{{i}}">
+              <p-select [(ngModel)]="row.currency" [options]="listCurrency" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
+                optionValue="value" [showClear]="true" [appendTo]="'body'" id="currency-{{i}}" name="currency-{{i}}">
               </p-select>
             </td>
-            <td class="text-center">
+            <td>
+              <p-select [(ngModel)]="row.status" [options]="statusSerials" optionLabel="label" [fluid]="true" [disabled]="isViewMode"
+                optionValue="code" [showClear]="true" [appendTo]="'body'" id="status-{{i}}" name="status-{{i}}">
+              </p-select>
+            </td>
+            <td class="text-center" *ngIf="!isViewMode">
               <p-button icon="pi pi-trash" severity="danger" (onClick)="deleteRow(i)"></p-button>
             </td>
           </tr>

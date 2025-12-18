@@ -33,6 +33,9 @@ SupplyDetail {
     private String serial;
 
     @Column
+    private String qrCode;
+
+    @Column
     private LocalDateTime importDate;
 
     @Column

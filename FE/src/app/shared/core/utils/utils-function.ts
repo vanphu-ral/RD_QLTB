@@ -484,6 +484,15 @@ export class Util {
     return localStorage.getItem('username') || '';
   }
 
+  static statusSerial() {
+    return [
+      { label: 'Chưa sử dụng - Hoạt động tốt', code: 0 },
+      { label: 'Đang sử dụng - Hoạt động tốt', code: 1 },
+      { label: 'Chưa sử dụng - Hỏng', code: 2 },
+      { label: 'Đang sử dụng - Hỏng', code: 3 }
+    ];
+  }
+
   static statusToString(status: number): string {
     switch (status) {
       case 1:
@@ -627,5 +636,15 @@ export class Util {
     Util.ConfirmMessage(message, 'error');
   }
 
-
+  /**
+   * Lấy ra danh sách loại tiền tệ
+   */
+  static getCurrencyType() {
+    return [
+      { name: 'VND', value: 'VND' },
+      { name: 'USD', value: 'USD' },
+      { name: 'EUR', value: 'EUR' },
+      { name: 'YEN', value: 'YEN' }
+    ];
+  }
 }

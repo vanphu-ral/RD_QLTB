@@ -18,6 +18,8 @@ public class SupplyDetailDTO {
 
     private String serial;
 
+    private String qrCode;
+
     private LocalDateTime importDate;
 
     @Size(max = 255)
