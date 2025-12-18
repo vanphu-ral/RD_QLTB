@@ -11,4 +11,5 @@ public interface UserImageRepository extends JpaRepository<UserImage, Long> {
     Optional<UserImage> findByUsername(String username);
 
     List<UserImage> findByUsernameIn(List<String> usernames);
+    List<UserImage> findByStatusNotOrderByIdDesc (Integer status);
 }

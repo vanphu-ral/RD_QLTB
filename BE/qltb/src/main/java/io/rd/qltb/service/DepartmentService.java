@@ -10,6 +10,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import static io.rd.qltb.config.GlobalConfig.DELETED;
+
 
 @Service
 public class DepartmentService {
@@ -24,7 +26,7 @@ public class DepartmentService {
     }
 
     public List<DepartmentDTO> findAll() {
-        final List<Department> departments = departmentRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
+        final List<Department> departments = departmentRepository.findAllByStatusNotOrderByIdDesc(DELETED);
         return departments.stream()
                 .map(department -> mapToDTO(department, new DepartmentDTO()))
                 .toList();
@@ -52,8 +54,9 @@ public class DepartmentService {
     public void delete(final Long id) {
         final Department department = departmentRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        publisher.publishEvent(new BeforeDeleteDepartment(id));
-        departmentRepository.delete(department);
+//        publisher.publishEvent(new BeforeDeleteDepartment(id));
+        department.setStatus(DELETED);
+        departmentRepository.save(department);
     }
 
     private DepartmentDTO mapToDTO(final Department department, final DepartmentDTO departmentDTO) {

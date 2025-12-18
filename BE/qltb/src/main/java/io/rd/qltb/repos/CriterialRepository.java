@@ -13,4 +13,5 @@ public interface CriterialRepository extends JpaRepository<Criterial, Long> {
     Criterial findFirstByCriterialGroupId(Long id);
 
     List<Criterial> findByCriterialGroupId(Long criterialGroupId);
+    List<Criterial> findAllByStatusNotOrderByIdDesc(Integer status);
 }

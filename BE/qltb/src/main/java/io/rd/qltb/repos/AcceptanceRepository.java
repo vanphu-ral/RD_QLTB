@@ -4,6 +4,8 @@ import io.rd.qltb.domain.Acceptance;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface AcceptanceRepository extends JpaRepository<Acceptance, Long> {
 
@@ -13,4 +15,5 @@ public interface AcceptanceRepository extends JpaRepository<Acceptance, Long> {
     Integer countByPlanDetailId(Long id);
 
     Integer countByErrorReportId(Long id);
+    List<Acceptance> findAllByStatusNotOrderByIdDesc(Integer status);
 }

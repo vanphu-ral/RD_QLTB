@@ -10,6 +10,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import static io.rd.qltb.config.GlobalConfig.DELETED;
+
 
 @Service
 public class CriterialGroupService {
@@ -24,7 +26,7 @@ public class CriterialGroupService {
     }
 
     public List<CriterialGroupDTO> findAll() {
-        final List<CriterialGroup> criterialGroups = criterialGroupRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
+        final List<CriterialGroup> criterialGroups = criterialGroupRepository.findAllByStatusNotOrderByIdDesc(DELETED);
         return criterialGroups.stream()
                 .map(criterialGroup -> mapToDTO(criterialGroup, new CriterialGroupDTO()))
                 .toList();
@@ -52,8 +54,9 @@ public class CriterialGroupService {
     public void delete(final Long id) {
         final CriterialGroup criterialGroup = criterialGroupRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        publisher.publishEvent(new BeforeDeleteCriterialGroup(id));
-        criterialGroupRepository.delete(criterialGroup);
+//        publisher.publishEvent(new BeforeDeleteCriterialGroup(id));
+        criterialGroup.setStatus(DELETED);
+        criterialGroupRepository.save(criterialGroup);
     }
 
     private CriterialGroupDTO mapToDTO(final CriterialGroup criterialGroup,

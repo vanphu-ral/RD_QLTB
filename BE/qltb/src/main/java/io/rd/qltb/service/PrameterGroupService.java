@@ -11,6 +11,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import static io.rd.qltb.config.GlobalConfig.DELETED;
+
 
 @Service
 public class PrameterGroupService {
@@ -27,7 +29,7 @@ public class PrameterGroupService {
     }
 
     public List<PrameterGroupDTO> findAll() {
-        final List<PrameterGroup> prameterGroups = prameterGroupRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
+        final List<PrameterGroup> prameterGroups = prameterGroupRepository.findAllByStatusNotOrderByIdDesc(DELETED);
         return prameterGroups.stream()
                 .map(prameterGroup -> mapToDTO(prameterGroup, new PrameterGroupDTO()))
                 .toList();
@@ -57,8 +59,9 @@ public class PrameterGroupService {
     public void delete(final Long id) {
         final PrameterGroup prameterGroup = prameterGroupRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        publisher.publishEvent(new BeforeDeletePrameterGroup(id));
-        prameterGroupRepository.delete(prameterGroup);
+//        publisher.publishEvent(new BeforeDeletePrameterGroup(id));
+        prameterGroup.setStatus(DELETED);
+        prameterGroupRepository.save(prameterGroup);
     }
 
     private PrameterGroupDTO mapToDTO(final PrameterGroup prameterGroup,

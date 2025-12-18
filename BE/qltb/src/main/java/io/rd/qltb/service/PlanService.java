@@ -30,6 +30,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import static io.rd.qltb.config.GlobalConfig.DELETED;
+
 
 @Service
 public class PlanService {
@@ -112,7 +114,8 @@ public class PlanService {
             }
         });
 
-
+        // Thêm điều kiện status != 10
+        predicates.add(cb.notEqual(root.get("status"), DELETED));
         cq.where(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
         cq.orderBy(cb.desc(root.get("id")));
         var query = entityManager.createQuery(cq);
@@ -123,12 +126,12 @@ public class PlanService {
         List<PlanDTO> dtos = plans.stream()
                 .map(plan -> mapToDTO(plan, new PlanDTO()))
                 .toList();
-        for (PlanDTO dto : dtos) {
-            List<PlanDetail> details = planDetailRepository.findAllByPlanId(dto.getId());
-            dto.setPlanDetails(details.stream()
-                    .map(detail -> planDetailService.mapToDTO(detail, new PlanDetailDTO()))
-                    .toList());
-        }
+//        for (PlanDTO dto : dtos) {
+//            List<PlanDetail> details = planDetailRepository.findAllByPlanId(dto.getId());
+//            dto.setPlanDetails(details.stream()
+//                    .map(detail -> planDetailService.mapToDTO(detail, new PlanDetailDTO()))
+//                    .toList());
+//        }
         // Nếu cần tổng số bản ghi để phân trang, hãy query count riêng
         return new PageImpl<>(dtos, PageRequest.of(page, 10), dtos.size());
     }
@@ -450,8 +453,9 @@ public class PlanService {
     public void delete(final Long id) {
         final Plan plan = planRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        publisher.publishEvent(new BeforeDeletePlan(id));
-        planRepository.delete(plan);
+//        publisher.publishEvent(new BeforeDeletePlan(id));
+        plan.setStatus(DELETED);// đánh dấu đã xóa
+        planRepository.save(plan);
     }
 
     public void deleteByPlanId(final Long planId) {

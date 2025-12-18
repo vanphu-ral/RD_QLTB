@@ -30,6 +30,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import static io.rd.qltb.config.GlobalConfig.DELETED;
+
 
 @Service
 public class SupplyService {
@@ -83,7 +85,7 @@ public class SupplyService {
                 }
             }
         });
-
+        predicates.add(cb.notEqual(root.get("status"), DELETED)); // lọc status != -1
         cq.where(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
         var query = entityManager.createQuery(cq);
         query.setFirstResult(page * 10);
@@ -120,8 +122,9 @@ public class SupplyService {
     public void delete(final Long id) {
         final Supply supply = supplyRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        publisher.publishEvent(new BeforeDeleteSupply(id));
-        supplyRepository.delete(supply);
+//        publisher.publishEvent(new BeforeDeleteSupply(id));
+        supply.setStatus(DELETED);
+        supplyRepository.save(supply);
     }
 
     private SupplyDTO mapToDTO(final Supply supply, final SupplyDTO dto) {

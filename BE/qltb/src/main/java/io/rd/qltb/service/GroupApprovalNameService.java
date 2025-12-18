@@ -8,6 +8,8 @@ import java.util.List;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import static io.rd.qltb.config.GlobalConfig.DELETED;
+
 
 @Service
 public class GroupApprovalNameService {
@@ -19,7 +21,7 @@ public class GroupApprovalNameService {
     }
 
     public List<GroupApprovalNameDTO> findAll() {
-        final List<GroupApprovalName> groupApprovalNames = groupApprovalNameRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
+        final List<GroupApprovalName> groupApprovalNames = groupApprovalNameRepository.findAllByStatusNotOrderByIdDesc(DELETED);
         return groupApprovalNames.stream()
                 .map(groupApprovalName -> mapToDTO(groupApprovalName, new GroupApprovalNameDTO()))
                 .toList();
@@ -47,7 +49,8 @@ public class GroupApprovalNameService {
     public void delete(final Long id) {
         final GroupApprovalName groupApprovalName = groupApprovalNameRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        groupApprovalNameRepository.delete(groupApprovalName);
+        groupApprovalName.setStatus(DELETED);
+        groupApprovalNameRepository.save(groupApprovalName);
     }
 
     private GroupApprovalNameDTO mapToDTO(final GroupApprovalName groupApprovalName,

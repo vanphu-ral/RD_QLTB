@@ -10,6 +10,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import static io.rd.qltb.config.GlobalConfig.DELETED;
+
 
 @Service
 public class FactoryService {
@@ -24,7 +26,7 @@ public class FactoryService {
     }
 
     public List<FactoryDTO> findAll() {
-        final List<Factory> factories = factoryRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
+        final List<Factory> factories = factoryRepository.findAllByStatusNotOrderByIdDesc(DELETED);
         return factories.stream()
                 .map(factory -> mapToDTO(factory, new FactoryDTO()))
                 .toList();
@@ -52,8 +54,9 @@ public class FactoryService {
     public void delete(final Long id) {
         final Factory factory = factoryRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        publisher.publishEvent(new BeforeDeleteFactory(id));
-        factoryRepository.delete(factory);
+//        publisher.publishEvent(new BeforeDeleteFactory(id));
+        factory.setStatus(DELETED);
+        factoryRepository.save(factory);
     }
 
     private FactoryDTO mapToDTO(final Factory factory, final FactoryDTO factoryDTO) {

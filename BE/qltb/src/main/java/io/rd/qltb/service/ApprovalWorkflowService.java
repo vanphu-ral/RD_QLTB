@@ -13,6 +13,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import static io.rd.qltb.config.GlobalConfig.DELETED;
+
 
 @Service
 public class ApprovalWorkflowService {
@@ -31,7 +33,7 @@ public class ApprovalWorkflowService {
     }
 
     public List<ApprovalWorkflowDTO> findAll() {
-        final List<ApprovalWorkflow> approvalWorkflows = approvalWorkflowRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
+        final List<ApprovalWorkflow> approvalWorkflows = approvalWorkflowRepository.findByStatusNotOrderByIdDesc(DELETED);
         return approvalWorkflows.stream()
                 .map(approvalWorkflow -> mapToDTO(approvalWorkflow, new ApprovalWorkflowDTO()))
                 .toList();
@@ -57,16 +59,16 @@ public class ApprovalWorkflowService {
     }
 
     public void delete(final Long id) {
-//        final ApprovalWorkflow approvalWorkflow = approvalWorkflowRepository.findById(id)
-//                .orElseThrow(NotFoundException::new);
-       List<ApprovalGroup> approvalGroups = approvalGroupRepository.findByWorkflowId(id);
-        for (ApprovalGroup approvalGroup : approvalGroups) {
-            approvalGroupUserRepository.deleteItemByGroupId(approvalGroup.getId());
-        }
-        approvalGroupRepository.deleteItemByWorkflowId(id);
-        approvalGroupRepository.flush(); // đảm bảo xóa được thực hiện ngay
-
-        approvalWorkflowRepository.deleteById(id);
+        final ApprovalWorkflow approvalWorkflow = approvalWorkflowRepository.findById(id)
+                .orElseThrow(NotFoundException::new);
+//       List<ApprovalGroup> approvalGroups = approvalGroupRepository.findByWorkflowId(id);
+//        for (ApprovalGroup approvalGroup : approvalGroups) {
+//            approvalGroupUserRepository.deleteItemByGroupId(approvalGroup.getId());
+//        }
+//        approvalGroupRepository.deleteItemByWorkflowId(id);
+//        approvalGroupRepository.flush(); // đảm bảo xóa được thực hiện ngay
+        approvalWorkflow.setStatus(DELETED);
+        approvalWorkflowRepository.save(approvalWorkflow);
 
     }
 

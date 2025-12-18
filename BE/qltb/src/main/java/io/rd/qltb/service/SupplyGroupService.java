@@ -11,6 +11,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import static io.rd.qltb.config.GlobalConfig.DELETED;
+
 
 @Service
 public class SupplyGroupService {
@@ -26,7 +28,7 @@ private final GlobalConfig globalConfig;
     }
 
     public List<SupplyGroupDTO> findAll() {
-        final List<SupplyGroup> supplyGroups = supplyGroupRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
+        final List<SupplyGroup> supplyGroups = supplyGroupRepository.findByStatusNotOrderByIdDesc(DELETED);
         return supplyGroups.stream()
                 .map(supplyGroup -> mapToDTO(supplyGroup, new SupplyGroupDTO()))
                 .toList();
@@ -56,8 +58,9 @@ private final GlobalConfig globalConfig;
     public void delete(final Long id) {
         final SupplyGroup supplyGroup = supplyGroupRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        publisher.publishEvent(new BeforeDeleteSupplyGroup(id));
-        supplyGroupRepository.delete(supplyGroup);
+//        publisher.publishEvent(new BeforeDeleteSupplyGroup(id));
+        supplyGroup.setStatus(DELETED);
+        supplyGroupRepository.save(supplyGroup);
     }
 
     private SupplyGroupDTO mapToDTO(final SupplyGroup supplyGroup,

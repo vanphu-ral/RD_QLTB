@@ -10,6 +10,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import static io.rd.qltb.config.GlobalConfig.DELETED;
+
 
 @Service
 public class PlanTypeService {
@@ -24,7 +26,7 @@ public class PlanTypeService {
     }
 
     public List<PlanTypeDTO> findAll() {
-        final List<PlanType> planTypes = planTypeRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
+        final List<PlanType> planTypes = planTypeRepository.findAllByStatusNotOrderByIdDesc(DELETED);
         return planTypes.stream()
                 .map(planType -> mapToDTO(planType, new PlanTypeDTO()))
                 .toList();
@@ -52,8 +54,9 @@ public class PlanTypeService {
     public void delete(final Long id) {
         final PlanType planType = planTypeRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        publisher.publishEvent(new BeforeDeletePlanType(id));
-        planTypeRepository.delete(planType);
+//        publisher.publishEvent(new BeforeDeletePlanType(id));
+        planType.setStatus(DELETED);
+        planTypeRepository.save(planType);
     }
 
     private PlanTypeDTO mapToDTO(final PlanType planType, final PlanTypeDTO planTypeDTO) {

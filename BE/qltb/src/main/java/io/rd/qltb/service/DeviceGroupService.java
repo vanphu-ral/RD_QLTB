@@ -12,6 +12,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import static io.rd.qltb.config.GlobalConfig.DELETED;
+
 
 @Service
 public class DeviceGroupService {
@@ -28,7 +30,7 @@ public class DeviceGroupService {
     }
 
     public List<DeviceGroupDTO> findAll() {
-        final List<DeviceGroup> deviceGroups = deviceGroupRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
+        final List<DeviceGroup> deviceGroups = deviceGroupRepository.findByStatusNotOrderByIdDesc(DELETED);
         return deviceGroups.stream()
                 .map(deviceGroup -> mapToDTO(deviceGroup, new DeviceGroupDTO()))
                 .toList();
@@ -58,8 +60,9 @@ public class DeviceGroupService {
     public void delete(final Long id) {
         final DeviceGroup deviceGroup = deviceGroupRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        publisher.publishEvent(new BeforeDeleteDeviceGroup(id));
-        deviceGroupRepository.delete(deviceGroup);
+//        publisher.publishEvent(new BeforeDeleteDeviceGroup(id));
+        deviceGroup.setStatus(DELETED);
+        deviceGroupRepository.save(deviceGroup);
     }
 
     public DeviceGroupDTO mapToDTO(final DeviceGroup deviceGroup,

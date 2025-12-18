@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static io.rd.qltb.config.GlobalConfig.DELETED;
+
 @Service
 public class ReportDeviceIncidentService {
     @Autowired
@@ -161,7 +163,7 @@ public ReportDeviceIncidentDTO mapToDTO(final ReportDeviceIncident reportDeviceI
         return ResponseEntity.ok(id);
     }
     public List<ReportDeviceIncidentDTO> findAll(){
-        List<ReportDeviceIncident> reportDeviceIncidents = reportDeviceIncidentRepository.findAll(Sort.sort(ReportDeviceIncident.class).by(ReportDeviceIncident::getId).ascending());
+        List<ReportDeviceIncident> reportDeviceIncidents = reportDeviceIncidentRepository.findAllByStatusNotOrderByIdDesc(DELETED);
         return reportDeviceIncidents.stream().map(reportDeviceIncident -> mapToDTO(reportDeviceIncident, new ReportDeviceIncidentDTO())).toList();
     }
     public ReportDeviceIncidentDTO get(Long id){
@@ -169,6 +171,9 @@ public ReportDeviceIncidentDTO mapToDTO(final ReportDeviceIncident reportDeviceI
         return mapToDTO(reportDeviceIncident, new ReportDeviceIncidentDTO());
     }
     public void deleteReportDeviceIncident(Long id) {
-        reportDeviceIncidentRepository.deleteById(id);
+
+    ReportDeviceIncident reportDeviceIncident = reportDeviceIncidentRepository.findById(id).orElseThrow();
+        reportDeviceIncident.setStatus(DELETED);
+        reportDeviceIncidentRepository.save(reportDeviceIncident);
     }
 }

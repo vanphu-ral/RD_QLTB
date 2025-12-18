@@ -15,6 +15,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import static io.rd.qltb.config.GlobalConfig.DELETED;
+
 
 @Service
 public class TeamService {
@@ -31,7 +33,7 @@ public class TeamService {
     }
 
     public List<TeamDTO> findAll() {
-        final List<Team> teams = teamRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
+        final List<Team> teams = teamRepository.findAllByStatusNotOrderByIdDesc(DELETED);
         return teams.stream()
                 .map(team -> mapToDTO(team, new TeamDTO()))
                 .toList();
@@ -64,8 +66,10 @@ public class TeamService {
     public void delete(final Long id) {
         final Team team = teamRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        publisher.publishEvent(new BeforeDeleteTeam(id));
-        teamRepository.delete(team);
+
+//        publisher.publishEvent(new BeforeDeleteTeam(id));
+        team.setStatus(DELETED);
+        teamRepository.save(team);
     }
 
     private TeamDTO mapToDTO(final Team team, final TeamDTO dto) {

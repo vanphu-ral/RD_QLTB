@@ -15,6 +15,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import static io.rd.qltb.config.GlobalConfig.DELETED;
+
 
 @Service
 public class LineService {
@@ -31,7 +33,7 @@ public class LineService {
     }
 
     public List<LineDTO> findAll() {
-        final List<Line> lines = lineRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
+        final List<Line> lines = lineRepository.findByStatusNotOrderByIdDesc(DELETED);
         return lines.stream()
                 .map(line -> mapToDTO(line, new LineDTO()))
                 .toList();
@@ -59,8 +61,9 @@ public class LineService {
     public void delete(final Long id) {
         final Line line = lineRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        publisher.publishEvent(new BeforeDeleteLine(id));
-        lineRepository.delete(line);
+//        publisher.publishEvent(new BeforeDeleteLine(id));
+        line.setStatus(DELETED);
+        lineRepository.save(line);
     }
 
     private LineDTO mapToDTO(final Line line, final LineDTO lineDTO) {

@@ -22,6 +22,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import static io.rd.qltb.config.GlobalConfig.DELETED;
+
 
 @Service
 public class CriterialService {
@@ -43,7 +45,7 @@ public class CriterialService {
     }
 
     public List<CriterialDTO> findAll() {
-        final List<Criterial> criterials = criterialRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
+        final List<Criterial> criterials = criterialRepository.findAllByStatusNotOrderByIdDesc(DELETED);
         return criterials.stream()
                 .map(criterial -> mapToDTO(criterial, new CriterialDTO()))
                 .toList();
@@ -77,8 +79,9 @@ public class CriterialService {
     public void delete(final Long id) {
         final Criterial criterial = criterialRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        publisher.publishEvent(new BeforeDeleteCriterial(id));
-        criterialRepository.delete(criterial);
+//        publisher.publishEvent(new BeforeDeleteCriterial(id));
+        criterial.setStatus(DELETED);
+        criterialRepository.save(criterial);
     }
 
     public List<KeyMappingDTO> getBySampleReportId(Long sampleReportId) {

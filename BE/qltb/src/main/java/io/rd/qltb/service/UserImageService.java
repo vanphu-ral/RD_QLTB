@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static io.rd.qltb.config.GlobalConfig.DELETED;
+
 
 @Service
 public class UserImageService {
@@ -21,7 +23,7 @@ public class UserImageService {
     }
 
     public List<UserImageDTO> findAll() {
-        final List<UserImage> userImages = userImageRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
+        final List<UserImage> userImages = userImageRepository.findByStatusNotOrderByIdDesc(DELETED);
         return userImages.stream()
                 .map(userImage -> mapToDTO(userImage, new UserImageDTO()))
                 .toList();

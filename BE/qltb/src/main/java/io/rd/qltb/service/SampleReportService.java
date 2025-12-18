@@ -20,6 +20,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import static io.rd.qltb.config.GlobalConfig.DELETED;
+
 
 @Service
 public class SampleReportService {
@@ -48,7 +50,7 @@ public class SampleReportService {
     }
 
     public List<SampleReportDTO> findAll() {
-        final List<SampleReport> sampleReports = sampleReportRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
+        final List<SampleReport> sampleReports = sampleReportRepository.findAllByStatusNotOrderByIdDesc(DELETED);
         return sampleReports.stream()
                 .map(sampleReport -> mapToDTO(sampleReport, new SampleReportDTO()))
                 .toList();
@@ -112,8 +114,9 @@ public class SampleReportService {
     public void delete(final Long id) {
         final SampleReport sampleReport = sampleReportRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        publisher.publishEvent(new BeforeDeleteSampleReport(id));
-        sampleReportRepository.delete(sampleReport);
+//        publisher.publishEvent(new BeforeDeleteSampleReport(id));
+        sampleReport.setStatus(DELETED); // Đánh dấu là đã xóa
+        sampleReportRepository.save(sampleReport);
     }
 
     public SampleReportDTO mapToDTO(final SampleReport sampleReport,

@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static io.rd.qltb.config.GlobalConfig.DELETED;
+
 @Service
 public class DayOffCalendarService {
 
@@ -32,7 +34,7 @@ public class DayOffCalendarService {
     }
 
     public List<DayOffCalendarDTO> findAll() {
-        final List<DayOffCalendar> dayOffCalendars = dayOffCalendarRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
+        final List<DayOffCalendar> dayOffCalendars = dayOffCalendarRepository.findByStatusOrderByIdDesc(DELETED);
         return dayOffCalendars.stream()
                 .map(dayOffCalendar -> mapToDTO(dayOffCalendar, new DayOffCalendarDTO()))
                 .toList();
@@ -60,7 +62,8 @@ public class DayOffCalendarService {
     public void delete(final Long id) {
         final DayOffCalendar dayOffCalendar = dayOffCalendarRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        dayOffCalendarRepository.delete(dayOffCalendar);
+        dayOffCalendar.setStatus(DELETED);
+        dayOffCalendarRepository.save(dayOffCalendar);
     }
 
     private DayOffCalendarDTO mapToDTO(final DayOffCalendar dayOffCalendar, final DayOffCalendarDTO dayOffCalendarDTO) {

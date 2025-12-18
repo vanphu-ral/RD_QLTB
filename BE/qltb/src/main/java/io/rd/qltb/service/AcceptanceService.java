@@ -14,6 +14,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import static io.rd.qltb.config.GlobalConfig.DELETED;
+
 
 @Service
 public class AcceptanceService {
@@ -37,7 +39,7 @@ public class AcceptanceService {
         return acceptanceRepository.countByErrorReportId(id);
     }
     public List<AcceptanceDTO> findAll() {
-        final List<Acceptance> acceptances = acceptanceRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+        final List<Acceptance> acceptances = acceptanceRepository.findAllByStatusNotOrderByIdDesc(DELETED);
         return acceptances.stream()
                 .map(acceptance -> mapToDTO(acceptance, new AcceptanceDTO()))
                 .toList();
@@ -65,7 +67,8 @@ public class AcceptanceService {
     public void delete(final Long id) {
         final Acceptance acceptance = acceptanceRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        acceptanceRepository.delete(acceptance);
+        acceptance.setStatus(DELETED);
+        acceptanceRepository.save(acceptance);
     }
 
     private AcceptanceDTO mapToDTO(final Acceptance acceptance, final AcceptanceDTO acceptanceDTO) {

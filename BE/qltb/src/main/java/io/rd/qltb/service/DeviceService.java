@@ -34,6 +34,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import static io.rd.qltb.config.GlobalConfig.DELETED;
+
 
 @Service
 public class DeviceService {
@@ -96,7 +98,7 @@ public class DeviceService {
                 }
             }
         });
-
+        predicates.add(cb.notEqual(root.get("status"), DELETED)); // Lọc bỏ thiết bị có trạng thái = 10 (đã xóa)
         cq.where(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
 
         // Query dữ liệu trang hiện tại
@@ -224,8 +226,9 @@ public class DeviceService {
     public void delete(final Long id) {
         final Device device = deviceRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        publisher.publishEvent(new BeforeDeleteDevice(id));
-        deviceRepository.delete(device);
+//        publisher.publishEvent(new BeforeDeleteDevice(id));
+        device.setStatus(DELETED);
+        deviceRepository.save(device);
     }
 
     public DeviceDTO getDeviceBySerialNumber(String serialNumber) {

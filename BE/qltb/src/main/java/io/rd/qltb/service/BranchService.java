@@ -15,6 +15,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import static io.rd.qltb.config.GlobalConfig.DELETED;
+
 
 @Service
 public class BranchService {
@@ -31,7 +33,7 @@ public class BranchService {
     }
 
     public List<BranchDTO> findAll() {
-        final List<Branch> branches = branchRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
+        final List<Branch> branches = branchRepository.findAllByStatusNotOrderByIdDesc(DELETED);
         return branches.stream()
                 .map(branch -> mapToDTO(branch, new BranchDTO()))
                 .toList();
@@ -59,8 +61,9 @@ public class BranchService {
     public void delete(final Long id) {
         final Branch branch = branchRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        publisher.publishEvent(new BeforeDeleteBranch(id));
-        branchRepository.delete(branch);
+//        publisher.publishEvent(new BeforeDeleteBranch(id));
+        branch.setStatus(DELETED);
+        branchRepository.save(branch);
     }
 
     private BranchDTO mapToDTO(final Branch branch, final BranchDTO branchDTO) {
