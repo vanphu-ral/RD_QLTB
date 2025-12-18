@@ -64,24 +64,32 @@ public class PlanDetailService {
                 .orElseThrow(NotFoundException::new);
         PlanDetailDTO planDetailDTO = mapToDTO(planDetail, new PlanDetailDTO());
         // Set thêm thông tin liên quan
+        if (planDetail.getDeviceGroup() != null) {
         planDetailDTO.setSampleReport(planDetail.getSampleReport());
         planDetailDTO.getSampleReport().setDeviceGroup(null);
         planDetailDTO.getSampleReport().setBranch(null);
         planDetailDTO.getSampleReport().setApprovalWorkflow(null);
         planDetailDTO.getSampleReport().setSampleReportKeyMappingDeviceSampleReports(null);
         planDetailDTO.getSampleReport().setSampleReportKeyMappings(null);
+        }
+        if (planDetail.getDevice().getBranch()!= null){
         planDetailDTO.getDevice().setBranch(planDetail.getDevice().getBranch());
         planDetailDTO.getDevice().getBranch().getFactory().setFactoryBranches(null);
         planDetailDTO.getDevice().getBranch().setBranchTeams(null);
         planDetailDTO.getDevice().getBranch().setBranchDevices(null);
         planDetailDTO.getDevice().getBranch().setSampleReports(null);
+        }
+        if (planDetail.getDevice().getLine()!=null){
         planDetailDTO.getDevice().setLine(planDetail.getDevice().getLine());
         planDetailDTO.getDevice().getLine().setTeam(null);
         planDetailDTO.getDevice().getLine().setLineDevices(null);
+        }
+        if (planDetail.getDevice().getTeam()!=null){
         planDetailDTO.getDevice().setTeam(planDetail.getDevice().getTeam());
         planDetailDTO.getDevice().getTeam().setBranch(null);
         planDetailDTO.getDevice().getTeam().setTeamDevices(null);
         planDetailDTO.getDevice().getTeam().setTeamLines(null);
+        }
         PlanCheckDTO planCheckDTO = new PlanCheckDTO();
         planCheckDTO.setPlanDetail(planDetailDTO);
         //  Lấy thông tin Approval dựa trên entityType và entityId
