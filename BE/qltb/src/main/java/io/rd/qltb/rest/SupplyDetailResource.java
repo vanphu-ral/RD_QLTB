@@ -73,4 +73,11 @@ public class SupplyDetailResource {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/update-status")
+    public ResponseEntity<Void> updateStatus(
+            @RequestBody List<Long> ids) {
+        supplyDetailService.updateStatus(ids, 1);
+        return ResponseEntity.ok().build();
+    }
+
 }

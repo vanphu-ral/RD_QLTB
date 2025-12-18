@@ -23,6 +23,7 @@ import { DeviceParameterUse } from '../../../../models/DeviceManager/device-para
 import { DeviceParameterUseService } from '../Service/device-parameter-use.service';
 import { forkJoin } from 'rxjs';
 import { DeviceCurrentSupplyService } from '../Service/device-current-supply.service';
+import { SupplyDetailService } from '../../Supply/Service/supply-detail.service';
 
 @Component({
   selector: 'app-device-detail',
@@ -69,6 +70,7 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
     private deviceSupplyUseService: DeviceSupplyUseService,
     private deviceParameterUseService: DeviceParameterUseService,
     private deviceCurrentSupplyService: DeviceCurrentSupplyService,
+    private supplyDetailService: SupplyDetailService
   ) {
     super(apiService);
   }
@@ -174,6 +176,10 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
         } as DeviceSupplyUse;
       });
 
+      const supplyDetailIds = listMaterialForSave.map(
+        item => item.supplyDetail.id
+      );
+
       const listMaterialCurrentForSave = this.listMaterialCurrent.map(item => ({
         ...item,
         device: { id: this.model.id },
@@ -186,6 +192,7 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
       }));
 
       forkJoin([
+        this.supplyDetailService.updateSupplyDetailStatus(supplyDetailIds),
         this.deviceParameterUseService.createList(listParameterForSave),
         this.deviceSupplyUseService.createList(listMaterialForSave),
         this.deviceCurrentSupplyService.createList(listMaterialCurrentForSave),
