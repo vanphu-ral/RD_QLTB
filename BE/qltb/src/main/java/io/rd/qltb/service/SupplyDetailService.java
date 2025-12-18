@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -82,6 +83,14 @@ public class SupplyDetailService {
         final SupplyDetail supplyDetail = supplyDetailRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         supplyDetailRepository.delete(supplyDetail);
+    }
+
+    @Transactional
+    public void updateStatus(List<Long> ids, Integer status) {
+        if (ids == null || ids.isEmpty()) {
+            return;
+        }
+        supplyDetailRepository.updateStatusByIds(ids, status);
     }
 
     private SupplyDetailDTO mapToDTO(final SupplyDetail supplyDetail,

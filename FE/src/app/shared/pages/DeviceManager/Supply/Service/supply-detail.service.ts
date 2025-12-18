@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class SupplyDetailService extends BaseApiService<SerialSupply> {
   constructor(http: HttpClient) {
-    super(http, 'api/supplyDetails'); 
+    super(http, 'api/supplyDetails');
   }
 
   createList(entities: Array<SerialSupply>) {
@@ -16,5 +16,12 @@ export class SupplyDetailService extends BaseApiService<SerialSupply> {
 
   getBySupplyId(supplyId: number | string): Observable<SerialSupply[]> {
     return this.http.get<SerialSupply[]>(`${this['fullBaseUrl']}/bySupply/${supplyId}`, { withCredentials: true });
+  }
+
+  updateSupplyDetailStatus(ids: number[]) {
+    return this.http.put(
+      `${this['fullBaseUrl']}/update-status`,
+      ids, { withCredentials: true }
+    );
   }
 }

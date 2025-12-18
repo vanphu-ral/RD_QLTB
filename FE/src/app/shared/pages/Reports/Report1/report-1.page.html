@@ -3,8 +3,8 @@
         <div class="filter-box row my-3">
             <div class="col">
                 <p-floatlabel variant="on">
-                    <p-multiselect [options]="listBranchs" [(ngModel)]="filter.branchIds" optionValue="id" [fluid]="true"
-                        [maxSelectedLabels]="2" optionLabel="name" appendTo="body" dataKey="id" />
+                    <p-multiselect [options]="listBranchs" [(ngModel)]="filter.branchIds" optionValue="id"
+                        [fluid]="true" [maxSelectedLabels]="2" optionLabel="name" appendTo="body" dataKey="id" />
                     <label for="branchIds">Ngành</label>
                 </p-floatlabel>
             </div>
@@ -25,9 +25,8 @@
             </div>
             <div class="col">
                 <p-floatlabel variant="on">
-                    <p-datepicker [(ngModel)]="filter.endDate" [iconDisplay]="'input'" [showIcon]="true"
-                        name="endDate" inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body"
-                        [inputSize]="100" />
+                    <p-datepicker [(ngModel)]="filter.endDate" [iconDisplay]="'input'" [showIcon]="true" name="endDate"
+                        inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body" [inputSize]="100" />
                     <label for="endDate">Thời gian kết thúc</label>
                 </p-floatlabel>
             </div>
@@ -36,7 +35,7 @@
             </div>
         </div>
         <div class="table-responsive">
-            <p-table #dt [value]="data" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
+            <p-table #dt [value]="[{}]" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
                 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
                 [rowsPerPageOptions]="[10,25,50]" [loading]="loading" class="p-datatable-gridlines text-sm">
                 <ng-template pTemplate="header">
@@ -65,16 +64,48 @@
                         <th>Mục đích sử dụng</th>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-item>
-                    <tr>
-                        <td>{{item.date | date:'dd-MM-yyyy'}}</td>
-                        <td>{{item.branch.name}}</td>
-                        <td>{{item.fromDate | date:'dd-MM-yyyy'}}</td>
-                        <td>{{item.toDate | date:'dd-MM-yyyy'}}</td>
-                        <td>{{item.createdBy}}</td>
-                        <td>{{item.status}}</td>
-                    </tr>
+                <ng-template pTemplate="body">
+                    <ng-container *ngFor="let branch of data; let bIndex = index">
+
+                        <ng-container *ngFor="let team of branch.teamReports; let tIndex = index">
+
+                            <!-- ===== DÒNG TIÊU ĐỀ: TÊN NGÀNH - TÊN TỔ ===== -->
+                            <tr class="bg-light fw-bold">
+                                <td colspan="8">
+                                    {{ branch.branchName }} - {{ team.teamName }}
+                                </td>
+                            </tr>
+
+                            <!-- ===== DÒNG VẬT TƯ ===== -->
+                            <ng-container *ngIf="team.supplies?.length; else noSupply">
+                                <tr *ngFor="let sp of team.supplies; let i = index">
+                                    <td>{{ i + 1 }}</td>
+                                    <td>{{ sp.sapCode }}</td>
+                                    <td>{{ sp.supplyName }}</td>
+                                    <td>{{ sp.supplyUnit }}</td>
+                                    <td class="text-end">{{ sp.quantity }}</td>
+                                    <td class="text-end">{{ sp.supplyPrice | number }}</td>
+                                    <td class="text-end">
+                                        {{ sp.quantity * sp.supplyPrice | number }}
+                                    </td>
+                                    <td>{{ sp.lineName }}</td>
+                                </tr>
+                            </ng-container>
+
+                            <!-- ===== KHÔNG CÓ VẬT TƯ ===== -->
+                            <ng-template #noSupply>
+                                <tr>
+                                    <td colspan="8" class="text-center fst-italic text-muted">
+                                        Không có vật tư
+                                    </td>
+                                </tr>
+                            </ng-template>
+
+                        </ng-container>
+
+                    </ng-container>
                 </ng-template>
+
                 <ng-template pTemplate="emptymessage">
                     <tr>
                         <td colspan="99" class="text-center">Không có dữ liệu</td>
