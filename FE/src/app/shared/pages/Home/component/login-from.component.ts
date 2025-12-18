@@ -8,17 +8,19 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
 
 @Component({
-    selector: 'app-home',
+    selector: 'app-login-from',
     standalone: true,
-    templateUrl: './home.component.html',
-    styleUrls: ['./home.component.scss'],
+    templateUrl: './login-from.component.html',
+    styleUrls: ['./login-from.component.scss'],
     imports: [CommonModule, SharedModule]
 })
-export class HomeComponent {
+export class LoginFormComponent {
+
     userInfo: any;
     account = signal<Account | null>(null);
 
-    constructor(private accountService: AccountService, private loginService: LoginService, private http: HttpClient) {}
+
+    constructor(private accountService: AccountService, private loginService: LoginService, private http: HttpClient) { }
 
     ngOnInit(): void {
         this.accountService.identity().subscribe(account => this.account.set(account));

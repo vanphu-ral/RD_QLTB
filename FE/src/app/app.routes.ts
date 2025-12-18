@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { AppComponent } from './app';
-import { HomeComponent } from './shared/pages/Home/component/home.component';
+import { HomeComponent } from './shared/pages/Home/page/home.component';
 import { AppLayout } from './shared/layout/app.layout';
 import { DashboardComponent } from './shared/pages/Dashboard/List/dashboard.component';
 import { DepartmentListComponent } from './shared/pages/Categories/Department/List/department-list.component';

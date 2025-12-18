@@ -1,0 +1,128 @@
+// Định nghĩa màu sắc chủ đạo
+$white-alpha: rgba(255, 255, 255, 0.85);
+
+.frist-row-card {
+    background-color: #17a2b7;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    cursor: pointer;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        background-color: #0e6675;
+    }
+
+    
+    &:hover .card-footer i {
+        transform: translateX(5px);
+    }
+}
+.card-body {
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-grow: 1;
+
+    .stat-value {
+        color: #ffffff;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: baseline;
+
+        .unit {
+            font-size: 1rem;
+            margin-left: 4px;
+            font-weight: 400;
+            opacity: 0.8;
+        }
+    }
+
+    .stat-label {
+        color: $white-alpha;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+        line-height: 1.4;
+        max-width: 150px;
+    }
+}
+
+// Giả lập biểu đồ cột tinh tế hơn
+.stat-visual {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 40px;
+    opacity: 0.6;
+
+    .bar {
+        width: 5px;
+        background: #ffffff;
+        border-radius: 2px;
+
+        &-1 {
+            height: 30%;
+        }
+
+        &-2 {
+            height: 60%;
+        }
+
+        &-3 {
+            height: 45%;
+        }
+
+        &-4 {
+            height: 100%;
+        }
+    }
+}
+
+.card-footer {
+    background: rgba(0, 0, 0, 0.15);
+    padding: 0.75rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ffffff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    gap: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+    i {
+        font-size: 1.1rem;
+        transition: transform 0.2s;
+    }
+}
+
+.second-row-card {
+    background-color: #fec107;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    cursor: pointer;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+     &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        background-color: #fea407;
+    }
+
+    
+    &:hover .card-footer i {
+        transform: translateX(5px);
+    }
+}

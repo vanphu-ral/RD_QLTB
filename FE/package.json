@@ -33,6 +33,7 @@
     "@zxing/ngx-scanner": "^20.0.0",
     "angular-oauth2-oidc": "^20.0.2",
     "bootstrap": "^5.3.7",
+    "chart.js": "^4.5.1",
     "dayjs": "^1.11.13",
     "jquery": "^3.7.1",
     "lodash": "^4.17.21",

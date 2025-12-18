@@ -35,7 +35,7 @@
           <ng-container *ngIf="col.IsSearch">
             <!-- Nếu text -->
             <p-columnFilter *ngIf="!col.TypeSearch || col.TypeSearch === 'text'" [field]="col.Field"
-              placeholder="Tìm {{ col.Header }}" [showMenu]="false">
+              placeholder="Tìm {{ col.Header }}" [showMenu]="false" matchMode="contains">
             </p-columnFilter>
 
             <!-- Nếu date -->

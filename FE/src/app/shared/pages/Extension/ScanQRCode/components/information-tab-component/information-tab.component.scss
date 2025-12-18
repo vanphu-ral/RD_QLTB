@@ -8,3 +8,9 @@
     border: 1px solid;
     border-radius: 5px;
 }
+
+.device-task.hidden {
+  @media screen and (max-width: 768px) {
+    display: none !important;
+  }
+}

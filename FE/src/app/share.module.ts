@@ -39,6 +39,8 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { TabsModule } from 'primeng/tabs';
+import { ChartModule } from 'primeng/chart';
+import { AccordionModule } from 'primeng/accordion'; 
 
 @NgModule({
   imports: [
@@ -80,7 +82,9 @@ import { TabsModule } from 'primeng/tabs';
     RadioButtonModule,
     InputGroupModule,
     InputGroupAddonModule,
-    TabsModule
+    TabsModule,
+    ChartModule,
+    AccordionModule
   ],
   exports: [
     CommonModule,
@@ -121,7 +125,9 @@ import { TabsModule } from 'primeng/tabs';
     RadioButtonModule,
     InputGroupModule,
     InputGroupAddonModule,
-    TabsModule
+    TabsModule,
+    ChartModule,
+    AccordionModule
   ],
   providers: [DialogService, MessageService, ConfirmationService]
 })
