@@ -13,7 +13,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import static io.rd.qltb.config.GlobalConfig.DELETED;
+import static io.rd.qltb.config.ConstantStatusGlobal.DELETED;
 
 
 @Service

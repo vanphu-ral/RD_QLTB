@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static io.rd.qltb.config.GlobalConfig.DELETED;
+import static io.rd.qltb.config.ConstantStatusGlobal.DELETED;
 
 @Service
 public class ReportDeviceIncidentService {

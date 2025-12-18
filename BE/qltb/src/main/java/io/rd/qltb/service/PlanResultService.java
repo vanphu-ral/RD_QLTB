@@ -17,8 +17,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import static io.rd.qltb.config.GlobalConfig.COMPLETED;
-import static io.rd.qltb.config.GlobalConfig.IN_PROGRESS;
+import static io.rd.qltb.config.ConstantStatusGlobal.COMPLETED;
+import static io.rd.qltb.config.ConstantStatusGlobal.IN_PROGRESS;
 
 
 @Service

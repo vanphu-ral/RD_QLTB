@@ -30,7 +30,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import static io.rd.qltb.config.GlobalConfig.DELETED;
+import static io.rd.qltb.config.ConstantStatusGlobal.DELETED;
 
 
 @Service

@@ -15,8 +15,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import static io.rd.qltb.config.GlobalConfig.DRAFF;
-import static io.rd.qltb.config.GlobalConfig.IN_PROGRESS;
+import static io.rd.qltb.config.ConstantStatusGlobal.DRAFF;
+import static io.rd.qltb.config.ConstantStatusGlobal.IN_PROGRESS;
 
 
 @Service
