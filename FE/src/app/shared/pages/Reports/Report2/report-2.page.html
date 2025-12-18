@@ -10,17 +10,16 @@
             </div>
             <div class="col">
                 <p-floatlabel variant="on">
-                    <p-datepicker [(ngModel)]="filter.startDate" [iconDisplay]="'input'"
-                        [showIcon]="true" name="startDate" inputId="icondisplay" [dateFormat]="'dd-mm-yy'"
-                        appendTo="body" [inputSize]="100" />
+                    <p-datepicker [(ngModel)]="filter.startDate" [iconDisplay]="'input'" [showIcon]="true"
+                        name="startDate" inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body"
+                        [inputSize]="100" />
                     <label for="startDate">Thời gian bắt đầu</label>
                 </p-floatlabel>
             </div>
             <div class="col">
                 <p-floatlabel variant="on">
-                    <p-datepicker [(ngModel)]="filter.endDate" [iconDisplay]="'input'" [showIcon]="true"
-                        name="endDate" inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body"
-                        [inputSize]="100" />
+                    <p-datepicker [(ngModel)]="filter.endDate" [iconDisplay]="'input'" [showIcon]="true" name="endDate"
+                        inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body" [inputSize]="100" />
                     <label for="endDate">Thời gian kết thúc</label>
                 </p-floatlabel>
             </div>
@@ -29,9 +28,12 @@
             </div>
         </div>
         <div class="table-responsive">
-            <p-table #dt [value]="data" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
-                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-                [rowsPerPageOptions]="[10,25,50]" [loading]="loading" class="p-datatable-gridlines text-sm">
+            <p-table #dt [value]="data" [paginator]="true" [paginator]="true" [rows]="size"
+                [totalRecords]="totalRecords" [lazy]="true" [loading]="loading" (onLazyLoad)="onPageChange($event)"
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="Từ {first} đến {last} trong {totalRecords} bản ghi"
+                [rowsPerPageOptions]="[5, 10, 20, 50]" dataKey="id" [tableStyle]="{ 'min-width': '60rem' }"
+                [responsiveLayout]="'scroll'" [scrollable]="true" class="p-datatable-gridlines text-sm">
                 <ng-template pTemplate="header">
                     <tr>
                         <th colspan="2">
@@ -60,14 +62,35 @@
                         <th>Trạng thái</th>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-item>
+                <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
                     <tr>
-                        <td>{{item.date | date:'dd-MM-yyyy'}}</td>
-                        <td>{{item.branch.name}}</td>
-                        <td>{{item.fromDate | date:'dd-MM-yyyy'}}</td>
-                        <td>{{item.toDate | date:'dd-MM-yyyy'}}</td>
-                        <td>{{item.createdBy}}</td>
-                        <td>{{item.status}}</td>
+                        <td *ngIf="item._isFirst" [attr.rowspan]="item._rowspan">
+                            {{ rowIndex + 1 }}
+                        </td>
+                        <td *ngIf="item._isFirst" [attr.rowspan]="item._rowspan">
+                            {{ item.branchName }}
+                        </td>
+                        <td *ngIf="item._isFirst" [attr.rowspan]="item._rowspan">
+                            {{ item.deviceCode }}
+                        </td>
+                        <td *ngIf="item._isFirst" [attr.rowspan]="item._rowspan">
+                            {{ item.deviceName }}
+                        </td>
+                        <td *ngIf="item._isFirst" [attr.rowspan]="item._rowspan">
+                            {{ item.planCode }}
+                        </td>
+                        <td *ngIf="item._isFirst" [attr.rowspan]="item._rowspan">
+                            {{ item.dateTest | date:'dd-MM-yyyy' }}
+                        </td>
+                        <td>
+                            {{ item.criticalName }}
+                        </td>
+                        <td>
+                            {{ item.committee }}
+                        </td>
+                        <td>
+                            {{ item.result }}
+                        </td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">

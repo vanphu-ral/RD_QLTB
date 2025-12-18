@@ -45,9 +45,7 @@ export class PlanListComponent {
   expandedRows = {};
   totalItems = 0;
   currentPage = 0;
-  filters: any = {
-
-  };
+  filters: any = {};
 
   constructor(public apiService: PlanService, private router: Router, private route: ActivatedRoute, private planDetailService: PlanDetailService,
     private dialogService: DialogService, private cdr: ChangeDetectorRef, private messageService: MessageService,

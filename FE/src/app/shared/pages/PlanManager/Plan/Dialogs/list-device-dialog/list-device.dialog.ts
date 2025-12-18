@@ -5,6 +5,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
 import { DeviceService } from "../../../../DeviceManager/Device/Service/device.service";
 import _ from "lodash";
 import { Util } from "../../../../../core/utils/utils-function";
+import { PLANTYPE } from "../../../../../enums/plan-type.enum";
 
 @Component({
     standalone: true,
@@ -21,6 +22,8 @@ export class ListDeviceDialog {
     ListDevice: any[] = []
     listDeviceOptions: any[] = []
     listManagers: any[] = []
+
+    PLANTYPE = PLANTYPE
 
     constructor(
         public ref: DynamicDialogRef,

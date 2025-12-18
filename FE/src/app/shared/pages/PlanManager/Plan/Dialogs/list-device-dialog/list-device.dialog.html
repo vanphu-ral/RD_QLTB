@@ -10,9 +10,9 @@
                     <th>STT</th>
                     <th>Tên thiết bị</th>
                     <th>QR code</th>
-                    <th *ngIf="plan.planType.id === 2">Thời gian dự kiến</th>
-                    <th *ngIf="plan.planType.id === 2">Tên bản kế hoạch BDSC đi kèm</th>
-                    <th *ngIf="plan.planType.id === 2">Ghi chú</th>
+                    <th *ngIf="plan.planType.code == PLANTYPE.MAINTENANCE">Thời gian dự kiến</th>
+                    <th *ngIf="plan.planType.code == PLANTYPE.MAINTENANCE">Tên bản kế hoạch BDSC đi kèm</th>
+                    <th *ngIf="plan.planType.code == PLANTYPE.MAINTENANCE">Ghi chú</th>
                     <th>Người quản lý</th>
                     <th>Thao tác</th>
                 </tr>
@@ -30,15 +30,15 @@
                     <td>
                         <input type="text" pInputText [(ngModel)]="row.qrCode" [disabled]="true"/>
                     </td>
-                    <td *ngIf="plan.planType.id === 2">
+                    <td *ngIf="plan.planType.code == PLANTYPE.MAINTENANCE">
                         <p-datepicker [(ngModel)]="row.estimatedTime" [dateFormat]="'dd-mm-yy'" appDateConvert
                             id="estimatedTime-{{ i }}" name="estimatedTime-{{ i }}" appendTo="body">
                         </p-datepicker>
                     </td>
-                    <td *ngIf="plan.planType.id === 2">
+                    <td *ngIf="plan.planType.code == PLANTYPE.MAINTENANCE">
                         <input type="text" pInputText [(ngModel)]="row.nameDetail" id="nameDetail-{{ i }}" name="nameDetail-{{ i }}"/>
                     </td>
-                    <td *ngIf="plan.planType.id === 2">
+                    <td *ngIf="plan.planType.code == PLANTYPE.MAINTENANCE">
                         <input type="text" pInputText [(ngModel)]="row.note" id="note-{{ i }}" name="note-{{ i }}"/>
                     </td>
                     <td>

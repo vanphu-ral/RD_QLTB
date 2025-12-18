@@ -647,4 +647,20 @@ export class Util {
       { name: 'YEN', value: 'YEN' }
     ];
   }
+
+  /**
+   * Lấy ngày hệ thống trả về ngày đầu tháng và cuối tháng hiện tại
+   * @param obj 
+   * @param startKey 
+   * @param endKey 
+   */
+  static setCurrentMonthRange<T extends object>(
+    obj: T,
+    startKey: keyof T,
+    endKey: keyof T
+  ): void {
+    const now = new Date();
+    (obj as any)[startKey] = new Date(now.getFullYear(), now.getMonth(), 1);
+    (obj as any)[endKey] = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+  }
 }
