@@ -40,7 +40,7 @@
                     <tr>
                         <th colspan="6">Tên máy: <span id="spanDeviceName">{{ model.planDetail.device.name }}</span>
                         </th>
-                        <th colspan="9">Dây chuyền: <span id="spanLineName"> {{ model.planDetail.device.line.name }}
+                        <th colspan="9">Dây chuyền: <span id="spanLineName"> {{ model?.planDetail?.device?.line?.name }}
                             </span></th>
                     </tr>
                     <tr>
@@ -50,7 +50,7 @@
                             <i class="fa-solid fa-circle-half-stroke fa-rotate-180"></i>Cuối giờ
                             <i class="fa-solid fa-circle"></i>Hàng tuần
                         </th>
-                        <th colspan="9">Tổ: <span id="spanTeamName">{{ model.planDetail.device.team.name }}</span></th>
+                        <th colspan="9">Tổ: <span id="spanTeamName">{{ model?.planDetail?.device?.team?.name }}</span></th>
                         <th colspan="6"><span id="spanLanbanhanh_1">Ban hành lần {{ sampleReport.numberOfIssuances }}</span></th>
                     </tr>
                     <tr>
