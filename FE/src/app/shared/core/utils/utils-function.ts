@@ -546,6 +546,25 @@ export class Util {
     }
   }
 
+  static statusDeviceToSeverity(status: number): string {
+    switch (status) {
+      case 0:
+        return 'secondary';
+      case 1:
+        return 'success';
+      case 2:
+        return 'warn';
+      case 3:
+        return 'danger';
+      case 4:
+        return 'info';
+      case 5:
+        return 'contrast';
+      default:
+        return '';
+    }
+  }
+
   static statusDeviceToString(status: number): string {
     switch (status) {
       case 0:

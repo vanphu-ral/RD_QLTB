@@ -50,17 +50,11 @@ export class DeviceListComponent {
     { Field: 'createdBy', Header: 'Người tạo', IsSearch: true, TypeSearch: 'text' },
     { Field: 'createdAt', Header: 'Ngày tạo', IsSearch: true, TypeSearch: 'date', style: { 'min-width': '150px' } },
     { Field: 'updatedAt', Header: 'Ngày cập nhật', IsSearch: true, TypeSearch: 'date', style: { 'min-width': '150px' } },
+    { Field: 'description', Header: 'Mô tả', style: { 'max-width': '300px', 'white-space': 'nowrap', 'overflow': 'hidden', 'text-overflow': 'ellipsis' } },
+    { Field: 'status', Header: 'Trạng thái', IsSearch: true, TypeSearch: 'text' },
   ];
 
   constructor(public apiService: DeviceService, private dialogService: DialogService) {}
-
-  ngOnInit(): void {
-    // this.apiService.getAllByPaged().subscribe(res => {
-    //   this.data = res.content;
-    //   console.log(this.data);
-      
-    // });
-  }
 
   moveDeviceDialog(data: any) {
     this.ref = this.dialogService.open(MoveDeviceDialog, {
@@ -89,5 +83,13 @@ export class DeviceListComponent {
       if (result) {
       }
     });
+  }
+
+  statusToString(status: number) {
+    return Util.statusDeviceToString(status);
+  }
+
+  statusToSeverity(status: number) {
+    return Util.statusDeviceToSeverity(status);
   }
 }

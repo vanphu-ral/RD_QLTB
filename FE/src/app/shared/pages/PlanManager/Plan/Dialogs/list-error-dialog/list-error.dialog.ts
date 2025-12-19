@@ -13,6 +13,7 @@ import { ErrorReport } from "../../../../../models/PlanManger/error-report.model
 import { ConfirmationService, MessageService } from "primeng/api";
 import { ErrorReportSeriousDialog } from "../error-report-serious-dialog/error-report-serious.dialog";
 import { Router } from "@angular/router";
+import { DeviceService } from "../../../../DeviceManager/Device/Service/device.service";
 
 @Component({
     selector: 'app-list-error-dialog',
@@ -33,7 +34,8 @@ export class ListErrorDialog {
         private errorReportService: ErrorReportService,
         private comfirmService: ConfirmationService,
         private messageService: MessageService,
-        private router: Router
+        private router: Router,
+        private deviceService: DeviceService
     ) {
         this.data = config.data;
         console.log(this.data);
@@ -48,6 +50,10 @@ export class ListErrorDialog {
     loadErrorList() {
         this.errorReportService.getAllErrorByPlanDetailId(this.data.id).subscribe((data) => {
             this.listError = data;
+            const allRepaired = data.every(item => item?.isRepaired === true);
+            if(allRepaired && (this.data.device.status == 2 || this.data.device.status == 3)){
+                this.deviceService.updateStatusDevice(this.data.device.id, 1).subscribe();
+            }
             this.cdr.detectChanges();
         });
     }

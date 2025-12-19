@@ -36,10 +36,11 @@ export class SampleReportListComponent {
     { Field: 'type', Header: 'Loại kế hoạch áp dụng', IsSearch: true, TypeSearch: 'text' },
     { Field: 'deviceGroup.name', Header: 'Nhóm thiết bị áp dụng', IsSearch: true, TypeSearch: 'text' },
     { Field: 'branch.name', Header: 'Ngành áp dụng', IsSearch: true, TypeSearch: 'text' },
-    { Field: 'status', Header: 'Trạng thái', IsSearch: true, TypeSearch: 'text' },
     { Field: 'createdBy', Header: 'Người tạo', IsSearch: true, TypeSearch: 'text' },
     { Field: 'createdAt', Header: 'Ngày tạo', IsSearch: true, TypeSearch: 'date' },
     { Field: 'updatedAt', Header: 'Ngày cập nhật', IsSearch: true, TypeSearch: 'date', style: { 'min-width': '150px' } },
+    { Field: 'description', Header: 'Mô tả', style: { 'max-width': '300px', 'white-space': 'nowrap', 'overflow': 'hidden', 'text-overflow': 'ellipsis' } },
+    { Field: 'status', Header: 'Trạng thái', IsSearch: true, TypeSearch: 'text' },
   ];
 
   constructor(public apiService: SampleReportService, private dialogService: DialogService, private cdr: ChangeDetectorRef, private comfirmService: ConfirmationService, private messageService: MessageService, private dataService: DataService, private router: Router) { }

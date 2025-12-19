@@ -117,7 +117,7 @@ export class CheckDeviceDialog {
                 ...x,
                 planResultId: this.data.planResult.id,
                 planId: 1,
-                deviceId: this.data.device.deviceId
+                deviceId: this.data.device.device.id
             }
         });
         this.planResultService.saveEvaluation(this.model).subscribe({
@@ -135,10 +135,10 @@ export class CheckDeviceDialog {
             this.supplyDetailService.update(item.oldSupplyDetail.id as number, item.oldSupplyDetail).subscribe();
         })
         if(_.find(this.model.errorReport, x => x.severity === 0)) {
-            this.deviceService.updateStatusDevice(this.data.deviceId, 3).subscribe();
+            this.deviceService.updateStatusDevice(this.data.device.device.id, 3).subscribe();
         }
         if(_.find(this.model.errorReport, x => (x.severity === 1) || (x.severity === 2))) {
-            this.deviceService.updateStatusDevice(this.data.deviceId, 2).subscribe();
+            this.deviceService.updateStatusDevice(this.data.device.device.id, 2).subscribe();
         }
     }
 
