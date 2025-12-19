@@ -98,10 +98,9 @@ export class ErrorReportSeriousPage extends BasePageComponent<ReportDeviceIncide
     public override save(): void {
         this.model.name = `BBNTLTB-${new Date().getTime()}`
         this.model.code = this.model.docNumber;
-        console.log(this.model);
-        
         this.model.listUser = Util.arrayToString(this.model.listUser);
         this.model.division = Util.arrayToString(this.model.division);
+        this.model = Util.simplifyMany(this.model, ['device', 'errorReport']);
         this.reportDeviceIncidentService.create(this.model).subscribe((res: any) => {
             this.apiService.createApprovalEntity({ entityId: res.body, workflowId: this.model.workflow.id }, 'report_device_incidents').subscribe({
                 next: () => {

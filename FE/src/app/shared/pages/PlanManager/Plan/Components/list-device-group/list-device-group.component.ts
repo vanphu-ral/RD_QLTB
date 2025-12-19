@@ -113,18 +113,20 @@ export class ListDeviceComponent implements OnInit {
                 text: 'Nhóm thiết bị đã tồn tại',
                 confirmButtonText: 'OK'
             });
-            this.ngZone.runOutsideAngular(() => {
-                setTimeout(() => {
-                    row.deviceGroup = null;
-                    row.isDuplicate = true;
-                    this.cdr.detectChanges();
-                }, 0);
-            });
+            setTimeout(() => {
+                row.deviceGroup = null;
+                row.isDuplicate = true;
+                this.cdr.detectChanges();
+            }, 0);
             return;
         } else {
             row.isDuplicate = false;
-            const devicesInNewGroup: DeviceDetail[] = _.map(_.get(row, 'deviceGroup.groupDevices'), device => {
-                device.group = { id: _.get(row, 'deviceGroup.id') }
+            const branchId = this.model.plan?.branch?.id;
+            const filteredDevices = _.filter(row.deviceGroup.groupDevices, (device) => {
+                return !branchId || _.get(device, 'branch.id') === branchId;
+            });
+            const devicesInNewGroup: DeviceDetail[] = _.map(filteredDevices, device => {
+                device.group = { id: _.get(row, 'deviceGroup.id') };
                 const existingDeviceDetail = this.model.devices?.find(d =>
                     d.device?.id === device.id && _.get(d.device, 'group.id') === device.group.id
                 );
@@ -213,51 +215,30 @@ export class ListDeviceComponent implements OnInit {
     editRow(index: number) {
         if (!this.model.plan.planType) {
             Util.toastMessage('Vui lòng chọn loại kế hoạch', 'error');
-            return
+            return;
         }
         const currentGroup = this.model.planDetails[index].deviceGroup;
         if (!currentGroup) {
             Util.toastMessage('Vui lòng chọn nhóm thiết bị', 'error');
-            return
+            return;
         }
-        const deviceIdsInGroup = new Set(
-            _.chain(currentGroup.groupDevices)
-                .filter(d => d.branch.id === this.model.plan.branch.id) // Lọc theo branch nếu cần
-                .map(d => d.id)
-                .value()
+        const arrDeviceEdit = (this.model.devices || []).filter(d =>
+            _.get(d, 'device.group.id') === currentGroup.id
         );
-        const arrDeviceEdit: DeviceDetail[] = this.model.devices
-            ? this.model.devices.filter(d => deviceIdsInGroup.has(d.device!.id))
-            : [];
-        if (arrDeviceEdit.length === 0) {
-            const initialDevices = _.chain(currentGroup.groupDevices)
-                .filter(d => d.branch.id === this.model.plan.branch.id)
-                .map(device => {
-                    device.group = { id: currentGroup.id };
-                    return {
-                        device: device,
-                        serialNumber: device.serialNumber,
-                        manager: device.userManager
-                    } as DeviceDetail;
-                })
-                .value();
-
-            arrDeviceEdit.push(...initialDevices);
-        }
         this.ref = this.dialogService.open(ListDeviceDialog, {
             header: `Danh sách thiết bị thuộc nhóm ${currentGroup.name}`,
             width: 'auto',
             modal: true,
             closable: true,
             data: {
-                device: arrDeviceEdit,
+                device: _.cloneDeep(arrDeviceEdit),
                 plan: this.model.plan,
                 deviceGroup: currentGroup
             },
         });
         this.ref.onClose.subscribe((result: DeviceDetail[] | undefined) => {
-            if (result && result.length > 0) {
-                this.model.devices = this.updateDeviceDetails(this.model.devices!, result)
+            if (result) {
+                this.model.devices = this.updateDeviceDetails(this.model.devices!, result);
                 this.cdr.detectChanges();
             }
         });
