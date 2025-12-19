@@ -382,6 +382,9 @@ public class DeviceService {
         device.setInstallationDate(deviceDTO.getInstallationDate());
         device.setMaintenanceCycle(deviceDTO.getMaintenanceCycle());
         device.setDateManufacture(deviceDTO.getDateManufacture());
+        device.setMaintenanceTime(deviceDTO.getMaintenanceTime());
+        device.setDepreciationPeriod(deviceDTO.getDepreciationPeriod());
+        device.setDepreciationPercentage(deviceDTO.getDepreciationPercentage());
         device.setUnit(deviceDTO.getUnit());
         device.setPrice(deviceDTO.getPrice());
         device.setStatus(deviceDTO.getStatus());
