@@ -102,6 +102,11 @@ export const routes: Routes = [
         component: AppLayout,
         loadChildren: () => import('./shared/pages/PlanManager/Plan/plan.routes').then(m => m.default)
     },
+    {
+        path: 'PlanSupplies',
+        component: AppLayout,
+        loadChildren: () => import('./shared/pages/PlanManager/PlanSupplie/plan-supplie.routes').then(m => m.default)
+    },
     // Approval Manager
     {
         path: 'Approvals',

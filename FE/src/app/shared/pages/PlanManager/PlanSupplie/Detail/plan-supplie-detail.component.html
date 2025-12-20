@@ -1,0 +1,166 @@
+<div>
+  <h2>{{ isAddMode ? 'Thêm mới kê hoạch sử dụng vật tư' : (isViewMode ? 'Xem chi tiết kê hoạch sử dụng vật tư' : 'Sửa kê hoạch sử dụng vật tư') }}</h2>
+
+  <form #f="ngForm" *ngIf="model">
+    <div class="row my-3">
+      <div class="col-6" *ngIf="!isAddMode">
+        <p-floatlabel variant="on">
+          <input pInputText id="code" name="code" [(ngModel)]="model.code" autocomplete="off" [disabled]="true" [fluid]="true"/>
+          <label for="code">Mã kế hoạch</label>
+        </p-floatlabel>
+      </div>
+      <div [ngClass]="isAddMode ? 'col-12' : 'col-6'">
+        <p-floatlabel variant="on">
+          <input pInputText id="name" name="name" [(ngModel)]="model.name" required [invalid]="!model.name" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
+          <label for="name">Tên kế hoạch</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <div class="row my-3">
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.factory" [options]="listFactory"
+            [fluid]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="factory"
+            name="factory" optionLabel="name" dataKey="id">
+          </p-select>
+          <label for="factory">Xưởng</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.branch" [options]="listBranchs"
+            [fluid]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="branch"
+            name="branch" optionLabel="name" dataKey="id">
+          </p-select>
+          <label for="branch">Ngành</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.team" [options]="listTeamsFiltered" optionLabel="name"
+            [fluid]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="team"
+            name="team" dataKey="id">
+          </p-select>
+          <label for="team">Tổ</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <div class="row my-3">
+      <div class="col-6">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.userPerformer" [invalid]="!model.userPerformer" required
+            [options]="listUserPerformer" [fluid]="true" [filter]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true"
+            [appendTo]="'body'" id="userPerformer" name="userPerformer" optionLabel="name" optionValue="username"
+            dataKey="username">
+          </p-select>
+          <label for="userPerformer">Người thực hiện</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="col-6">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.approvalWorkflow" [invalid]="!model.approvalWorkflow" required
+            [options]="listApprovalWorkflow" optionLabel="name" [fluid]="true" [disabled]="isViewMode || isApprovalMode"
+            [showClear]="true" [appendTo]="'body'" id="approvalWorkflow" name="approvalWorkflow" dataKey="id">
+          </p-select>
+          <label for="approvalWorkflow">Kịch bản phê duyệt</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <div class="row my-3">
+      <div class="col-6">
+        <p-floatlabel variant="on">
+          <p-datepicker [(ngModel)]="model.fromDate" appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="fromDate"
+            inputId="icondisplay" [dateFormat]="'dd-mm-yy'" [invalid]="!model.fromDate" required  appendTo="body" [inputSize]="100" [disabled]="isViewMode || isApprovalMode"/>
+          <label for="fromDate">Thời gian bắt đầu</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="col-6">
+        <p-floatlabel variant="on">
+          <p-datepicker [(ngModel)]="model.toDate" appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="toDate"
+            inputId="icondisplay" [dateFormat]="'dd-mm-yy'" [invalid]="!model.toDate" required appendTo="body" [inputSize]="100" [disabled]="isViewMode || isApprovalMode"/>
+          <label for="toDate">Thời gian kết thúc</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <div class="d-flex my-3 align-items-center justify-content-between">
+      <h6 style="margin: 0;">Danh sách vật tư</h6>
+      <p-button *ngIf="!isViewMode" label="Thêm dòng" icon="pi pi-plus" severity="success"
+        class="w-full max-w-[17.35rem]" styleClass="w-full mx-auto" (click)="addNewRow()" />
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Vật tư</th>
+            <th>Serial</th>
+            <th>SL</th>
+            <th>Thuộc máy/Dây chuyền</th>
+            <th>Ký/Mã hiệu, bản vẽ</th>
+            <th>Yêu cầu kỹ thuật</th>
+            <th>Nhà cung cấp, chế tạo</th>
+            <th>Thời hạn cung cấp</th>
+            <th>Ghi chú</th>
+            <th *ngIf="!isViewMode">Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of listSupplyUse; let i = index">
+            <td>
+              <p-select [(ngModel)]="row.supplier" [options]="listSupplies" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
+                optionValue="value" [showClear]="true" [appendTo]="'body'" id="supplier-{{i}}" name="supplier-{{i}}">
+              </p-select>
+            </td>
+            <td>
+              <p-select [(ngModel)]="row.serial" [options]="listSerials" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
+                optionValue="value" [showClear]="true" [appendTo]="'body'" id="serial-{{i}}" name="serial-{{i}}">
+              </p-select>
+            </td>
+            <td><p-inputnumber id="quantity" name="quantity-{{i}}" [(ngModel)]="row.quantity" autocomplete="off" [disabled]="isViewMode" [fluid]="true" style="max-width: 100px !important;"/></td>
+            <td>
+              <p-select [(ngModel)]="row.targetUse" [options]="listDeviceandLine" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
+                optionValue="value" [showClear]="true" [appendTo]="'body'" id="targetUse-{{i}}" name="targetUse-{{i}}">
+              </p-select>
+            </td>
+            <td><input type="text" pInputText [(ngModel)]="row.designCode" name="designCode-{{i}}" [disabled]="isViewMode"></td>
+            <td><input type="text" pInputText [(ngModel)]="row.supplier" name="supplier-{{i}}" [disabled]="isViewMode" style="max-width: 100px !important;"></td>
+            <td><input type="text" pInputText [(ngModel)]="row.deliveryTime" name="deliveryTime-{{i}}" [disabled]="isViewMode" style="max-width: 100px !important;"></td>
+            <td><input type="text" pInputText [(ngModel)]="row.note" name="note-{{i}}" [disabled]="isViewMode" style="max-width: 100px !important;"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="row my-3">
+      <div class="col-12">
+        <textarea pTextarea class="form-control" rows="5" placeholder="Mô tả ..." id="description" name="description"
+          [(ngModel)]="model.description" [disabled]="isViewMode"></textarea>
+      </div>
+    </div>
+
+    <div class="row my-3">
+      <div class="col-12">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.status" [options]="listStatus" optionLabel="label" [fluid]="true" [disabled]="isViewMode"
+            optionValue="value" [showClear]="true" [appendTo]="'body'" id="status" name="status" required [invalid]="!model.status">
+          </p-select>
+          <label for="status">Trạng thái</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end mt-3">
+      <p-button label="Quay lại" severity="info" (click)="onBack()" icon="pi pi-arrow-left" class="me-2"></p-button>
+      <p-button *ngIf="!isViewMode" label="Lưu" icon="pi pi-save" severity="success" [disabled]="!f.valid" class="w-full max-w-[17.35rem]" (click)="save()"
+            styleClass="w-full mx-auto" />
+    </div>
+  </form>
+</div>
