@@ -28,82 +28,85 @@
             </div>
         </div>
         <div class="table-responsive">
-            <p-table #dt [value]="data" [paginator]="true" [paginator]="true" [rows]="size"
-                [totalRecords]="totalRecords" [lazy]="true" [loading]="loading" (onLazyLoad)="onPageChange($event)"
-                [showCurrentPageReport]="true"
-                currentPageReportTemplate="Từ {first} đến {last} trong {totalRecords} bản ghi"
-                [rowsPerPageOptions]="[5, 10, 20, 50]" dataKey="id" [tableStyle]="{ 'min-width': '60rem' }"
-                [responsiveLayout]="'scroll'" [scrollable]="true" class="p-datatable-gridlines text-sm">
-                <ng-template pTemplate="header">
-                    <tr>
-                        <th colspan="2">
-                            <img src="/assets/imgs/logo-rang-dong.png" style="width:150px;" />
-                        </th>
-                        <th colspan="6" class="text-center">
-                            <div>
-                                <div><strong>Sổ theo dõi bảo dưỡng thiết bị</strong></div>
-                                <div><span id="SpanPlanYear">12/2025</span></div>
-                            </div>
-                        </th>
-                        <th colspan="1" style="max-width: 180px !important;">
-                            <label class="font-semibold">Đơn vị:&nbsp; Đơn vị: LED; Xưởng LED - Điện tử &
-                                TBCS</label>
-                        </th>
-                    </tr>
-                    <tr>
-                        <th>STT</th>
-                        <th>Ngành</th>
-                        <th>Mã thiết bị</th>
-                        <th>Tên thiết bị</th>
-                        <th>Mã KH</th>
-                        <th>Các đợt bảo trì bảo dưỡng</th>
-                        <th>Nội dung thực hiện</th>
-                        <th>Người kiểm tra</th>
-                        <th>Trạng thái</th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
-                    <tr>
-                        <td *ngIf="item._isFirst" [attr.rowspan]="item._rowspan">
-                            {{ rowIndex + 1 }}
-                        </td>
-                        <td *ngIf="item._isFirst" [attr.rowspan]="item._rowspan">
-                            {{ item.branchName }}
-                        </td>
-                        <td *ngIf="item._isFirst" [attr.rowspan]="item._rowspan">
-                            {{ item.deviceCode }}
-                        </td>
-                        <td *ngIf="item._isFirst" [attr.rowspan]="item._rowspan">
-                            {{ item.deviceName }}
-                        </td>
-                        <td *ngIf="item._isFirst" [attr.rowspan]="item._rowspan">
-                            {{ item.planCode }}
-                        </td>
-                        <td *ngIf="item._isFirst" [attr.rowspan]="item._rowspan">
-                            {{ item.dateTest | date:'dd-MM-yyyy' }}
-                        </td>
-                        <td>
-                            {{ item.criticalName }}
-                        </td>
-                        <td>
-                            {{ item.committee }}
-                        </td>
-                        <td>
-                            {{ item.result }}
-                        </td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage">
-                    <tr>
-                        <td colspan="99" class="text-center">Không có dữ liệu</td>
-                    </tr>
-                </ng-template>
-            </p-table>
+            <div id="print-section">
+                <p-table #dt [value]="data" [paginator]="true" [paginator]="true" [rows]="size"
+                    [totalRecords]="totalRecords" [lazy]="true" [loading]="loading" (onLazyLoad)="onPageChange($event)"
+                    [showCurrentPageReport]="true"
+                    currentPageReportTemplate="Từ {first} đến {last} trong {totalRecords} bản ghi"
+                    [rowsPerPageOptions]="[5, 10, 20, 50]" dataKey="id" [tableStyle]="{ 'min-width': '60rem' }"
+                    [responsiveLayout]="'scroll'" [scrollable]="true" class="p-datatable-gridlines text-sm">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th colspan="2">
+                                <img src="/assets/imgs/logo-rang-dong.png" style="width:150px;" />
+                            </th>
+                            <th colspan="6" class="text-center">
+                                <div>
+                                    <div><strong>Sổ theo dõi bảo dưỡng thiết bị</strong></div>
+                                    <div><span id="SpanPlanYear">{{ filter.startDate | date:'dd/MM/yyyy' }} - {{ filter.endDate | date:'dd/MM/yyyy' }}</span></div>
+                                </div>
+                            </th>
+                            <th colspan="1" style="max-width: 180px !important;">
+                                <label class="font-semibold">Đơn vị:&nbsp; Đơn vị: LED; Xưởng LED - Điện tử &
+                                    TBCS</label>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>STT</th>
+                            <th>Ngành</th>
+                            <th>Mã thiết bị</th>
+                            <th>Tên thiết bị</th>
+                            <th>Mã KH</th>
+                            <th>Các đợt bảo trì bảo dưỡng</th>
+                            <th>Nội dung thực hiện</th>
+                            <th>Người kiểm tra</th>
+                            <th>Trạng thái</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+                        <tr>
+                            <td *ngIf="item._isFirst" [attr.rowspan]="item._rowspan">
+                                {{ rowIndex + 1 }}
+                            </td>
+                            <td *ngIf="item._isFirst" [attr.rowspan]="item._rowspan">
+                                {{ item.branchName }}
+                            </td>
+                            <td *ngIf="item._isFirst" [attr.rowspan]="item._rowspan">
+                                {{ item.deviceCode }}
+                            </td>
+                            <td *ngIf="item._isFirst" [attr.rowspan]="item._rowspan">
+                                {{ item.deviceName }}
+                            </td>
+                            <td *ngIf="item._isFirst" [attr.rowspan]="item._rowspan">
+                                {{ item.planCode }}
+                            </td>
+                            <td *ngIf="item._isFirst" [attr.rowspan]="item._rowspan">
+                                {{ item.dateTest | date:'dd-MM-yyyy' }}
+                            </td>
+                            <td>
+                                {{ item.criticalName }}
+                            </td>
+                            <td>
+                                {{ item.committee }}
+                            </td>
+                            <td>
+                                {{ item.result }}
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="99" class="text-center">Không có dữ liệu</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
         </div>
         <span>RĐ.QT15.BM02a. Ban hành lần 2</span>
     </div>
 
     <div class="d-flex justify-content-end mt-3">
         <p-button label="Quay lại" severity="info" (click)="onBack()" icon="pi pi-arrow-left" class="me-2"></p-button>
+        <p-button label="Export" severity="success" (click)="export()" class="me-2"></p-button>
     </div>
 </div>

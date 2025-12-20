@@ -1,0 +1,16 @@
+<div class="p-1">
+    <div class="filter-box row my-3">
+        <div class="col">
+            <p-floatlabel variant="on">
+                <p-select [options]="listTypeExports" [(ngModel)]="type" optionValue="value" [fluid]="true"
+                    optionLabel="name" appendTo="body" dataKey="id"></p-select>
+                <label for="exportType">Chọn dạng xuất dữ liệu</label>
+            </p-floatlabel>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <p-button label="Lưu" severity="success" (onClick)="submit()"></p-button>
+        <p-button label="Đóng" (onClick)="close()"></p-button>
+    </div>
+</div>
