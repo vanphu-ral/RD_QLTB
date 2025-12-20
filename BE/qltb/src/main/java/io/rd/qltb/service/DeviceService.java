@@ -20,9 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.persistence.criteria.Expression;
-import jakarta.persistence.criteria.Path;
-import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.*;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -30,6 +28,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -68,84 +67,76 @@ public class DeviceService {
     }
     @Transactional
     public Page<DeviceDTO> findDevicesPaged(Map<String, Object> filters, int page) {
+        int pageSize = 10;
         var cb = entityManager.getCriteriaBuilder();
+
+        // Query chính
         var cq = cb.createQuery(Device.class);
         var root = cq.from(Device.class);
 
-        List<Predicate> predicates = new ArrayList<>();
+        // Query count
+        var countQuery = cb.createQuery(Long.class);
+        var countRoot = countQuery.from(Device.class);
 
-        filters.forEach((key, value) -> {
-            if (value != null) {
-                Path<?> path = root.get(key);
+        // Xây dựng Predicates
+        Predicate[] dataPredicates = buildPredicates(filters, cb, root);
+        Predicate[] countPredicates = buildPredicates(filters, cb, countRoot);
 
-                if (path.getJavaType().equals(LocalDateTime.class)) {
-                    String v = value.toString();
-                    LocalDateTime dateTime;
-
-                    if (v.length() == 10) {
-                        dateTime = LocalDate.parse(v).atStartOfDay();
-                    } else {
-                        dateTime = LocalDateTime.parse(v);
-                    }
-
-                    LocalDate date = dateTime.toLocalDate();
-                    LocalDateTime startOfDay = date.atStartOfDay();
-                    LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
-
-                    predicates.add(cb.between(root.get(key), startOfDay, endOfDay));
-                } else {
-                    predicates.add(cb.like((Expression<String>) path, "%" + value + "%"));
-                }
-            }
-        });
-        predicates.add(cb.notEqual(root.get("status"), DELETED)); // Lọc bỏ thiết bị có trạng thái = 10 (đã xóa)
-        cq.where(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
-
-        // Query dữ liệu trang hiện tại
+        // Execute Data Query
+        cq.where(dataPredicates);
         var query = entityManager.createQuery(cq);
-        query.setFirstResult(page * 10);
-        query.setMaxResults(10);
+        query.setFirstResult(page * pageSize);
+        query.setMaxResults(pageSize);
 
-        List<Device> devices = query.getResultList();
-        List<DeviceDTO> dtos = devices.stream()
+        List<DeviceDTO> dtos = query.getResultList().stream()
                 .map(device -> mapToDTO(device, new DeviceDTO()))
                 .toList();
 
-        // Query tổng số bản ghi
-        var countQuery = cb.createQuery(Long.class);
-        var countRoot = countQuery.from(Device.class);
-        countQuery.select(cb.count(countRoot));
-        List<Predicate> countPredicates = new ArrayList<>();
+        // Execute Count Query
+        countQuery.select(cb.count(countRoot)).where(countPredicates);
+        Long totalRecords = entityManager.createQuery(countQuery).getSingleResult();
+
+        return new PageImpl<>(dtos, PageRequest.of(page, pageSize), totalRecords);
+    }
+
+    private Predicate[] buildPredicates(Map<String, Object> filters, CriteriaBuilder cb, Root<Device> root) {
+        List<Predicate> predicates = new ArrayList<>();
 
         filters.forEach((key, value) -> {
-            if (value != null) {
-                Path<?> path = countRoot.get(key);
+            if (value != null && !value.toString().isEmpty()) {
+                Path<?> path;
 
+                // XỬ LÝ JOIN TỰ ĐỘNG
+                if (List.of("group", "line", "branch", "team").contains(key)) {
+                    // Nếu key là "group", ta mặc định hiểu là muốn lọc theo "group.name"
+                    path = root.join(key, JoinType.LEFT).get("name");
+                } else if (key.contains(".")) {
+                    // Nếu key truyền vào dạng "group.code", "branch.name"
+                    String[] parts = key.split("\\.");
+                    Join<Object, Object> join = root.join(parts[0], JoinType.LEFT);
+                    path = join.get(parts[1]);
+                } else {
+                    // Trường thông thường trong Device
+                    path = root.get(key);
+                }
+
+                // PHÂN LOẠI KIỂU DỮ LIỆU ĐỂ TẠO PREDICATE
                 if (path.getJavaType().equals(LocalDateTime.class)) {
                     String v = value.toString();
-                    LocalDateTime dateTime;
-
-                    if (v.length() == 10) {
-                        dateTime = LocalDate.parse(v).atStartOfDay();
-                    } else {
-                        dateTime = LocalDateTime.parse(v);
-                    }
-
-                    LocalDate date = dateTime.toLocalDate();
-                    LocalDateTime startOfDay = date.atStartOfDay();
-                    LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
-
-                    countPredicates.add(cb.between(countRoot.get(key), startOfDay, endOfDay));
+                    LocalDateTime startOfDay = (v.length() == 10)
+                            ? LocalDate.parse(v).atStartOfDay()
+                            : LocalDateTime.parse(v);
+                    LocalDateTime endOfDay = startOfDay.toLocalDate().atTime(LocalTime.MAX);
+                    predicates.add(cb.between((Expression<LocalDateTime>) path, startOfDay, endOfDay));
                 } else {
-                    countPredicates.add(cb.like((Expression<String>) path, "%" + value + "%"));
+                    // Dùng lower-case để tìm kiếm không phân biệt hoa thường
+                    predicates.add(cb.like(cb.lower(path.as(String.class)), "%" + value.toString().toLowerCase() + "%"));
                 }
             }
         });
 
-        countQuery.where(countPredicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
-        Long totalRecords = entityManager.createQuery(countQuery).getSingleResult();
-
-        return new org.springframework.data.domain.PageImpl<>(dtos, PageRequest.of(page, 10), totalRecords);
+        predicates.add(cb.notEqual(root.get("status"), 10)); // Giả định 10 là DELETED
+        return predicates.toArray(new Predicate[0]);
     }
 
     public List<DeviceDTO> findAll() {

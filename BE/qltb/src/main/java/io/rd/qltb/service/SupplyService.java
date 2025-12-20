@@ -20,12 +20,12 @@ import java.util.Map;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.criteria.Path;
-import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.*;
 import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -60,42 +60,92 @@ public class SupplyService {
     }
     @Transactional
     public Page<SupplyDTO> findSuppliesPaged(Map<String, Object> filters, int page) {
+        int pageSize = 10;
         var cb = entityManager.getCriteriaBuilder();
+
+        // 1. Khởi tạo Query lấy dữ liệu (Data Query)
         var cq = cb.createQuery(Supply.class);
         var root = cq.from(Supply.class);
+
+        // 2. Khởi tạo Query đếm tổng (Count Query)
+        var countQuery = cb.createQuery(Long.class);
+        var countRoot = countQuery.from(Supply.class);
+
+        // 3. Xây dựng danh sách Predicates (Dùng chung logic)
+        Predicate[] dataPredicates = buildSupplyPredicates(filters, cb, root);
+        Predicate[] countPredicates = buildSupplyPredicates(filters, cb, countRoot);
+
+        // 4. Thực thi truy vấn lấy dữ liệu
+        cq.where(dataPredicates);
+        cq.orderBy(cb.desc(root.get("id"))); // Sắp xếp mới nhất lên đầu
+
+        var query = entityManager.createQuery(cq);
+        query.setFirstResult(page * pageSize);
+        query.setMaxResults(pageSize);
+
+        List<SupplyDTO> dtos = query.getResultList().stream()
+                .map(supply -> mapToDTO(supply, new SupplyDTO()))
+                .toList();
+
+        // 5. Thực thi truy vấn đếm tổng số bản ghi (Cần thiết cho phân trang)
+        countQuery.select(cb.count(countRoot)).where(countPredicates);
+        Long totalRecords = entityManager.createQuery(countQuery).getSingleResult();
+
+        return new PageImpl<>(dtos, PageRequest.of(page, pageSize), totalRecords);
+    }
+
+    /**
+     * Hàm hỗ trợ xử lý logic lọc linh hoạt cho Supply
+     */
+    private Predicate[] buildSupplyPredicates(Map<String, Object> filters, CriteriaBuilder cb, Root<Supply> root) {
         List<Predicate> predicates = new ArrayList<>();
+
+        // Các quan hệ cần join để lấy trường "name" (Dựa trên SupplyDTO của bạn là "group")
+        List<String> relationKeys = List.of("group");
+
         filters.forEach((key, value) -> {
-            if (value != null) {
-                Path<?> path = root.get(key);
+            if (value != null && !value.toString().isEmpty()) {
+                Path<?> path;
+
+                // Xử lý Join nếu key là "group"
+                if (relationKeys.contains(key)) {
+                    path = root.join(key, JoinType.LEFT).get("name");
+                }
+                // Xử lý Nested key nếu truyền dạng "group.code"
+                else if (key.contains(".")) {
+                    String[] parts = key.split("\\.");
+                    Join<Object, Object> join = root.join(parts[0], JoinType.LEFT);
+                    path = join.get(parts[1]);
+                }
+                // Các trường trực tiếp: code, name, sapCode, description...
+                else {
+                    path = root.get(key);
+                }
+
+                // PHÂN LOẠI KIỂU DỮ LIỆU
                 if (path.getJavaType().equals(LocalDateTime.class)) {
                     String v = value.toString();
-                    LocalDateTime dateTime;
-                    if (v.length() == 10) {
-                        dateTime = LocalDate.parse(v).atStartOfDay();
-                    } else {
-                        dateTime = LocalDateTime.parse(v);
-                    }
-                    LocalDate date = dateTime.toLocalDate();
-                    LocalDateTime startOfDay = date.atStartOfDay();
-                    LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
-                    predicates.add(cb.between(root.get(key), startOfDay, endOfDay));
-                } else {
-                    // chuyển equal sang like
-                    predicates.add(cb.like(path.as(String.class), "%" + value + "%"));
+                    LocalDateTime startOfDay = (v.length() == 10)
+                            ? LocalDate.parse(v).atStartOfDay()
+                            : LocalDateTime.parse(v);
+                    LocalDateTime endOfDay = startOfDay.toLocalDate().atTime(LocalTime.MAX);
+                    predicates.add(cb.between((Expression<LocalDateTime>) path, startOfDay, endOfDay));
+                }
+                else if (path.getJavaType().equals(Integer.class)) {
+                    // Ví dụ lọc theo status (khớp chính xác)
+                    predicates.add(cb.equal(path, Integer.valueOf(value.toString())));
+                }
+                else {
+                    // Mặc định dùng LIKE cho String (code, name, sapCode...)
+                    predicates.add(cb.like(cb.lower(path.as(String.class)), "%" + value.toString().toLowerCase() + "%"));
                 }
             }
         });
-        predicates.add(cb.notEqual(root.get("status"), DELETED)); // lọc status != -1
-        cq.where(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
-        var query = entityManager.createQuery(cq);
-        query.setFirstResult(page * 10);
-        query.setMaxResults(10);
 
-        List<Supply> supplies = query.getResultList();
-        List<SupplyDTO> dtos = supplies.stream()
-                .map(supply -> mapToDTO(supply, new SupplyDTO()))
-                .toList();
-        return new org.springframework.data.domain.PageImpl<>(dtos, PageRequest.of(page, 10), dtos.size());
+        // Luôn lọc bỏ vật tư đã xóa (status != 10)
+        predicates.add(cb.notEqual(root.get("status"), 10));
+
+        return predicates.toArray(new Predicate[0]);
     }
 
     public SupplyDTO get(final Long id) {
