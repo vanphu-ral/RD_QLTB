@@ -272,6 +272,11 @@ public class PlanService {
             plan.getBranch().setBranchTeams(null);
             plan.getBranch().setSampleReports(null);
         }
+        if( plan.getTeam() != null) {
+            plan.getTeam().setBranch(null);
+            plan.getTeam().setTeamDevices(null);
+            plan.getTeam().setTeamLines(null);
+        }
         plan.setPlanPlanDetails(null);
         if (plan.getApprovalWorkflow() != null) {
             plan.getApprovalWorkflow().setWorkflowSampleReports(null);
