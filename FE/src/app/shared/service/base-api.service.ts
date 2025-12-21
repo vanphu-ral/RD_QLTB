@@ -3,6 +3,7 @@ import { inject } from '@angular/core';
 import { map, Observable, switchMap } from 'rxjs';
 import { AccountService } from '../core/auth/account/account.service';
 import { environment } from '../../../environments/environment';
+import { Page } from '../models/Core/page.model';
 
 export type CreateEntity<T> = Omit<T, 'id'> & { id?: number | string };
 
@@ -18,6 +19,29 @@ export abstract class BaseApiService<T> {
 
   getAll(): Observable<T[]> {
     return this.http.get<T[]>(`${this.fullBaseUrl}`, { withCredentials: true });
+  }
+
+  getAllByPaged(filters: any = {}, page: number = 0): Observable<Page<any>> {
+    let params = new HttpParams()
+      .set('page', page.toString());
+    Object.keys(filters).forEach(key => {
+      let value = filters[key];
+      if (value !== null && value !== undefined && value !== '') {
+        if (value instanceof Date) {
+          const year = value.getFullYear();
+          const month = (value.getMonth() + 1).toString().padStart(2, '0');
+          const day = value.getDate().toString().padStart(2, '0');
+
+          value = `${year}-${month}-${day}`;
+        }
+        params = params.set(key, value);
+      }
+    });
+
+    return this.http.get<Page<any>>(
+      `${this['fullBaseUrl']}/paged`,
+      { params, withCredentials: true }
+    );
   }
 
   getById(id: number | string): Observable<T> {

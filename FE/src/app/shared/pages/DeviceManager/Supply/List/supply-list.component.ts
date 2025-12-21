@@ -34,14 +34,6 @@ export class SupplyListComponent {
 
   constructor(public api: SupplyService, private dialogService: DialogService) { }
 
-  ngOnInit(): void {
-    this.api.getAllByPaged().subscribe(res => {
-      this.data = res.content;
-      console.log(this.data);
-      
-    });
-  }
-
   openDialog(row: any) {
     this.ref = this.dialogService.open(ListSerialSupplyDialogComponent, {
       header: 'Thông tin vật tư',

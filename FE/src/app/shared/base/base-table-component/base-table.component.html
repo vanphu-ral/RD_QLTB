@@ -39,8 +39,10 @@
             </p-columnFilter>
 
             <!-- Nếu date -->
-            <p-columnFilter *ngIf="col.TypeSearch === 'date'" [field]="col.Field" matchMode="dateIs" [showMenu]="false"
-              type="date">
+            <p-columnFilter *ngIf="col.TypeSearch === 'date'" [field]="col.Field" matchMode="dateIs" [showMenu]="false">
+              <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                <p-datepicker [ngModel]="value" dateFormat="dd-mm-yy" (ngModelChange)="filter($event)" [ngModelOptions]="{ standalone: true }" appendTo="body" [inputSize]="100"/>
+              </ng-template>
             </p-columnFilter>
 
             <!-- Nếu select -->
