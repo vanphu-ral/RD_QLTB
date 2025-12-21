@@ -14,7 +14,8 @@ import io.rd.qltb.util.ReferencedException;
 
 import java.time.*;
 import java.util.*;
-import jakarta.persistence.criteria.Predicate;
+
+import jakarta.persistence.criteria.*;
 
 
 import jakarta.persistence.EntityManager;
@@ -103,39 +104,93 @@ public class PlanService {
 
     @Transactional
     public Page<PlanDTO> findPlansPaged(Map<String, Object> filters, int page) {
+        int pageSize = 10;
         var cb = entityManager.getCriteriaBuilder();
+
+        // 1. Khởi tạo Query lấy dữ liệu
         var cq = cb.createQuery(Plan.class);
         var root = cq.from(Plan.class);
 
+        // 2. Khởi tạo Query đếm tổng
+        var countQuery = cb.createQuery(Long.class);
+        var countRoot = countQuery.from(Plan.class);
+
+        // 3. Xây dựng Predicates đồng nhất
+        Predicate[] dataPredicates = buildPlanPredicates(filters, cb, root);
+        Predicate[] countPredicates = buildPlanPredicates(filters, cb, countRoot);
+
+        // 4. Thực thi truy vấn lấy dữ liệu trang
+        cq.where(dataPredicates);
+        cq.orderBy(cb.desc(root.get("id"))); // Sắp xếp mới nhất lên đầu
+
+        var query = entityManager.createQuery(cq);
+        query.setFirstResult(page * pageSize);
+        query.setMaxResults(pageSize);
+
+        List<PlanDTO> dtos = query.getResultList().stream()
+                .map(plan -> mapToDTO(plan, new PlanDTO()))
+                .toList();
+
+        // 5. Thực thi truy vấn đếm tổng số bản ghi (metadata phân trang)
+        countQuery.select(cb.count(countRoot)).where(countPredicates);
+        Long totalRecords = entityManager.createQuery(countQuery).getSingleResult();
+
+        return new PageImpl<>(dtos, PageRequest.of(page, pageSize), totalRecords);
+    }
+
+    /**
+     * Hàm xây dựng bộ lọc Predicate cho Plan
+     */
+    private Predicate[] buildPlanPredicates(Map<String, Object> filters, CriteriaBuilder cb, Root<Plan> root) {
         List<Predicate> predicates = new ArrayList<>();
+
+        // Danh sách các thực thể quan hệ có trong PlanDTO
+        List<String> relationKeys = List.of("planType", "factory", "branch", "team", "approvalWorkflow");
+
         filters.forEach((key, value) -> {
-            if (value != null) {
-                predicates.add(cb.like(root.get(key).as(String.class), "%" + value + "%"));
+            if (value != null && !value.toString().isEmpty()) {
+                Path<?> path;
+
+                // Xử lý Lọc theo quan hệ: Nếu key là "factory", sẽ join Factory và lọc theo "name"
+                if (relationKeys.contains(key)) {
+                    path = root.join(key, JoinType.LEFT).get("name");
+                }
+                // Xử lý Lọc sâu (Nested): Nếu key là "factory.code"
+                else if (key.contains(".")) {
+                    String[] parts = key.split("\\.");
+                    Join<Object, Object> join = root.join(parts[0], JoinType.LEFT);
+                    path = join.get(parts[1]);
+                }
+                // Xử lý các trường trực tiếp trong bảng Plan
+                else {
+                    path = root.get(key);
+                }
+
+                // PHÂN LOẠI KIỂU DỮ LIỆU ĐỂ TẠO ĐIỀU KIỆN LỌC (Predicate)
+                if (path.getJavaType().equals(LocalDateTime.class)) {
+                    String v = value.toString();
+                    LocalDateTime startOfDay = (v.length() == 10)
+                            ? LocalDate.parse(v).atStartOfDay()
+                            : LocalDateTime.parse(v);
+                    LocalDateTime endOfDay = startOfDay.toLocalDate().atTime(LocalTime.MAX);
+                    predicates.add(cb.between((Expression<LocalDateTime>) path, startOfDay, endOfDay));
+                }
+                else if (path.getJavaType().equals(Integer.class) || path.getJavaType().equals(Long.class)) {
+                    // Nếu là số (ví dụ status), dùng so sánh bằng thay vì LIKE
+                    predicates.add(cb.equal(path, value));
+                }
+                else {
+                    // Mặc định cho String: Tìm kiếm LIKE không phân biệt hoa thường
+                    predicates.add(cb.like(cb.lower(path.as(String.class)), "%" + value.toString().toLowerCase() + "%"));
+                }
             }
         });
 
-        // Thêm điều kiện status != 10
-        predicates.add(cb.notEqual(root.get("status"), DELETED));
-        cq.where(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
-        cq.orderBy(cb.desc(root.get("id")));
-        var query = entityManager.createQuery(cq);
-        query.setFirstResult(page * 10);
-        query.setMaxResults(10);
+        // Luôn lọc bỏ các bản ghi đã xóa ảo (DELETED = 10)
+        predicates.add(cb.notEqual(root.get("status"), 10));
 
-        List<Plan> plans = query.getResultList();
-        List<PlanDTO> dtos = plans.stream()
-                .map(plan -> mapToDTO(plan, new PlanDTO()))
-                .toList();
-//        for (PlanDTO dto : dtos) {
-//            List<PlanDetail> details = planDetailRepository.findAllByPlanId(dto.getId());
-//            dto.setPlanDetails(details.stream()
-//                    .map(detail -> planDetailService.mapToDTO(detail, new PlanDetailDTO()))
-//                    .toList());
-//        }
-        // Nếu cần tổng số bản ghi để phân trang, hãy query count riêng
-        return new PageImpl<>(dtos, PageRequest.of(page, 10), dtos.size());
+        return predicates.toArray(new Predicate[0]);
     }
-
     public List<PlanDTO> findAll() {
         final List<Plan> plans = planRepository.findAll(Sort.by("id"));
         return plans.stream()
@@ -169,7 +224,6 @@ public class PlanService {
     public PlanRequest getPlanDetail(final Long id) {
         PlanRequest planRequest = new PlanRequest();
         Plan plan = planRepository.findById(id).orElse(null);
-
         if (plan == null) return planRequest;
 
         Set<PlanDetail> planDetailsSet = plan.getPlanPlanDetails();
@@ -191,10 +245,12 @@ public class PlanService {
 
             // Tạo key duy nhất cho DeviceRequest dựa trên deviceId
             Long deviceId = planDetail.getDevice() != null ? planDetail.getDevice().getId() : 0L;
+                entityManager.detach(plan);
             if (!uniqueDevices.containsKey(deviceId)) {
+                Integer count = planResultDetailRepository.countByDeviceIdAndPlanId(deviceId, plan.getId()) > 0 ? 1 : 0;
                 DeviceRequest deviceRequest = new DeviceRequest();
                 deviceRequest.setDevice(deviceService.mapToDTO(planDetail.getDevice(), new DeviceDTO()));
-                deviceRequest.getDevice().setIsHadDataPlanReport(planResultDetailRepository.countByDeviceIdAndPlanId(deviceId, plan.getId()) > 0 ? 1 : 0);
+                deviceRequest.getDevice().setIsHadDataPlanReport(count);
                 deviceRequest.setQrCode(planDetail.getQrCode());
                 deviceRequest.setManager(planDetail.getManager());
                 deviceRequest.setEstimatedTime(planDetail.getEstimatedTime());
@@ -216,6 +272,11 @@ public class PlanService {
             plan.getBranch().setBranchDevices(null);
             plan.getBranch().setBranchTeams(null);
             plan.getBranch().setSampleReports(null);
+        }
+        if( plan.getTeam() != null) {
+            plan.getTeam().setBranch(null);
+            plan.getTeam().setTeamDevices(null);
+            plan.getTeam().setTeamLines(null);
         }
         plan.setPlanPlanDetails(null);
         if (plan.getApprovalWorkflow() != null) {
@@ -665,10 +726,43 @@ public class PlanService {
         ObjectMapper mapper = new ObjectMapper();
         List<PlanDetail> savedDetails = addDetailToSampleReport(newDetails);// chuyển detail sang JSON
         planDetailRepository.saveAll(savedDetails);
+        createLog(id,userName);
         autoCreatePlanResult(savedDetails);
         return exist;
     }
+    @Transactional
+    public void createLog(Long id, String userName) {
+        try {
+            // 1. Lấy dữ liệu đã được detach
+            PlanRequest planRequest = getPlanDetail(id);
 
+            // 2. Dọn dẹp Session để đảm bảo không còn Entity nào "dirty" gây lỗi Flush
+            entityManager.clear();
+
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new JavaTimeModule());
+            mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+            String planJson = mapper.writeValueAsString(planRequest);
+
+            // 3. Đếm version và lưu log
+            Integer countLog = detailLogRepository.countByEntityTypeAndEntityId("plans", id);
+
+            DetailLogDTO detailLog = new DetailLogDTO();
+            detailLog.setEntityType("plans");
+            detailLog.setEntityId(id);
+            detailLog.setDetail(planJson);
+            detailLog.setVersion(String.valueOf(countLog + 1));
+            detailLog.setCreatedAt(java.time.LocalDateTime.now());
+            detailLog.setLoggedAt(java.time.LocalDateTime.now());
+            detailLog.setCreatedBy(userName);
+            detailLog.setStatus(1);
+
+            detailLogService.create(detailLog);
+        } catch (Exception e) {
+            throw new RuntimeException("Error while processing Plan log", e);
+        }
+    }
     public void autoCreatePlanResult(List<PlanDetail> planDetails) {
         for (PlanDetail planDetail : planDetails) {
             Plan plan = planDetail.getPlan();
