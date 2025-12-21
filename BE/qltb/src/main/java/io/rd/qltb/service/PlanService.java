@@ -224,7 +224,6 @@ public class PlanService {
     public PlanRequest getPlanDetail(final Long id) {
         PlanRequest planRequest = new PlanRequest();
         Plan plan = planRepository.findById(id).orElse(null);
-
         if (plan == null) return planRequest;
 
         Set<PlanDetail> planDetailsSet = plan.getPlanPlanDetails();
@@ -246,10 +245,12 @@ public class PlanService {
 
             // Tạo key duy nhất cho DeviceRequest dựa trên deviceId
             Long deviceId = planDetail.getDevice() != null ? planDetail.getDevice().getId() : 0L;
+                entityManager.detach(plan);
             if (!uniqueDevices.containsKey(deviceId)) {
+                Integer count = planResultDetailRepository.countByDeviceIdAndPlanId(deviceId, plan.getId()) > 0 ? 1 : 0;
                 DeviceRequest deviceRequest = new DeviceRequest();
                 deviceRequest.setDevice(deviceService.mapToDTO(planDetail.getDevice(), new DeviceDTO()));
-                deviceRequest.getDevice().setIsHadDataPlanReport(planResultDetailRepository.countByDeviceIdAndPlanId(deviceId, plan.getId()) > 0 ? 1 : 0);
+                deviceRequest.getDevice().setIsHadDataPlanReport(count);
                 deviceRequest.setQrCode(planDetail.getQrCode());
                 deviceRequest.setManager(planDetail.getManager());
                 deviceRequest.setEstimatedTime(planDetail.getEstimatedTime());
@@ -725,10 +726,43 @@ public class PlanService {
         ObjectMapper mapper = new ObjectMapper();
         List<PlanDetail> savedDetails = addDetailToSampleReport(newDetails);// chuyển detail sang JSON
         planDetailRepository.saveAll(savedDetails);
+        createLog(id,userName);
         autoCreatePlanResult(savedDetails);
         return exist;
     }
+    @Transactional
+    public void createLog(Long id, String userName) {
+        try {
+            // 1. Lấy dữ liệu đã được detach
+            PlanRequest planRequest = getPlanDetail(id);
 
+            // 2. Dọn dẹp Session để đảm bảo không còn Entity nào "dirty" gây lỗi Flush
+            entityManager.clear();
+
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new JavaTimeModule());
+            mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+            String planJson = mapper.writeValueAsString(planRequest);
+
+            // 3. Đếm version và lưu log
+            Integer countLog = detailLogRepository.countByEntityTypeAndEntityId("plans", id);
+
+            DetailLogDTO detailLog = new DetailLogDTO();
+            detailLog.setEntityType("plans");
+            detailLog.setEntityId(id);
+            detailLog.setDetail(planJson);
+            detailLog.setVersion(String.valueOf(countLog + 1));
+            detailLog.setCreatedAt(java.time.LocalDateTime.now());
+            detailLog.setLoggedAt(java.time.LocalDateTime.now());
+            detailLog.setCreatedBy(userName);
+            detailLog.setStatus(1);
+
+            detailLogService.create(detailLog);
+        } catch (Exception e) {
+            throw new RuntimeException("Error while processing Plan log", e);
+        }
+    }
     public void autoCreatePlanResult(List<PlanDetail> planDetails) {
         for (PlanDetail planDetail : planDetails) {
             Plan plan = planDetail.getPlan();

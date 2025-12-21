@@ -83,7 +83,7 @@ public class Plan {
     private Factory factory;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "branch_id", nullable = false)
+    @JoinColumn(name = "branch_id")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Branch branch;
 
