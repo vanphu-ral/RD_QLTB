@@ -111,7 +111,7 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
     this.loading = true;
     this.apiService.getAll().subscribe({
       next: (res) => {
-        this.data = res;
+        this.data = this.transformDateFields(res);
         this.loading = false;
         this.cdr.detectChanges();
       },
@@ -245,4 +245,19 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
     return path.split('.').reduce((acc, part) => acc && acc[part], obj);
   }
 
+  transformDateFields(data: any[]): any[] {
+    if (!data || data.length === 0) return data;
+    const dateFields = this.columns.filter(col => col.TypeSearch === 'date').map(col => col.Field);
+    return data.map(item => {
+      const newItem = { ...item };
+      dateFields.forEach(field => {
+        if (newItem[field]) {
+          const d = new Date(newItem[field]);
+          d.setHours(0, 0, 0, 0);
+          newItem[field] = d;
+        }
+      });
+      return newItem;
+    });
+  }
 }
