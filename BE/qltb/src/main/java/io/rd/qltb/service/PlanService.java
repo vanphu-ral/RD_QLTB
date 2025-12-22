@@ -8,6 +8,7 @@ import io.rd.qltb.domain.*;
 import io.rd.qltb.events.BeforeDeletePlan;
 import io.rd.qltb.events.BeforeDeletePlanType;
 import io.rd.qltb.model.*;
+import io.rd.qltb.model.response.PlanSaveDetailLog;
 import io.rd.qltb.repos.*;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
@@ -283,6 +284,51 @@ public class PlanService {
             plan.getApprovalWorkflow().setWorkflowSampleReports(null);
             plan.getApprovalWorkflow().setWorkflowApprovalGroups(null);
         }
+
+        planRequest.setPlan(plan);
+        return planRequest;
+    }
+    public PlanSaveDetailLog getPlanDetail2(final Long id) {
+        PlanSaveDetailLog planRequest = new PlanSaveDetailLog();
+        PlanDTO plan = get(id);
+        if (plan == null) return planRequest;
+
+        List<PlanDetailDTO> planDetailsSet = plan.getPlanDetails();
+        Map<String, PLanDetailRequest> uniquePlanDetails = new HashMap<>();
+        Map<Long, DeviceRequest> uniqueDevices = new HashMap<>();
+
+        for (PlanDetailDTO planDetail : planDetailsSet) {
+            // Tạo key duy nhất cho PlanDetailRequest dựa trên deviceGroupId và sampleReportId
+            Long deviceGroupId = planDetail.getDeviceGroup() != null ? planDetail.getDeviceGroup().getId() : 0L;
+            Long sampleReportId = planDetail.getSampleReport() != null ? planDetail.getSampleReport().getId() : 0L;
+            String detailKey = deviceGroupId + "-" + sampleReportId;
+            PlanDetail planDetailDTO = planDetailRepository.findById(planDetail.getId()).orElse(null);
+            if (!uniquePlanDetails.containsKey(detailKey)) {
+                PLanDetailRequest detailRequest = new PLanDetailRequest();
+                detailRequest.setDeviceGroup(deviceGroupService.mapToDTO2(planDetailDTO.getDeviceGroup(), new DeviceGroupDTO()));
+                detailRequest.setSampleReport(sampleReportService.mapToDTO(planDetailDTO.getSampleReport(), new SampleReportDTO()));
+                uniquePlanDetails.put(detailKey, detailRequest);
+            }
+
+            // Tạo key duy nhất cho DeviceRequest dựa trên deviceId
+            Long deviceId = planDetail.getDevice() != null ? planDetail.getDevice().getId() : 0L;
+            if (!uniqueDevices.containsKey(deviceId)) {
+                Integer count = planResultDetailRepository.countByDeviceIdAndPlanId(deviceId, plan.getId()) > 0 ? 1 : 0;
+                DeviceRequest deviceRequest = new DeviceRequest();
+                deviceRequest.setDevice(deviceService.mapToDTO(planDetail.getDevice(), new DeviceDTO()));
+                deviceRequest.getDevice().setIsHadDataPlanReport(count);
+                deviceRequest.setQrCode(planDetail.getQrCode());
+                deviceRequest.setManager(planDetail.getManager());
+                deviceRequest.setEstimatedTime(planDetail.getEstimatedTime());
+                deviceRequest.setNameDetail(planDetail.getNameDetail());
+                deviceRequest.setNote(planDetail.getNote());
+                deviceRequest.setPlanDetailId(planDetail.getId());
+                uniqueDevices.put(deviceId, deviceRequest);
+            }
+        }
+
+        planRequest.setPlanDetails(new ArrayList<>(uniquePlanDetails.values()));
+        planRequest.setDevices(new ArrayList<>(uniqueDevices.values()));
 
         planRequest.setPlan(plan);
         return planRequest;
@@ -715,6 +761,7 @@ public class PlanService {
 
     @Transactional
     public Plan updatePlan(Long id, String userName, PlanRequest request) {
+        createLog(id,userName);
 
         Plan exist = planRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Plan not found"));
@@ -726,7 +773,6 @@ public class PlanService {
         ObjectMapper mapper = new ObjectMapper();
         List<PlanDetail> savedDetails = addDetailToSampleReport(newDetails);// chuyển detail sang JSON
         planDetailRepository.saveAll(savedDetails);
-        createLog(id,userName);
         autoCreatePlanResult(savedDetails);
         return exist;
     }
@@ -734,10 +780,7 @@ public class PlanService {
     public void createLog(Long id, String userName) {
         try {
             // 1. Lấy dữ liệu đã được detach
-            PlanRequest planRequest = getPlanDetail(id);
-
-            // 2. Dọn dẹp Session để đảm bảo không còn Entity nào "dirty" gây lỗi Flush
-            entityManager.clear();
+            PlanSaveDetailLog planRequest = getPlanDetail2(id);
 
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JavaTimeModule());

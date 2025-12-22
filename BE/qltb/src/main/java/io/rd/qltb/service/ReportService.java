@@ -30,20 +30,19 @@ public class ReportService {
     public List<ReportResponse> getSupplyReport(ReportFilter filter) {
         List<ReportResponse> reportResponses = new ArrayList<>();
 
-        // Dùng Set để loại bỏ nhanh, tránh NullPointerException
         Set<Long> teamIds = new HashSet<>(
                 filter.getGroupIds() != null ? filter.getGroupIds() : Collections.emptyList()
         );
 
-        // Nếu branchIds null thì thay bằng empty list
         List<Long> branchIds = filter.getBranchIds() != null ? filter.getBranchIds() : Collections.emptyList();
 
         for (Long branchId : branchIds) {
             ReportResponse reportResponse = new ReportResponse();
             BranchDTO branchDTO = branchService.get(branchId);
             if (branchDTO != null) {
-                reportResponse.setBranchName(branchDTO.getName());
-                reportResponse.setBranchCode(branchDTO.getCode());
+                // Sử dụng .trim() để xóa bỏ các ký tự \r\n
+                reportResponse.setBranchName(branchDTO.getName() != null ? branchDTO.getName().trim() : "");
+                reportResponse.setBranchCode(branchDTO.getCode() != null ? branchDTO.getCode().trim() : "");
             }
 
             List<TeamDTO> teams = teamService.findByBranchId(branchId);
@@ -52,26 +51,27 @@ public class ReportService {
             if (teams != null) {
                 for (TeamDTO team : teams) {
                     if (teamIds.contains(team.getId())) {
-                        // Lấy báo cáo chi tiết cho tổ
                         List<ReportSupplyResponse> reportSupplyResponses =
                                 supplyReplacementHistoryRepository.getSupplyReportByTeamAndDateRange(
                                         branchId, team.getId(), filter.getStartDate(), filter.getEndDate());
 
-                        ReportDetailResponse reportDetailResponse = new ReportDetailResponse();
-                        reportDetailResponse.setTeamName(team.getName());
-                        reportDetailResponse.setTeamCode(team.getCode());
-                        reportDetailResponse.setSupplies(
-                                reportSupplyResponses != null ? reportSupplyResponses : Collections.emptyList()
-                        );
-                        teamReports.add(reportDetailResponse);
+                        // ✅ ĐIỀU KIỆN: Chỉ xử lý nếu danh sách supplies có dữ liệu (không rỗng)
+                        if (reportSupplyResponses != null && !reportSupplyResponses.isEmpty()) {
+                            ReportDetailResponse reportDetailResponse = new ReportDetailResponse();
+                            reportDetailResponse.setTeamName(team.getName() != null ? team.getName().trim() : "");
+                            reportDetailResponse.setTeamCode(team.getCode() != null ? team.getCode().trim() : "");
+                            reportDetailResponse.setSupplies(reportSupplyResponses);
 
-                        // ✅ Loại bỏ teamId đã xử lý
+                            teamReports.add(reportDetailResponse);
+                        }
+
+                        // Loại bỏ teamId đã xử lý (giữ nguyên logic cũ của bạn)
                         teamIds.remove(team.getId());
                     }
                 }
             }
 
-            // Chỉ add nếu có dữ liệu teamReports
+            // ✅ CHỈ ADD BRANCH: Nếu danh sách teamReports có ít nhất 1 team có supplies
             if (!teamReports.isEmpty()) {
                 reportResponse.setTeamReports(teamReports);
                 reportResponses.add(reportResponse);

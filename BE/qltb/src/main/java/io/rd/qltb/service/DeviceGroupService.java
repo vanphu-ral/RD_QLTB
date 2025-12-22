@@ -1,8 +1,7 @@
 package io.rd.qltb.service;
 
 import io.rd.qltb.config.GlobalConfig;
-import io.rd.qltb.domain.Device;
-import io.rd.qltb.domain.DeviceGroup;
+import io.rd.qltb.domain.*;
 import io.rd.qltb.events.BeforeDeleteDeviceGroup;
 import io.rd.qltb.model.DeviceGroupDTO;
 import io.rd.qltb.repos.DeviceGroupRepository;
@@ -106,10 +105,88 @@ public class DeviceGroupService {
             }
             deviceGroupDTO.setGroupDevices(
                     deviceGroup.getGroupDevices().stream().toList());
+        }else {
+            deviceGroupDTO.setGroupDevices(null);
         }
         return deviceGroupDTO;
     }
+    public DeviceGroupDTO mapToDTO2(final DeviceGroup deviceGroup, final DeviceGroupDTO deviceGroupDTO) {
+        // 1. Map thông tin cơ bản của DeviceGroup
+        deviceGroupDTO.setId(deviceGroup.getId());
+        deviceGroupDTO.setCode(deviceGroup.getCode());
+        deviceGroupDTO.setName(deviceGroup.getName());
+        deviceGroupDTO.setDescription(deviceGroup.getDescription());
+        deviceGroupDTO.setCreatedAt(deviceGroup.getCreatedAt());
+        deviceGroupDTO.setUpdatedAt(deviceGroup.getUpdatedAt());
+        deviceGroupDTO.setCreatedBy(deviceGroup.getCreatedBy());
+        deviceGroupDTO.setUpdatedBy(deviceGroup.getUpdatedBy());
+        deviceGroupDTO.setStatus(deviceGroup.getStatus());
 
+        // 2. Xử lý danh sách GroupDevices
+        if (deviceGroup.getGroupDevices() != null) {
+            List<Device> cleanedDevices = deviceGroup.getGroupDevices().stream().map(device -> {
+                // TẠO MỚI object Device để tránh Hibernate tự động Update vào DB
+                Device d = new Device();
+                d.setId(device.getId());
+                d.setCode(device.getCode());
+                d.setName(device.getName());
+                d.setStatus(device.getStatus());
+
+                // Ngắt liên kết ngược về Group để tránh vòng lặp JSON (Recursive)
+                d.setGroup(null);
+
+                // Loại bỏ các tham chiếu Line (Khởi tạo mới object Line chỉ lấy data cần thiết)
+                if (device.getLine() != null) {
+                    Line line = new Line();
+                    line.setId(device.getLine().getId());
+                    line.setName(device.getLine().getName());
+                    // Set các trường liên quan của Line về null để ngắt chuỗi liên kết
+                    line.setTeam(null);
+                    line.setLineDevices(null);
+                    d.setLine(line);
+                }
+
+                // Loại bỏ các tham chiếu Branch
+                if (device.getBranch() != null) {
+                    Branch branch = new Branch();
+                    branch.setId(device.getBranch().getId());
+                    branch.setName(device.getBranch().getName());
+                    // Ngắt các liên kết sâu hơn của Branch
+                    branch.setFactory(null);
+                    branch.setBranchTeams(null);
+                    branch.setBranchDevices(null);
+                    branch.setSampleReports(null);
+                    d.setBranch(branch);
+                }
+
+                // Loại bỏ các tham chiếu Team
+                if (device.getTeam() != null) {
+                    Team team = new Team();
+                    team.setId(device.getTeam().getId());
+                    team.setName(device.getTeam().getName());
+                    // Ngắt các liên kết sâu hơn của Team
+                    team.setBranch(null);
+                    team.setTeamLines(null);
+                    team.setTeamDevices(null);
+                    d.setTeam(team);
+                }
+
+                // Set các list quan hệ khác về null để tránh N+1 Query và JSON nặng
+                d.setDeviceDeviceParameterUses(null);
+                d.setDeviceDeviceRelocationHistories(null);
+                d.setDeviceDeviceSupplyUsages(null);
+                d.setDevicePlanDetails(null);
+
+                return d;
+            }).toList();
+
+            deviceGroupDTO.setGroupDevices(cleanedDevices);
+        } else {
+            deviceGroupDTO.setGroupDevices(null);
+        }
+
+        return deviceGroupDTO;
+    }
     private DeviceGroup mapToEntity(final DeviceGroupDTO deviceGroupDTO,
             final DeviceGroup deviceGroup) {
         deviceGroup.setCode(deviceGroupDTO.getCode());
