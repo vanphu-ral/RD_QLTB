@@ -493,6 +493,17 @@ export class Util {
     ];
   }
 
+  static statusDevice() {
+    return [
+      { label: 'Vô hiệu hóa', value: 0 },
+      { label: 'Đang hoạt động', value: 1 },
+      { label: 'Có sự cố', value: 2 },
+      { label: 'Sự cố nghiêm trọng', value: 3 },
+      { label: 'Đang bảo dưỡng', value: 4 },
+      { label: 'Đã thanh lý', value: 5 },
+    ];
+  }
+
   static statusToString(status: number): string {
     switch (status) {
       case 1:
@@ -664,6 +675,17 @@ export class Util {
       { name: 'USD', value: 'USD' },
       { name: 'EUR', value: 'EUR' },
       { name: 'YEN', value: 'YEN' }
+    ];
+  }
+
+  // Lấy ra danh sách chu kỳ bảo trì
+  static getListMaintenanceCycle() {
+    return [
+      { name: "Ngày", code: "Ngày" },
+      { name: "Tuần", code: "Tuần" },
+      { name: "Tháng", code: "Tháng" },
+      { name: "Quý", code: "Quý" },
+      { name: "Năm", code: "Năm" }
     ];
   }
 

@@ -38,27 +38,16 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
   listBranches: any[] = [];
   listLines: any[] = [];
   listTeams: any[] = [];
-  listMaintenanceCycles = [
-    { name: "Ngày", code: "Ngày" },
-    { name: "Tuần", code: "Tuần" },
-    { name: "Tháng", code: "Tháng" },
-    { name: "Quý", code: "Quý" },
-    { name: "Năm", code: "Năm" }
-  ];
+  listMaintenanceCycles: any[] = Util.getListMaintenanceCycle(); 
   listMaterialInit: DeviceSupplyUse[] = [];
   listMaterialCurrent: DeviceSupplyUse[] = [];
   listParameter: DeviceParameterUse[] = [];
   listUsers: any[] = [];
-  override listStatus: any[] = [
-    { label: 'Vô hiệu hóa', value: 0 },
-    { label: 'Đang hoạt động', value: 1 },
-    { label: 'Có sự cố', value: 2 },
-    { label: 'Sự cố nghiêm trọng', value: 3 },
-    { label: 'Đang bảo dưỡng', value: 4 },
-    { label: 'Đã thanh lý', value: 5 },
-  ];
+  override listStatus: any[] = Util.statusDevice();
   ref?: DynamicDialogRef;
 
+  filteredLines: any[] = [];
+  filteredTeams: any[] = [];
 
   constructor(
     protected override apiService: DeviceService,
@@ -110,6 +99,7 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
       if (typeof this.model.maintenanceCycle === 'string' && !Util.isEmptyString(this.model.maintenanceCycle)) {
         this.model.maintenanceCycle = Util.stringToDropdownOptions(this.model.maintenanceCycle);
       }
+      this.initDropdowns();
       this.cdr.detectChanges();
     });
   }
@@ -149,6 +139,45 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
         this.listParameter = result
       }
     });
+  }
+
+
+  initDropdowns() {
+    if (this.model.branch) {
+      this.filteredTeams = this.listTeams.filter(t =>
+        t.branch?.id === this.model.branch.id
+      );
+    }
+    if (this.model.team) {
+      this.filteredLines = this.listLines.filter(line =>
+        line.team?.id === this.model.team.id
+      );
+    }
+    this.cdr.detectChanges();
+  }
+
+  onBranchChange(event: any) {
+    this.model.team = null;
+    this.model.line = null;
+    this.filteredLines = [];
+    const selectedBranchId = event.value?.id;
+    if (selectedBranchId) {
+      this.filteredTeams = this.listTeams.filter(t => t.branch?.id === selectedBranchId);
+    } else {
+      this.filteredTeams = [];
+    }
+    this.cdr.detectChanges();
+  }
+
+  onTeamChange(event: any) {
+    this.model.line = null;
+    const selectedTeamId = event.value?.id;
+    if (selectedTeamId) {
+      this.filteredLines = this.listLines.filter(line => line.team?.id === selectedTeamId);
+    } else {
+      this.filteredLines = [];
+    }
+    this.cdr.detectChanges();
   }
 
 
