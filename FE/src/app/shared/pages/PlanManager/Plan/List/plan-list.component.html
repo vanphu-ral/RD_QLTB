@@ -33,71 +33,99 @@
       <tr>
         <th></th>
         <th></th>
-        <th><p-columnFilter type="text">
+        <th>
+          <p-columnFilter [showMenu]="false" type="text">
             <ng-template pTemplate="filter" let-value let-filter="filterCallback">
               <input pInputText [(ngModel)]="filters.code" (keyup.enter)="filter($event)">
             </ng-template>
-          </p-columnFilter></th>
-        <th><p-columnFilter type="text">
+          </p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter [showMenu]="false" type="text">
             <ng-template pTemplate="filter" let-value let-filter="filterCallback">
               <input pInputText [(ngModel)]="filters.name" (keyup.enter)="filter($event)">
             </ng-template>
-          </p-columnFilter></th>
-        <th><p-columnFilter type="text">
+          </p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter [showMenu]="false" type="text">
             <ng-template pTemplate="filter" let-value let-filter="filterCallback">
               <input pInputText [(ngModel)]="filters.frequency" (keyup.enter)="filter($event)">
             </ng-template>
-          </p-columnFilter></th>
-        <th><p-columnFilter type="text">
+          </p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter [showMenu]="false" type="text">
             <ng-template pTemplate="filter" let-value let-filter="filterCallback">
               <input pInputText [(ngModel)]="filters.planNumber" (keyup.enter)="filter($event)">
             </ng-template>
-          </p-columnFilter></th>
-        <th><p-columnFilter type="text">
+          </p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter [showMenu]="false" type="text">
             <ng-template pTemplate="filter" let-value let-filter="filterCallback">
               <input pInputText [(ngModel)]="filters.userPerformer" (keyup.enter)="filter($event)">
             </ng-template>
-          </p-columnFilter></th>
-        <th><p-columnFilter type="text">
+          </p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter [showMenu]="false" type="text">
             <ng-template pTemplate="filter" let-value let-filter="filterCallback">
               <input pInputText [(ngModel)]="filters.planType" (keyup.enter)="filter($event)">
             </ng-template>
-          </p-columnFilter></th>
-        <th><p-columnFilter type="text">
+          </p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter [showMenu]="false" type="text">
             <ng-template pTemplate="filter" let-value let-filter="filterCallback">
               <input pInputText [(ngModel)]="filters.factory" (keyup.enter)="filter($event)">
             </ng-template>
-          </p-columnFilter></th>
-        <th><p-columnFilter type="text">
+          </p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter [showMenu]="false" type="text">
             <ng-template pTemplate="filter" let-value let-filter="filterCallback">
               <input pInputText [(ngModel)]="filters.branch" (keyup.enter)="filter($event)">
             </ng-template>
-          </p-columnFilter></th>
-        <th><p-columnFilter type="text">
+          </p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter [showMenu]="false" type="text">
             <ng-template pTemplate="filter" let-value let-filter="filterCallback">
               <input pInputText [(ngModel)]="filters.approvalWorkflow" (keyup.enter)="filter($event)">
             </ng-template>
-          </p-columnFilter></th>
-        <th><p-columnFilter type="text">
+          </p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter [showMenu]="false" type="text">
             <ng-template pTemplate="filter" let-value let-filter="filterCallback">
               <input pInputText [(ngModel)]="filters.createdBy" (keyup.enter)="filter($event)">
             </ng-template>
-          </p-columnFilter></th>
-        <th><p-columnFilter type="text">
+          </p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter [showMenu]="false" type="text">
             <ng-template pTemplate="filter" let-value let-filter="filterCallback">
               <input pInputText [(ngModel)]="filters.updatedBy" (keyup.enter)="filter($event)">
             </ng-template>
-          </p-columnFilter></th>
-        <th><p-columnFilter type="text">
+          </p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter [showMenu]="false" type="date">
             <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-              <input pInputText [(ngModel)]="filters.createdAt" (keyup.enter)="filter($event)">
+              <p-datepicker appDateConvert [(ngModel)]="filters.createdAt" dateFormat="dd-mm-yy" (ngModelChange)="filter($event)"
+                [ngModelOptions]="{ standalone: true }" appendTo="body" [inputSize]="100" />
             </ng-template>
-          </p-columnFilter></th>
-        <th><p-columnFilter type="text">
+          </p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter [showMenu]="false" type="text">
             <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-              <input pInputText [(ngModel)]="filters.updatedAt" (keyup.enter)="filter($event)">
+              <p-datepicker appDateConvert [(ngModel)]="filters.updatedAt" dateFormat="dd-mm-yy" (ngModelChange)="filter($event)"
+                [ngModelOptions]="{ standalone: true }" appendTo="body" [inputSize]="100" />
             </ng-template>
-          </p-columnFilter></th>
+          </p-columnFilter>
+        </th>
         <th></th>
         <th></th>
       </tr>
