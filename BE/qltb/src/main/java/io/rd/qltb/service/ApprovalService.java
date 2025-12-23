@@ -62,42 +62,48 @@ public class ApprovalService {
             List<Long> userIds = approvalGroupUsers.stream().map(ApprovalGroupUser::getId).toList();
             List<Approval> approvals = approvalRepository.findApprovalsByUserIds(userIds);
             return approvals.stream().map(approval -> {
-                ApprovalResponseDTO responseDTO = new ApprovalResponseDTO();
-                responseDTO.setApproval(mapToDTO(approval, new ApprovalDTO()));
-                String entityType = approval.getEntityType();
-                Long entityId = approval.getEntityId();
-                String tableName = entityType;
-                String sql = "SELECT * FROM " + tableName + " WHERE id = ?";
-                List<Map<String, Object>> data = jdbcTemplate.queryForList(sql, entityId);
-                if (!data.isEmpty()) {
-                    responseDTO.setData(data.get(0));
-                } else {
-                    responseDTO.setData(null);
-                }
-                // Thêm tên nhóm phê duyệt vào ApprovalDTO
-                ApprovalGroup group = approvalGroupRepository.findById(approval.getGroup().getId()).orElseThrow(()-> new NotFoundException("ApprovalGroup not found"));
-                responseDTO.getApproval().getGroup().setGroupApprovalName(groupApprovalNameRepository.findById(group.getGroupApprovalName().getId()).orElseThrow(()-> new NotFoundException("GroupApprovalName not found")));
-                System.out.println("Group Approval Name: " + approval.getGroup().getGroupApprovalName().getName());
-                responseDTO.getApproval().getGroup().getGroupApprovalName().setApprovalGroups(null); // tránh vòng lặp
-                // Kiểm tra trạng thái phê duyệt
-                if (approval.getGroup().getLevel() > 0){ // nếu không phải nhóm phê duyệt đầu tiên
-                    // tìm nhóm phê duyệt trước đó
-                    ApprovalGroup previousGroup = approvalGroupRepository.findByWorkflowIdAndLevel(approval.getWorkflow().getId(),approval.getGroup().getLevel() - 1);
-                    // đếm số lượng approval trong nhóm phê duyệt trước đó có trạng thái khác 3 (đã phê duyệt)
-                    Integer pendingCount = approvalRepository.countPendingByGroupIdAndWorkflowId(previousGroup.getId(),approval.getWorkflow().getId());
-                    if (pendingCount > 0){
-                        System.out.println("Chưa đến lượt phê duyệt");
-                        responseDTO.getApproval().setCheckStatus(0); //chưa đến lượt phê duyệt
-                    } else {
-                        System.out.println("Đến lượt phê duyệt");
-                        responseDTO.getApproval().setCheckStatus(1); //đến lượt phê duyệt
-                    }
-                }else {
-                    System.out.println("Nhóm phê duyệt đầu tiên");
-                    responseDTO.getApproval().setCheckStatus(1); //đến lượt phê duyệt
-                }
-                return responseDTO;
-            }).toList();
+                        ApprovalResponseDTO responseDTO = new ApprovalResponseDTO();
+                        responseDTO.setApproval(mapToDTO(approval, new ApprovalDTO()));
+
+                        // ... (Giữ nguyên đoạn code truy vấn SQL và xử lý Group của bạn) ...
+                        String entityType = approval.getEntityType();
+                        Long entityId = approval.getEntityId();
+                        String sql = "SELECT * FROM " + entityType + " WHERE id = ?";
+                        List<Map<String, Object>> data = jdbcTemplate.queryForList(sql, entityId);
+                        responseDTO.setData(!data.isEmpty() ? data.get(0) : null);
+
+                        ApprovalGroup group = approvalGroupRepository.findById(approval.getGroup().getId())
+                                .orElseThrow(() -> new NotFoundException("ApprovalGroup not found"));
+
+                        responseDTO.getApproval().getGroup().setGroupApprovalName(
+                                groupApprovalNameRepository.findById(group.getGroupApprovalName().getId())
+                                        .orElseThrow(() -> new NotFoundException("GroupApprovalName not found")));
+
+                        responseDTO.getApproval().getGroup().getGroupApprovalName().setApprovalGroups(null);
+
+                        // Kiểm tra trạng thái phê duyệt
+                        if (approval.getGroup().getLevel() > 0) {
+                            ApprovalGroup previousGroup = approvalGroupRepository.findByWorkflowIdAndLevel(
+                                    approval.getWorkflow().getId(), approval.getGroup().getLevel() - 1);
+                            Integer pendingCount = approvalRepository.countPendingByGroupIdAndWorkflowId(
+                                    previousGroup.getId(), approval.getWorkflow().getId());
+
+                            // Gán checkStatus (1: Được phê duyệt, 0: Chưa đến lượt)
+                            responseDTO.getApproval().setCheckStatus(pendingCount > 0 ? 0 : 1);
+                        } else {
+                            responseDTO.getApproval().setCheckStatus(1);
+                        }
+
+                        return responseDTO;
+                    })
+// THÊM ĐOẠN SẮP XẾP TẠI ĐÂY
+                    .sorted((a, b) -> {
+                        Integer statusA = a.getApproval().getCheckStatus();
+                        Integer statusB = b.getApproval().getCheckStatus();
+                        // Giảm dần: statusB so sánh với statusA
+                        return statusB.compareTo(statusA);
+                    })
+                    .toList();
         }
     }
     public List<ApprovalDTO> findApprovalsByEntityIdAndEntityType(String entity,String entityType){
