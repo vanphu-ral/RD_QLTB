@@ -31,28 +31,29 @@
     <div class="row my-3">
       <div class="col-4">
         <p-floatlabel variant="on">
-          <p-select [(ngModel)]="model.branch" [options]="listBranches" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
-            [showClear]="true" [appendTo]="'body'" id="branch" name="branch" dataKey="id" required [invalid]="!model.branch">
+          <p-select [(ngModel)]="model.branch" [options]="listBranches" optionLabel="name" [fluid]="true" dataKey="id"
+            [disabled]="isViewMode" [showClear]="true" name="branchSelect" id="branch" (onChange)="onBranchChange($event)">
           </p-select>
           <label for="branch">Tên ngành sản xuất</label>
         </p-floatlabel>
       </div>
-
+    
       <div class="col-4">
         <p-floatlabel variant="on">
-          <p-select [(ngModel)]="model.line" [options]="listLines" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
-            [showClear]="true" [appendTo]="'body'" id="line" name="line" dataKey="id">
-          </p-select>
-          <label for="line">Tên dây truyền sản xuất</label>
-        </p-floatlabel>
-      </div>
-
-      <div class="col-4">
-        <p-floatlabel variant="on">
-          <p-select [(ngModel)]="model.team" [options]="listTeams" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
-            [showClear]="true" [appendTo]="'body'" id="team" name="team" dataKey="id">
+          <p-select [(ngModel)]="model.team" [options]="filteredTeams" optionLabel="name" [fluid]="true"
+            [disabled]="isViewMode || !model.branch" [showClear]="true" name="teamSelect" id="team" dataKey="id"
+            (onChange)="onTeamChange($event)">
           </p-select>
           <label for="team">Tên tổ sản xuất</label>
+        </p-floatlabel>
+      </div>
+    
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.line" [options]="filteredLines" optionLabel="name" [fluid]="true"
+            [disabled]="isViewMode || !model.team" [showClear]="true" name="lineSelect" id="line" dataKey="id">
+          </p-select>
+          <label for="line">Tên dây truyền sản xuất</label>
         </p-floatlabel>
       </div>
     </div>
