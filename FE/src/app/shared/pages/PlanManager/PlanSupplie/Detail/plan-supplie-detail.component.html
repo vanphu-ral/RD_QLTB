@@ -100,10 +100,10 @@
       <table class="table table-bordered">
         <thead>
           <tr>
+            <th>Mục tiêu sử dụng</th>
+            <th>Thuộc nhóm máy/Dây chuyền</th>
             <th>Vật tư</th>
-            <th>Serial</th>
             <th>SL</th>
-            <th>Thuộc máy/Dây chuyền</th>
             <th>Ký/Mã hiệu, bản vẽ</th>
             <th>Yêu cầu kỹ thuật</th>
             <th>Nhà cung cấp, chế tạo</th>
@@ -115,21 +115,16 @@
         <tbody>
           <tr *ngFor="let row of listSupplyUse; let i = index">
             <td>
-              <p-select [(ngModel)]="row.supplier" [options]="listSupplies" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
-                optionValue="value" [showClear]="true" [appendTo]="'body'" id="supplier-{{i}}" name="supplier-{{i}}">
-              </p-select>
-            </td>
-            <td>
-              <p-select [(ngModel)]="row.serial" [options]="listSerials" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
-                optionValue="value" [showClear]="true" [appendTo]="'body'" id="serial-{{i}}" name="serial-{{i}}">
-              </p-select>
-            </td>
-            <td><p-inputnumber id="quantity" name="quantity-{{i}}" [(ngModel)]="row.quantity" autocomplete="off" [disabled]="isViewMode" [fluid]="true" style="max-width: 100px !important;"/></td>
-            <td>
               <p-select [(ngModel)]="row.targetUse" [options]="listDeviceandLine" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
                 optionValue="value" [showClear]="true" [appendTo]="'body'" id="targetUse-{{i}}" name="targetUse-{{i}}">
               </p-select>
             </td>
+            <td>
+              <p-select [(ngModel)]="row.supply" [options]="listSupplies" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
+                optionValue="value" [showClear]="true" [appendTo]="'body'" id="supply-{{i}}" name="supply-{{i}}">
+              </p-select>
+            </td>
+            <td><p-inputnumber id="quantity" name="quantity-{{i}}" [(ngModel)]="row.quantity" autocomplete="off" [disabled]="isViewMode" [fluid]="true" style="max-width: 100px !important;"/></td>
             <td><input type="text" pInputText [(ngModel)]="row.designCode" name="designCode-{{i}}" [disabled]="isViewMode"></td>
             <td><input type="text" pInputText [(ngModel)]="row.supplier" name="supplier-{{i}}" [disabled]="isViewMode" style="max-width: 100px !important;"></td>
             <td><input type="text" pInputText [(ngModel)]="row.deliveryTime" name="deliveryTime-{{i}}" [disabled]="isViewMode" style="max-width: 100px !important;"></td>

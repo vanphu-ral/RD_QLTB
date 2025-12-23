@@ -11,10 +11,10 @@ export class AcceptanceService extends BaseApiService<Acceptance> {
   }
 
   checkExistByPlanDetailId(id: number): Observable<any> {
-    return this.http.get<any>(`${this['fullBaseUrl']}/exist/plan-detail/${id}`, { withCredentials: true });
+    return this.http.get<any>(`${this['fullBaseUrl']}/exist/plan-detail/${id}`);
   }
 
   checkExistByErrorReportId(id: number): Observable<any> {
-    return this.http.get<any>(`${this['fullBaseUrl']}/exist/error-report/${id}`, { withCredentials: true });
+    return this.http.get<any>(`${this['fullBaseUrl']}/exist/error-report/${id}`);
   }
 }

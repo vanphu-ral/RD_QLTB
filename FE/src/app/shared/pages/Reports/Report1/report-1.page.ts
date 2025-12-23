@@ -177,8 +177,8 @@ export class Report1Page {
     worksheet.mergeCells(`A${footerIndex}:H${footerIndex}`);
     const footerCell = worksheet.getCell(`A${footerIndex}`);
     footerCell.font = { italic: true };
-    footerCell.alignment = { horizontal: 'right' };
-    this.addBorder(footerCell);
+    footerCell.alignment = { horizontal: 'left' };
+    // this.addBorder(footerCell);
     workbook.xlsx.writeBuffer().then(buffer => {
       saveAs(
         new Blob([buffer], {

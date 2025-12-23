@@ -12,12 +12,12 @@ export class DeviceService extends BaseApiService<Device> {
   }
 
   getByGroupId(groupId: number | string): Observable<Device[]> {
-    return this.http.get<Device[]>(`${this['fullBaseUrl']}/group/${groupId}`, { withCredentials: true });
+    return this.http.get<Device[]>(`${this['fullBaseUrl']}/group/${groupId}`);
   }
 
   getBySerialNumber(serialNumber: string): Observable<Device> {
     const params = new HttpParams().set('serialNumber', serialNumber);
-    return this.http.get<Device>(`${this['fullBaseUrl']}/by-serial`, { params, withCredentials: true });
+    return this.http.get<Device>(`${this['fullBaseUrl']}/by-serial`, { params });
   }
 
   checkDeviceHasDataEvaluation(groupId: number, planId: number): Observable<any[]> {
@@ -25,14 +25,14 @@ export class DeviceService extends BaseApiService<Device> {
       .set('groupId', groupId)
       .set('planId', planId);
 
-    return this.http.get<any[]>(`${this['fullBaseUrl']}/group`, { params, withCredentials: true });
+    return this.http.get<any[]>(`${this['fullBaseUrl']}/group`, { params });
   }
 
   updateStatusDevice(id: number, value: number) {
     return this.http.put<void>(
       `${this['fullBaseUrl']}/${id}/status`,
       {},
-      { params: { value: value }, withCredentials: true }
+      { params: { value: value } }
     );
   }
 
@@ -42,7 +42,7 @@ export class DeviceService extends BaseApiService<Device> {
 
     return this.http.get<any[]>(
       `${this['fullBaseUrl']}/groups/branch`,
-      { params, withCredentials: true }
+      { params }
     );
   }
 }

@@ -13,23 +13,23 @@ export class PlanDetailService extends BaseApiService<PlanDetail> {
 
   getSummaryCheckDetail(id: number): Observable<PlanCheck> {
     const params = new HttpParams().set('entityType', 'PLAN');
-    return this.http.get<PlanCheck>(`${this['fullBaseUrl']}/summary/${id}`, { params, withCredentials: true });
+    return this.http.get<PlanCheck>(`${this['fullBaseUrl']}/summary/${id}`, { params });
   }
 
   createList(entities: Array<PlanDetail>) {
-    return this.http.post(`${this['fullBaseUrl']}/creates`, entities, { withCredentials: true });
+    return this.http.post(`${this['fullBaseUrl']}/creates`, entities);
   }
 
   getBySupplyId(deviceId: number | string): Observable<PlanDetail[]> {
-    return this.http.get<PlanDetail[]>(`${this['fullBaseUrl']}/byDevice/${deviceId}`, { withCredentials: true });
+    return this.http.get<PlanDetail[]>(`${this['fullBaseUrl']}/byDevice/${deviceId}`);
   }
 
   getPlansBySerial(serial: string): Observable<any[]> {
     const params = new HttpParams().set('serial', serial);
-    return this.http.get<any[]>(`${this['fullBaseUrl']}/plans`, { params, withCredentials: true });
+    return this.http.get<any[]>(`${this['fullBaseUrl']}/plans`, { params });
   }
 
   getByPlanId(id: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this['fullBaseUrl']}/plan/${id}`, { withCredentials: true });
+    return this.http.get<any[]>(`${this['fullBaseUrl']}/plan/${id}`);
   }
 }

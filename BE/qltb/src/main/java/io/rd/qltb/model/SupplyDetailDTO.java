@@ -20,6 +20,8 @@ public class SupplyDetailDTO {
 
     private String qrCode;
 
+    private String sapCode;
+
     private LocalDateTime importDate;
 
     @Size(max = 255)

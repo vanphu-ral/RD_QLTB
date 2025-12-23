@@ -5,7 +5,7 @@ export class Supply {
     group?: any;
     quantity?: number;
     price?: number;
-    sapCode?: string;
+    // sapCode?: string;
     description?: string;
     createdBy?: string;
     updatedBy?: string;

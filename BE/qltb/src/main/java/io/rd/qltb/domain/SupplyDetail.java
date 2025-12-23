@@ -36,6 +36,9 @@ SupplyDetail {
     private String qrCode;
 
     @Column
+    private String sapCode;
+
+    @Column
     private LocalDateTime importDate;
 
     @Column

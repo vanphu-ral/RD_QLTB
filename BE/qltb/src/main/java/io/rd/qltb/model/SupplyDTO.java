@@ -22,8 +22,6 @@ public class SupplyDTO {
 
     private String description;
 
-    private String sapCode;
-
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;

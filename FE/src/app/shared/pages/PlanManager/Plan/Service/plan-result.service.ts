@@ -12,22 +12,22 @@ export class PlanResultService extends BaseApiService<PlanResult> {
   }
 
   override delete(id: number | string): Observable<void> {
-    return this.http.delete<void>(`${this['fullBaseUrl']}/delete-all/${id}`, { withCredentials: true });
+    return this.http.delete<void>(`${this['fullBaseUrl']}/delete-all/${id}`);
   }
 
   saveEvaluation(model: PlanCheck): Observable<PlanCheck> {
-    return this.http.post<PlanCheck>(`${this['fullBaseUrl']}/create-update`, model, { withCredentials: true });
+    return this.http.post<PlanCheck>(`${this['fullBaseUrl']}/create-update`, model);
   }
 
   getByPlanDetailId(planDetailId: number | string): Observable<PlanResult[]> {
-    return this.http.get<PlanResult[]>(`${this['fullBaseUrl']}/plan-detail/${planDetailId}`, { withCredentials: true });
+    return this.http.get<PlanResult[]>(`${this['fullBaseUrl']}/plan-detail/${planDetailId}`);
   }
 
   getEvaluationByPlanDetailId(planDetailId: number | string): Observable<PlanCheck> {
-    return this.http.get<PlanCheck>(`${this['fullBaseUrl']}/plan-result/${planDetailId}`, { withCredentials: true });
+    return this.http.get<PlanCheck>(`${this['fullBaseUrl']}/plan-result/${planDetailId}`);
   }
 
   updateStatus(id: number): Observable<number> {
-    return this.http.post<number>(`${this['fullBaseUrl']}/update-status/${id}`, {}, { withCredentials: true });
+    return this.http.post<number>(`${this['fullBaseUrl']}/update-status/${id}`, {});
   }
 }

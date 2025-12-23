@@ -27,7 +27,7 @@ export class ReportService extends BaseApiService<any> {
         };
         return this.http.post<any[]>(
             `${this['fullBaseUrl']}`,
-            payload, { withCredentials: true }
+            payload
         );
     }
 
@@ -41,6 +41,6 @@ export class ReportService extends BaseApiService<any> {
         const params = new HttpParams()
             .set('page', page)
             .set('size', size);
-        return this.http.post<any>(`${this['fullBaseUrl']}/maintenance`, payload, { params, withCredentials: true });
+        return this.http.post<any>(`${this['fullBaseUrl']}/maintenance`, payload, { params });
     }
 }

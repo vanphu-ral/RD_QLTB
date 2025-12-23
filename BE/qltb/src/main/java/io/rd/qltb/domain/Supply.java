@@ -40,9 +40,6 @@ public class Supply {
     @Column(name = "\"description\"")
     private String description;
 
-    @Column
-    private String sapCode;
-
     @Column(nullable = false)
     private LocalDateTime createdAt;
 

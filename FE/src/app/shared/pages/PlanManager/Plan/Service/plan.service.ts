@@ -35,32 +35,32 @@ export class PlanService extends BaseApiService<PlanRequest> {
       }
     });
 
-    return this.http.get<any>(`${this['fullBaseUrl']}/paged`, { params, withCredentials: true });
+    return this.http.get<any>(`${this['fullBaseUrl']}/paged`, { params });
   }
 
   createPlanWithDetails(entity: CreateEntity<PlanRequest>): Observable<PlanRequest> {
     let newObj = _.omit(entity, ["status", "createdBy", "updatedBy"]);
-    return this.http.post<PlanRequest>(`${this['fullBaseUrl']}/create`, newObj, { withCredentials: true });
+    return this.http.post<PlanRequest>(`${this['fullBaseUrl']}/create`, newObj);
   }
 
   getByAllById(id: number | string): Observable<PlanRequest> {
-    return this.http.get<PlanRequest>(`${this['fullBaseUrl']}/detail/${id}`, { withCredentials: true });
+    return this.http.get<PlanRequest>(`${this['fullBaseUrl']}/detail/${id}`);
   }
 
   deleteParent(id: number | string): Observable<void> {
-    return this.http.delete<void>(`${this['fullBaseUrl']}/delete/${id}`, { withCredentials: true });
+    return this.http.delete<void>(`${this['fullBaseUrl']}/delete/${id}`);
   }
 
   getAllWithDetails(): Observable<any[]> {
-    return this.http.get<any[]>(`${this['fullBaseUrl']}/with-details`, { withCredentials: true });
+    return this.http.get<any[]>(`${this['fullBaseUrl']}/with-details`);
   }
 
   getScheduleMaintance(id: number | string): Observable<any> {
-    return this.http.get<any>(`${this['fullBaseUrl']}/details/${id}`, { withCredentials: true });
+    return this.http.get<any>(`${this['fullBaseUrl']}/details/${id}`);
   }
 
   updateStatus(id: number, value: number) {
-    return this.http.put<void>(`${this['fullBaseUrl']}/${id}/status?value=${value}`, {}, {withCredentials: true});
+    return this.http.put<void>(`${this['fullBaseUrl']}/${id}/status?value=${value}`, {});
   }
 
   override create(entity: CreateEntity<PlanRequest>): Observable<PlanRequest> {
@@ -72,7 +72,7 @@ export class PlanService extends BaseApiService<PlanRequest> {
       String(now.getMinutes()).padStart(2, '0') + ':' +
       String(now.getSeconds()).padStart(2, '0');
     const newEntity = { ...entity, plan: { ...entity.plan, createdAt: isoLocalVN, updatedAt: isoLocalVN, createdBy: this.accountService.getUser()?.fullName ?? 'unknown' } };
-    return this.http.post<PlanRequest>(this['fullBaseUrl'], newEntity, { withCredentials: true });
+    return this.http.post<PlanRequest>(this['fullBaseUrl'], newEntity);
   }
 
   override update(id: number | string, data: PlanRequest): Observable<PlanRequest> {
@@ -87,6 +87,6 @@ export class PlanService extends BaseApiService<PlanRequest> {
       ...data,
       plan: { ...data.plan, updatedAt: updatedAtVN, updatedBy: this.accountService.getUser()?.fullName ?? 'unknown' },
     };
-    return this.http.put<PlanRequest>(`${this['fullBaseUrl']}/${id}`, updatedEntity, { withCredentials: true });
+    return this.http.put<PlanRequest>(`${this['fullBaseUrl']}/${id}`, updatedEntity);
   }
 }
