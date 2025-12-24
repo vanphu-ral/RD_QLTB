@@ -24,7 +24,6 @@ export const appConfig: ApplicationConfig = {
     ),
     provideAnimations(),
     provideAnimationsAsync(),
-    providePrimeNG({ theme: { preset: Lara, options: { darkModeSelector: '.app-dark' } } }),
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     providePrimeNG({
@@ -59,7 +58,8 @@ export const appConfig: ApplicationConfig = {
         // multi select
         selectionMessage: '{0} cột được chọn'
       }
-    }),
+    },
+    { theme: { preset: Lara, options: { darkModeSelector: '.app-dark' } } }),
     {
       provide: APP_INITIALIZER,
       useFactory: (loginService: LoginService) => {
