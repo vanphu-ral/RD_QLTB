@@ -154,18 +154,18 @@
           <p-tag [value]="getStatus(row.status)" [severity]="getSeverity(row.status)" />
         </td>
         <td>
-          <p-button icon="pi pi-file-check" *ngIf="row.status == 1"
+          <p-button icon="pi pi-file-check" *ngIf="row.status == 1" title="gửi phê duyệt"
             styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="approval(row, $event)"></p-button>
-          <p-button icon="pi pi-file-check" styleClass="p-button-sm p-button-rounded p-button-info m-1"
+          <p-button icon="pi pi-file-pdf" styleClass="p-button-sm p-button-rounded p-button-info m-1" title="Xem báo cáo"
             *ngIf="row.planType.code == PLANTYPE.MAINTENANCE && !isLocked(row)"
             (onClick)="viewPlanMaintance(row)"></p-button>
-          <p-button icon="pi pi-pencil" *ngIf="!isLocked(row)"
+          <p-button icon="pi pi-pencil" *ngIf="!isLocked(row)" title="Sửa"
             styleClass="p-button-sm p-button-rounded p-button-warn m-1" (onClick)="editItem(row)"></p-button>
-          <p-button icon="pi pi-eye" styleClass="p-button-sm p-button-rounded p-button-info m-1"
+          <p-button icon="pi pi-eye" styleClass="p-button-sm p-button-rounded p-button-info m-1" title="Xem"
             (onClick)="viewItem(row)"></p-button>
-          <p-button icon="pi pi-history" styleClass="p-button-sm p-button-rounded p-button-warn m-1"
+          <p-button icon="pi pi-history" styleClass="p-button-sm p-button-rounded p-button-warn m-1" title="Xem lịch sử"
             (onClick)="viewHistory(row)"></p-button>
-          <p-button icon="pi pi-trash" *ngIf="!isLocked(row)"
+          <p-button icon="pi pi-trash" *ngIf="!isLocked(row)" title="Xóa"
             styleClass="p-button-sm p-button-rounded p-button-danger m-1"
             (onClick)="deleteItem(row, $event)"></p-button>
         </td>
@@ -209,17 +209,17 @@
           <p-tag [value]="getStatus(detail.status)" [severity]="getSeverity(detail.status)" />
         </td>
         <td>
-          <p-button icon="pi pi-file" styleClass="p-button-sm p-button-rounded p-button-secondary m-1"
+          <p-button icon="pi pi-file" styleClass="p-button-sm p-button-rounded p-button-secondary m-1" title="Tạo biên bản"
             *ngIf="(row.planType.code == PLANTYPE.MAINTENANCE || row.planType.code == PLANTYPE.REPAIR) && !isLocked(row)"
             (onClick)="acceptance(detail, row)"></p-button>
-          <p-button icon="pi pi-check-square" *ngIf="!isLocked(row)"
+          <p-button icon="pi pi-check-square" *ngIf="!isLocked(row)" title="Kiểm tra"
             styleClass="p-button-sm p-button-rounded p-button-success m-1"
             (onClick)="deviceDateCheckList(detail, row)"></p-button>
-          <p-button icon="pi pi-wrench" *ngIf="!isLocked(row)"
+          <p-button icon="pi pi-wrench" *ngIf="!isLocked(row)" title="Sửa chữa"
             styleClass="p-button-sm p-button-rounded p-button-warn m-1" (onClick)="repairDevice(detail)"></p-button>
-          <p-button icon="pi pi-eye" styleClass="p-button-sm p-button-rounded p-button-info m-1"
+          <p-button icon="pi pi-file-pdf" styleClass="p-button-sm p-button-rounded p-button-info m-1" title="Xem báo cáo"
             *ngIf="row.planType.code == PLANTYPE.DAILYCHECK" (onClick)="viewEvaluateDevice(detail)"></p-button>
-          <p-button icon="pi pi-trash" *ngIf="!isLocked(row)"
+          <p-button icon="pi pi-trash" *ngIf="!isLocked(row)" title="Xóa"
             styleClass="p-button-sm p-button-rounded p-button-danger m-1"
             (onClick)="deleteItem(row, $event)"></p-button>
         </td>

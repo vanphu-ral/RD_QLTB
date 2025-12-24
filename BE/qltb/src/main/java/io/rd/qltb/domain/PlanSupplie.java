@@ -1,12 +1,14 @@
 package io.rd.qltb.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.rd.qltb.enums.PlanSupplieType;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,20 +30,19 @@ public class PlanSupplie {
     @Column(length = 150)
     private String name;
 
-    @Column(length = 250, name = "\"description\"")
+    @Enumerated(EnumType.STRING) // Lưu vào DB dưới dạng chữ (ANNUAL/REPAIR_AND_MAINTENANCE)
+    @Column(name = "plan_type")   // Có thể đổi tên cột nếu muốn
+    private PlanSupplieType type;
+
+    private String planNumber;
+
+    private String userPerformer;
+
+    private LocalDateTime fromDate;
+
+    private LocalDateTime toDate;
+
     private String description;
-
-    @Column
-    private Integer quantity;
-
-    @Column
-    private Double price;
-
-    @Column
-    private Integer activeValue;
-
-    @Column(length = 450)
-    private String fileScan;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -58,4 +59,28 @@ public class PlanSupplie {
     @Column
     private Integer status;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "factory_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Factory factory;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "branch_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Branch branch;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Team team;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "approval_workflow_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private ApprovalWorkflow approvalWorkflow;
+
+    @OneToMany(mappedBy = "planSupplie", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    @JsonIgnoreProperties({"planSupplie"})
+    private Set<PlanSupplieDetail> planSupplieDetails = new HashSet<>();
 }

@@ -617,21 +617,34 @@ export class Util {
   }
 
   /**
-   * đơn giản hóa trường con trong obj cha
-   * @param obj dữ liệu cha truyền vào
-   * @param keys các trường con cần biến đổi trong dữ liệu cha
-   * @returns chả về dữ liệu cha với các trường con đơn giản hóa 
-   */
-  static simplifyMany(obj: any, keys: string[]) {
-    let result = { ...obj };
-
+   * Đơn giản hóa trường con trong obj cha
+   * - Hỗ trợ cả object và array object
+   * @param data object | array object
+   * @param keys các trường con cần biến đổi
+   * @returns dữ liệu đã đơn giản hóa
+  */
+  static simplifyMany<T extends Record<string, any>>(
+    data: T,
+    keys: string[]
+  ): T;
+  static simplifyMany<T extends Record<string, any>>(
+    data: T[],
+    keys: string[]
+  ): T[];
+  static simplifyMany(
+    data: any,
+    keys: string[]
+  ): any {
+    if (Array.isArray(data)) {
+      return data.map(item => this.simplifyMany(item, keys));
+    }
+    const result = { ...data };
     keys.forEach(key => {
       const v = result[key];
-      if (v && typeof v === 'object' && v.id !== undefined) {
+      if (v && typeof v === 'object' && 'id' in v) {
         result[key] = { id: v.id };
       }
     });
-
     return result;
   }
 

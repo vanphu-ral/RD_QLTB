@@ -11,7 +11,7 @@
       </div>
       <div [ngClass]="isAddMode ? 'col-12' : 'col-6'">
         <p-floatlabel variant="on">
-          <input pInputText id="name" name="name" [(ngModel)]="model.name" required [invalid]="!model.name" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
+          <input pInputText id="name" name="name" [(ngModel)]="model.name" required [invalid]="!model.name" autocomplete="off" [disabled]="isViewMode  || isApprovalMode" [fluid]="true"/>
           <label for="name">Tên kế hoạch</label>
         </p-floatlabel>
       </div>
@@ -45,6 +45,26 @@
             name="team" dataKey="id">
           </p-select>
           <label for="team">Tổ</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <div class="row my-3">
+      <div class="col-6">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.type" [invalid]="!model.type" required
+            [options]="listTypePlanSupplie" [fluid]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true"
+            [appendTo]="'body'" id="type" name="type" optionLabel="label" optionValue="value"
+            dataKey="value">
+          </p-select>
+          <label for="type">Loại kế hoạch</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="col-6">
+        <p-floatlabel variant="on">
+          <input pInputText id="planNumber" name="planNumber" [(ngModel)]="model.planNumber" required [invalid]="!model.planNumber" autocomplete="off" [disabled]="isViewMode  || isApprovalMode" [fluid]="true"/>
+          <label for="planNumber">Số kế hoạch</label>
         </p-floatlabel>
       </div>
     </div>
@@ -92,7 +112,7 @@
 
     <div class="d-flex my-3 align-items-center justify-content-between">
       <h6 style="margin: 0;">Danh sách vật tư</h6>
-      <p-button *ngIf="!isViewMode" label="Thêm dòng" icon="pi pi-plus" severity="success"
+      <p-button *ngIf="!isViewMode && !isApprovalMode" label="Thêm dòng" icon="pi pi-plus" severity="success"
         class="w-full max-w-[17.35rem]" styleClass="w-full mx-auto" (click)="addNewRow()" />
     </div>
 
@@ -109,26 +129,42 @@
             <th>Nhà cung cấp, chế tạo</th>
             <th>Thời hạn cung cấp</th>
             <th>Ghi chú</th>
-            <th *ngIf="!isViewMode">Thao tác</th>
+            <th *ngIf="!isViewMode && !isApprovalMode">Thao tác</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let row of listSupplyUse; let i = index">
+          <tr *ngFor="let row of model.planSupplieDetails; let i = index">
             <td>
-              <p-select [(ngModel)]="row.targetUse" [options]="listDeviceandLine" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
-                optionValue="value" [showClear]="true" [appendTo]="'body'" id="targetUse-{{i}}" name="targetUse-{{i}}">
+              <p-select [(ngModel)]="row.targetUse" [options]="listDeviceandLine" optionLabel="name" [fluid]="true" [disabled]="isViewMode  || isApprovalMode"
+                optionValue="value" [appendTo]="'body'" id="targetUse-{{i}}" name="targetUse-{{i}}" (ngModelChange)="onChangeTarget($event, i)">
               </p-select>
             </td>
             <td>
-              <p-select [(ngModel)]="row.supply" [options]="listSupplies" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
-                optionValue="value" [showClear]="true" [appendTo]="'body'" id="supply-{{i}}" name="supply-{{i}}">
+              <p-select [(ngModel)]="row.line" [options]="listLines" optionLabel="name" [fluid]="true" [disabled]="isViewMode || isApprovalMode"
+                [appendTo]="'body'" id="line-{{i}}" name="line-{{i}}" dataKey="id" *ngIf="row.targetUse == 0">
+              </p-select>
+              <p-select [(ngModel)]="row.deviceGroup" [options]="listDeviceGroups" optionLabel="name" [fluid]="true" [disabled]="isViewMode || isApprovalMode"
+                [appendTo]="'body'" id="deviceGroup-{{i}}" name="deviceGroup-{{i}}" dataKey="id" *ngIf="row.targetUse == 1">
               </p-select>
             </td>
-            <td><p-inputnumber id="quantity" name="quantity-{{i}}" [(ngModel)]="row.quantity" autocomplete="off" [disabled]="isViewMode" [fluid]="true" style="max-width: 100px !important;"/></td>
-            <td><input type="text" pInputText [(ngModel)]="row.designCode" name="designCode-{{i}}" [disabled]="isViewMode"></td>
-            <td><input type="text" pInputText [(ngModel)]="row.supplier" name="supplier-{{i}}" [disabled]="isViewMode" style="max-width: 100px !important;"></td>
-            <td><input type="text" pInputText [(ngModel)]="row.deliveryTime" name="deliveryTime-{{i}}" [disabled]="isViewMode" style="max-width: 100px !important;"></td>
-            <td><input type="text" pInputText [(ngModel)]="row.note" name="note-{{i}}" [disabled]="isViewMode" style="max-width: 100px !important;"></td>
+            <td>
+              <p-select [(ngModel)]="row.supply" [options]="listSupplies" optionLabel="name" [fluid]="true" [disabled]="isViewMode  || isApprovalMode"
+                [appendTo]="'body'" id="supply-{{i}}" name="supply-{{i}}" dataKey="id">
+              </p-select>
+            </td>
+            <td><p-inputnumber id="quantity" name="quantity-{{i}}" [(ngModel)]="row.quantity" autocomplete="off" [disabled]="isViewMode  || isApprovalMode" [fluid]="true" [fluid]="true"/></td>
+            <td><input type="text" pInputText [(ngModel)]="row.symbol" name="symbol-{{i}}" [disabled]="isViewMode  || isApprovalMode"></td>
+            <td><input type="text" pInputText [(ngModel)]="row.techRequired" name="techRequired-{{i}}" [disabled]="isViewMode  || isApprovalMode" [fluid]="true"></td>
+            <td><input type="text" pInputText [(ngModel)]="row.manufacturer" name="manufacturer-{{i}}" [disabled]="isViewMode  || isApprovalMode" [fluid]="true"></td>
+            <td>
+              <p-datepicker [(ngModel)]="row.deliveryTime" appDateConvert [iconDisplay]="'input'" [showIcon]="true"name="deliveryTime-{{i}}"
+                inputId="icondisplay" [dateFormat]="'dd-mm-yy'" required appendTo="body"
+                [disabled]="isViewMode || isApprovalMode" />
+            </td>
+            <td><input type="text" pInputText [(ngModel)]="row.note" name="note-{{i}}" [disabled]="isViewMode  || isApprovalMode" [fluid]="true"></td>
+            <td *ngIf="!isViewMode && !isApprovalMode">
+              <button type="button" pButton icon="pi pi-trash" class="p-button-danger" (click)="deleteRow(i)"></button>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -137,25 +173,34 @@
     <div class="row my-3">
       <div class="col-12">
         <textarea pTextarea class="form-control" rows="5" placeholder="Mô tả ..." id="description" name="description"
-          [(ngModel)]="model.description" [disabled]="isViewMode"></textarea>
+          [(ngModel)]="model.description" [disabled]="isViewMode  || isApprovalMode"></textarea>
       </div>
     </div>
 
-    <div class="row my-3">
+    <div class="row my-3" *ngIf="!isApprovalMode">
       <div class="col-12">
         <p-floatlabel variant="on">
-          <p-select [(ngModel)]="model.status" [options]="listStatus" optionLabel="label" [fluid]="true" [disabled]="isViewMode"
-            optionValue="value" [showClear]="true" [appendTo]="'body'" id="status" name="status" required [invalid]="!model.status">
+          <p-select [(ngModel)]="model.status" [options]="listStatus" optionLabel="label" [fluid]="true"
+            [disabled]="isViewMode" optionValue="value" [showClear]="true" [appendTo]="'body'" id="status" name="status"
+            [invalid]="!model.status" required>
           </p-select>
           <label for="status">Trạng thái</label>
         </p-floatlabel>
       </div>
     </div>
+    
+    <div class="row my-3" *ngIf="isApprovalMode">
+      <app-base-approval [approvalModel]="approvalModel"></app-base-approval>
+    </div>
 
     <div class="d-flex justify-content-end mt-3">
       <p-button label="Quay lại" severity="info" (click)="onBack()" icon="pi pi-arrow-left" class="me-2"></p-button>
-      <p-button *ngIf="!isViewMode" label="Lưu" icon="pi pi-save" severity="success" [disabled]="!f.valid" class="w-full max-w-[17.35rem]" (click)="save()"
-            styleClass="w-full mx-auto" />
+      <p-button *ngIf="!(isViewMode || isApprovalMode)" label="Lưu" icon="pi pi-save" severity="success" [disabled]="!f.valid"
+        class="w-full max-w-[17.35rem] me-2" (click)="save()" styleClass="w-full mx-auto" />
+      <p-button *ngIf="isApprovalMode" label="Duyệt" icon="pi pi-save" severity="success"
+        class="w-full max-w-[17.35rem]" (click)="Approval()" styleClass="w-full mx-auto" />
+      <p-button *ngIf="isEditMode" label="Gửi duyệt lại" icon="pi pi-file-check" severity="success"
+        [disabled]="!f.valid" class="w-full max-w-[17.35rem]" (click)="ApprovalAgain()" styleClass="w-full mx-auto" />
     </div>
   </form>
 </div>
