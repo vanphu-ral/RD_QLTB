@@ -2,7 +2,7 @@
     <div class="card mt-3">
         <div class="table-responsive">
             <p-table [value]="model.planSupplieDetails" dataKey="id" class="p-datatable-gridlines text-sm"
-                [paginator]="true" [rows]="10">
+                >
                 <ng-template pTemplate="header">
                     <tr>
                         <th colspan="2" class="text-left">
@@ -70,6 +70,23 @@
                     </tr>
                 </ng-template>
             </p-table>
+            <table id="nghemthu-details-table" class="table table-bordered table-hover" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th *ngFor="let g of listUserApproval" class="text-center">
+                            {{ g.groupName }}
+                        </th>
+                    </tr>
+                    <tr>
+                        <td *ngFor="let g of listUserApproval" class="">
+                            <div *ngFor="let sig of g.signatures" style="margin-bottom: 10px;text-align: center;">
+                                <img *ngIf="sig" [src]="sig" style="width: 120px; height: 60px; display: block; margin: 0 auto;">
+                                <span *ngIf="!sig" style="font-weight: bold;">Đã ký</span>
+                            </div>
+                        </td>
+                    </tr>
+                </thead>
+            </table>
         </div>
     </div>
 
