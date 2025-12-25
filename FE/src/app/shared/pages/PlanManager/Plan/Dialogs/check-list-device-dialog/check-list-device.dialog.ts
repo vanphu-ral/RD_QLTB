@@ -40,7 +40,14 @@ export class CheckListDeviceDialog {
 
     loadDeviceCheckList() {
         this.planResultService.getByPlanDetailId(this.data.id).subscribe((res) => {
-            this.checkList = res;
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            this.checkList = res.filter((item: any) => {
+                const testDate = new Date(item.dateTest);
+                const compareDate = new Date(testDate.getTime());
+                compareDate.setHours(0, 0, 0, 0);
+                return compareDate <= today;
+            });
             this.cdr.detectChanges();
         });
     }
@@ -52,9 +59,9 @@ export class CheckListDeviceDialog {
     }
 
     deleteRow(index: number) {
-        if(this.checkList[index].id) {
+        if (this.checkList[index].id) {
             this.planResultService.delete(this.checkList[index].id).subscribe(() => { this.loadDeviceCheckList(); });
-        }else {
+        } else {
             this.checkList.splice(index, 1);
         }
     }
@@ -64,12 +71,12 @@ export class CheckListDeviceDialog {
     }
 
     getSeverity(status: number): string {
-       return Util.statusToSeverity(status);
+        return Util.statusToSeverity(status);
     }
 
     saveDeviceCheckDate(row: any) {
         row = Util.simplifyMany(row, ['planDetail']);
-        if(Util.isEmpty(row.id)) {
+        if (Util.isEmpty(row.id)) {
             this.planResultService.create(row).subscribe((res) => {
                 Object.assign(row, res);
                 this.loadDeviceCheckList();
