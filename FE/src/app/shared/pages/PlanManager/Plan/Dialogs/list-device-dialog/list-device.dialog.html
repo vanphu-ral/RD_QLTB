@@ -31,7 +31,7 @@
                         <input type="text" pInputText [(ngModel)]="row.qrCode" [disabled]="true"/>
                     </td>
                     <td *ngIf="plan.planType.code == PLANTYPE.MAINTENANCE">
-                        <p-datepicker [(ngModel)]="row.estimatedTime" [dateFormat]="'dd-mm-yy'" appDateConvert
+                        <p-datepicker [(ngModel)]="row.estimatedTime" [dateFormat]="'mm-yy'" view="month" appDateConvert
                             id="estimatedTime-{{ i }}" name="estimatedTime-{{ i }}" appendTo="body">
                         </p-datepicker>
                     </td>

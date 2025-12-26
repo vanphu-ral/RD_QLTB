@@ -62,6 +62,12 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
 
   override ngOnInit(): void {
     super.ngOnInit();
+    if(!this.isAddMode) {
+      if (this.model?.devices!.length > 0) {
+        this.model.plan.maintanceMonth = this.model.devices![0].estimatedTime;
+      }
+    }
+    
     if (this.isEditMode) this.oldPlanRequest = _.cloneDeep(this.model);
     forkJoin({
       branchs: this.branchService.getAll(),
@@ -129,6 +135,13 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
       const { isDuplicate, ...rest } = pd;
       return rest;
     });
+    if(this.model.plan?.planType?.code == PLANTYPE.MAINTENANCE) {
+      devices.forEach((device: DeviceDetail) => {
+        if(!device.estimatedTime) {
+          device.estimatedTime = this.model.plan.maintanceMonth;
+        }
+      });
+    }
     return planRequest;
   }
 
