@@ -8,8 +8,10 @@ import io.rd.qltb.repos.*;
 import io.rd.qltb.util.NotFoundException;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -54,57 +56,68 @@ public class ApprovalService {
         }).toList();
     }
     public List<ApprovalResponseDTO> getAllFromTableByUserName(String userName) {
-    //
+        // 1. Tìm danh sách user trong group
         List<ApprovalGroupUser> approvalGroupUsers = approvalGroupUserRepository.findAllByUsername(userName);
-        if(approvalGroupUsers.isEmpty()){
+        if (approvalGroupUsers.isEmpty()) {
             throw new NotFoundException("User not found in any approval group");
-        }else{
-            List<Long> userIds = approvalGroupUsers.stream().map(ApprovalGroupUser::getId).toList();
-            List<Approval> approvals = approvalRepository.findApprovalsByUserIds(userIds);
-            return approvals.stream().map(approval -> {
-                        ApprovalResponseDTO responseDTO = new ApprovalResponseDTO();
-                        responseDTO.setApproval(mapToDTO(approval, new ApprovalDTO()));
+        }
 
-                        // ... (Giữ nguyên đoạn code truy vấn SQL và xử lý Group của bạn) ...
+        List<Long> userIds = approvalGroupUsers.stream().map(ApprovalGroupUser::getId).toList();
+        List<Approval> approvals = approvalRepository.findApprovalsByUserIds(userIds);
+
+        return approvals.stream().map(approval -> {
+                    ApprovalResponseDTO responseDTO = new ApprovalResponseDTO();
+
+                    // Sử dụng một bản sao DTO mới để tránh thay đổi trực tiếp vào Entity của Hibernate
+                    ApprovalDTO approvalDTO = mapToDTO(approval, new ApprovalDTO());
+                    responseDTO.setApproval(approvalDTO);
+
+                    // 2. Truy vấn dữ liệu động an toàn
+                    try {
                         String entityType = approval.getEntityType();
                         Long entityId = approval.getEntityId();
+                        // Lưu ý: Đảm bảo entityType đã được validate để tránh SQL Injection
                         String sql = "SELECT * FROM " + entityType + " WHERE id = ?";
                         List<Map<String, Object>> data = jdbcTemplate.queryForList(sql, entityId);
                         responseDTO.setData(!data.isEmpty() ? data.get(0) : null);
+                    } catch (Exception e) {
+                        responseDTO.setData(null); // Tránh chết cả luồng nếu 1 bảng không tồn tại
+                    }
 
+                    // 3. Xử lý thông tin Group và Workflow (Dùng DTO để tránh tham chiếu vòng)
+                    if (approval.getGroup() != null) {
+                        // Lấy thông tin Group chi tiết
                         ApprovalGroup group = approvalGroupRepository.findById(approval.getGroup().getId())
                                 .orElseThrow(() -> new NotFoundException("ApprovalGroup not found"));
 
-                        responseDTO.getApproval().getGroup().setGroupApprovalName(
-                                groupApprovalNameRepository.findById(group.getGroupApprovalName().getId())
-                                        .orElseThrow(() -> new NotFoundException("GroupApprovalName not found")));
+                        // Tính toán checkStatus logic
+                        int checkStatus = 1; // Mặc định là được phép phê duyệt (Level 0)
 
-                        responseDTO.getApproval().getGroup().getGroupApprovalName().setApprovalGroups(null);
+                        if (group.getLevel() > 0) {
+                            // Tìm nhóm ở cấp thấp hơn 1 bậc trong cùng workflow
+                            Optional<ApprovalGroup> previousGroupOpt = Optional.ofNullable(
+                                    approvalGroupRepository.findByWorkflowIdAndLevel(approval.getWorkflow().getId(), group.getLevel() - 1)
+                            );
 
-                        // Kiểm tra trạng thái phê duyệt
-                        if (approval.getGroup().getLevel() > 0) {
-                            ApprovalGroup previousGroup = approvalGroupRepository.findByWorkflowIdAndLevel(
-                                    approval.getWorkflow().getId(), approval.getGroup().getLevel() - 1);
-                            Integer pendingCount = approvalRepository.countPendingByGroupIdAndWorkflowId(
-                                    previousGroup.getId(), approval.getWorkflow().getId());
-
-                            // Gán checkStatus (1: Được phê duyệt, 0: Chưa đến lượt)
-                            responseDTO.getApproval().setCheckStatus(pendingCount > 0 ? 0 : 1);
-                        } else {
-                            responseDTO.getApproval().setCheckStatus(1);
+                            if (previousGroupOpt.isPresent()) {
+                                // Đếm xem nhóm trước đó còn bản ghi nào chưa duyệt (PENDING) không
+                                // Chú ý: Cần đếm theo đúng Workflow Instance (EntityId) để không bị sai lệch
+                                Integer pendingCount = approvalRepository.countPendingByGroupIdAndWorkflowIdAndEntityId(
+                                        previousGroupOpt.get().getId(),
+                                        approval.getWorkflow().getId(),
+                                        approval.getEntityId()
+                                );
+                                checkStatus = (pendingCount > 0) ? 0 : 1;
+                            }
                         }
+                        approvalDTO.setCheckStatus(checkStatus);
+                    }
 
-                        return responseDTO;
-                    })
-// THÊM ĐOẠN SẮP XẾP TẠI ĐÂY
-                    .sorted((a, b) -> {
-                        Integer statusA = a.getApproval().getCheckStatus();
-                        Integer statusB = b.getApproval().getCheckStatus();
-                        // Giảm dần: statusB so sánh với statusA
-                        return statusB.compareTo(statusA);
-                    })
-                    .toList();
-        }
+                    return responseDTO;
+                })
+                // 4. Sắp xếp: Ưu tiên status = 1 lên đầu, sau đó sắp xếp theo ID hoặc thời gian tạo
+                .sorted(Comparator.comparing((ApprovalResponseDTO a) -> a.getApproval().getCheckStatus()).reversed())
+                .toList();
     }
     public List<ApprovalDTO> findApprovalsByEntityIdAndEntityType(String entity,String entityType){
         List<ApprovalDTO> approvalDTOS = approvalRepository.findApprovalsByEntityIdAndEntityType(entity,entityType).stream().map(

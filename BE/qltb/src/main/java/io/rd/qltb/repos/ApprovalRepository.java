@@ -34,4 +34,16 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long> {
     @Query(value = "select count(*) from approvals where entity_id = :entityId and entity_type = :entityType and status = 3 ;", nativeQuery = true)
     public Integer  getNumberOfApproveEntity(@Param("entityId") Long entityId,
                                             @Param("entityType") String entityType);
+    // Truy vấn đếm số lượng bản ghi ở level trước đó mà CHƯA HOÀN THÀNH
+    // Giả sử status = 0 là PENDING (chưa duyệt)
+    @Query("SELECT COUNT(a) FROM Approval a " +
+            "WHERE a.group.id = :groupId " +
+            "AND a.workflow.id = :workflowId " +
+            "AND a.entityId = :entityId " +
+            "AND a.status = 1") // Thay đổi status = 0, 1, hoặc 'PENDING' tùy theo DB của bạn
+    Integer countPendingByGroupIdAndWorkflowIdAndEntityId(
+            @Param("groupId") Long groupId,
+            @Param("workflowId") Long workflowId,
+            @Param("entityId") Long entityId
+    );
 }
