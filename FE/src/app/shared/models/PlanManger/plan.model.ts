@@ -19,4 +19,7 @@ export class Plan {
     team?: any;
     approvalWorkflow?: any;
     planDetails: any
+
+    // trường FE
+    maintanceMonth?: any;
 }

@@ -17,6 +17,6 @@
   </ng-template>
 </app-base-table>
 <ng-template #customActions let-row>
-  <p-button icon="pi pi-history" styleClass="p-button-sm p-button-rounded p-button-warn m-1" (onClick)="historyMoveDialog(row)"></p-button>
-  <p-button icon="pi pi-arrows-h" styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="moveDeviceDialog(row)"></p-button>
+  <p-button title="Xem lịch sử di chuyển" icon="pi pi-history" styleClass="p-button-sm p-button-rounded p-button-warn m-1" (onClick)="historyMoveDialog(row)"></p-button>
+  <p-button title="Di chuyển thiết bị" icon="pi pi-arrows-h" styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="moveDeviceDialog(row)"></p-button>
 </ng-template>

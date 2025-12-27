@@ -1,16 +1,27 @@
-.scan-qr-device {
-    padding: 10px;
-    border: 1px solid;
-    border-radius: 5px;
-}
 .device-task {
-    padding: 10px;
-    border: 1px solid;
-    border-radius: 5px;
+  padding: 10px;
+  border: 1px solid;
+  border-radius: 5px;
 }
 
-.device-task.hidden {
-  @media screen and (max-width: 768px) {
+/* Mobile */
+@media screen and (max-width: 768px) {
+  .device-task {
+    display: none !important;
+  }
+
+  .device-task-mobile {
+    display: block !important;
+  }
+}
+
+/* Desktop */
+@media screen and (min-width: 769px) {
+  .device-task {
+    display: block !important;
+  }
+
+  .device-task-mobile {
     display: none !important;
   }
 }

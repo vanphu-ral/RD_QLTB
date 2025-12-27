@@ -15,7 +15,7 @@ export class ExportTypeDialog {
 
     data: any = {};
     listTypeExports: any[] = [{ name: 'XLSX', value: 1 }, { name: 'PDF', value: 2 }];
-    type: any = {};
+    type: any = 1;
 
     constructor(
         public ref: DynamicDialogRef,

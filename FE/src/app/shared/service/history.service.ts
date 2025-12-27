@@ -33,6 +33,6 @@ export class HistoryService {
       .set('entityType', entityType)
       .set('entityId', entityId);
 
-    return this.http.get<any>(this.url, { params, withCredentials: true });
+    return this.http.get<any>(this.url, { params });
   }
 }

@@ -13,4 +13,7 @@ export interface DeviceDetail {
     device?: Device
     qrCode?: string
     manager?: string
+    nameDetail?: string
+    estimatedTime?: string
+    note?: string
 }

@@ -51,7 +51,7 @@
                     <label for="Name">Thiết bị: <span id="spanCurentDeviceName"> {{ data.device.name }}</span></label>
                   </div>
                 </th>
-                <th [attr.colspan]="listUserApprReport.length + 2"><span id="spanCurentDatePlan">Ngày {{ model.planDetail.sampleReport.updatedAt | date:'dd' }} tháng {{ model.planDetail.sampleReport.updatedAt | date:'M' }}  năm {{ model.planDetail.sampleReport.updatedAt | date:'yyyy' }}</span></th>
+                <th [attr.colspan]="listUserApprReport.length + 2"><span id="spanCurentDatePlan">Ngày {{ model?.planDetail?.sampleReport?.updatedAt | date:'dd' }} tháng {{ model?.planDetail?.sampleReport?.updatedAt | date:'M' }}  năm {{ model?.planDetail?.sampleReport?.updatedAt | date:'yyyy' }}</span></th>
               </tr>
             </thead>
           </table>

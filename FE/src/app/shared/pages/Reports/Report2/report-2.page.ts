@@ -137,7 +137,7 @@ export class Report2Page {
     worksheet.getCell('A1').alignment = { horizontal: 'center' };
 
     worksheet.mergeCells('A2:I2');
-    worksheet.getCell('A2').value = 'Đơn vị:  Đơn vị: LED; Xưởng LED - Điện tử & TBCS';
+    worksheet.getCell('A2').value = 'Đơn vị: LED; Xưởng LED - Điện tử & TBCS';
     worksheet.getCell('A2').alignment = { horizontal: 'center' };
 
     worksheet.mergeCells('A3:I3');
@@ -201,13 +201,13 @@ export class Report2Page {
       { width: 25 },
       { width: 15 }
     ];
-
+    worksheet.addRow([]);
     const footerIndex = worksheet.rowCount + 1;
     worksheet.addRow(['RĐ.QT15.BM02a. Ban hành lần 2']);
     worksheet.mergeCells(`A${footerIndex}:H${footerIndex}`);
     const footerCell = worksheet.getCell(`A${footerIndex}`);
     footerCell.font = { italic: true };
-    footerCell.alignment = { horizontal: 'right' };
+    footerCell.alignment = { horizontal: 'left' };
     workbook.xlsx.writeBuffer().then(buffer => {
       saveAs(
         new Blob([buffer], {

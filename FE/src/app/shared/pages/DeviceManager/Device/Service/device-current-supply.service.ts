@@ -11,10 +11,10 @@ export class DeviceCurrentSupplyService extends BaseApiService<DeviceCurrentSupp
   }
 
   createList(entities: Array<DeviceCurrentSupply>) {
-    return this.http.post(`${this['fullBaseUrl']}/creates`, entities, { withCredentials: true });
+    return this.http.post(`${this['fullBaseUrl']}/creates`, entities);
   }
 
   getListByDeviceId(deviceId: number | string): Observable<DeviceCurrentSupply[]> {
-    return this.http.get<DeviceCurrentSupply[]>(`${this['fullBaseUrl']}/byDevice/${deviceId}`, { withCredentials: true });
+    return this.http.get<DeviceCurrentSupply[]>(`${this['fullBaseUrl']}/byDevice/${deviceId}`);
   }
 }

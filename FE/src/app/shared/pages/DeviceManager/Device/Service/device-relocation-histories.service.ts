@@ -11,6 +11,6 @@ export class DeviceRelocationHistoryService extends BaseApiService<DeviceRelocat
   }
 
   getHistoryMoveByDeviceId(deviceId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this['fullBaseUrl']}/device/${deviceId}`,  { withCredentials: true });
+    return this.http.get<any[]>(`${this['fullBaseUrl']}/device/${deviceId}`);
   }
 }

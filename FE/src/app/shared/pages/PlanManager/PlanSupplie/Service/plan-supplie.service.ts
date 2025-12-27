@@ -6,6 +6,6 @@ import { CriterialGroup } from '../../../../models/PlanManger/criterial-group.mo
 @Injectable({ providedIn: 'root' })
 export class PlanSupplieService extends BaseApiService<any> {
   constructor(http: HttpClient) {
-    super(http, 'api/plan-supplies');
+    super(http, 'api/planSupplies');
   }
 }

@@ -11,6 +11,7 @@ import { Util } from "../../../../../core/utils/utils-function";
 import { DeviceDetail, PlanRequest } from "../../../../../models/PlanManger/plan-request.model";
 import Swal from "sweetalert2";
 import _ from "lodash";
+import { PLANTYPE } from "../../../../../enums/plan-type.enum";
 
 @Component({
     selector: 'list-device-group-component',
@@ -61,6 +62,9 @@ export class ListDeviceComponent implements OnInit {
     handleBranchChange(data: any) {
         const branchId = data?.id;
         if (!branchId) {
+            return;
+        }
+        if(this.model.plan.planType.code === PLANTYPE.MAINTENANCE && !this.model.plan.maintanceMonth) {
             return;
         }
         const filteredDeviceGroups = _.filter(this.listDeviceGroupBase, (deviceGroup) => {
@@ -133,11 +137,16 @@ export class ListDeviceComponent implements OnInit {
                 if (existingDeviceDetail) {
                     return existingDeviceDetail;
                 }
-                return {
+                const newDevice: any = {
                     device: device,
                     serialNumber: device.serialNumber,
                     manager: device.userManager
-                } as DeviceDetail;
+                };
+
+                if (this.model.plan.planType?.code === PLANTYPE.MAINTENANCE && this.model.plan.maintanceMonth) {
+                    newDevice.estimatedTime = this.model.plan.maintanceMonth;
+                }
+                return newDevice as DeviceDetail;
             });
             this.model.devices = this.replaceGroupDevices(this.model.devices, devicesInNewGroup, _.get(row, 'deviceGroup.id'));
             this.cdr.detectChanges();
@@ -171,6 +180,12 @@ export class ListDeviceComponent implements OnInit {
         if (!this.model.plan.branch) {
             Util.toastMessage('Vui lòng chọn ngành', 'error');
             return;
+        }
+        if(this.model.plan.planType.code === PLANTYPE.MAINTENANCE && !this.model.plan.maintanceMonth) {
+            Util.toastMessage('Vui sống nhập thời gian dự kiến', 'error');
+            return;
+        }else {
+            this.handleBranchChange(this.model.plan.branch);
         }
     }
 

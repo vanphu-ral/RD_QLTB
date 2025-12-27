@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { PlanSupplieListComponent } from './List/plan-supplie-list.component';
 import { PlanSupplieResolve } from './Resolve/plan-supplie-resolve.service';
 import { PlanSupplieDetailComponent } from './Detail/plan-supplie-detail.component';
+import { ViewReportPage } from './ViewReport/view-report.page';
 
 
 const planSupplieRoute: Routes = [
@@ -30,6 +31,30 @@ const planSupplieRoute: Routes = [
       data: PlanSupplieResolve,
     },
   },
+  {
+    path: ':id/view-report',
+    component: ViewReportPage,
+    data: { mode: 'view' },
+    resolve: {
+      data: PlanSupplieResolve,
+    },
+  },
+  {
+    path: ':id/approval',
+    component: PlanSupplieDetailComponent,
+    data: { mode: 'approval' },
+    resolve: {
+      data: PlanSupplieResolve,
+    },
+  },
+  {
+    path: 'view-history',
+    component: PlanSupplieDetailComponent,
+    data: { mode: 'view-history' },
+    resolve: {
+      data: PlanSupplieResolve,
+    },
+  }
 ];
 
 export default planSupplieRoute;

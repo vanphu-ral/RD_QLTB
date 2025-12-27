@@ -147,7 +147,7 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
 
     // Logic load listUserApprReport (giữ nguyên)
     this.approvalService
-      .findApprovalsByEntityIdAndEntityType(this.sampleReport.approvalWorkflow.id, 'sample_reports')
+      .findApprovalsByEntityIdAndEntityType(this.sampleReport.id, 'sample_reports')
       .subscribe((data) => {
         const usernames = data.map(x => x.userApproval?.username);
         this.signatureService.getByListUsernames(usernames).pipe(

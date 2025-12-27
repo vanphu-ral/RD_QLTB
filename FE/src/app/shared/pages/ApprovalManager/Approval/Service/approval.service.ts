@@ -11,13 +11,13 @@ export class ApprovalService extends BaseApiService<ApprovalGroup> {
   }
 
   override getAll(): Observable<any[]> {
-    return this.http.get<any[]>(`${this['fullBaseUrl']}/by-user`, { withCredentials: true });
+    return this.http.get<any[]>(`${this['fullBaseUrl']}/by-user`);
   }
 
   findApprovalsByEntityIdAndEntityType(entity: string, entityType: string): Observable<any[]> {
     const params = new HttpParams()
       .set('entity', entity)
       .set('entityType', entityType);
-    return this.http.get<any[]>(`${this['fullBaseUrl']}/entity`, { params, withCredentials: true });
+    return this.http.get<any[]>(`${this['fullBaseUrl']}/entity`, { params });
   }
 }

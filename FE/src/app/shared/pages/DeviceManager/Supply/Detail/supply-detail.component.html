@@ -20,23 +20,23 @@
     </div>
 
     <div class="row my-3">
-      <div class="col-6">
+      <div class="col-12">
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.group" [options]="listSupplyGroups" optionLabel="name" [fluid]="true"
             [disabled]="isViewMode" [showClear]="true" [appendTo]="'body'" id="group" name="group" required
-            [invalid]="!model.group" dataKey="id">
+            [invalid]="!model.group" dataKey="id" [filter]="true">
           </p-select>
           <label for="group">Tên nhóm vật tư</label>
         </p-floatlabel>
       </div>
-
+<!-- 
       <div class="col-6">
         <p-floatlabel variant="on">
           <input pInputText id="sapCode" name="sapCode" [(ngModel)]="model.sapCode" autocomplete="off"
             [disabled]="isViewMode" [fluid]="true" />
           <label for="sapCode">SAP Code</label>
         </p-floatlabel>
-      </div>
+      </div> -->
     </div>
 
     <div class="d-flex my-3 align-items-center justify-content-between">
@@ -50,6 +50,7 @@
         <thead>
           <tr>
             <th>mã serial - qr code</th>
+            <th>sap code</th>
             <th style="min-width: 200px;">ngày nhập</th>
             <th>xuất xứ</th>
             <th>đơn vị</th>
@@ -63,6 +64,7 @@
         <tbody>
           <tr *ngFor="let row of listSerials; let i = index">
             <td><input type="text" pInputText [(ngModel)]="row.serial" name="serial-{{i}}" [disabled]="isViewMode"></td>
+            <td><input type="text" pInputText [(ngModel)]="row.sapCode" name="sapCode-{{i}}" [disabled]="isViewMode"></td>
             <td><p-datepicker [(ngModel)]="row.importDate" [iconDisplay]="'input'" [showIcon]="true"
                 name="importDate-{{i}}" inputId="icondisplay" [dateFormat]="'yy-mm-dd'"
                 appendTo="body" [disabled]="isViewMode"/>

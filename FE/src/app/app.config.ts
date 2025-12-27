@@ -4,19 +4,26 @@ import { routes } from './app.routes';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { providePrimeNG } from 'primeng/config';
 import Lara from '@primeng/themes/lara';
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { APP_INITIALIZER } from '@angular/core';
 import { AccountService } from './shared/core/auth/account/account.service';
 import { LoginService } from './shared/core/auth/login/login.service';
+import { credentialsInterceptor } from './shared/service/credentials.interceptor';
+import { authExpiredInterceptor } from './shared/core/auth/auth-expired.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes, withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }), withEnabledBlockingInitialNavigation()),
-    provideHttpClient(withFetch()),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([
+        credentialsInterceptor,
+        authExpiredInterceptor
+      ])
+    ),
     provideAnimations(),
     provideAnimationsAsync(),
-    providePrimeNG({ theme: { preset: Lara, options: { darkModeSelector: '.app-dark' } } }),
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     providePrimeNG({
@@ -51,7 +58,8 @@ export const appConfig: ApplicationConfig = {
         // multi select
         selectionMessage: '{0} cột được chọn'
       }
-    }),
+    },
+    { theme: { preset: Lara, options: { darkModeSelector: '.app-dark' } } }),
     {
       provide: APP_INITIALIZER,
       useFactory: (loginService: LoginService) => {

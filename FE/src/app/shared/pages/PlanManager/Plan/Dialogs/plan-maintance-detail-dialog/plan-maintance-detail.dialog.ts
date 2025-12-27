@@ -84,7 +84,7 @@ export class PlanMaintanceDetailDialog {
                                 groupName: g.groupApprovalName.name,
                                 signatures: g.userApprovals.map((u: any) => u.imageLink)
                             }));
-                            console.log(this.listUserApprReport);
+                            this.cdr.detectChanges();
                         });
                         this.cdr.detectChanges();
                     });

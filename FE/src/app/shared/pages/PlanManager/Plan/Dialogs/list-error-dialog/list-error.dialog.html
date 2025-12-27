@@ -20,15 +20,15 @@
                     <td>{{ getSeverity(row.severity) }}</td>
                     <td><span [ngClass]="row.isRepaired ? 'badge text-bg-success' : 'badge text-bg-danger'">{{ row.isRepaired ? 'Đã sửa' : 'Chưa sửa' }}</span></td>
                     <td class="text-center">
-                        <p-button icon="pi pi-file" styleClass="p-button-sm p-button-rounded p-button-secondary m-1"
+                        <p-button icon="pi pi-file" styleClass="p-button-sm p-button-rounded p-button-secondary m-1" title="Tạo biên bản"
                             (onClick)="acceptanceError(row)"></p-button>
-                        <p-button icon="pi pi-check" severity="success" class="m-1"
+                        <p-button icon="pi pi-check" severity="success" class="m-1" title="Xác nhận đã sửa chữa"
                             (onClick)="confirmError($event, row)" *ngIf="!row.isRepaired">
                         </p-button>
-                        <p-button icon="fa-solid fa-hammer" severity="warn" class="m-1"
+                        <p-button icon="fa-solid fa-hammer" severity="warn" class="m-1" title="Sửa chữa lỗi"
                             (onClick)="repairError(row)" *ngIf="!row.isRepaired">
                         </p-button>
-                        <p-button icon="pi pi-trash" severity="danger" class="m-1"
+                        <p-button icon="pi pi-trash" severity="danger" class="m-1" title="Xóa lỗi"
                             (onClick)="deleteRow(i)">
                         </p-button>
                     </td>

@@ -12,7 +12,7 @@ export class SupplyReplacementHistoryService extends BaseApiService<SupplyReplac
   }
 
   createList(entities: Array<SupplyReplacementHistory>) {
-    return this.http.post(`${this['fullBaseUrl']}/create-list`, entities, { withCredentials: true });
+    return this.http.post(`${this['fullBaseUrl']}/create-list`, entities);
   }
 
   getByPlanResultId(planResultId?: number | null): Observable<SupplyReplacementHistory[]> {
@@ -22,7 +22,7 @@ export class SupplyReplacementHistoryService extends BaseApiService<SupplyReplac
     }
 
     return this.http
-      .get<SupplyReplacementHistory[]>(`${this['fullBaseUrl']}/plan-result/${planResultId}`, { withCredentials: true })
+      .get<SupplyReplacementHistory[]>(`${this['fullBaseUrl']}/plan-result/${planResultId}`)
       .pipe(
         // convert createdAt string -> Date (nếu bạn muốn)
         map(list => (list || []).map(item => ({
@@ -37,7 +37,7 @@ export class SupplyReplacementHistoryService extends BaseApiService<SupplyReplac
   }
 
   getHistoryByPlanResultId(planResultId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this['fullBaseUrl']}/plan-result/${planResultId}`, { withCredentials: true });
+    return this.http.get<any[]>(`${this['fullBaseUrl']}/plan-result/${planResultId}`);
   }
 
 }

@@ -11,17 +11,17 @@ export class SupplyDetailService extends BaseApiService<SerialSupply> {
   }
 
   createList(entities: Array<SerialSupply>) {
-    return this.http.post(`${this['fullBaseUrl']}/creates`, entities, { withCredentials: true });
+    return this.http.post(`${this['fullBaseUrl']}/creates`, entities);
   }
 
   getBySupplyId(supplyId: number | string): Observable<SerialSupply[]> {
-    return this.http.get<SerialSupply[]>(`${this['fullBaseUrl']}/bySupply/${supplyId}`, { withCredentials: true });
+    return this.http.get<SerialSupply[]>(`${this['fullBaseUrl']}/bySupply/${supplyId}`);
   }
 
   updateSupplyDetailStatus(ids: number[]) {
     return this.http.put(
       `${this['fullBaseUrl']}/update-status`,
-      ids, { withCredentials: true }
+      ids
     );
   }
 }

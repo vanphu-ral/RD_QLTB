@@ -84,7 +84,7 @@ export class SupplyReplacementDialog {
             oldSupplyDetail: this.checkList[index].supplyDetail,
         }
         const ref = this.dialogService.open(ReplaceSupplyDialog, {
-            header: 'Chọn thiết bị thay thế',
+            header: 'Chọn vật tư thay thế',
             width: '70%',
             modal: true,
             closable: true,
@@ -95,6 +95,7 @@ export class SupplyReplacementDialog {
         });
         ref.onClose.subscribe((result: any) => {
             if (result) {
+                result.serial.status = 1; // Đang sử dụng
                 this.listSupplyReplace.push({
                     supplyDetail: result.serial,
                     quantity: result.quantityUsed,

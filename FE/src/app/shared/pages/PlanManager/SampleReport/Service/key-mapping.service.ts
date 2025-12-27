@@ -11,10 +11,10 @@ export class KeyMappingService extends BaseApiService<keyMapping> {
     }
 
     createList(entities: Array<keyMapping>) {
-        return this.http.post(`${this['fullBaseUrl']}/creates`, entities, { withCredentials: true });
+        return this.http.post(`${this['fullBaseUrl']}/creates`, entities);
     }
 
     getBySampleReport(sampleReportId: number | string): Observable<keyMapping[]> {
-        return this.http.get<keyMapping[]>(`${this['fullBaseUrl']}/bySampleReport/${sampleReportId}`, { withCredentials: true });
+        return this.http.get<keyMapping[]>(`${this['fullBaseUrl']}/bySampleReport/${sampleReportId}`);
     }
 }

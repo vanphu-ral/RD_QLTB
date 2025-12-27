@@ -18,7 +18,7 @@ export abstract class BaseApiService<T> {
   }
 
   getAll(): Observable<T[]> {
-    return this.http.get<T[]>(`${this.fullBaseUrl}`, { withCredentials: true });
+    return this.http.get<T[]>(`${this.fullBaseUrl}`);
   }
 
   getAllByPaged(filters: any = {}, page: number = 0): Observable<Page<any>> {
@@ -40,12 +40,12 @@ export abstract class BaseApiService<T> {
 
     return this.http.get<Page<any>>(
       `${this['fullBaseUrl']}/paged`,
-      { params, withCredentials: true }
+      { params }
     );
   }
 
   getById(id: number | string): Observable<T> {
-    return this.http.get<T>(`${this.fullBaseUrl}/${id}`, { withCredentials: true });
+    return this.http.get<T>(`${this.fullBaseUrl}/${id}`);
   }
 
   create(entity: CreateEntity<T>): Observable<T> {
@@ -59,7 +59,7 @@ export abstract class BaseApiService<T> {
 
     const newEntity = { ...entity, createdAt: isoLocalVN, updatedAt: isoLocalVN, createdBy: this.accountService.getUser()?.fullName ?? 'unknown' };
 
-    return this.http.post<T>(this.fullBaseUrl, newEntity, { withCredentials: true });
+    return this.http.post<T>(this.fullBaseUrl, newEntity);
   }
 
   update(id: number | string, data: T): Observable<T> {
@@ -75,11 +75,11 @@ export abstract class BaseApiService<T> {
       updatedAt: updatedAtVN,
       updatedBy: this.accountService.getUser()?.fullName ?? 'unknown',
     };
-    return this.http.put<T>(`${this.fullBaseUrl}/${id}`, updatedEntity, { withCredentials: true });
+    return this.http.put<T>(`${this.fullBaseUrl}/${id}`, updatedEntity);
   }
 
   delete(id: number | string): Observable<void> {
-    return this.http.delete<void>(`${this.fullBaseUrl}/${id}`, { withCredentials: true });
+    return this.http.delete<void>(`${this.fullBaseUrl}/${id}`);
   }
 
   getToken(): Observable<string> {
@@ -103,10 +103,10 @@ export abstract class BaseApiService<T> {
   }
 
   createApprovalEntity(dto: any, entityType: string): Observable<any> {
-    return this.http.post(`${this.approvalUrl}/approval?entityType=${entityType}`, dto, { withCredentials: true });
+    return this.http.post(`${this.approvalUrl}/approval?entityType=${entityType}`, dto);
   }
 
   approvalEntity(dto: any): Observable<any> {
-    return this.http.put(`${this.approvalUrl}/${dto.id}`, dto, { withCredentials: true });
+    return this.http.put(`${this.approvalUrl}/${dto.id}`, dto);
   }
 }

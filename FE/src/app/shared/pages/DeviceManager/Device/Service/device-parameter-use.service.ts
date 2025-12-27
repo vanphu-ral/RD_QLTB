@@ -11,10 +11,10 @@ export class DeviceParameterUseService extends BaseApiService<DeviceParameterUse
   }
 
   createList(entities: Array<DeviceParameterUse>) {
-    return this.http.post(`${this['fullBaseUrl']}/creates`, entities, { withCredentials: true });
+    return this.http.post(`${this['fullBaseUrl']}/creates`, entities);
   }
 
   getBySupplyId(deviceId: number | string): Observable<DeviceParameterUse[]> {
-    return this.http.get<DeviceParameterUse[]>(`${this['fullBaseUrl']}/byDevice/${deviceId}`, { withCredentials: true });
+    return this.http.get<DeviceParameterUse[]>(`${this['fullBaseUrl']}/byDevice/${deviceId}`);
   }
 }

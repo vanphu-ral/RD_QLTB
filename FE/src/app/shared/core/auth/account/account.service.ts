@@ -19,8 +19,7 @@ export class AccountService {
   identity(force = false): Observable<Account | null> {
     if (!this.accountCache$ || force) {
       this.accountCache$ = this.http.get<Account>(
-        this.appConfig.getEndpointFor('api/auth/user'),
-        { withCredentials: true }
+        this.appConfig.getEndpointFor('api/auth/user')
       ).pipe(
         tap(account => this.setAccount(account)),
         shareReplay(1)
