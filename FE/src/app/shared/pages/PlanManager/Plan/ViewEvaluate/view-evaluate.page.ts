@@ -15,7 +15,7 @@ const DEFAULT_SESSIONS = ['Đầu ca', 'Giữa ca', 'Cuối ca', 'Hằng tuần'
 // Định nghĩa mới: Kết quả cho một Ca kiểm tra cụ thể trong một ngày
 interface DailySessionResult {
   session: string; // Tên Ca kiểm tra (Đầu ca, Giữa ca,...)
-  results: string[]; // Mảng kết quả (O, A, X, //) cho ca này vào ngày này
+  results: { value: string, time: string }[]; // Mảng kết quả (O, A, X, //) cho ca này vào ngày này
 }
 
 // Định nghĩa mới: Kết quả cho tất cả các Ca kiểm tra trong một ngày
@@ -80,28 +80,28 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
     this.sampleReport = JSON.parse(this.model.planDetail.detail);
     this.planInfo = this.model.planDetail;
     this.signatureService.getByUsername('admin').subscribe({
-        next: (data) => {
-            this.signature = data;
-        },
-        error: (err) => {
-            console.error('Không tìm thấy chữ ký của người thực hiện:', err);
-            this.signature = { imageLink: null }; // Đặt rỗng/null nếu lỗi
-            this.groupPlanDetails();
-        },
-        complete: () => {
-            // Sau khi cố gắng lấy chữ ký (dù thành công hay thất bại), gọi hàm chính
-            this.groupPlanDetails();
-        }
+      next: (data) => {
+        this.signature = data;
+      },
+      error: (err) => {
+        console.error('Không tìm thấy chữ ký của người thực hiện:', err);
+        this.signature = { imageLink: null }; // Đặt rỗng/null nếu lỗi
+        this.groupPlanDetails();
+      },
+      complete: () => {
+        // Sau khi cố gắng lấy chữ ký (dù thành công hay thất bại), gọi hàm chính
+        this.groupPlanDetails();
+      }
     });
     this.loadApprovals();
     this.approvalService.getUsers().subscribe(users => {
-        this.listUsers = users;
-        this.userMap = users.reduce((acc, u) => {
-            const fullName = [u.firstName, u.lastName].filter(Boolean).join(' ').trim();
-            acc[u.username] = fullName || u.username;
-            return acc;
-        }, {} as Record<string, string>);
-        this.cdr.detectChanges();
+      this.listUsers = users;
+      this.userMap = users.reduce((acc, u) => {
+        const fullName = [u.firstName, u.lastName].filter(Boolean).join(' ').trim();
+        acc[u.username] = fullName || u.username;
+        return acc;
+      }, {} as Record<string, string>);
+      this.cdr.detectChanges();
     });
   }
 
@@ -112,11 +112,11 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
         this.listUserStatusAppr = data;
         const usernames = data.map(x => x.userApproval?.username);
         this.signatureService.getByListUsernames(usernames).pipe(
-        catchError(err => {
-          console.error('Lỗi lấy danh sách chữ ký:', err);
-          return of([]); // Trả về mảng rỗng nếu lỗi
-        })
-      ).subscribe(signatures => {
+          catchError(err => {
+            console.error('Lỗi lấy danh sách chữ ký:', err);
+            return of([]); // Trả về mảng rỗng nếu lỗi
+          })
+        ).subscribe(signatures => {
           this.listUserApproval = Object.values(
             data.reduce((acc: any, item: any) => {
               const groupId = item.group?.groupApprovalName?.id;
@@ -151,11 +151,11 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
       .subscribe((data) => {
         const usernames = data.map(x => x.userApproval?.username);
         this.signatureService.getByListUsernames(usernames).pipe(
-        catchError(err => {
-          console.error('Lỗi lấy danh sách chữ ký:', err);
-          return of([]); // Trả về mảng rỗng nếu lỗi
-        })
-      ).subscribe(signatures => {
+          catchError(err => {
+            console.error('Lỗi lấy danh sách chữ ký:', err);
+            return of([]); // Trả về mảng rỗng nếu lỗi
+          })
+        ).subscribe(signatures => {
           this.listUserApprReport = Object.values(
             data.reduce((acc: any, item: any) => {
               const groupId = item.group?.groupApprovalName?.id;
@@ -226,28 +226,28 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
         items.forEach((res: any) => {
           const dateTest = res.planResult?.dateTest;
           const resultValue = this.mapResultToIcon(res.result);
-          // Lấy Ca kiểm tra từ dữ liệu. Có thể cần chuẩn hóa nếu dữ liệu đầu vào không khớp hoàn toàn
           const inspectionSession = res.inspectionSession;
+          const examinationTime = res.examinationTime; // Lấy thông tin Ca 1, Ca 2, Ngày
 
           if (dateTest && resultValue && resultValue !== '//' && this.model.planDetail?.createdAt) {
             const testDate = new Date(dateTest);
             const planDate = new Date(this.model.planDetail.createdAt);
 
-            // Chỉ lấy kết quả nếu tháng & năm của dateTest khớp với tháng & năm của báo cáo
             if (testDate.getMonth() === planDate.getMonth() && testDate.getFullYear() === planDate.getFullYear()) {
               const day = testDate.getDate();
-
               const dayResult = dailyResults[day - 1];
+
               if (dayResult) {
-                // Tìm ca kiểm tra tương ứng trong ngày đó (So khớp không phân biệt chữ hoa/thường)
                 const sessionResult = dayResult.sessionResults.find(s =>
                   s.session.toLowerCase() === (inspectionSession || '').toLowerCase().trim()
                 );
 
-                // Nếu tìm thấy ca và kết quả chưa có trong ca đó
-                // Lưu ý: Nếu inspectionSession rỗng/sai, nó sẽ KHÔNG được thêm vào kết quả
-                if (sessionResult && !sessionResult.results.includes(resultValue)) {
-                  sessionResult.results.push(resultValue);
+                if (sessionResult) {
+                  // LƯU Ý QUAN TRỌNG: Đẩy object vào thay vì string
+                  sessionResult.results.push({
+                    value: resultValue,
+                    time: examinationTime || ''
+                  });
                 }
               }
             }
@@ -286,39 +286,28 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
  * @returns HTML icon (chữ ký) nếu có kết quả và có ảnh, hoặc chữ "Đã ký" nếu có kết quả nhưng không có ảnh.
  */
   hasResultForDay(day: number): SafeHtml | '' {
-    if (!this.groupedDetails || this.groupedDetails.length === 0) {
-      return '';
-    }
+    if (!this.groupedDetails || this.groupedDetails.length === 0) return '';
 
-    // ... (Logic tìm kiếm 'found' giữ nguyên) ...
-    const found = this.groupedDetails.some(group => {
-      return group.details.some(detail => {
+    const found = this.groupedDetails.some(group =>
+      group.details.some(detail => {
         const dayResult = detail.dailyResults.find(d => d.day === day);
         if (!dayResult) return false;
-
+        // Kiểm tra trong mảng Object results
         return dayResult.sessionResults.some(sessionR =>
-          sessionR.results.some(r => r && r !== '//')
+          sessionR.results.some(r => r.value && r.value !== '//')
         );
-      });
-    });
+      })
+    );
 
     if (found) {
-      // Nếu tìm thấy kết quả trong ngày đó
       if (this.signature?.imageLink) {
-        // Trường hợp 1: Có ảnh chữ ký -> Hiển thị ảnh
         return this.sanitizer.bypassSecurityTrustHtml(
           `<img src="${this.signature.imageLink}" style="width: 30px; height: 16px; transform: rotate(90deg);">`
         );
       } else {
-        // Trường hợp 2: Không có ảnh chữ ký (hoặc signature là null/rỗng) -> Hiển thị chữ
-        // Bạn có thể dùng thẻ div/span để căn giữa hoặc tạo kiểu nếu cần
-        return this.sanitizer.bypassSecurityTrustHtml(
-          `<span style="font-weight: bold;">Đã ký</span>`
-          // Có thể thay bằng chữ cái (V) hoặc ký hiệu khác tùy yêu cầu
-        );
+        return this.sanitizer.bypassSecurityTrustHtml(`<span style="font-weight: bold;">Đã ký</span>`);
       }
     }
-
     return '';
   }
 
@@ -330,16 +319,30 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
     const dayResult = detail.dailyResults.find(d => d.day === day);
     if (!dayResult) return '//';
 
-    // Tìm kết quả của ca kiểm tra tương ứng trong ngày đó
     const sessionResult = dayResult.sessionResults.find(s => s.session === session);
     const results = sessionResult ? sessionResult.results : [];
 
-    if (!results || results.length === 0) {
-      return '//';
-    }
+    if (!results || results.length === 0) return '//';
 
-    const icons = results.map((symbol: string) => {
-      switch (symbol) {
+    const icons = results.map((res: any) => {
+      // Chuẩn hóa tên ca để so sánh: "Ca 1" -> "ca1", "Ca 2" -> "ca2"
+      const timeKey = (res.time || '').toLowerCase().replace(/\s/g, '');
+
+      // Logic 1: Nếu là Ca 1 hoặc Ca 2 -> Trả về ảnh
+      if (timeKey === 'ca1' || timeKey === 'ca2') {
+        let statusSlug = '';
+        if (res.value === 'O') statusSlug = 'oke';
+        else if (res.value === 'A') statusSlug = 'edit';
+        else if (res.value === 'X') statusSlug = 'error';
+
+        if (statusSlug) {
+          // Đường dẫn: assets/imgs/ca1-oke.jpg, ca2-error.jpg...
+          return `<img src="assets/icon/${timeKey}-${statusSlug}.svg" class="icon-img" alt="${timeKey}-${statusSlug}"/>`;
+        }
+      }
+
+      // Logic 2: Nếu không phải Ca 1/Ca 2 (ví dụ: "Ngày") -> Giữ nguyên icon FontAwesome
+      switch (res.value) {
         case 'O':
           return '<i class="far fa-circle"></i>';
         case 'A':
@@ -351,7 +354,6 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
       }
     }).filter(Boolean);
 
-    // Ghép các ký hiệu lại (nếu có nhiều kết quả trong cùng một ca/ngày)
     return icons.join(' ');
   }
 

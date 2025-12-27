@@ -43,7 +43,7 @@
                     </td>
                     <td>
                         <p-select [(ngModel)]="row.manager" [options]="listManagers" optionLabel="name" optionValue="username" [fluid]="true"
-                            [showClear]="true" [appendTo]="'body'"
+                            [showClear]="true" [appendTo]="'body'" [filter]="true"
                             id="manager-{{ i }}" name="manager-{{ i }}" dataKey="username">
                         </p-select>
                     </td>

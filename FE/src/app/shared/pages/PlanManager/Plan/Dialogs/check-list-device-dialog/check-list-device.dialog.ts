@@ -8,6 +8,8 @@ import { PlanResult } from "../../../../../models/PlanManger/plan-result.model";
 import { CheckDeviceDialog } from "../check-device-dialog/check-device.dialog";
 import { PlanResultService } from "../../Service/plan-result.service";
 import { ConfirmationService, MessageService } from "primeng/api";
+import { PLANTYPE } from "../../../../../enums/plan-type.enum";
+import { DayOffCalendarService } from "../../../../Categories/DayOffCalendar/Service/day-off-calendar.service";
 
 @Component({
     selector: 'app-check-list-device-dialog',
@@ -28,10 +30,14 @@ export class CheckListDeviceDialog {
         private planResultService: PlanResultService,
         private comfirmService: ConfirmationService,
         private messageService: MessageService,
+        private dayOffService: DayOffCalendarService,
         private cdr: ChangeDetectorRef,
     ) {
         this.data = config.data.planDetail;
         this.plan = config.data.plan;
+        console.log(this.data);
+        console.log(this.plan);
+
     }
 
     ngOnInit() {
@@ -48,7 +54,35 @@ export class CheckListDeviceDialog {
                 compareDate.setHours(0, 0, 0, 0);
                 return compareDate <= today;
             });
+            if (this.plan.planType.code == PLANTYPE.DAILYCHECK) {
+                this.checkDayOff();
+            }
             this.cdr.detectChanges();
+        });
+    }
+
+    checkDayOff() {
+        this.dayOffService.getByTeam(this.plan.team.id).subscribe((res) => {
+            console.log(res);
+            const planResults = this.checkList || []; 
+            const dayOffList = res || [];
+
+            planResults.forEach((plan: any) => {
+                const testDate = new Date(plan.dateTest);
+                testDate.setHours(0, 0, 0, 0);
+                const isHoliday = dayOffList.some(off => {
+                    const from = new Date(off.fromDate);
+                    from.setHours(0, 0, 0, 0);
+                    const to = new Date(off.toDate);
+                    to.setHours(0, 0, 0, 0);
+                    return testDate >= from && testDate <= to;
+                });
+                if (isHoliday && plan.status !== 15) {
+                    this.planResultService.updateStatus(plan.id as number, 15).subscribe(() => {
+                        this.loadDeviceCheckList();
+                    });
+                }
+            });
         });
     }
 
@@ -94,7 +128,7 @@ export class CheckListDeviceDialog {
             event,
             'Bạn có chắc đã hoàn thành đợt kiểm tra này này?',
             () => {
-                return this.planResultService.updateStatus(row.id as number)
+                return this.planResultService.updateStatus(row.id as number, 5);
             },
             'Đã hoàn thành đợt kiểm tra',
             'Lỗi khi hoàn thành',

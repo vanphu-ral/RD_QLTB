@@ -129,7 +129,7 @@ export class ListDeviceComponent implements OnInit {
             const filteredDevices = _.filter(row.deviceGroup.groupDevices, (device) => {
                 return !branchId || _.get(device, 'branch.id') === branchId;
             });
-            const devicesInNewGroup: DeviceDetail[] = _.map(filteredDevices, device => {
+            const devicesInNewGroup: DeviceDetail[] = _.map(filteredDevices, (device, index) => {
                 device.group = { id: _.get(row, 'deviceGroup.id') };
                 const existingDeviceDetail = this.model.devices?.find(d =>
                     d.device?.id === device.id && _.get(d.device, 'group.id') === device.group.id
@@ -145,6 +145,7 @@ export class ListDeviceComponent implements OnInit {
 
                 if (this.model.plan.planType?.code === PLANTYPE.MAINTENANCE && this.model.plan.maintanceMonth) {
                     newDevice.estimatedTime = this.model.plan.maintanceMonth;
+                    newDevice.nameDetail = `${index + 1}.${device.id}.${new Date().getFullYear()}/CTBDCSTB-LED.${this.model.plan?.branch?.code}`;
                 }
                 return newDevice as DeviceDetail;
             });

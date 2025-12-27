@@ -3,25 +3,10 @@
 
   <form #f="ngForm" *ngIf="model">
     <div class="row my-3">
-      <div class="col-6" *ngIf="!isAddMode">
-        <p-floatlabel variant="on">
-          <input pInputText id="code" name="code" [(ngModel)]="model.code" autocomplete="off" [disabled]="true" [fluid]="true"/>
-          <label for="code">Mã</label>
-        </p-floatlabel>
-      </div>
-      <div [ngClass]="isAddMode ? 'col-12' : 'col-6'">
-        <p-floatlabel variant="on">
-          <input pInputText id="name" name="name" [(ngModel)]="model.name" required [invalid]="!model.name" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
-          <label for="name">Tên</label>
-        </p-floatlabel>
-      </div>
-    </div>
-
-    <div class="row my-3">
       <div class="col-6">
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.branch" [options]="listBranches" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
-            [showClear]="true" [appendTo]="'body'" id="branch" name="branch" dataKey="id">
+            [showClear]="true" [appendTo]="'body'" id="branch" name="branch" dataKey="id" [invalid]="!model.branch" required (onChange)="onBranchChange($event)">
           </p-select>
           <label for="branch">Tên ngành</label>
         </p-floatlabel>
@@ -29,8 +14,8 @@
 
       <div class="col-6">
         <p-floatlabel variant="on">
-          <p-select [(ngModel)]="model.team" [options]="listTeams" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
-            [showClear]="true" [appendTo]="'body'" id="team" name="team" dataKey="id">
+          <p-select [(ngModel)]="model.team" [options]="filteredTeams" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
+            [showClear]="true" [appendTo]="'body'" id="team" name="team" dataKey="id" [invalid]="!model.team" required>
           </p-select>
           <label for="team">Tên tổ</label>
         </p-floatlabel>
@@ -40,27 +25,17 @@
     <div class="row my-3">
       <div class="col-6">
         <p-floatlabel variant="on">
-          <p-select [(ngModel)]="model.type" [options]="listTypes" optionLabel="name" optionValue="code" [fluid]="true" [disabled]="isViewMode"
-            [showClear]="true" [appendTo]="'body'" id="type" name="type" required [invalid]="!model.type" dataKey="id">
-          </p-select>
-          <label for="type">Loại</label>
+          <p-datepicker [(ngModel)]="model.fromDate" appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="fromDate" [fluid]="true"
+            inputId="icondisplay" [dateFormat]="'dd-mm-yy'" [invalid]="!model.fromDate" required  appendTo="body" [inputSize]="100" [disabled]="isViewMode"/>
+          <label for="fromDate">Thời gian bắt đầu</label>
         </p-floatlabel>
       </div>
 
-      <div class="col-6" *ngIf="model.type == 'WEEKLY'">
+      <div class="col-6">
         <p-floatlabel variant="on">
-          <p-select [(ngModel)]="model.dayOfWeek" [options]="listdayOfWeeks" optionLabel="name" optionValue="code" [fluid]="true" [disabled]="isViewMode"
-            [showClear]="true" [appendTo]="'body'" id="dayOfWeek" name="dayOfWeek" dataKey="id">
-          </p-select>
-          <label for="dayOfWeek">Chọn ngày nghỉ</label>
-        </p-floatlabel>
-      </div>
-
-      <div class="col-6" *ngIf="model.type == 'SPECIAL'">
-        <p-floatlabel variant="on">
-          <p-datepicker [(ngModel)]="model.date" appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="date"
-            inputId="icondisplay" [dateFormat]="'dd-mm-yy'"  appendTo="body" [inputSize]="100" [disabled]="isViewMode"/>
-          <label for="date">Chọn ngày nghỉ</label>
+          <p-datepicker [(ngModel)]="model.toDate" appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="toDate" [fluid]="true"
+            inputId="icondisplay" [dateFormat]="'dd-mm-yy'" [invalid]="!model.toDate" required appendTo="body" [inputSize]="100" [disabled]="isViewMode"/>
+          <label for="toDate">Thời gian kết thúc</label>
         </p-floatlabel>
       </div>
     </div>

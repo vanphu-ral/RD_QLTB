@@ -27,7 +27,7 @@ export class PlanResultService extends BaseApiService<PlanResult> {
     return this.http.get<PlanCheck>(`${this['fullBaseUrl']}/plan-result/${planDetailId}`);
   }
 
-  updateStatus(id: number): Observable<number> {
-    return this.http.post<number>(`${this['fullBaseUrl']}/update-status/${id}`, {});
+  updateStatus(id: number, status: number) {
+    return this.http.post(`${this['fullBaseUrl']}/update-status/${id}?status=${status}`, {});
   }
 }

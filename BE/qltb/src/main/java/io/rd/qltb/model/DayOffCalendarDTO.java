@@ -11,13 +11,8 @@ import java.time.LocalDateTime;
 @Setter
 public class DayOffCalendarDTO {
     private Long id;
-    private String code;
-    private String name;
-    private LocalDateTime date;
-    private Integer dayOfWeek;
-    private String type;
-    private Integer isDayOff;
-    private String description;
+    private LocalDateTime fromDate;
+    private LocalDateTime toDate;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String createdBy;

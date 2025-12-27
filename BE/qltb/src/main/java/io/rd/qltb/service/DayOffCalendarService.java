@@ -34,7 +34,7 @@ public class DayOffCalendarService {
     }
 
     public List<DayOffCalendarDTO> findAll() {
-        final List<DayOffCalendar> dayOffCalendars = dayOffCalendarRepository.findByStatusOrderByIdDesc(DELETED);
+        final List<DayOffCalendar> dayOffCalendars = dayOffCalendarRepository.findAllByStatusNotOrderByIdDesc(DELETED);
         return dayOffCalendars.stream()
                 .map(dayOffCalendar -> mapToDTO(dayOffCalendar, new DayOffCalendarDTO()))
                 .toList();
@@ -66,15 +66,14 @@ public class DayOffCalendarService {
         dayOffCalendarRepository.save(dayOffCalendar);
     }
 
+    public List<DayOffCalendar> getDayOffByTeam(Long teamId) {
+        return dayOffCalendarRepository.findAllByTeamIdOrderByFromDateDesc(teamId);
+    }
+
     private DayOffCalendarDTO mapToDTO(final DayOffCalendar dayOffCalendar, final DayOffCalendarDTO dayOffCalendarDTO) {
         dayOffCalendarDTO.setId(dayOffCalendar.getId());
-        dayOffCalendarDTO.setCode(dayOffCalendar.getCode());
-        dayOffCalendarDTO.setName(dayOffCalendar.getName());
-        dayOffCalendarDTO.setDate(dayOffCalendar.getDate());
-        dayOffCalendarDTO.setDayOfWeek(dayOffCalendar.getDayOfWeek());
-        dayOffCalendarDTO.setType(dayOffCalendar.getType());
-        dayOffCalendarDTO.setIsDayOff(dayOffCalendar.getIsDayOff());
-        dayOffCalendarDTO.setDescription(dayOffCalendar.getDescription());
+        dayOffCalendarDTO.setFromDate(dayOffCalendar.getFromDate());
+        dayOffCalendarDTO.setToDate(dayOffCalendar.getToDate());
         dayOffCalendarDTO.setCreatedAt(dayOffCalendar.getCreatedAt());
         dayOffCalendarDTO.setUpdatedAt(dayOffCalendar.getUpdatedAt());
         dayOffCalendarDTO.setCreatedBy(dayOffCalendar.getCreatedBy());
@@ -129,13 +128,8 @@ public class DayOffCalendarService {
 
 
     private DayOffCalendar mapToEntity(final DayOffCalendarDTO dayOffCalendarDTO, final DayOffCalendar dayOffCalendar) {
-        dayOffCalendar.setCode(dayOffCalendarDTO.getCode());
-        dayOffCalendar.setName(dayOffCalendarDTO.getName());
-        dayOffCalendar.setDate(dayOffCalendarDTO.getDate());
-        dayOffCalendar.setDayOfWeek(dayOffCalendarDTO.getDayOfWeek());
-        dayOffCalendar.setType(dayOffCalendarDTO.getType());
-        dayOffCalendar.setIsDayOff(dayOffCalendarDTO.getIsDayOff());
-        dayOffCalendar.setDescription(dayOffCalendarDTO.getDescription());
+        dayOffCalendar.setFromDate(dayOffCalendarDTO.getFromDate());
+        dayOffCalendar.setToDate(dayOffCalendarDTO.getToDate());
         dayOffCalendar.setCreatedAt(dayOffCalendarDTO.getCreatedAt());
         dayOffCalendar.setUpdatedAt(dayOffCalendarDTO.getUpdatedAt());
         dayOffCalendar.setCreatedBy(dayOffCalendarDTO.getCreatedBy());

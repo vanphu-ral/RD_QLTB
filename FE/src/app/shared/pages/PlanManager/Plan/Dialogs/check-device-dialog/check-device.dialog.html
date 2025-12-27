@@ -69,11 +69,19 @@
                     <th>Tên Tiêu chí</th>
                     <th>Tần suất</th>
                     <th *ngIf="data.plan.planType.code == PLANTYPE.DAILYCHECK">Ca kiểm tra</th>
+                    <th *ngIf="data.plan.planType.code == PLANTYPE.DAILYCHECK">Thời gian kiểm tra</th>
                     <th [ngStyle]="data.plan.planType.code == PLANTYPE.MAINTENANCE ? {} : {'min-width': '600px'}">Mô tả</th>
                     <th *ngIf="data.plan.planType.code == PLANTYPE.MAINTENANCE">Ghi chú</th>
                     <th *ngIf="data.plan.planType.code == PLANTYPE.MAINTENANCE">Bộ phận thực hiện</th>
                     <th>Kết quả đánh giá</th>
-                    <th>Trạng thái</th>
+                    <th class="text-center">
+                        <div class="d-flex flex-column align-items-center">
+                            <span>Không kiểm tra</span>
+                            <p-checkbox [(ngModel)]="isCheckAll" [binary]="true" (onChange)="onCheckAllChange($event)"
+                                pTooltip="Chọn tất cả" tooltipPosition="top">
+                            </p-checkbox>
+                        </div>
+                    </th>
                 </tr>
             </ng-template>
 
@@ -84,35 +92,39 @@
                     <td>{{ row.criticalName }}</td>
                     <td>
                         <p-select [(ngModel)]="row.frequency" [options]="listFrequencies" [fluid]="true"
-                            [showClear]="true" [appendTo]="'body'" id="frequency" name="frequency">
+                            [showClear]="true" [appendTo]="'body'" id="frequency" name="frequency" [disabled]="row.status == 0">
+                        </p-select>
+                    </td>
+                    <td *ngIf="data.plan.planType.code == PLANTYPE.DAILYCHECK">
+                        <p-select [(ngModel)]="row.examinationTime" [options]="listExaminationTimes" [fluid]="true"
+                            [showClear]="true" [appendTo]="'body'" id="examinationTime" name="examinationTime" [disabled]="row.status == 0">
                         </p-select>
                     </td>
                     <td *ngIf="data.plan.planType.code == PLANTYPE.DAILYCHECK">
                         <p-select [(ngModel)]="row.inspectionSession" [options]="listInspectionSessions" [fluid]="true"
-                            [showClear]="true" [appendTo]="'body'" id="inspectionSession" name="inspectionSession">
+                            [showClear]="true" [appendTo]="'body'" id="inspectionSession" name="inspectionSession" [disabled]="row.status == 0">
                         </p-select>
                     </td>
                     <td>
                         <input pInputText id="note" name="note" [(ngModel)]="row.note" autocomplete="off"
-                            [fluid]="true" />
+                            [fluid]="true" [disabled]="row.status == 0"/>
                     </td>
                     <td *ngIf="data.plan.planType.code == PLANTYPE.MAINTENANCE">
                         <input pInputText id="comment" name="comment" [(ngModel)]="row.comment" autocomplete="off"
-                            [fluid]="true" />
+                            [fluid]="true" [disabled]="row.status == 0"/>
                     </td>
                     <td *ngIf="data.plan.planType.code == PLANTYPE.MAINTENANCE">
                         <input pInputText id="committee" name="committee" [(ngModel)]="row.committee" autocomplete="off"
-                            [fluid]="true" />
+                            [fluid]="true" [disabled]="row.status == 0"/>
                     </td>
                     <td>
                         <p-select [(ngModel)]="row.result" [options]="listResult" [fluid]="true" [showClear]="true"
-                            [appendTo]="'body'" id="result" name="result">
+                            [appendTo]="'body'" id="result" name="result" [disabled]="row.status == 0">
                         </p-select>
                     </td>
-                    <td>
-                        <p-select [(ngModel)]="row.status" [options]="listStatus" [fluid]="true" [showClear]="true"
-                            [appendTo]="'body'" id="status" name="status" optionLabel="label" optionValue="value">
-                        </p-select>
+                    <td class="text-center">
+                        <p-checkbox [(ngModel)]="row.status" [binary]="true" [trueValue]="0" [falseValue]="1" inputId="status" (onChange)="onRowCheckChange(row)">
+                        </p-checkbox>
                     </td>
                 </tr>
             </ng-template>

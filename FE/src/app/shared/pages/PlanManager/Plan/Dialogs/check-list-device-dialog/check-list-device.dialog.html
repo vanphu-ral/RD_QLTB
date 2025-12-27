@@ -27,19 +27,19 @@
                     <td>{{ row.userTest }}</td>
                     <td>
                         <p-datepicker [(ngModel)]="row.dateTest" appDateConvert [iconDisplay]="'input'" [showIcon]="true"
-                            name="dateTest" inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body" />
+                            name="dateTest" inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body" [disabled]="row.status == 15"/>
                     </td>
                     <td>
                         <p-tag [value]="statusToString(row.status)" [severity]="getSeverity(row.status)" />
                     </td>
                     <td class="text-center">
-                        <p-button icon="pi pi-save" styleClass="m-1" *ngIf="row.status != 5" title="Lưu"
+                        <p-button icon="pi pi-save" styleClass="m-1" *ngIf="row.status != 5 && row.status != 15" title="Lưu"
                             (onClick)="saveDeviceCheckDate(row)"></p-button>
                         <p-button icon="pi pi-check-circle" styleClass="m-1" severity="info" title="Kiểm tra"
-                            (onClick)="checkDevice(row)" [disabled]="!row.id" *ngIf="row.status != 5"></p-button>
-                        <p-button icon="pi pi-check" styleClass="m-1" severity="success" title="Hoàn thành"
+                            (onClick)="checkDevice(row)" [disabled]="!row.id" *ngIf="row.status != 5 && row.status != 15"></p-button>
+                        <p-button icon="pi pi-check" styleClass="m-1" severity="success" title="Hoàn thành" *ngIf="row.status != 15"
                             (onClick)="completeCheckDate(row, $event)" [disabled]="!row.id"></p-button>
-                        <p-button icon="pi pi-trash" severity="danger" styleClass="m-1" title="Xóa"
+                        <p-button icon="pi pi-trash" severity="danger" styleClass="m-1" title="Xóa" *ngIf="row.status != 15"
                             (onClick)="deleteRow(i)">
                         </p-button>
                     </td>

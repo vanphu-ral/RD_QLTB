@@ -36,7 +36,10 @@ public class PlanResultDetail {
     private String frequency;
 
     @Column
-    private String inspectionSession; //Ca kiểm tra
+    private String inspectionSession; //Ca kiểm tra: ca1 ca2 ngày
+
+    @Column
+    private String examinationTime; //Thời gian kiểm tra: đầu ca giữa ca cuối ca tuần
 
     @Column
     private String type;

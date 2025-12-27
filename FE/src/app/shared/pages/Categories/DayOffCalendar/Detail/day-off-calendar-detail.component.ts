@@ -20,8 +20,7 @@ export class DayOffCalendarDetailComponent extends BasePageComponent<DayOffCalen
 
   listBranches: any[] = [];
   listTeams: any[] = [];
-  listTypes: any[] = [{code : 'WEEKLY', name : 'Ngày trong tuần'}, {code : 'SPECIAL', name : 'Ngày cụ thể'}];
-  listdayOfWeeks: any[] = [{code: 0, name: 'Chủ nhật'}, {code: 1, name: 'Thu hai'}, {code: 2, name: 'Thu ba'}, {code: 3, name: 'Thu tư'}, {code: 4, name: 'Thu năm'}, {code: 5, name: 'Thu sáu'}, {code: 6, name: 'Thu bảy'}];
+  filteredTeams: any[] = [];
 
   constructor(
     protected override apiService: DayOffCalendarService,
@@ -41,6 +40,17 @@ export class DayOffCalendarDetailComponent extends BasePageComponent<DayOffCalen
       this.listTeams = teams;
       this.cdr.detectChanges();
     });
+  }
+
+  onBranchChange(event: any) {
+    this.model.team = null;
+    const selectedBranchId = event.value?.id;
+    if (selectedBranchId) {
+      this.filteredTeams = this.listTeams.filter(t => t.branch?.id === selectedBranchId);
+    } else {
+      this.filteredTeams = [];
+    }
+    this.cdr.detectChanges();
   }
 
   public override save(): void {

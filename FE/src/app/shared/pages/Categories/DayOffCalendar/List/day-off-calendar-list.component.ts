@@ -17,10 +17,10 @@ export class DayOffCalendarListComponent {
 
   columns: Column[] = [
     { Field: 'id', Header: 'ID', IsHide: true },
-    { Field: 'code', Header: 'Mã', IsSearch: true, TypeSearch: 'text' },
-    { Field: 'name', Header: 'Tên', IsSearch: true, TypeSearch: 'text' },
     { Field: 'branch.name', Header: 'Tên ngành', IsSearch: true, TypeSearch: 'text' },
     { Field: 'team.name', Header: 'Tên tổ', IsSearch: true, TypeSearch: 'text' },
+    { Field: 'fromDate', Header: 'Ngày bắt đầu', IsSearch: true, TypeSearch: 'date' },
+    { Field: 'toDate', Header: 'Ngày kết thúc', IsSearch: true, TypeSearch: 'date' },
     { Field: 'createdBy', Header: 'Người tạo', IsSearch: true, TypeSearch: 'text' },
     { Field: 'createdAt', Header: 'Ngày tạo', IsSearch: true, TypeSearch: 'date' },
     { Field: 'updatedAt', Header: 'Ngày cập nhật', IsSearch: true, TypeSearch: 'date', style: { 'min-width': '150px' } },

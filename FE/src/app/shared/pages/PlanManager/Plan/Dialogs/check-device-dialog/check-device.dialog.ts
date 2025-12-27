@@ -28,11 +28,14 @@ export class CheckDeviceDialog {
     model: PlanCheck = new PlanCheck();
     listCriterial: PlanResultDetail[] = [];
     listFrequencies: any[] = ["Ngày", "Tuần", "Tháng", "Quỹ", "6 Tháng", "Năm"];
-    listInspectionSessions: any[] = ["Đầu ca", "Giữa ca", "Cuối ca", "Hằng tuần", "Ngày"];
+    listInspectionSessions: any[] = ["Đầu ca", "Giữa ca", "Cuối ca", "Hằng tuần"];
+    listExaminationTimes: any[] = ["Ca 1", "Ca 2", "Ngày"];
     listResult: any[] = ["OK", "Đã điều chỉnh", "Có bất thường"];
     listStatus: any[] = [{ label: 'Đã kiểm tra', value: 1 }, { label: 'Chưa kiểm tra', value: 2 }, { label: 'Không kiểm tra', value: 3 }];
     listSupplyReplaceHistory: SupplyReplacementHistory[] = [];
     PLANTYPE = PLANTYPE;
+
+    isCheckAll: boolean = false;
 
     constructor(
         public ref: DynamicDialogRef,
@@ -107,6 +110,27 @@ export class CheckDeviceDialog {
         });
     }
 
+    onCheckAllChange(event: any) {
+        const valueToSet = event.checked ? 0 : 1;
+        if (this.model.planResultDetail) {
+            this.model.planResultDetail.forEach((row: any) => {
+                row.status = valueToSet;
+            });
+        }
+    }
+    onRowCheckChange(row: any) {
+        console.log(row);
+        if(row.status == 0) {
+            row.result = null;
+            row.examinationTime = null;
+            row.inspectionSession = null;
+        }
+        if (this.model.planResultDetail && this.model.planResultDetail.length > 0) {
+            this.isCheckAll = this.model.planResultDetail.every((row: any) => row.status === 0);
+        } else {
+            this.isCheckAll = false;
+        }
+    }
 
 
 

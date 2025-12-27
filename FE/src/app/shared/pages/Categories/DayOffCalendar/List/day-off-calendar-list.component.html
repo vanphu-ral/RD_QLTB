@@ -3,6 +3,12 @@
   [columns]="columns"
   [title]="'Danh sách ngày nghỉ'"
   [showAddButton]="true">
+  <ng-template appColumnTemplate="fromDate" let-rowData>
+    {{ rowData | date: 'dd/MM/yyyy' }}
+  </ng-template>
+  <ng-template appColumnTemplate="toDate" let-rowData>
+    {{ rowData | date: 'dd/MM/yyyy' }}
+  </ng-template>
   <ng-template appColumnTemplate="createdAt" let-rowData>
     {{ rowData | date: 'dd/MM/yyyy' }}
   </ng-template>

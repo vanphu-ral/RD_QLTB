@@ -28,6 +28,8 @@ public class PlanResultDetailDTO {
 
     private String inspectionSession;
 
+    private String examinationTime;
+
     private String note;
 
     private String unit;

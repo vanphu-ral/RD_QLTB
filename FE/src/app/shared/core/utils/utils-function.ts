@@ -518,6 +518,8 @@ export class Util {
         return 'Đã hoàn thành';
       case 6:
         return 'Bị từ chối';
+      case 15:
+        return 'Ngày nghỉ';
       default:
         return '';
     }
@@ -537,6 +539,8 @@ export class Util {
         return 'success';
       case 6:
         return 'danger';
+      case 15:
+        return 'secondary';
       default:
         return '';
     }

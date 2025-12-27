@@ -1,5 +1,6 @@
 package io.rd.qltb.rest;
 
+import io.rd.qltb.domain.DayOffCalendar;
 import io.rd.qltb.model.DayOffCalendarDTO;
 import io.rd.qltb.service.DayOffCalendarService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -50,5 +51,11 @@ public class DayOffCalendarResource {
     public ResponseEntity<Void> deleteDayOffCalendar(@PathVariable(name = "id") final Long id) {
         dayOffCalendarService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/by-team/{teamId}")
+    public ResponseEntity<List<DayOffCalendar>> getByTeam(@PathVariable Long teamId) {
+        List<DayOffCalendar> list = dayOffCalendarService.getDayOffByTeam(teamId);
+        return ResponseEntity.ok(list);
     }
 }

@@ -1,3 +1,8 @@
 img.signature_img > img {
   transform: rotate(90deg);
 }
+
+:host ::ng-deep .icon-img {
+  width: 20px;
+  height: 20px;
+}

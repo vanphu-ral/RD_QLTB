@@ -5,6 +5,7 @@ export class PlanResultDetail {
     criticalCode?: string;
     frequency?: string;
     inspectionSession?: string;
+    examinationTime?: string;
     type?: string;
     result?: string;
     note?: string;

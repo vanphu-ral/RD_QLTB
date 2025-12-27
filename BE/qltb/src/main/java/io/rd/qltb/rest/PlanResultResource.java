@@ -11,14 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static io.rd.qltb.config.ConstantStatusGlobal.COMPLETED;
 
@@ -50,9 +43,11 @@ public class PlanResultResource {
     @ApiResponse(responseCode = "201")
     public ResponseEntity<Long> updateStatus(
             @AuthenticationPrincipal OidcUser oidcUser,
-            @PathVariable Long id) {
-         planResultService.updateStatus(id,COMPLETED,oidcUser.getName());
-        return new ResponseEntity<>( id, HttpStatus.CREATED);
+            @PathVariable Long id,
+            @RequestParam Integer status) { // Thêm RequestParam để lấy status từ URL
+
+        planResultService.updateStatus(id, status, oidcUser.getName());
+        return new ResponseEntity<>(id, HttpStatus.CREATED);
     }
     @PostMapping
     @ApiResponse(responseCode = "201")
