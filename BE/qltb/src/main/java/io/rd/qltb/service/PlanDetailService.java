@@ -34,11 +34,13 @@ public class PlanDetailService {
     private final PlanResultDetailService planResultDetailService;
     private final PlanResultRepository planResultRepository;
     private final ApprovalWorkflowRepository approvalWorkflowRepository;
+    private final ErrorReportRepository errorReportRepository;
+    private final ErrorReportService errorReportService;
 
     public PlanDetailService(final PlanDetailRepository planDetailRepository,
                              final PlanRepository planRepository, final DeviceRepository deviceRepository,
                              final SampleReportRepository sampleReportRepository,
-                             final DeviceGroupRepository deviceGroupRepository, ApprovalRepository approvalRepository, ApprovalService approvalService, PlanResultDetailRepository planResultDetailRepository, PlanResultService planResultService, PlanResultDetailService planResultDetailService, PlanResultRepository planResultRepository, ApprovalWorkflowRepository approvalWorkflowRepository) {
+                             final DeviceGroupRepository deviceGroupRepository, ApprovalRepository approvalRepository, ApprovalService approvalService, PlanResultDetailRepository planResultDetailRepository, PlanResultService planResultService, PlanResultDetailService planResultDetailService, PlanResultRepository planResultRepository, ApprovalWorkflowRepository approvalWorkflowRepository, ErrorReportRepository errorReportRepository, ErrorReportService errorReportService) {
         this.planDetailRepository = planDetailRepository;
         this.planRepository = planRepository;
         this.deviceRepository = deviceRepository;
@@ -51,6 +53,8 @@ public class PlanDetailService {
         this.planResultDetailService = planResultDetailService;
         this.planResultRepository = planResultRepository;
         this.approvalWorkflowRepository = approvalWorkflowRepository;
+        this.errorReportRepository = errorReportRepository;
+        this.errorReportService = errorReportService;
     }
     public List<PlanDetailDTO> getByPlanId (final Long planId) {
         final List<PlanDetail> planDetails = planDetailRepository.findAllByPlanId(planId);
@@ -104,6 +108,9 @@ public class PlanDetailService {
                 .map(planResultDetail -> planResultDetailService.mapToDTO(planResultDetail, new PlanResultDetailDTO()))
                 .toList();
         planCheckDTO.setPlanResultDetail(planResultDetailDTOS);
+        List<ErrorReportDTO> errorReportDTOS = errorReportRepository.findByPlanDetailId(id).stream().map(item->
+                errorReportService.mapToDTO(item,new ErrorReportDTO())).toList();
+        planCheckDTO.setErrorReport(errorReportDTOS);
         return planCheckDTO;
     }
 
