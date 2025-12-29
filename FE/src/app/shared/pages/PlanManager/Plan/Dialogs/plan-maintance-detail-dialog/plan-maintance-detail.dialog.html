@@ -45,7 +45,7 @@
                 </th>
               </tr>
               <tr>
-                <th>Số: <span id="spanCurentPlanDeviceNumber">{{ plan?.code }}-{{ model?.planDetail?.device?.code }}</span></th>
+                <th>Số: <span id="spanCurentPlanDeviceNumber">{{ data.nameDetail }}</span></th>
                 <th>
                   <div class="form-group">
                     <label for="Name">Thiết bị: <span id="spanCurentDeviceName"> {{ data.device.name }}</span></label>
@@ -60,7 +60,7 @@
               <tr>
                 <th rowspan="2">STT</th>
                 <th rowspan="2">Nội dung sửa chữa, bảo dưỡng</th>
-                <th colspan="12">Tháng</th>
+                <th colspan="12" class="text-center">Tháng</th>
                 <th rowspan="2">Bộ phận thực hiện</th>
                 <th rowspan="2">Hưỡng dẫn, Quy trình (nếu có)</th>
                 <th rowspan="2" colspan="2">Ghi chú</th>
