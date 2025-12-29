@@ -1,5 +1,5 @@
 <!-- Tree Table -->
-<div class="base-table-header my-3">
+<div class="tree-table-header my-3">
   <h2>Danh sách kế hoạch</h2>
   <p-button [label]="'Thêm mới'" class="p-button-sm" (click)="addItem()" />
 </div>
@@ -178,21 +178,7 @@
         <td colspan="99">
           <p-table [value]="row.details" dataKey="id" [scrollable]="true">
             <ng-template #header>
-      <tr>
-        <th></th>
-        <th>STT</th>
-        <th>Nhóm thiết bị</th>
-        <th>Tên thiết bị</th>
-        <th>Mẫu biên bản</th>
-        <th>QR code</th>
-        <th>Người thực hiện</th>
-        <th>Người tạo</th>
-        <th>Người cập nhật</th>
-        <th>Ngày tạo</th>
-        <th>Ngày cập nhật</th>
-        <th>Trạng thái</th>
-        <th pFrozenColumn alignFrozen="right" [frozen]="true">Thao tác</th>
-      </tr>
+      z
     </ng-template>
     <ng-template #body let-detail let-i="rowIndex">
       <tr>
