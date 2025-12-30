@@ -104,6 +104,15 @@
                             </ng-container>
                         </ng-container>
                     </ng-container>
+                    <tr class="repair-log-row" style="background-color: #f8f9fa; font-weight: bold;">
+                        <td colspan="7" class="text-center">NHẬT KÝ SỬA CHỮA (Hiển thị các ngày đã xử lý xong sự cố)</td>
+                        <td *ngFor="let day of getDaysArray()" class="text-center">
+                            <span [innerHTML]="getRepairStatusForDay(day)"></span>
+                        </td>
+                        <ng-container *ngIf="getDaysArray().length < 31">
+                            <td *ngFor="let i of [].constructor(31 - getDaysArray().length)"></td>
+                        </ng-container>
+                    </tr>
                 </tbody>
                 <tfoot>
                     <tr>
@@ -111,7 +120,7 @@
                             <p>
                                 1. Đánh dấu [<i class="far fa-circle"></i>] khi OK, Dấu [<i
                                     class="fa-solid fa-circle-play fa-rotate-270"></i>] khi đã điều chỉnh, [<i
-                                    class="fas fa-times"></i>] khi có bất thường.
+                                    class="fas fa-times"></i>] khi có bất thường, [<i class="fa-solid fa-wrench" style="color: red;"></i>] khi đã sửa.
                             </p>
                             <p>2. Khi có bất thường, liên lạc với Tổ trưởng hoặc nhóm kỹ thuật, cơ khí Ngành.</p>
                             <p>

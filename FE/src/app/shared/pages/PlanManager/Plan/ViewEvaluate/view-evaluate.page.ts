@@ -379,6 +379,38 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
     return Array.from({ length: 31 }, (_, i) => i + 1);
   }
 
+  /**
+ * Kiểm tra xem ngày cụ thể có phát sinh sửa chữa (isRepaired = true) không
+ * Dựa trên mảng errorReport trong sampleReport
+ */
+  getRepairStatusForDay(day: number): SafeHtml | string {
+    if (!this.model.errorReport || !Array.isArray(this.model.errorReport)) {
+      return '';
+    }
+
+    // Lấy tháng/năm hiện tại từ model
+    const planDate = new Date(this.model.planDetail.createdAt);
+    const month = planDate.getMonth();
+    const year = planDate.getFullYear();
+
+    // Tìm trong danh sách lỗi xem có mục nào ngày đó đã sửa xong không
+    const repaired = this.model.errorReport.find((err: any) => {
+      const errorDate = new Date(err.timeReported);
+      return errorDate.getDate() === day &&
+        errorDate.getMonth() === month &&
+        errorDate.getFullYear() === year &&
+        err.isRepaired === true;
+    });
+
+    if (repaired) {
+      // Trả về icon màu xanh báo hiệu đã sửa xong
+      return this.sanitizer.bypassSecurityTrustHtml(
+        '<i class="fa-solid fa-wrench" style="color: red;" title="Đã sửa chữa"></i>'
+      );
+    }
+    return '';
+  }
+
   printDiv() {
     const printContents = document.getElementById('print-section')?.innerHTML;
     if (!printContents) return;
