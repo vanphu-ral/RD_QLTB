@@ -58,7 +58,7 @@
       <div class="col-4">
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.type" [options]="listTypes" [fluid]="true" [disabled]="isViewMode || isApprovalMode"
-            [showClear]="true" [appendTo]="'body'" id="type" name="type" optionLabel="name" optionValue="code">
+            [showClear]="true" [appendTo]="'body'" id="type" name="type" optionLabel="name" optionValue="code" required [invalid]="!model.type">
           </p-select>
           <label for="type">Loại</label>
         </p-floatlabel>
@@ -66,7 +66,7 @@
 
       <div class="col-4">
         <p-floatlabel variant="on">
-          <p-select [(ngModel)]="model.approvalWorkflow" [options]="listApprovalWorkflow" optionLabel="name"
+          <p-select [(ngModel)]="model.approvalWorkflow" [options]="listApprovalWorkflow" optionLabel="name" required [invalid]="!model.approvalWorkflow"
             [fluid]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="approvalWorkflow"
             name="approvalWorkflow" dataKey="id">
           </p-select>
