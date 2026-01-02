@@ -702,7 +702,7 @@ public class PlanService {
         for (PlanDetail planDetail : planDetails) {
             String userManager = null;
             DeviceDTO deviceDTO = deviceService.get(planDetail.getDevice().getId());
-            if (deviceDTO.getTeam().getManager() == null) {
+            if (deviceDTO.getTeam() == null ) {
                 userManager = deviceDTO.getBranch().getManager();
             } else {
                 userManager = deviceDTO.getTeam().getManager();
