@@ -41,6 +41,7 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { TabsModule } from 'primeng/tabs';
 import { ChartModule } from 'primeng/chart';
 import { AccordionModule } from 'primeng/accordion'; 
+import { HasRoleDirective } from './shared/directive/has-role.directive';
 
 @NgModule({
   imports: [
@@ -84,7 +85,8 @@ import { AccordionModule } from 'primeng/accordion';
     InputGroupAddonModule,
     TabsModule,
     ChartModule,
-    AccordionModule
+    AccordionModule,
+    HasRoleDirective
   ],
   exports: [
     CommonModule,
@@ -127,7 +129,8 @@ import { AccordionModule } from 'primeng/accordion';
     InputGroupAddonModule,
     TabsModule,
     ChartModule,
-    AccordionModule
+    AccordionModule,
+    HasRoleDirective
   ],
   providers: [DialogService, MessageService, ConfirmationService]
 })
