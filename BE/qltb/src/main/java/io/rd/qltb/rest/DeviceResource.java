@@ -107,9 +107,9 @@ public class DeviceResource {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/by-serial")
-    public ResponseEntity<DeviceDTO> getDeviceBySerialNumber(@RequestParam String serialNumber) {
-        DeviceDTO device = deviceService.getDeviceBySerialNumber(serialNumber);
+    @GetMapping("/by-qr-code")
+    public ResponseEntity<DeviceDTO> getDeviceByQrCode(@RequestParam String qrCode) {
+        DeviceDTO device = deviceService.getDeviceByQrCode(qrCode);
         return ResponseEntity.ok(device);
     }
 

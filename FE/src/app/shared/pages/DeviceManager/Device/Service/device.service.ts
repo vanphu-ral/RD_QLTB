@@ -15,9 +15,9 @@ export class DeviceService extends BaseApiService<Device> {
     return this.http.get<Device[]>(`${this['fullBaseUrl']}/group/${groupId}`);
   }
 
-  getBySerialNumber(serialNumber: string): Observable<Device> {
-    const params = new HttpParams().set('serialNumber', serialNumber);
-    return this.http.get<Device>(`${this['fullBaseUrl']}/by-serial`, { params });
+  getBySerialNumber(qrCode: string): Observable<Device> {
+    const params = new HttpParams().set('qrCode', qrCode);
+    return this.http.get<Device>(`${this['fullBaseUrl']}/by-qr-code`, { params });
   }
 
   checkDeviceHasDataEvaluation(groupId: number, planId: number): Observable<any[]> {

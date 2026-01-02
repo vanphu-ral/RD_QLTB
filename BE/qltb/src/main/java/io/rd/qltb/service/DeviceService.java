@@ -222,8 +222,8 @@ public class DeviceService {
         deviceRepository.save(device);
     }
 
-    public DeviceDTO getDeviceBySerialNumber(String serialNumber) {
-        return deviceRepository.findBySerialNumber(serialNumber)
+    public DeviceDTO getDeviceByQrCode(String qrCode) {
+        return deviceRepository.findByQrCode(qrCode)
                 .map(device -> mapToDTO(device, new DeviceDTO()))
                 .orElseThrow(NotFoundException::new);
     }
