@@ -7,6 +7,7 @@ import { DepartmentListComponent } from './shared/pages/Categories/Department/Li
 import { CallbackComponent } from './shared/core/auth/callback.component';
 import { ScanQrCodeComponent } from './shared/pages/Extension/ScanQRCode/pages/scan-qr-code.component';
 import { ImportDataComponent } from './shared/pages/Extension/ImportData/pages/import-data.component';
+import { RoleGuard } from './shared/directive/role.guard';
 
 export const routes: Routes = [
     {
@@ -28,6 +29,10 @@ export const routes: Routes = [
     {
         path: 'Departments',
         component: AppLayout,
+        // canActivate: [RoleGuard],
+        // data: { 
+        //     roles: ['ADMIN', 'HR_MANAGER'] // <--- Chỉ user có role này mới vào được
+        // },
         loadChildren: () => import('./shared/pages/Categories/Department/department.routes').then(m => m.default)
     },
     {
