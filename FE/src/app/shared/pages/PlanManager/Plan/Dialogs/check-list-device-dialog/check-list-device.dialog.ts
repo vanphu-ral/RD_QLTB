@@ -46,16 +46,18 @@ export class CheckListDeviceDialog {
 
     loadDeviceCheckList() {
         this.planResultService.getByPlanDetailId(this.data.id).subscribe((res) => {
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            this.checkList = res.filter((item: any) => {
-                const testDate = new Date(item.dateTest);
-                const compareDate = new Date(testDate.getTime());
-                compareDate.setHours(0, 0, 0, 0);
-                return compareDate <= today;
-            });
             if (this.plan.planType.code == PLANTYPE.DAILYCHECK) {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                this.checkList = res.filter((item: any) => {
+                    const testDate = new Date(item.dateTest);
+                    const compareDate = new Date(testDate.getTime());
+                    compareDate.setHours(0, 0, 0, 0);
+                    return compareDate <= today;
+                });
                 this.checkDayOff();
+            }else {
+                this.checkList = res;
             }
             this.cdr.detectChanges();
         });

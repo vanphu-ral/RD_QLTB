@@ -1,5 +1,6 @@
 package io.rd.qltb.domain;
 
+import io.rd.qltb.enums.OperationsStaff;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -26,6 +27,9 @@ public class KeyMapping {
 
     @Column
     private String frequency;
+
+    @Column
+    private OperationsStaff performer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sample_report_id", nullable = false)

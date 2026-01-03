@@ -3,4 +3,5 @@ export class keyMapping {
     sampleReport?: any
     criterial?: any
     frequency?: string
+    performer?: string
 }

@@ -19,6 +19,7 @@ import { PlanTypeService } from '../../PlanType/Service/plan-type.service';
 import { BaseApprovalComponent } from "../../../../base/base-approval-component/base-approval.component";
 import { ConfirmationService } from 'primeng/api';
 import { DeviceService } from '../../../DeviceManager/Device/Service/device.service';
+import { OperationsStaff, OperationsStaffLabel } from '../../../../enums/operations-staff.enum';
 
 @Component({
   selector: 'app-sample-report-detail',
@@ -36,6 +37,10 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
   listDeviceGroup: any[] = []
   listDeviceGroupBase: any[] = []
   listCriterialBySample: any[] = []
+  listPerformers = Object.values(OperationsStaff).map(value => ({
+    label: OperationsStaffLabel.get(value),
+    value: value
+  }));
   listCriterial: any[] = []
   listCriterialGroup: any[] = []
 
@@ -85,7 +90,8 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
               group: group,
               criterial: x.criterial || null,
               criterials: criterials,
-              frequency: x.frequency || null
+              performer: x.performer || null,
+              frequency: x.frequency || null,
             };
           });
           this.cdr.detectChanges();
@@ -105,7 +111,8 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
           group: group,
           criterial: x.criterial || null,
           criterials: criterials,
-          frequency: x.frequency || null
+          performer: x.performer || null,
+          frequency: x.frequency || null,
         };
       });
       this.cdr.detectChanges();
@@ -174,7 +181,8 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
           const keyMappings: keyMapping[] = this.listCriterialBySample.map(item => ({
             sampleReport: { id: id },
             criterial: { id: item.criterial?.id },
-            frequency: item.frequency
+            performer: item.performer,
+            frequency: item.frequency,
           }));
           if (keyMappings.length > 0) {
             this.keyMappingService.createList(keyMappings).subscribe({
@@ -199,6 +207,7 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
             id: item.id,
             sampleReport: { id: id },
             criterial: { id: item.criterial?.id },
+            performer: item.performer,
             frequency: item.frequency
           }));
           if (keyMappings.length > 0) {
@@ -236,6 +245,7 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
               id: item.id,
               sampleReport: { id: id },
               criterial: { id: item.criterial?.id },
+              performer: item.performer,
               frequency: item.frequency
             }));
             if (keyMappings.length > 0) {

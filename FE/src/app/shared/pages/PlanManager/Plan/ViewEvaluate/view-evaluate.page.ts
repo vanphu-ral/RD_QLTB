@@ -30,7 +30,7 @@ interface UniqueDetail {
   criticalName: string;
   criticalCode: string;
   frequency: string;
-  userTest: string; // Người thực hiện
+  performer: string; // Người thực hiện
   dailyResults: DayResults[]; // Thay đổi: Mảng kết quả cho 31 ngày (chứa các ca)
 }
 
@@ -308,6 +308,8 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
         const criteria = mapping.criterial;
         const groupName = criteria?.criterialGroup?.name || 'Khác';
         const criticalName = criteria?.name || '';
+        const frequency = mapping?.frequency || 'Ngày';
+        const performer = mapping?.performer || null;
 
         if (!uniqueGroups.has(groupName)) {
           uniqueGroups.set(groupName, new Map<string, any[]>());
@@ -320,7 +322,8 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
             criticalGroup: groupName,
             criticalName: criticalName,
             criticalCode: criteria?.code,
-            frequency: criteria?.frequency || '', // Bạn có thể thêm field frequency vào criteria nếu có
+            frequency: frequency || '', // Bạn có thể thêm field frequency vào criteria nếu có
+            performer: performer,
             isPlaceholder: true // Đánh dấu đây là dữ liệu mẫu
           }]);
         }
@@ -375,7 +378,7 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
           criticalName: criticalName,
           criticalCode: latestResult.criticalCode || '',
           frequency: latestResult.frequency || '',
-          userTest: latestResult.isPlaceholder ? '' : (latestResult.createdBy || latestResult.planResult?.userTest || ''),
+          performer: latestResult.performer || '',
           dailyResults: dailyResults,
         } as UniqueDetail;
       });

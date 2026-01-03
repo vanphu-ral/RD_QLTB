@@ -109,6 +109,7 @@
             <th>STT</th>
             <th>Nhóm Tiêu chí</th>
             <th>Tiêu chí</th>
+            <th>Người thực hiện</th>
             <th>Tần suất</th>
             <th *ngIf="!(isViewMode ||isApprovalMode)">Thao tác</th>
           </tr>
@@ -129,6 +130,11 @@
                 </p-select>
               </td>
               <td>
+                <p-select [(ngModel)]="row.performer" [options]="listPerformers" [fluid]="true" [disabled]="isViewMode || isApprovalMode"
+                  [showClear]="true" [appendTo]="'body'" id="performer-{{ i }}" name="performer-{{ i }}">
+                </p-select>
+              </td>
+              <td>
                 <p-select [(ngModel)]="row.frequency" [options]="listFrequencies" [fluid]="true" [disabled]="isViewMode || isApprovalMode"
                   [showClear]="true" [appendTo]="'body'" id="frequency-{{ i }}" name="frequency-{{ i }}">
                 </p-select>
@@ -144,6 +150,7 @@
               <td>{{ i + 1 }}</td>
               <td>{{ row.group?.name }}</td>
               <td>{{ row.criterial?.name }}</td>
+              <td>{{ row.performer }}</td>
               <td>{{ row.frequency }}</td>
             </tr>
           </ng-template>
