@@ -10,5 +10,5 @@ import java.util.List;
 public interface BranchRepository extends JpaRepository<Branch, Long> {
     List<Branch> findAllByStatusNotOrderByIdDesc(Integer status);
     Branch findFirstByFactoryId(Long id);
-
+    List<Branch> findAllByStatusOrderByIdDesc(Integer status);
 }

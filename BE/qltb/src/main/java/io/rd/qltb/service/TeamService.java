@@ -15,6 +15,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import static io.rd.qltb.config.ConstantStatusGlobal.APPROVED;
 import static io.rd.qltb.config.ConstantStatusGlobal.DELETED;
 
 
@@ -34,6 +35,12 @@ public class TeamService {
 
     public List<TeamDTO> findAll() {
         final List<Team> teams = teamRepository.findAllByStatusNotOrderByIdDesc(DELETED);
+        return teams.stream()
+                .map(team -> mapToDTO(team, new TeamDTO()))
+                .toList();
+    }
+    public List<TeamDTO> findAllByApprove() {
+        final List<Team> teams = teamRepository.findAllByStatusOrderByIdDesc(APPROVED);
         return teams.stream()
                 .map(team -> mapToDTO(team, new TeamDTO()))
                 .toList();

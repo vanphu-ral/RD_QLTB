@@ -32,7 +32,10 @@ public class LineResource {
     public ResponseEntity<List<LineDTO>> getAllLines() {
         return ResponseEntity.ok(lineService.findAll());
     }
-
+    @GetMapping("/approve")
+    public ResponseEntity<List<LineDTO>> getAllLinesByApprove() {
+        return ResponseEntity.ok(lineService.findAllByApprove());
+    }
     @GetMapping("/{id}")
     public ResponseEntity<LineDTO> getLine(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(lineService.get(id));

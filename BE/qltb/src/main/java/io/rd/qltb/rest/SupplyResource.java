@@ -31,7 +31,10 @@ public class SupplyResource {
     public ResponseEntity<List<SupplyDTO>> getAllSupplies() {
         return ResponseEntity.ok(supplyService.findAll());
     }
-
+    @GetMapping("/approve")
+    public ResponseEntity<List<SupplyDTO>> getAllSuppliesByApprove() {
+        return ResponseEntity.ok(supplyService.findAllByApprove());
+    }
     @GetMapping("/{id}")
     public ResponseEntity<SupplyDTO> getSupply(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(supplyService.get(id));

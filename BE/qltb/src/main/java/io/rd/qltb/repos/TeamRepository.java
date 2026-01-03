@@ -13,4 +13,5 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
     @Query(value="SELECT * FROM teams t WHERE t.branch_id = ?1 ;", nativeQuery = true)
     List<Team> getAllByBranchid(Long id);
     List<Team> findAllByStatusNotOrderByIdDesc(Integer status);
+    List<Team> findAllByStatusOrderByIdDesc(Integer status);
 }

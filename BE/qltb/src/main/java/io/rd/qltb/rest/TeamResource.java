@@ -32,7 +32,10 @@ public class TeamResource {
     public ResponseEntity<List<TeamDTO>> getAllTeams() {
         return ResponseEntity.ok(teamService.findAll());
     }
-
+    @GetMapping("/approve")
+    public ResponseEntity<List<TeamDTO>> getAllTeamsByApprove() {
+        return ResponseEntity.ok(teamService.findAllByApprove());
+    }
     @GetMapping("/{id}")
     public ResponseEntity<TeamDTO> getTeam(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(teamService.get(id));

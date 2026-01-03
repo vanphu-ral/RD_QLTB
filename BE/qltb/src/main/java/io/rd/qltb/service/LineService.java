@@ -15,6 +15,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import static io.rd.qltb.config.ConstantStatusGlobal.APPROVED;
 import static io.rd.qltb.config.ConstantStatusGlobal.DELETED;
 
 
@@ -38,7 +39,12 @@ public class LineService {
                 .map(line -> mapToDTO(line, new LineDTO()))
                 .toList();
     }
-
+    public List<LineDTO> findAllByApprove() {
+        final List<Line> lines = lineRepository.findByStatusOrderByIdDesc(APPROVED);
+        return lines.stream()
+                .map(line -> mapToDTO(line, new LineDTO()))
+                .toList();
+    }
     public LineDTO get(final Long id) {
         return lineRepository.findById(id)
                 .map(line -> mapToDTO(line, new LineDTO()))

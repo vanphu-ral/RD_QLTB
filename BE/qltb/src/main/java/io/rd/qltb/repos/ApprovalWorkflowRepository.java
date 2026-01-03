@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface ApprovalWorkflowRepository extends JpaRepository<ApprovalWorkflow, Long> {
 List<ApprovalWorkflow> findByStatusNotOrderByIdDesc(Integer status);
+    List<ApprovalWorkflow> findByStatusOrderByIdDesc(Integer status);
 }

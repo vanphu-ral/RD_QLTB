@@ -13,6 +13,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import static io.rd.qltb.config.ConstantStatusGlobal.APPROVED;
 import static io.rd.qltb.config.ConstantStatusGlobal.DELETED;
 
 
@@ -38,7 +39,12 @@ public class ApprovalWorkflowService {
                 .map(approvalWorkflow -> mapToDTO(approvalWorkflow, new ApprovalWorkflowDTO()))
                 .toList();
     }
-
+    public List<ApprovalWorkflowDTO> findAllByApprove() {
+        final List<ApprovalWorkflow> approvalWorkflows = approvalWorkflowRepository.findByStatusOrderByIdDesc(APPROVED);
+        return approvalWorkflows.stream()
+                .map(approvalWorkflow -> mapToDTO(approvalWorkflow, new ApprovalWorkflowDTO()))
+                .toList();
+    }
     public ApprovalWorkflowDTO get(final Long id) {
         return approvalWorkflowRepository.findById(id)
                 .map(approvalWorkflow -> mapToDTO(approvalWorkflow, new ApprovalWorkflowDTO()))

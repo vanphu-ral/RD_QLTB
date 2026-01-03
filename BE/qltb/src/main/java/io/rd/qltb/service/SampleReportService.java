@@ -20,6 +20,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import static io.rd.qltb.config.ConstantStatusGlobal.APPROVED;
 import static io.rd.qltb.config.ConstantStatusGlobal.DELETED;
 
 
@@ -55,7 +56,12 @@ public class SampleReportService {
                 .map(sampleReport -> mapToDTO(sampleReport, new SampleReportDTO()))
                 .toList();
     }
-
+    public List<SampleReportDTO> findAllByApprove() {
+        final List<SampleReport> sampleReports = sampleReportRepository.findAllByStatusOrderByIdDesc(APPROVED);
+        return sampleReports.stream()
+                .map(sampleReport -> mapToDTO(sampleReport, new SampleReportDTO()))
+                .toList();
+    }
     public SampleReportDTO get(final Long id) {
         return sampleReportRepository.findById(id)
                 .map(sampleReport -> mapToDTO(sampleReport, new SampleReportDTO()))
