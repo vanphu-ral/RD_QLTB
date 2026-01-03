@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface DeviceGroupRepository extends JpaRepository<DeviceGroup, Long> {
     List<DeviceGroup> findByStatusNotOrderByIdDesc(Integer status);
+    List<DeviceGroup> findByStatusOrderByIdDesc(Integer status);
 }

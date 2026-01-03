@@ -10,5 +10,6 @@ public interface SampleReportRepository extends JpaRepository<SampleReport, Long
 
     SampleReport findFirstByDeviceGroupId(Long id);
     List<SampleReport> findAllByStatusNotOrderByIdDesc(Integer status);
+    List<SampleReport> findAllByStatusOrderByIdDesc(Integer status);
 
 }

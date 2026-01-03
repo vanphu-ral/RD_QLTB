@@ -34,7 +34,10 @@ public class SampleReportResource {
     public ResponseEntity<List<SampleReportDTO>> getAllSampleReports() {
         return ResponseEntity.ok(sampleReportService.findAll());
     }
-
+    @GetMapping("/approve")
+    public ResponseEntity<List<SampleReportDTO>> getAllSampleReportsByApprove() {
+        return ResponseEntity.ok(sampleReportService.findAllByApprove());
+    }
     @GetMapping("/{id}")
     public ResponseEntity<SampleReportDTO> getSampleReport(
             @PathVariable(name = "id") final Long id) {

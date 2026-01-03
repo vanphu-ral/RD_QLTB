@@ -11,6 +11,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import static io.rd.qltb.config.ConstantStatusGlobal.APPROVED;
 import static io.rd.qltb.config.ConstantStatusGlobal.DELETED;
 
 
@@ -34,7 +35,12 @@ public class DeviceGroupService {
                 .map(deviceGroup -> mapToDTO(deviceGroup, new DeviceGroupDTO()))
                 .toList();
     }
-
+    public List<DeviceGroupDTO> findAllByApprove() {
+        final List<DeviceGroup> deviceGroups = deviceGroupRepository.findByStatusOrderByIdDesc(APPROVED);
+        return deviceGroups.stream()
+                .map(deviceGroup -> mapToDTO(deviceGroup, new DeviceGroupDTO()))
+                .toList();
+    }
     public DeviceGroupDTO get(final Long id) {
         return deviceGroupRepository.findById(id)
                 .map(deviceGroup -> mapToDTO(deviceGroup, new DeviceGroupDTO()))

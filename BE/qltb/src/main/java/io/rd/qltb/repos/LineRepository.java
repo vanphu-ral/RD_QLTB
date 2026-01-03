@@ -10,4 +10,5 @@ public interface LineRepository extends JpaRepository<Line, Long> {
 
     Line findFirstByTeamId(Long id);
 List<Line> findByStatusNotOrderByIdDesc(Integer status);
+    List<Line> findByStatusOrderByIdDesc(Integer status);
 }

@@ -15,6 +15,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import static io.rd.qltb.config.ConstantStatusGlobal.APPROVED;
 import static io.rd.qltb.config.ConstantStatusGlobal.DELETED;
 
 
@@ -31,7 +32,10 @@ public class BranchService {
         this.factoryRepository = factoryRepository;
         this.publisher = publisher;
     }
-
+    public List<BranchDTO> findAllByApprove(){
+        final List<Branch> branches = branchRepository.findAllByStatusOrderByIdDesc(APPROVED);
+        return branches.stream().map(branch -> mapToDTO(branch,new BranchDTO())).toList();
+    }
     public List<BranchDTO> findAll() {
         final List<Branch> branches = branchRepository.findAllByStatusNotOrderByIdDesc(DELETED);
         return branches.stream()

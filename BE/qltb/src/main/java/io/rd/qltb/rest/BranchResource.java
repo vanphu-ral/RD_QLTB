@@ -32,7 +32,10 @@ public class BranchResource {
     public ResponseEntity<List<BranchDTO>> getAllBranches() {
         return ResponseEntity.ok(branchService.findAll());
     }
-
+    @GetMapping("/approve")
+    public ResponseEntity<List<BranchDTO>> getAllBranchesApprove() {
+        return ResponseEntity.ok(branchService.findAllByApprove());
+    }
     @GetMapping("/{id}")
     public ResponseEntity<BranchDTO> getBranch(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(branchService.get(id));

@@ -30,6 +30,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import static io.rd.qltb.config.ConstantStatusGlobal.APPROVED;
 import static io.rd.qltb.config.ConstantStatusGlobal.DELETED;
 
 
@@ -52,6 +53,12 @@ public class SupplyService {
         this.globalConfig = globalConfig;
     }
 
+    public List<SupplyDTO> findAllByApprove() {
+        final List<Supply> supplies = supplyRepository.findByStatusOrderByIdDesc(APPROVED);
+        return supplies.stream()
+                .map(supply -> mapToDTO(supply, new SupplyDTO()))
+                .toList();
+    }
     public List<SupplyDTO> findAll() {
         final List<Supply> supplies = supplyRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         return supplies.stream()

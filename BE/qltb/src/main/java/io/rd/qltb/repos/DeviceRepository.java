@@ -1,6 +1,7 @@
 package io.rd.qltb.repos;
 
 import io.rd.qltb.domain.Device;
+import io.rd.qltb.domain.Line;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -18,7 +19,7 @@ public interface DeviceRepository extends JpaRepository<Device, Long> {
 
     Device findFirstByTeamId(Long id);
 
-    List<Device> findByGroupId(Long groupId);
+    List<Device> findByGroupIdAndStatusOrderByIdDesc(Long groupId,Integer status);
     Device findFirstBySerialNumber(String serialNumber);
 
     Optional<Device> findByQrCode(String qrCode);
@@ -26,4 +27,5 @@ public interface DeviceRepository extends JpaRepository<Device, Long> {
             "INNER JOIN device_management.device_groups b ON a.group_id = b.id\n" +
             "INNER JOIN device_management.branches c ON c.id = a.branch_id WHERE c.code = ?1 ;",nativeQuery = true)
     List<Long> findDistinctBranchIdsByBranchCode(String branchCode);
+    List<Device> findByStatusOrderByIdDesc(Integer status);
 }

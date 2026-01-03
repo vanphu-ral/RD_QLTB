@@ -32,7 +32,10 @@ public class DeviceGroupResource {
     public ResponseEntity<List<DeviceGroupDTO>> getAllDeviceGroups() {
         return ResponseEntity.ok(deviceGroupService.findAll());
     }
-
+    @GetMapping("/approve")
+    public ResponseEntity<List<DeviceGroupDTO>> getAllDeviceGroupsByApprove() {
+        return ResponseEntity.ok(deviceGroupService.findAllByApprove());
+    }
     @GetMapping("/{id}")
     public ResponseEntity<DeviceGroupDTO> getDeviceGroup(
             @PathVariable(name = "id") final Long id) {

@@ -32,7 +32,10 @@ public class ApprovalWorkflowResource {
     public ResponseEntity<List<ApprovalWorkflowDTO>> getAllApprovalWorkflows() {
         return ResponseEntity.ok(approvalWorkflowService.findAll());
     }
-
+    @GetMapping("/approve")
+    public ResponseEntity<List<ApprovalWorkflowDTO>> getAllApprovalWorkflowsByApprove() {
+        return ResponseEntity.ok(approvalWorkflowService.findAll());
+    }
     @GetMapping("/{id}")
     public ResponseEntity<ApprovalWorkflowDTO> getApprovalWorkflow(
             @PathVariable(name = "id") final Long id) {
