@@ -65,6 +65,9 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
     if(!this.isAddMode) {
       if (this.model?.devices!.length > 0) {
         this.model.plan.maintanceMonth = this.model.devices![0].estimatedTime;
+        this.model.devices!.forEach(device => {
+          device.manager = JSON.parse(device.manager as string);
+        });
       }
     }
     
@@ -131,6 +134,9 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
     planRequest.devices = devices.filter(
       (d: any) => d.device?.group?.id && validGroupIds.includes(d.device.group.id)
     );
+    devices.forEach((device: DeviceDetail) => {
+      device.manager = JSON.stringify(device.manager);
+    });
     planRequest.planDetails = planDetails.map((pd: any) => {
       const { isDuplicate, ...rest } = pd;
       return rest;

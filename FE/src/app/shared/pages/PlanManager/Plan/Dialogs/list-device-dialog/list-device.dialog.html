@@ -42,10 +42,14 @@
                         <input type="text" pInputText [(ngModel)]="row.note" id="note-{{ i }}" name="note-{{ i }}"/>
                     </td>
                     <td>
-                        <p-select [(ngModel)]="row.manager" [options]="listManagers" optionLabel="name" optionValue="username" [fluid]="true"
+                        <!-- <p-select [(ngModel)]="row.manager" [options]="listManagers" optionLabel="name" optionValue="username" [fluid]="true"
                             [showClear]="true" [appendTo]="'body'" [filter]="true"
                             id="manager-{{ i }}" name="manager-{{ i }}" dataKey="username">
-                        </p-select>
+                        </p-select> -->
+                        <p-multiSelect [(ngModel)]="row.manager" [options]="listManagers" optionLabel="name" optionValue="username" [fluid]="true"
+                            [showClear]="true" [appendTo]="'body'" [filter]="true"
+                            id="managers-{{ i }}" name="managers-{{ i }}" dataKey="username">
+                        </p-multiSelect>
                     </td>
                     <td class="text-center">
                         <p-button icon="pi pi-trash" severity="danger" (onClick)="deleteRow(i)">

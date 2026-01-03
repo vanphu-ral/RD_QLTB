@@ -136,6 +136,9 @@ export class CheckDeviceDialog {
 
     submit() {
         this.model.planResult = this.data.planResult;
+        if(Array.isArray(this.model.planResult.userTest)) {
+            this.model.planResult.userTest = JSON.stringify(this.model.planResult.userTest);
+        }
         this.listSupplyReplaceHistory = this.listSupplyReplaceHistory.map(x => {
             return {
                 ...x,

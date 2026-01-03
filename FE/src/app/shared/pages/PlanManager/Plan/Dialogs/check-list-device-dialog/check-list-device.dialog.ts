@@ -46,6 +46,9 @@ export class CheckListDeviceDialog {
 
     loadDeviceCheckList() {
         this.planResultService.getByPlanDetailId(this.data.id).subscribe((res) => {
+            res.map((item: any) => {
+                item.userTest = JSON.parse(item.userTest);
+            });
             if (this.plan.planType.code == PLANTYPE.DAILYCHECK) {
                 const today = new Date();
                 today.setHours(0, 0, 0, 0);
@@ -59,6 +62,8 @@ export class CheckListDeviceDialog {
             }else {
                 this.checkList = res;
             }
+            console.log(res);
+            
             this.cdr.detectChanges();
         });
     }
@@ -112,6 +117,7 @@ export class CheckListDeviceDialog {
 
     saveDeviceCheckDate(row: any) {
         row = Util.simplifyMany(row, ['planDetail']);
+        row.userTest = JSON.stringify(row.userTest);
         if (Util.isEmpty(row.id)) {
             this.planResultService.create(row).subscribe((res) => {
                 Object.assign(row, res);
