@@ -15,13 +15,14 @@ const DEFAULT_SESSIONS = ['Đầu ca', 'Giữa ca', 'Cuối ca', 'Hằng tuần'
 // Định nghĩa mới: Kết quả cho một Ca kiểm tra cụ thể trong một ngày
 interface DailySessionResult {
   session: string; // Tên Ca kiểm tra (Đầu ca, Giữa ca,...)
-  results: { value: string, time: string }[]; // Mảng kết quả (O, A, X, //) cho ca này vào ngày này
+  results: { value: string, time: string, createdBy?: string }[]; // Mảng kết quả (O, A, X, //) cho ca này vào ngày này
 }
 
 // Định nghĩa mới: Kết quả cho tất cả các Ca kiểm tra trong một ngày
 interface DayResults {
   day: number;
   sessionResults: DailySessionResult[]; // Mảng kết quả của 5 ca mặc định
+  daySignatures?: string[];
 }
 
 // Định nghĩa lại Interface cho chi tiết công việc duy nhất
@@ -40,12 +41,6 @@ interface GroupedCritical {
   details: UniqueDetail[];
   rowspan: number; // Rowspan = Số chi tiết * Số ca (details.length * 5)
 }
-
-const ICON_SVG = {
-  O: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="width:14px;height:14px;fill:none;stroke:black;stroke-width:40"><circle cx="256" cy="256" r="192"/></svg>`,
-  X: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" style="width:12px;height:12px;fill:black"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>`,
-  A: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="width:14px;height:14px;fill:black;transform:rotate(270deg)"><path d="M0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zM188.3 147.1c-7.6 4.2-12.3 12.3-12.3 20.9l0 176c0 8.7 4.7 16.7 12.3 20.9s17.1 3.3 23.7-2.4l128-112c5.9-5.2 9.3-12.7 9.3-20.5s-3.4-15.3-9.3-20.5l-128-112c-6.5-5.7-16.1-6.6-23.7-2.4z"/></svg>`
-};
 
 @Component({
   selector: 'view-evaluate',
@@ -83,23 +78,33 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
 
   override ngOnInit(): void {
     super.ngOnInit();
+    console.log(this.model);
+    
     this.sampleReport = JSON.parse(this.model.planDetail.detail);
     this.planInfo = this.model.planDetail;
-    this.signatureService.getByUsername('admin').subscribe({
-      next: (data) => {
-        this.signature = data;
-      },
-      error: (err) => {
-        console.error('Không tìm thấy chữ ký của người thực hiện:', err);
-        this.signature = { imageLink: null }; // Đặt rỗng/null nếu lỗi
-        this.groupPlanDetails();
-      },
-      complete: () => {
-        // Sau khi cố gắng lấy chữ ký (dù thành công hay thất bại), gọi hàm chính
-        this.groupPlanDetails();
-      }
-    });
     this.loadApprovals();
+
+    const details = this.model.planResultDetail || [];
+    const uniqueUsernames = [...new Set(details.map((item: any) => item.createdBy).filter(Boolean))] as string[];
+    if (uniqueUsernames.length > 0) {
+      this.signatureService.getByListUsernames(uniqueUsernames).subscribe({
+        next: (signatures: any[]) => {
+          // Lưu map chữ ký để tra cứu nhanh: { 'username': 'imageLink' }
+          this.signature = signatures.reduce((acc, s) => {
+            acc[s.username] = s.imageLink;
+            return acc;
+          }, {});
+          this.groupPlanDetails();
+        },
+        error: (err) => {
+          console.error('Lỗi lấy danh sách chữ ký người thực hiện:', err);
+          this.groupPlanDetails();
+        }
+      });
+    } else {
+      this.groupPlanDetails();
+    }
+
     this.approvalService.getUsers().subscribe(users => {
       this.listUsers = users;
       this.userMap = users.reduce((acc, u) => {
@@ -191,101 +196,6 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
       });
   }
 
-  /**
-   * Nhóm các chi tiết kiểm tra theo Hạng mục chính và kết quả theo ngày (dateTest) và Ca kiểm tra (inspectionSession)
-   */
-  // groupPlanDetails(): void {
-  //   const details = this.model.planResultDetail || [];
-  //   const uniqueGroups = new Map<string, Map<string, any[]>>();
-
-  //   // 1. Nhóm dữ liệu: Group -> CriticalName -> Array of Results
-  //   details.forEach((item: any) => {
-  //     const groupName = (item.criticalGroup || '').replace(/"/g, '');
-  //     const criticalName = item.criticalName || '';
-
-  //     if (!uniqueGroups.has(groupName)) {
-  //       uniqueGroups.set(groupName, new Map<string, any[]>());
-  //     }
-  //     const nameMap = uniqueGroups.get(groupName)!;
-
-  //     if (!nameMap.has(criticalName)) {
-  //       nameMap.set(criticalName, []);
-  //     }
-  //     nameMap.get(criticalName)?.push(item);
-  //   });
-
-  //   // 2. Chuyển Map thành mảng GroupedCritical và xử lý dailyResults
-  //   let runningTT = 1;
-  //   this.groupedDetails = Array.from(uniqueGroups.entries()).map(([groupName, nameMap]) => {
-  //     const groupDetails: UniqueDetail[] = Array.from(nameMap.entries()).map(([criticalName, items]) => {
-
-  //       // Khởi tạo mảng kết quả 31 ngày, mỗi ngày có 5 ca mặc định (chưa có kết quả)
-  //       const dailyResults: DayResults[] = Array.from({ length: 31 }, (_, i) => ({
-  //         day: i + 1,
-  //         sessionResults: DEFAULT_SESSIONS.map(session => ({
-  //           session: session,
-  //           results: [] // Mặc định rỗng
-  //         }))
-  //       }));
-
-  //       // Lấp đầy kết quả thực tế vào mảng dailyResults theo NGÀY VÀ CA
-  //       items.forEach((res: any) => {
-  //         const dateTest = res.planResult?.dateTest;
-  //         const resultValue = this.mapResultToIcon(res.result);
-  //         const inspectionSession = res.inspectionSession;
-  //         const examinationTime = res.examinationTime; // Lấy thông tin Ca 1, Ca 2, Ngày
-
-  //         if (dateTest && resultValue && resultValue !== '//' && this.model.planDetail?.createdAt) {
-  //           const testDate = new Date(dateTest);
-  //           const planDate = new Date(this.model.planDetail.createdAt);
-
-  //           if (testDate.getMonth() === planDate.getMonth() && testDate.getFullYear() === planDate.getFullYear()) {
-  //             const day = testDate.getDate();
-  //             const dayResult = dailyResults[day - 1];
-
-  //             if (dayResult) {
-  //               const sessionResult = dayResult.sessionResults.find(s =>
-  //                 s.session.toLowerCase() === (inspectionSession || '').toLowerCase().trim()
-  //               );
-
-  //               if (sessionResult) {
-  //                 // LƯU Ý QUAN TRỌNG: Đẩy object vào thay vì string
-  //                 sessionResult.results.push({
-  //                   value: resultValue,
-  //                   time: examinationTime || ''
-  //                 });
-  //               }
-  //             }
-  //           }
-  //         }
-  //       });
-
-  //       // Lấy thông tin người thực hiện từ kết quả gần nhất
-  //       const latestResult = items
-  //         .slice()
-  //         .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0] || {};
-
-  //       return {
-  //         tt: runningTT++, // Tăng số thứ tự
-  //         criticalName: criticalName,
-  //         criticalCode: latestResult.criticalCode || '',
-  //         frequency: latestResult.frequency || '',
-  //         userTest: latestResult.createdBy || latestResult.planResult?.userTest || '',
-  //         dailyResults: dailyResults,
-  //       } as UniqueDetail;
-  //     });
-
-  //     return {
-  //       criticalGroup: groupName,
-  //       details: groupDetails,
-  //       // Rowspan = Số chi tiết * 5 Ca kiểm tra
-  //       rowspan: groupDetails.length * DEFAULT_SESSIONS.length,
-  //     } as GroupedCritical;
-  //   });
-
-  //   this.cdr.detectChanges();
-  // }
-
   groupPlanDetails(): void {
     // 1. Kiểm tra nguồn dữ liệu chính
     const results = this.model.planResultDetail || [];
@@ -342,7 +252,7 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
             results: []
           }))
         }));
-
+        const usersByDay = new Map<number, Set<string>>();
         // Chỉ lấp đầy kết quả nếu không phải là dữ liệu placeholder
         if (!items[0]?.isPlaceholder) {
           items.forEach((res: any) => {
@@ -357,19 +267,30 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
 
               if (testDate.getMonth() === planDate.getMonth() && testDate.getFullYear() === planDate.getFullYear()) {
                 const day = testDate.getDate();
+                if (!usersByDay.has(day)) usersByDay.set(day, new Set());
+                if (res.createdBy) usersByDay.get(day)?.add(res.createdBy);
                 const dayResult = dailyResults[day - 1];
                 if (dayResult) {
                   const sessionResult = dayResult.sessionResults.find(s =>
                     s.session.toLowerCase() === (inspectionSession || '').toLowerCase().trim()
                   );
                   if (sessionResult) {
-                    sessionResult.results.push({ value: resultValue, time: examinationTime || '' });
+                    sessionResult.results.push({ value: resultValue, time: examinationTime || '', createdBy: res.createdBy || '' });
                   }
                 }
               }
             }
           });
         }
+
+        dailyResults.forEach(dr => {
+          const dayUsers = usersByDay.get(dr.day);
+          if (dayUsers) {
+            dr.daySignatures = Array.from(dayUsers)
+              .map(uname => this.signature[uname]) // Lấy link ảnh từ map signature đã lưu ở ngOnInit
+              .filter(Boolean);
+          }
+        });
 
         const latestResult = items[0] || {};
 
@@ -401,27 +322,35 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
   hasResultForDay(day: number): SafeHtml | '' {
     if (!this.groupedDetails || this.groupedDetails.length === 0) return '';
 
-    const found = this.groupedDetails.some(group =>
-      group.details.some(detail => {
-        const dayResult = detail.dailyResults.find(d => d.day === day);
-        if (!dayResult) return false;
-        // Kiểm tra trong mảng Object results
-        return dayResult.sessionResults.some(sessionR =>
-          sessionR.results.some(r => r.value && r.value !== '//')
-        );
-      })
-    );
+    // Tập hợp tất cả imageLink của những người có kết quả trong ngày này
+    const allSignaturesInDay = new Set<string>();
+    let hasAnyResult = false;
 
-    if (found) {
-      if (this.signature?.imageLink) {
-        return this.sanitizer.bypassSecurityTrustHtml(
-          `<img src="${this.signature.imageLink}" style="width: 30px; height: 16px; transform: rotate(90deg);">`
-        );
-      } else {
-        return this.sanitizer.bypassSecurityTrustHtml(`<span style="font-weight: bold;">Đã ký</span>`);
-      }
+    this.groupedDetails.forEach(group => {
+      group.details.forEach(detail => {
+        const dayResult = detail.dailyResults.find(d => d.day === day);
+        if (dayResult) {
+          // Kiểm tra xem có kết quả không
+          const hasValue = dayResult.sessionResults.some(s => s.results.some(r => r.value && r.value !== '//'));
+          if (hasValue) {
+            hasAnyResult = true;
+            // Nếu có chữ ký thì add vào set
+            dayResult.daySignatures?.forEach(img => allSignaturesInDay.add(img));
+          }
+        }
+      });
+    });
+
+    if (!hasAnyResult) return '';
+
+    if (allSignaturesInDay.size > 0) {
+      const imagesHtml = Array.from(allSignaturesInDay)
+        .map(img => `<img src="${img}" style="width: 30px; height: 16px; transform: rotate(90deg); margin-bottom: 4px; display: block;">`)
+        .join('');
+      return this.sanitizer.bypassSecurityTrustHtml(`<div style="display: flex; flex-direction: column; align-items: center;">${imagesHtml}</div>`);
+    } else {
+      return this.sanitizer.bypassSecurityTrustHtml(`<span style="font-size: 10px; font-weight: bold;">Đã ký</span>`);
     }
-    return '';
   }
 
   /**
@@ -439,38 +368,10 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
 
     const baseUrl = window.location.origin;
 
-    // const icons = results.map((res: any) => {
-    //   // Chuẩn hóa tên ca để so sánh: "Ca 1" -> "ca1", "Ca 2" -> "ca2"
-    //   const timeKey = (res.time || '').toLowerCase().replace(/\s/g, '');
-
-    //   // Logic 1: Nếu là Ca 1 hoặc Ca 2 -> Trả về ảnh
-    //   if (timeKey === 'ca1' || timeKey === 'ca2') {
-    //     let statusSlug = '';
-    //     if (res.value === 'O') statusSlug = 'oke';
-    //     else if (res.value === 'A') statusSlug = 'edit';
-    //     else if (res.value === 'X') statusSlug = 'error';
-
-    //     if (statusSlug) {
-    //       // Đường dẫn: assets/imgs/ca1-oke.jpg, ca2-error.jpg...
-    //       return `<img src="assets/icon/${timeKey}-${statusSlug}.svg" class="icon-img" alt="${timeKey}-${statusSlug}"/>`;
-    //     }
-    //   }
-
-    //   // Logic 2: Nếu không phải Ca 1/Ca 2 (ví dụ: "Ngày") -> Giữ nguyên icon FontAwesome
-    //   switch (res.value) {
-    //     case 'O':
-    //       return '<i class="far fa-circle"></i>';
-    //     case 'A':
-    //       return '<i class="fa-solid fa-circle-play fa-rotate-270"></i>';
-    //     case 'X':
-    //       return '<i class="fas fa-times"></i>';
-    //     default:
-    //       return '';
-    //   }
-    // }).filter(Boolean);
-
     const icons = results.map((res: any) => {
       const timeKey = (res.time || '').toLowerCase().replace(/\s/g, '');
+      const creatorName = this.userMap[res.createdBy] || res.createdBy || 'N/A';
+      const tooltipText = `Người thực hiện: ${creatorName}`;
       if (timeKey === 'ca1' || timeKey === 'ca2') {
         let statusSlug = '';
         if (res.value === 'O') statusSlug = 'oke';
@@ -478,18 +379,16 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
         else if (res.value === 'X') statusSlug = 'error';
 
         if (statusSlug) {
-          // Thêm baseUrl vào trước đường dẫn
-          return `<img src="${baseUrl}/assets/icon/${timeKey}-${statusSlug}.svg" class="icon-img" style="width:16px; height:16px;" />`;
+          return `<img src="${baseUrl}/assets/icon/${timeKey}-${statusSlug}.svg" class="icon-img" style="width:16px; height:16px; cursor: pointer;" title="${tooltipText}" />`;
         }
       }
-      // ... (logic icon font-awesome giữ nguyên)
       switch (res.value) {
         case 'O':
-          return '<i class="far fa-circle"></i>';
+          return `<i class="far fa-circle" title="${tooltipText}" style="cursor:pointer;"></i>`;
         case 'A':
-          return '<i class="fa-solid fa-circle-play fa-rotate-270"></i>';
+          return `<i class="fa-solid fa-circle-play fa-rotate-270" title="${tooltipText}" style="cursor:pointer;"></i>`;
         case 'X':
-          return '<i class="fas fa-times"></i>';
+          return `<i class="fas fa-times" title="${tooltipText}" style="cursor:pointer;"></i>`;
         default:
           return '';
       }

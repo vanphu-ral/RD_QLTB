@@ -20,6 +20,7 @@ import { ListHistoryChangeDataDialog } from '../Dialogs/list-history-change-data
 import { DataService } from '../../../../service/send-data.service';
 import { PlanDetailService } from '../Service/plan-detail.service';
 import _ from 'lodash';
+import { AccountService } from '../../../../core/auth/account/account.service';
 
 @Component({
   selector: 'plan-list',
@@ -48,7 +49,7 @@ export class PlanListComponent {
   filters: any = {};
 
   constructor(public apiService: PlanService, private router: Router, private route: ActivatedRoute, private planDetailService: PlanDetailService,
-    private dialogService: DialogService, private cdr: ChangeDetectorRef, private messageService: MessageService,
+    private dialogService: DialogService, private cdr: ChangeDetectorRef, private messageService: MessageService, private accountService: AccountService,
     private confirmationService: ConfirmationService, private acceptanceService: AcceptanceService, private dataService: DataService) { }
 
   ngOnInit(): void {
@@ -139,6 +140,10 @@ export class PlanListComponent {
 
   isLocked(row: any) {
     return row.status === 2 || row.status === 6;
+  }
+
+  isEnabledCheckDevice(row: any) {
+    return (!(row.status === 2 || row.status === 6) && _.includes(row.manager, this.accountService.getUser()?.name));
   }
 
 

@@ -64,6 +64,7 @@ export class CheckDeviceDialog {
                         criticalCode: x.criterial?.code || null,
                         criticalName: x.criterial?.name || null,
                         frequency: x.frequency,
+                        performer: x.performer,
                         result: "OK",
                         status: 1
                     };

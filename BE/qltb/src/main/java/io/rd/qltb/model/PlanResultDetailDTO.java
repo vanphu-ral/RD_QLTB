@@ -1,6 +1,7 @@
 package io.rd.qltb.model;
 
 import io.rd.qltb.domain.PlanResult;
+import io.rd.qltb.enums.OperationsStaff;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -21,6 +22,8 @@ public class PlanResultDetailDTO {
     private String criticalName;
 
     private String frequency;
+
+    private OperationsStaff performer;
 
     private String type;
 

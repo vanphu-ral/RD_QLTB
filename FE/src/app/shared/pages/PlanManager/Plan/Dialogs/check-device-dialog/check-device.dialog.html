@@ -68,6 +68,7 @@
                     <th>Nhóm Tiêu chí</th>
                     <th>Tên Tiêu chí</th>
                     <th>Tần suất</th>
+                    <th>Người thực hiện</th>
                     <th *ngIf="data.plan.planType.code == PLANTYPE.DAILYCHECK">Ca kiểm tra</th>
                     <th *ngIf="data.plan.planType.code == PLANTYPE.DAILYCHECK">Thời gian kiểm tra</th>
                     <th [ngStyle]="data.plan.planType.code == PLANTYPE.MAINTENANCE ? {} : {'min-width': '600px'}">Mô tả</th>
@@ -90,11 +91,8 @@
                     <td>{{ i + 1 }}</td>
                     <td>{{ row.criticalGroup }}</td>
                     <td>{{ row.criticalName }}</td>
-                    <td>
-                        <p-select [(ngModel)]="row.frequency" [options]="listFrequencies" [fluid]="true"
-                            [showClear]="true" [appendTo]="'body'" id="frequency" name="frequency" [disabled]="row.status == 0">
-                        </p-select>
-                    </td>
+                    <td> {{ row.frequency }}</td>
+                    <td> {{ row.performer }}</td>
                     <td *ngIf="data.plan.planType.code == PLANTYPE.DAILYCHECK">
                         <p-select [(ngModel)]="row.examinationTime" [options]="listExaminationTimes" [fluid]="true"
                             [showClear]="true" [appendTo]="'body'" id="examinationTime" name="examinationTime" [disabled]="row.status == 0">

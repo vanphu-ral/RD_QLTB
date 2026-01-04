@@ -1,5 +1,6 @@
 package io.rd.qltb.domain;
 
+import io.rd.qltb.enums.OperationsStaff;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -34,6 +35,9 @@ public class PlanResultDetail {
 
     @Column
     private String frequency;
+
+    @Column
+    private OperationsStaff performer;
 
     @Column
     private String inspectionSession; //Ca kiểm tra: ca1 ca2 ngày

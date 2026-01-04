@@ -213,9 +213,11 @@
           <p-tag [value]="getStatus(detail.status)" [severity]="getSeverity(detail.status)" />
         </td>
         <td pFrozenColumn alignFrozen="right" [frozen]="true">
-          <p-button icon="pi pi-check-square" *ngIf="!isLocked(row)" title="Kiểm tra"
-            styleClass="p-button-sm p-button-rounded p-button-success m-1"
-            (onClick)="deviceDateCheckList(detail, row)"></p-button>
+          <ng-container *appHasRole="['RD_QLTB_ADMIN', 'RD_QLTB_OP']">
+            <p-button icon="pi pi-check-square" *ngIf="isEnabledCheckDevice(detail)" title="Kiểm tra"
+              styleClass="p-button-sm p-button-rounded p-button-success m-1"
+              (onClick)="deviceDateCheckList(detail, row)"></p-button>
+          </ng-container>
           <ng-container *appHasRole="['RD_QLTB_ADMIN', 'RD_QLTB_MANAGER']">
             <p-button icon="pi pi-file" styleClass="p-button-sm p-button-rounded p-button-secondary m-1" title="Tạo biên bản"
               *ngIf="(row.planType.code == PLANTYPE.MAINTENANCE || row.planType.code == PLANTYPE.REPAIR) && !isLocked(row)"
