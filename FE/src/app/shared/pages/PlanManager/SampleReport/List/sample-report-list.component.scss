@@ -1,0 +1,93 @@
+/* Ẩn trên màn hình web */
+.screen-hidden {
+    display: none !important;
+}
+
+@media print {
+
+    /* 1. Thiết lập khổ giấy ngang và lề */
+    @page {
+        size: A4 landscape;
+        margin: 10mm 5mm;
+        /* Lề trên-dưới 10mm, trái-phải 5mm */
+    }
+
+    /* 2. Ẩn toàn bộ UI của trang web */
+    body * {
+        visibility: hidden;
+    }
+
+    /* 3. Hiển thị vùng in */
+    #print-section,
+    #print-section * {
+        visibility: visible;
+    }
+
+    #print-section {
+        display: block !important;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+
+    /* 4. Tối ưu bảng để không bị tràn */
+    .report-table {
+        width: 100% !important;
+        table-layout: fixed;
+        /* Ép các cột tuân thủ width */
+        border-collapse: collapse;
+
+        th,
+        td {
+            font-size: 7.5pt !important;
+            /* Hạ size chữ xuống để vừa bề ngang */
+            padding: 2px !important;
+            border: 1px solid black !important;
+            word-wrap: break-word;
+            overflow: hidden;
+        }
+
+        /* Cố định độ rộng các cột chứa chữ để dành chỗ cho 31 cột ngày */
+        th:nth-child(1),
+        td:nth-child(1) {
+            width: 30px;
+        }
+
+        /* STT */
+        th:nth-child(2),
+        td:nth-child(2) {
+            width: 100px;
+        }
+
+        /* Nhóm tiêu chí */
+        th:nth-child(3),
+        td:nth-child(3) {
+            width: 180px;
+        }
+
+        /* Tên tiêu chí */
+        th:nth-child(4),
+        td:nth-child(4) {
+            width: 60px;
+        }
+
+        /* Người thực hiện */
+        th:nth-child(5),
+        td:nth-child(5) {
+            width: 50px;
+        }
+
+        /* Tần suất */
+
+        /* 31 cột ngày tự chia đều phần còn lại */
+        .day-col {
+            width: auto;
+        }
+    }
+
+    /* Đảm bảo Logo hiện ra */
+    img {
+        max-width: 120px;
+    }
+}

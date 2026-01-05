@@ -1,0 +1,41 @@
+<div class="p-1">
+    <form #f="ngForm" *ngIf="model">
+        <div class="row my-3">
+            <div class="col-6">
+                <p-floatlabel variant="on">
+                    <p-select [(ngModel)]="model.device" [options]="listDeviceOptions" optionLabel="name" [fluid]="true"
+                        [showClear]="true" [appendTo]="'body'" id="device" name="device" dataKey="id" [filter]="true"
+                        required [invalid]="!model.device">
+                    </p-select>
+                    <label for="device">Thiết bị cần in</label>
+                </p-floatlabel>
+            </div>
+            <div class="col-6">
+                <p-floatlabel variant="on">
+                    <p-select [(ngModel)]="model.plan" [options]="listPlans" optionLabel="name" [fluid]="true"
+                        [filter]="true" [showClear]="true" [appendTo]="'body'" id="plan" name="plan" required
+                        dataKey="id" required [invalid]="!model.plan">
+                    </p-select>
+                    <label for="plan">Kế hoạch cần in</label>
+                </p-floatlabel>
+            </div>
+        </div>
+
+        <div class="row my-3">
+            <div class="col-12">
+                <p-floatlabel variant="on">
+                    <p-select [(ngModel)]="type" [options]="listTypes" optionLabel="label" [fluid]="true"
+                        optionValue="value" [showClear]="true" [appendTo]="'body'" id="type" name="type" dataKey="id"
+                        required [invalid]="type === null || type === undefined">
+                    </p-select>
+                    <label for="type">Kiểu in</label>
+                </p-floatlabel>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 mt-4">
+            <p-button label="Xác nhận" (onClick)="save()" [disabled]="!f.valid"></p-button>
+            <p-button label="Đóng" (onClick)="close()" severity="secondary"></p-button>
+        </div>
+    </form>
+</div>

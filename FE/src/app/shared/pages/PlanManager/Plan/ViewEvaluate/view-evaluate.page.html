@@ -7,9 +7,6 @@
                         <th colspan="3"><img src="/assets/imgs/logo-rang-dong.png" style="width:150px;" /></th>
                         <th colspan="17"><b>BẢNG KIỂM TRA, BẢO DƯỠNG MÁY HÀNG NGÀY, HÀNG TUẦN</b></th>
                         <th colspan="6">Số hiệu:<span id="spanPlanNumber"></span><span id="SpanDieuChinh">{{ sampleReport.documentNumber }}</span></th>
-                        <!-- <th colspan="4">Biên soạn</th>
-                        <th colspan="4">Soát xét</th>
-                        <th colspan="4">Phê duyệt</th> -->
                         <ng-container *ngFor="let appr of listUserApprReport">
                             <th colspan="4" class="text-center">{{ appr.groupName }}</th>
                         </ng-container>
@@ -25,9 +22,6 @@
                             <p>Năm: <span id="SpanPlanYear">{{ model.planDetail.createdAt | date:'yyyy' }}</span></p>
                         </th>
                         <th rowspan="2" colspan="6"><span id="spanMainDatePlan">Ngày {{ sampleReport.updatedAt | date:'dd' }} tháng {{ sampleReport.updatedAt | date:'M' }} năm {{ sampleReport.updatedAt | date:'yyyy' }}</span></th>
-                        <!-- <th rowspan="3" colspan="4" style="text-align:center;" id="idBranch">123</th>
-                        <th rowspan="3" colspan="4" style="text-align:center;">456</th>
-                        <th rowspan="3" colspan="4" style="text-align:center;">789</th> -->
                         <ng-container *ngFor="let appr of listUserApprReport">
                             <th rowspan="3" colspan="4" style="text-align:center;" id="idBranch">
                                 <div *ngFor="let sig of appr.signatures" style="margin-bottom: 10px;">

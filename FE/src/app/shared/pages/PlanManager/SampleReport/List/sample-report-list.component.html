@@ -15,6 +15,124 @@
     styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="approval(row, $event)"></p-button>
   <p-button icon="pi pi-history" title="Xem lịch sử"
     styleClass="p-button-sm p-button-rounded p-button-warn m-1" (onClick)="viewHistory(row)"></p-button>
+  <p-button icon="pi pi-print" title="In"
+    styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="printSampleReport(row)"></p-button>
 </ng-template>
 <p-confirmDialog></p-confirmDialog>
 <p-toast></p-toast>
+
+
+<!-- In Mẫu biên bản -->
+ 
+<div class="table-responsive screen-hidden" id="print-section">
+    <table class="report-table table table-bordered">
+        <thead>
+            <tr>
+                <th colspan="3"><img src="/assets/imgs/logo-rang-dong.png" style="width:150px;" /></th>
+                <th colspan="17"><b>BẢNG KIỂM TRA, BẢO DƯỠNG MÁY HÀNG NGÀY, HÀNG TUẦN</b></th>
+                <th colspan="6">Số hiệu:<span id="spanPlanNumber"></span><span id="SpanDieuChinh">{{ data?.sampleReport?.documentNumber
+                        }}</span></th>
+                <th colspan="4">Biên soạn</th>
+                <th colspan="4">Soát xét</th>
+                <th colspan="4">Phê duyệt</th>
+            </tr>
+            <tr>
+                <th colspan="6">Tên đơn vị: <span id="SpanPlanDonVi">{{
+                        data?.plan?.factory?.name }} - {{ data?.plan?.branch?.name
+                        }}</span></th>
+                <th colspan="9">Số hiệu máy: <span id="spanDeviceCode">{{ data?.device?.code }}</span>
+                </th>
+                <th rowspan="3" colspan="5">
+                    <p>Tháng: <span id="SpanPlanMonth">{{ data?.plan?.createdAt | date:'M' }}</span></p>
+                    <p>Năm: <span id="SpanPlanYear">{{ data?.plan?.createdAt | date:'yyyy' }}</span></p>
+                </th>
+                <th rowspan="2" colspan="6"><span id="spanMainDatePlan">Ngày {{ data?.sampleReport?.updatedAt | date:'dd' }} tháng {{
+                        data?.sampleReport?.updatedAt | date:'M' }} năm {{ data?.sampleReport?.updatedAt | date:'yyyy' }}</span></th>
+                <th rowspan="3" colspan="4"></th>
+                <th rowspan="3" colspan="4"></th>
+                <th rowspan="3" colspan="4"></th>
+            </tr>
+            <tr>
+                <th colspan="6">Tên máy: <span id="spanDeviceName">{{ data?.device?.name }}</span>
+                </th>
+                <th colspan="9">Dây chuyền: <span id="spanLineName"> {{ data?.device?.line?.name }}
+                    </span></th>
+            </tr>
+            <tr>
+                <th colspan="6">
+                    Cách thức kiểm tra:
+                    <i class="fa-solid fa-circle-half-stroke"></i>Đầu giờ
+                    <i class="fa-solid fa-circle-half-stroke fa-rotate-180"></i>Cuối giờ
+                    <i class="fa-solid fa-circle"></i>Hàng tuần
+                </th>
+                <th colspan="9">Tổ: <span id="spanTeamName">{{ data?.device?.team?.name }}</span></th>
+                <th colspan="6"><span id="spanLanbanhanh_1">Ban hành lần {{ data?.sampleReport?.numberOfIssuances }}</span></th>
+            </tr>
+            <tr>
+                <th rowspan="2" style="width: 40px;">STT</th>
+                <th rowspan="2" style="width: 150px;">Nhóm tiêu chí</th>
+                <th rowspan="2" style="width: 250px;">Tên tiêu chí</th>
+                <th rowspan="2" style="width: 80px;">Người thực hiện</th>
+                <th rowspan="2" style="width: 80px;">Tần suất</th>
+                <th colspan="31" class="text-center">Ngày trong tháng</th>
+            </tr>
+            <tr>
+                <th *ngFor="let day of daysInMonth" class="day-col">{{ day }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngFor="let group of groupedData; let gIdx = index">
+                <tr *ngFor="let detail of group.details; let dIdx = index">
+
+                    <td class="text-center">{{ gIdx + 1 }}</td>
+
+                    <td *ngIf="dIdx === 0" [attr.rowspan]="group.details.length" class="font-bold">
+                        {{ group.groupName }}
+                    </td>
+
+                    <td>{{ detail.criterial.name }}</td>
+
+                    <td class="text-center">{{ detail.performer }}</td>
+
+                    <td class="text-center">{{ detail.frequency }}</td>
+
+                    <td *ngFor="let day of daysInMonth"></td>
+                </tr>
+            </ng-container>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td rowspan="2" colspan="4">
+                    <p>
+                        1. Đánh dấu [<i class="far fa-circle"></i>] khi OK, Dấu [<i
+                            class="fa-solid fa-circle-play fa-rotate-270"></i>] khi đã điều chỉnh, [<i
+                            class="fas fa-times"></i>] khi có bất thường, [<i class="fa-solid fa-wrench"
+                            style="color: red;"></i>] khi đã sửa.
+                    </p>
+                    <p>2. Khi có bất thường, liên lạc với Tổ trưởng hoặc nhóm kỹ thuật, cơ khí Ngành.</p>
+                    <p>
+                        3. Tổ trưởng hoặc nhóm kỹ thuật, sửa chữa ghi nội dung, ngày tháng, chữ kí vào
+                        phần &lt;Ghi chép khi có bất thường, sự cố&gt;.
+                    </p>
+                    <p>4. Gạch chéo ( // ) vào ngày không sử dụng.</p>
+                    <p>5. Mục hàng tuần: Ghi rõ ngày thực hiện.</p>
+                    <p>(*) Ghi chú: Các đơn vị có thể bổ sung tùy theo đặc điểm từng máy móc công nghệ.</p>
+                    <p>{{ data?.sampleReport?.formCode }}. Ban hành lần {{ data?.sampleReport?.numberOfIssuances }}</p>
+                </td>
+                <td>Người thực hiện ký</td>
+                <td *ngFor="let day of daysInMonth"></td>
+                <ng-container *ngIf="daysInMonth.length < 31">
+                    <td *ngFor="let i of [].constructor(31 - daysInMonth.length)"></td>
+                </ng-container>
+            </tr>
+            <tr>
+                <td>Tổ trưởng xác nhận ký (1 tuần/lần)</td>
+                <td colspan="7" id="sign_week_01"></td>
+                <td colspan="7" id="sign_week_02"></td>
+                <td colspan="7" id="sign_week_03"></td>
+                <td colspan="7" id="sign_week_04"></td>
+                <td colspan="3" id="sign_week_05"></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>

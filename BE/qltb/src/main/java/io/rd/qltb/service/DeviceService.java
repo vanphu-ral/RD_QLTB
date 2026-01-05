@@ -33,8 +33,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import static io.rd.qltb.config.ConstantStatusGlobal.APPROVED;
-import static io.rd.qltb.config.ConstantStatusGlobal.DELETED;
+import static io.rd.qltb.config.ConstantStatusGlobal.*;
 
 
 @Service
@@ -141,13 +140,13 @@ public class DeviceService {
     }
 
     public List<DeviceDTO> findAll() {
-        final List<Device> devices = deviceRepository.findByStatusOrderByIdDesc(APPROVED);
+        final List<Device> devices = deviceRepository.findByStatusOrderByIdDesc(DRAFF);
         return devices.stream()
                 .map(device -> mapToDTO(device, new DeviceDTO()))
                 .toList();
     }
     public List<DeviceDTO> getDevicesByGroupId(Long groupId) {
-        final List<Device> devices = deviceRepository.findByGroupIdAndStatusOrderByIdDesc(groupId,APPROVED);
+        final List<Device> devices = deviceRepository.findByGroupIdAndStatusOrderByIdDesc(groupId,DRAFF);
         return devices.stream()
                 .map(device -> mapToDTO(device, new DeviceDTO()))
                 .toList();
@@ -163,7 +162,7 @@ public class DeviceService {
         return deviceGroupDTOS;
     }
     public List<DeviceDTO> getDevicesByGroupIdAndPlanID(Long groupId,Long planId) {
-        final List<Device> devices = deviceRepository.findByGroupIdAndStatusOrderByIdDesc(groupId,APPROVED);
+        final List<Device> devices = deviceRepository.findByGroupIdAndStatusOrderByIdDesc(groupId,DRAFF);
         List<DeviceDTO> deviceDTOS =  devices.stream()
                 .map(device -> mapToDTO(device, new DeviceDTO()))
                 .toList();
