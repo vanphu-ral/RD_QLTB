@@ -225,7 +225,7 @@
             <p-button icon="pi pi-wrench" *ngIf="!isLocked(row)" title="Sửa chữa"
               styleClass="p-button-sm p-button-rounded p-button-warn m-1" (onClick)="repairDevice(detail)"></p-button>
             <p-button icon="pi pi-trash" *ngIf="!isLocked(row)" title="Xóa"
-              styleClass="p-button-sm p-button-rounded p-button-danger m-1" (onClick)="deleteItem(row, $event)"></p-button>
+              styleClass="p-button-sm p-button-rounded p-button-danger m-1" (onClick)="deleteItem(detail, $event, 1)"></p-button>
             <p-button icon="pi pi-file-pdf" styleClass="p-button-sm p-button-rounded p-button-info m-1" title="Xem báo cáo"
               *ngIf="row.planType.code == PLANTYPE.DAILYCHECK" (onClick)="viewEvaluateDevice(detail)"></p-button>
           </ng-container>

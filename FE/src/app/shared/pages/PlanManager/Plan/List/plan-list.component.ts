@@ -160,7 +160,7 @@ export class PlanListComponent {
     this.router.navigate([row.id, 'view'], { relativeTo: this.route });
   }
 
-  deleteItem(item: any, event: Event) {
+  deleteItem(item: any, event: Event, type: number = 0) {
     this.confirmationService.confirm({
       target: event.currentTarget as EventTarget,
       message: 'Bạn có muốn xóa bản ghi này?',
@@ -176,22 +176,41 @@ export class PlanListComponent {
         severity: 'danger'
       },
       accept: () => {
-        this.apiService.delete(item.id).subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'info',
-              summary: 'Đã xác nhận',
-              detail: 'Xóa thành công!',
-              life: 3000
-            });
-          },
-          error: (error) => {
-            Util.handleApiError(error, this.messageService);
-          },
-          complete: () => {
-            this.loadData();
-          }
-        });
+        if(type == 0) {
+          this.apiService.delete(item.id).subscribe({
+            next: () => {
+              this.messageService.add({
+                severity: 'info',
+                summary: 'Đã xác nhận',
+                detail: 'Xóa thành công!',
+                life: 3000
+              });
+            },
+            error: (error) => {
+              Util.handleApiError(error, this.messageService);
+            },
+            complete: () => {
+              this.loadData();
+            }
+          });
+        }else {
+          this.planDetailService.delete(item.id).subscribe({
+            next: () => {
+              this.messageService.add({
+                severity: 'info',
+                summary: 'Đã xác nhận',
+                detail: 'Xóa thông tin bản ghi!',
+                life: 3000
+              });
+            },
+            error: (error) => {
+              Util.handleApiError(error, this.messageService);
+            },
+            complete: () => {
+              this.loadData();
+            }
+          });
+        }
       },
       reject: () => {
         this.messageService.add({
