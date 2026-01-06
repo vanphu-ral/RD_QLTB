@@ -19,3 +19,6 @@
     }
   }
 }
+::ng-deep .table-child > .p-datatable-table-container {
+  overflow: unset !important;
+}
