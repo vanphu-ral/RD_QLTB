@@ -34,6 +34,7 @@ export class SampleReportListComponent {
   type: any;
   groupedData: any[] = [];
   daysInMonth = Array.from({ length: 31 }, (_, i) => i + 1);
+  listPlanAppr: any[] = [];
 
   columns: Column[] = [
     { Field: 'id', Header: 'ID', IsHide: true },
@@ -129,6 +130,7 @@ export class SampleReportListComponent {
     ref.onClose.subscribe((result) => {
       if (result) {
         this.data = result
+        this.listPlanAppr = result.listPlanAppr
         const map = new Map();
         this.data.listCriterialBySample.forEach((item: any) => {
           const groupId = item.group.id;
@@ -414,6 +416,32 @@ export class SampleReportListComponent {
     ['F', 'M', 'T', 'AA', 'AH'].forEach(col => {
       worksheet.getCell(`${col}${managerRow}`).border = borderStyle;
     });
+    const startCol = 1;  
+    const endCol = 36;   
+    const totalCols = endCol - startCol + 1; 
+    const approvers = this.listPlanAppr || []; 
+    
+    if (approvers.length > 0) {
+        const colSpan = Math.floor(totalCols / approvers.length);
+        let currentCol = startCol;
+        approvers.forEach((item, index) => {
+            let endOfBox = currentCol + colSpan - 1;
+            if (index === approvers.length - 1) {
+                endOfBox = endCol;
+            }
+            worksheet.mergeCells(managerRow + 2, currentCol, footerEndRow + 5, endOfBox);
+            const cell = worksheet.getCell(managerRow + 2, currentCol);
+            cell.value = `${item.groupName}\n\n(Ký, ghi rõ họ tên)`; 
+            cell.alignment = centerStyle;
+            cell.border = borderStyle;
+            cell.font = { size: 9, bold: true };
+            currentCol = endOfBox + 1;
+        });
+    } else {
+        worksheet.mergeCells(managerRow + 2, startCol, footerEndRow + 5, endCol);
+        const cell = worksheet.getCell(managerRow + 2, startCol);
+        cell.border = borderStyle;
+    }
     worksheet.getRow(footerStartRow).height = 40; 
     worksheet.getRow(managerRow).height = 60;     
     const buffer = await workbook.xlsx.writeBuffer();

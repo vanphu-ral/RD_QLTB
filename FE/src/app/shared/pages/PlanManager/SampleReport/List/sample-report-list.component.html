@@ -135,4 +135,17 @@
             </tr>
         </tfoot>
     </table>
+    <table id="nghemthu-details-table" class="table table-bordered table-hover" style="width: 100%;">
+        <thead>
+            <tr>
+                <th *ngFor="let g of listPlanAppr" class="text-center">
+                    {{ g.groupName }}
+                </th>
+            </tr>
+            <tr>
+                <td *ngFor="let g of listPlanAppr" style="height: 100px;">
+                </td>
+            </tr>
+        </thead>
+    </table>
 </div>

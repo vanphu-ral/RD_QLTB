@@ -7,6 +7,7 @@ import { DeviceService } from "../../../../DeviceManager/Device/Service/device.s
 import { PlanService } from "../../../Plan/Service/plan.service";
 import { forkJoin } from "rxjs";
 import { KeyMappingService } from "../../Service/key-mapping.service";
+import { ApprovalService } from "../../../../ApprovalManager/Approval/Service/approval.service";
 
 @Component({
     selector: 'app-print-sample-report-dialog',
@@ -33,7 +34,8 @@ export class PrintSampleReportDialog {
         private deviceService: DeviceService,
         private planService: PlanService,
         private cdr: ChangeDetectorRef,
-        private keyMappingService: KeyMappingService
+        private keyMappingService: KeyMappingService,
+        private approvalService: ApprovalService
     ) {
         this.data = config.data.data;
     }
@@ -60,7 +62,6 @@ export class PrintSampleReportDialog {
                     frequency: x.frequency || null,
                 };
             });
-            console.log(this.listCriterialBySample);
             this.processData();
             this.cdr.detectChanges();
         })
@@ -84,7 +85,35 @@ export class PrintSampleReportDialog {
     }
 
     save() {
-        this.ref.close({ type: this.type, listCriterialBySample: this.listCriterialBySample, sampleReport: this.data, plan: this.model.plan, device: this.model.device });
+        this.approvalService
+            .findApprovalsByEntityIdAndEntityType(this.model.plan.id, 'plans')
+            .subscribe((data) => {
+                console.log(data);
+                data = Object.values(
+                    data.reduce((acc: any, item: any) => {
+                        const groupId = item.group?.groupApprovalName?.id;
+                        acc[groupId] ??= {
+                            groupApprovalName: item.group.groupApprovalName,
+                            items: [],
+                            userApprovals: []
+                        };
+                        acc[groupId].items.push(item);
+                        acc[groupId].userApprovals.push(item.userApproval);
+                        return acc;
+                    }, {})
+                ).map((group: any) => ({
+                    ...group,
+                    userApprovals: group.userApprovals.map((u: any) => ({
+                        ...u,
+                    }))
+                }));
+                data = data.map(g => ({
+                    groupName: g.groupApprovalName.name,
+                }));
+                console.log(data);
+                this.ref.close({ type: this.type, listCriterialBySample: this.listCriterialBySample, sampleReport: this.data, plan: this.model.plan, device: this.model.device, listPlanAppr: data });
+                
+            });
     }
 
     close() {
