@@ -40,7 +40,7 @@ export class ListDeviceComponent implements OnInit {
     constructor(private sampleReportService: SampleReportService, private deviceGroupService: DeviceGroupService, private cdr: ChangeDetectorRef, private dialogService: DialogService, private ngZone: NgZone) { }
 
     ngOnInit(): void {
-        this.sampleReportService.getAll().subscribe(res => {
+        this.sampleReportService.getApproved().subscribe(res => {
             this.listSampleReportBase = res
             this.cdr.detectChanges()
         })

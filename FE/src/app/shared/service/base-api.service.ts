@@ -21,6 +21,10 @@ export abstract class BaseApiService<T> {
     return this.http.get<T[]>(`${this.fullBaseUrl}`);
   }
 
+  getApproved(): Observable<T[]> {
+    return this.http.get<T[]>(`${this.fullBaseUrl}/approve`);
+  }
+
   getAllByPaged(filters: any = {}, page: number = 0): Observable<Page<any>> {
     let params = new HttpParams()
       .set('page', page.toString());
