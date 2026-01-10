@@ -1,0 +1,13 @@
+<div class="p-1">
+    <div class="row">
+        <div class="col-12">
+            <p-fileUpload name="file" accept="application/pdf" mode="basic" chooseLabel="Chọn file PDF" [auto]="true"
+                [customUpload]="true" (uploadHandler)="uploadPdf($event)">
+            </p-fileUpload>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <p-button label="Đóng" (onClick)="close()"></p-button>
+    </div>
+</div>

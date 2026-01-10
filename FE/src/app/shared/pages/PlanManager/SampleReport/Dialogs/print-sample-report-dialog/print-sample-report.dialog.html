@@ -33,6 +33,38 @@
             </div>
         </div>
 
+        <div class="row my-3">
+            <p-table [value]="listDataExport" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
+                currentPageReportTemplate="Hien thi {first} den {last} trong tong cong {totalRecords} ket qua">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>STT</th>
+                        <th>Ngày xuất bản in</th>
+                        <th>Người xuất</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-row let-i="rowIndex">
+                    <tr>
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ row.dateExport | date:'dd/MM/yyyy'}}</td>
+                        <td>{{ row.username }}</td>
+                        <td>
+                            <p-button icon="pi pi-paperclip" severity="secondary" (onClick)="upload(row)"></p-button>
+                            <p-button icon="pi pi-eye" label="Xem PDF" class="p-button-sm p-button-text p-button-info" *ngIf="row.file"
+                                (click)="viewPdf(row.id)">
+                            </p-button>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="99" class="text-center">Chưa có dữ liệu</td>
+                    </tr>
+                </ng-template>
+            </p-table>      
+        </div>
+
         <div class="d-flex justify-content-end gap-2 mt-4">
             <p-button label="Xác nhận" (onClick)="save()" [disabled]="!f.valid"></p-button>
             <p-button label="Đóng" (onClick)="close()" severity="secondary"></p-button>

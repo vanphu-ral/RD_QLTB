@@ -1,13 +1,17 @@
 import { ChangeDetectorRef, Component } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { SharedModule } from "../../../../../../share.module";
-import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
+import { DialogService, DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
 import _, { sample } from "lodash";
 import { DeviceService } from "../../../../DeviceManager/Device/Service/device.service";
 import { PlanService } from "../../../Plan/Service/plan.service";
 import { forkJoin } from "rxjs";
 import { KeyMappingService } from "../../Service/key-mapping.service";
 import { ApprovalService } from "../../../../ApprovalManager/Approval/Service/approval.service";
+import { ExportSampleReportCheckLogService } from "../../Service/export-sample-report-check-log.service";
+import { AccountService } from "../../../../../core/auth/account/account.service";
+import { Util } from "../../../../../core/utils/utils-function";
+import { UploadFilePdfDialog } from "../upload-file-pdf/upload-file-pdf.dialog";
 
 @Component({
     selector: 'app-print-sample-report-dialog',
@@ -19,6 +23,8 @@ export class PrintSampleReportDialog {
 
     data: any;
     model: any = {};
+    dataExport: any = {};
+    listDataExport: any[] = [];
     listDeviceOptions: any[] = [];
     listPlans: any[] = [];
     listTypes: any[] = [{ label: 'PDF', value: 0 }, { label: 'XLSX', value: 1 }];
@@ -30,12 +36,14 @@ export class PrintSampleReportDialog {
 
     constructor(
         public ref: DynamicDialogRef,
+        private dialogService: DialogService,
         public config: DynamicDialogConfig,
         private deviceService: DeviceService,
         private planService: PlanService,
         private cdr: ChangeDetectorRef,
         private keyMappingService: KeyMappingService,
-        private approvalService: ApprovalService
+        private approvalService: ApprovalService,
+        private exportSampleReportCheckLogService: ExportSampleReportCheckLogService,
     ) {
         this.data = config.data.data;
     }
@@ -44,7 +52,8 @@ export class PrintSampleReportDialog {
         forkJoin({
             devices: this.deviceService.getAll(),
             plans: this.planService.getAll(),
-            keyMappings: this.keyMappingService.getBySampleReport(this.data.id!)
+            keyMappings: this.keyMappingService.getBySampleReport(this.data.id!),
+            dataExports: this.exportSampleReportCheckLogService.getAll()
         }).subscribe(result => {
             this.listDeviceOptions = result.devices;
             this.listPlans = result.plans;
@@ -62,6 +71,7 @@ export class PrintSampleReportDialog {
                     frequency: x.frequency || null,
                 };
             });
+            this.listDataExport = result.dataExports;
             this.processData();
             this.cdr.detectChanges();
         })
@@ -82,6 +92,20 @@ export class PrintSampleReportDialog {
         });
 
         this.groupedData = Array.from(map.values());
+    }
+
+    upload(data: any) {
+        const ref = this.dialogService.open(UploadFilePdfDialog, {
+            header: 'TẬP TIN PDF',
+            width: '35%',
+            data: data,
+            modal: true,
+        });
+    }
+
+    viewPdf(id: number) {
+        const url = `http://localhost:8081/api/exportSampleReportCheckLogs/${id}/view-pdf`;
+        window.open(url, '_blank');
     }
 
     save() {
@@ -111,8 +135,12 @@ export class PrintSampleReportDialog {
                     groupName: g.groupApprovalName.name,
                 }));
                 console.log(data);
-                this.ref.close({ type: this.type, listCriterialBySample: this.listCriterialBySample, sampleReport: this.data, plan: this.model.plan, device: this.model.device, listPlanAppr: data });
-                
+                const dataPrint = { type: this.type, listCriterialBySample: this.listCriterialBySample, sampleReport: this.data, plan: this.model.plan, device: this.model.device, listPlanAppr: data }
+                const dataExport = { username: Util.getUserNameLogin(), dateExport: new Date(), data: JSON.stringify(dataPrint) };
+                this.exportSampleReportCheckLogService.create(dataExport).subscribe(res => {
+                    console.log(res);
+                    this.ref.close(dataPrint);
+                })
             });
     }
 
