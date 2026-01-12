@@ -104,7 +104,7 @@ export class PrintSampleReportDialog {
     }
 
     viewPdf(id: number) {
-        const url = `http://localhost:8081/api/exportSampleReportCheckLogs/${id}/view-pdf`;
+        const url = `${this.exportSampleReportCheckLogService.fullBaseUrl}/${id}/view-pdf`;
         window.open(url, '_blank');
     }
 

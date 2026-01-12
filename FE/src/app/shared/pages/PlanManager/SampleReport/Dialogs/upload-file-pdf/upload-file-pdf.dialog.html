@@ -1,8 +1,11 @@
 <div class="p-1">
     <div class="row">
         <div class="col-12">
-            <p-fileUpload name="file" accept="application/pdf" mode="basic" chooseLabel="Chọn file PDF" [auto]="true"
+            <p-fileUpload name="file" accept="application/pdf" mode="advanced" chooseLabel="Chọn file PDF"
                 [customUpload]="true" (uploadHandler)="uploadPdf($event)">
+                <ng-template #empty>
+                    <div>Drag and drop files to here to upload.</div>
+                </ng-template>
             </p-fileUpload>
         </div>
     </div>

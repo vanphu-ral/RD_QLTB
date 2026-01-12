@@ -8,7 +8,7 @@ import { Page } from '../models/Core/page.model';
 export type CreateEntity<T> = Omit<T, 'id'> & { id?: number | string };
 
 export abstract class BaseApiService<T> {
-  private readonly fullBaseUrl: string;
+  public readonly fullBaseUrl: string;
   protected accountService = inject(AccountService);
   private tokenUrl = 'http://192.168.68.90:8080/auth/realms/QLSX/protocol/openid-connect/token';
   private usersUrl = 'http://192.168.68.90:8080/auth/admin/realms/QLSX/users?first=0&max=2000';
