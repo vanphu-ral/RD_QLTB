@@ -11,7 +11,7 @@ import { ErrorReportService } from "../../Service/error-report.service";
 import { RepairErrorDialog } from "../repair-error-dialog/repair-error.dialog";
 import { ErrorReport } from "../../../../../models/PlanManger/error-report.model";
 import { ConfirmationService, MessageService } from "primeng/api";
-import { ErrorReportSeriousDialog } from "../error-report-serious-dialog/error-report-serious.dialog";
+import { ErrorReportSeriousDialog } from "../../../../Records/ReportDeviceIncident/Dialogs/error-report-serious-dialog/error-report-serious.dialog";
 import { Router } from "@angular/router";
 import { HistoryService } from "../../../../../service/history.service";
 

@@ -5,19 +5,19 @@ import { DialogService, DynamicDialogConfig, DynamicDialogRef } from "primeng/dy
 import _ from "lodash";
 import { Util } from "../../../../../core/utils/utils-function";
 import { PlanResult } from "../../../../../models/PlanManger/plan-result.model";
-import { SampleReportService } from "../../../SampleReport/Service/sample-report.service";
-import { KeyMappingService } from "../../../SampleReport/Service/key-mapping.service";
+import { SampleReportService } from "../../../../PlanManager/SampleReport/Service/sample-report.service";
+import { KeyMappingService } from "../../../../PlanManager/SampleReport/Service/key-mapping.service";
 import { PlanResultDetail } from "../../../../../models/PlanManger/plan-result-detail.model";
 import { ErrorReport } from "../../../../../models/PlanManger/error-report.model";
 import { AccountService } from "../../../../../core/auth/account/account.service";
-import { ErrorReportService } from "../../Service/error-report.service";
+import { ErrorReportService } from "../../../../PlanManager/Plan/Service/error-report.service";
 import { ApprovalWorlflowService } from "../../../../ApprovalManager/ApprovalWorkflow/Service/approval-workflow.service";
 import { DeviceService } from "../../../../DeviceManager/Device/Service/device.service";
 import { Acceptance } from "../../../../../models/PlanManger/acceptance.model";
 import { Device } from "../../../../../models/DeviceManager/device.model";
 import { PLANTYPE } from "../../../../../enums/plan-type.enum";
-import { CriterialService } from "../../../Criterial/Service/criterial.service";
-import { AcceptanceService } from "../../../../Records/Acceptance/service/acceptance.service";
+import { CriterialService } from "../../../../PlanManager/Criterial/Service/criterial.service";
+import { AcceptanceService } from "../../service/acceptance.service";
 import { forkJoin } from "rxjs/internal/observable/forkJoin";
 import { ɵɵDir } from "@angular/cdk/scrolling";
 

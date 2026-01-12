@@ -8,6 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
 import { LoginFormComponent } from "../component/login-from.component";
 import { ApplicationConfigService } from '../../../core/config/application-config.service';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 @Component({
     selector: 'app-home',
@@ -28,6 +29,8 @@ export class HomeComponent {
     pieData: any;
     chartOptions: any;
 
+    chartPlugins = [ChartDataLabels];
+    pieOptions: any;
 
     constructor(private accountService: AccountService, private cdr: ChangeDetectorRef) { }
 
@@ -79,17 +82,61 @@ export class HomeComponent {
                 hoverBackgroundColor: ['#0e7a8c', '#d97706', '#dc2626']
             }]
         };
+        // this.chartOptions = {
+        //     maintainAspectRatio: false,
+        //     aspectRatio: 0.8,
+        //     plugins: {
+        //         legend: { labels: { color: '#495057' } }
+        //     },
+        //     scales: {
+        //         x: { grid: { display: false } },
+        //         y: { grid: { color: '#ebedef' } }
+        //     }
+        // };
+
+
         this.chartOptions = {
             maintainAspectRatio: false,
             aspectRatio: 0.8,
             plugins: {
-                legend: { labels: { color: '#495057' } }
+                legend: { labels: { color: '#495057' } },
+                
+                // Cấu hình cho Datalabels
+                datalabels: {
+                    anchor: 'end', // Neo vị trí (start, center, end)
+                    align: 'top',  // Căn chỉnh so với điểm neo (để số nằm trên đầu cột)
+                    color: '#495057', // Màu chữ
+                    font: {
+                        weight: 'bold',
+                        size: 11
+                    },
+                    formatter: (value: any, context: any) => {
+                        // Tùy chỉnh hiển thị (ví dụ thêm đơn vị)
+                        return value; 
+                    }
+                }
+            },
+            layout: {
+                padding: {
+                    top: 20 // Thêm padding top để số không bị cắt mất khi ở đỉnh biểu đồ
+                }
             },
             scales: {
                 x: { grid: { display: false } },
                 y: { grid: { color: '#ebedef' } }
             }
         };
+
+        this.pieOptions = {
+             ...this.chartOptions,
+             plugins: {
+                 datalabels: {
+                     anchor: 'center',
+                     align: 'center',
+                     color: 'white'
+                 }
+             }
+        }
 
         this.cdr.markForCheck();
     }

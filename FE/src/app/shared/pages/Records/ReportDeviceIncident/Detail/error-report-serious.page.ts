@@ -98,6 +98,8 @@ export class ErrorReportSeriousPage extends BasePageComponent<ReportDeviceIncide
     public override save(): void {
         this.model.name = `BBNTLTB-${new Date().getTime()}`
         this.model.code = this.model.docNumber;
+        this.model.performer = Util.arrayToString(this.model.performer);
+        this.model.executingDepartment = Util.arrayToString(this.model.executingDepartment);
         this.model.listUser = Util.arrayToString(this.model.listUser);
         this.model.division = Util.arrayToString(this.model.division);
         this.model = Util.simplifyMany(this.model, ['device', 'errorReport']);

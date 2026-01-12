@@ -39,19 +39,26 @@
           </td>
         </tr>
         <tr>
-          <td colspan="3" rowspan="2">
+          <td colspan="3" rowspan="3">
             Biện pháp xử lý:
             <div class="mt-3">
-              <textarea pTextarea  class="form-control" rows="7" placeholder="Enter ..." id="treatmentMeasure"
+              <textarea pTextarea  class="form-control" rows="9" placeholder="Enter ..." id="treatmentMeasure"
                 name="treatmentMeasure" [(ngModel)]="model.treatmentMeasure" [disabled]="!isAddMode"></textarea>
             </div>
           </td>
           <td style="width: 200px;">
             Người thực hiện
-            <p-select [options]="listUsers" optionLabel="name" optionValue="username" [fluid]="true" [ngClass]="'mt-3'" [(ngModel)]="model.performer"
+            <p-multiselect [options]="listUsers" optionLabel="name" optionValue="username" [fluid]="true" [ngClass]="'mt-3'" [(ngModel)]="model.performer"
               [showClear]="true" [filter]="true" [appendTo]="'body'" id="performer" name="performer" [disabled]="!isAddMode"
-              dataKey="username">
-            </p-select>
+              dataKey="username" [maxSelectedLabels]="2"/>
+          </td>
+        </tr>
+        <tr style="width: 200px;">
+          <td>
+            Bộ phận thực hiện
+            <p-multiselect [options]="listBranches" optionLabel="name" optionValue="name" [fluid]="true" [ngClass]="'mt-3'" [(ngModel)]="model.executingDepartment"
+              [showClear]="true" [filter]="true" [appendTo]="'body'" id="executingDepartment" name="executingDepartment" [disabled]="!isAddMode"
+              dataKey="name" [maxSelectedLabels]="2"/>
           </td>
         </tr>
         <tr style="width: 200px;">

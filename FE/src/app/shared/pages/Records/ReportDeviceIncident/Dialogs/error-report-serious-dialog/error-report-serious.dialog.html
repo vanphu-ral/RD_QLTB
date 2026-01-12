@@ -1,0 +1,108 @@
+<div class="p-1">
+
+  <div class="card-body">
+    <table id="nghemthu-details-table" class="table table-bordered table-hover" style="margin: 0;">
+      <thead>
+        <tr>
+          <td><img src="/assets/imgs/logo-rang-dong.png" style="width:150px;" /></td>
+          <td colspan="2" style="text-align:center;">
+            <b class="my-2">BIÊN BẢN SỰ CỐ THIẾT BỊ</b>
+            <br />
+            <br />
+            <b class="my-2">{{ model.device?.name }}</b>
+          </td>
+          <td>
+            Số: <span id="spanBienBanPlanNumber">{{ model.docNumber }}</span><br />
+            <br />
+            Ngày: <span id="spanBienBanNgayBB">{{ model.createdAt | date: 'dd/MM/yyyy' }}</span> 
+          </td>
+        </tr>
+        <tr>
+          <td>Thời gian xảy ra sự cố: <span id="spanBienBanDepartmentAct">{{ (model.errorReport?.timeReported | date: 'dd/MM/yyyy') }}</span></td>
+          <td>Địa điểm: <span id="spanBienBanDepartmentAct">{{ model.device?.branch?.name }}</span></td>
+          <td>Ngành, ban: <span id="spanBienBanDepartmentAct">{{ model.device?.branch?.name }}</span></td>
+          <td>Xưởng: <span id="spanBienBanDeviceName">LED; Xưởng LED - Điện tử & TBCS</span></td>
+        </tr>
+        <tr>
+          <td colspan="4">
+            Mô tả sự cố: {{ model.errorDescription }}
+          </td>
+        </tr>
+        <tr>
+          <td colspan="4">
+            Nguyên nhân:
+            <div class="mt-3">
+                <ul class="pl-3 m-0" style="list-style-type: disc;">
+                  <li *ngFor="let line of textForList(model.reason!)">
+                    {{ line }}
+                  </li>
+                </ul>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3" rowspan="3" style="vertical-align: top;">
+            Biện pháp xử lý:
+            <div class="mt-3">
+              <ul class="pl-3 m-0" style="list-style-type: disc;">
+                <li *ngFor="let line of textForList(model.treatmentMeasure!)">
+                  {{ line }}
+                </li>
+              </ul>
+            </div>
+          </td>
+          <td style="width: 200px;">
+            Người thực hiện:
+            <br>
+            {{ displayFullNames(model.performer) }}
+          </td>
+        </tr>
+        <tr style="width: 200px;">
+          <td>
+            Bộ phận thực hiện:
+            <br>
+            {{ model.executingDepartment }}
+          </td>
+        </tr>
+        <tr style="width: 200px;">
+          <td>
+            Thời gian hoàn thành dự kiến:
+            <br>
+            {{ model.timeComplete | date: 'dd/MM/yyyy' }}
+          </td>
+        </tr>
+        <tr>
+          <td colspan="4">Thành phần tham gia lập biên bản</td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            Họ và tên: 
+            {{ displayFullNames(model.listUser) }}
+          </td>
+          <td colspan="2">
+            Đơn vị:
+            {{ model.division?.join(', ') || '' }}
+          </td>
+        </tr>
+      </thead>
+    </table>
+    <table id="nghemthu-details-table" class="table table-bordered table-hover" style="width: 100%;">
+        <thead>
+            <tr>
+                <th *ngFor="let g of listUserApproval" class="text-center">
+                    {{ g.groupName }}
+                </th>
+            </tr>
+            <tr>
+                <td *ngFor="let g of listUserApproval" style="height: 100px;">
+                </td>
+            </tr>
+        </thead>
+    </table>
+  </div>
+
+
+  <div class="d-flex justify-content-end gap-2 mt-4">
+    <p-button label="Đóng" (onClick)="close()"></p-button>
+  </div>
+</div>

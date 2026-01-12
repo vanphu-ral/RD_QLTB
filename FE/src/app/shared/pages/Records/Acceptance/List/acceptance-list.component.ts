@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Column } from '../../../../models/Core/column.model';
 import { AcceptanceService } from '../service/acceptance.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { AcceptanceDialog } from '../../../PlanManager/Plan/Dialogs/acceptance-dialog/acceptance.dialog';
+import { AcceptanceDialog } from '../Dialogs/acceptance-dialog/acceptance.dialog';
 
 @Component({
   selector: 'acceptance-list',

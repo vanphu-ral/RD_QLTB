@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Column } from '../../../../models/Core/column.model';
 import { ReportDeviceIncidentService } from '../service/report-device-incident.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { ErrorReportSeriousDialog } from '../../../PlanManager/Plan/Dialogs/error-report-serious-dialog/error-report-serious.dialog';
+import { ErrorReportSeriousDialog } from '../Dialogs/error-report-serious-dialog/error-report-serious.dialog';
 
 @Component({
   selector: 'report-device-incident-list',
@@ -34,7 +34,7 @@ export class ReportDeviceIncidentListComponent {
     const ref = this.dialogService.open(ErrorReportSeriousDialog, {
       header: 'Xem biên bản thiết bị sự cố',
       width: '70%',
-      data: { data: row, IsAddMode: false },
+      data: { data: row },
       modal: true,
     });
     this.ref = ref;

@@ -31,6 +31,7 @@ export class ErrorReportDialog {
     }
 
     ngOnInit() {
+        this.data.timeReported = new Date();
     }
 
     sevirityStatus(status: number) {

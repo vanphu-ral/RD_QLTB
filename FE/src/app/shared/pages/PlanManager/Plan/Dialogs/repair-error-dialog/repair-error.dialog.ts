@@ -31,6 +31,7 @@ export class RepairErrorDialog {
     }
 
     ngOnInit() {
+        this.data.timeRepaired = new Date();
     }
 
     submit() {

@@ -254,28 +254,28 @@
     <div class="col-3">
       <p-card>
         <ng-template #title><span class="text-sm">Hiệu suất thiết bị</span></ng-template>
-        <p-chart type="line" [data]="mixedData" [options]="chartOptions" height="300px" />
+        <p-chart [plugins]="chartPlugins" type="line" [data]="mixedData" [options]="chartOptions" height="300px" />
       </p-card>
     </div>
 
     <div class="col-3">
       <p-card>
         <ng-template #title><span class="text-sm">Bảo trì theo bộ phận</span></ng-template>
-        <p-chart type="bar" [data]="barData" [options]="chartOptions" height="300px" />
+        <p-chart [plugins]="chartPlugins" type="bar" [data]="barData" [options]="chartOptions" height="300px" />
       </p-card>
     </div>
 
     <div class="col-3">
       <p-card>
         <ng-template #title><span class="text-sm">Tỷ lệ trạng thái</span></ng-template>
-        <p-chart type="pie" [data]="pieData" [options]="chartOptions" height="300px" />
+        <p-chart [plugins]="chartPlugins" type="pie" [data]="pieData" [options]="pieOptions" height="300px" />
       </p-card>
     </div>
 
     <div class="col-3">
       <p-card>
         <ng-template #title><span class="text-sm">Dự báo sự cố</span></ng-template>
-        <p-chart type="line" [data]="mixedData" [options]="chartOptions" height="300px" />
+        <p-chart [plugins]="chartPlugins" type="line" [data]="mixedData" [options]="chartOptions" height="300px" />
       </p-card>
     </div>
   </div>

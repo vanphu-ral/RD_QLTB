@@ -12,7 +12,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Util } from '../../../../core/utils/utils-function';
 import { ListErrorDialog } from '../Dialogs/list-error-dialog/list-error.dialog';
-import { AcceptanceDialog } from '../Dialogs/acceptance-dialog/acceptance.dialog';
+import { AcceptanceDialog } from '../../../Records/Acceptance/Dialogs/acceptance-dialog/acceptance.dialog';
 import { PLANTYPE } from '../../../../enums/plan-type.enum';
 import { OptionApprovalDialog } from '../../SampleReport/Dialogs/option-approval-dialog/option-approval.dialog';
 import { AcceptanceService } from '../../../Records/Acceptance/service/acceptance.service';

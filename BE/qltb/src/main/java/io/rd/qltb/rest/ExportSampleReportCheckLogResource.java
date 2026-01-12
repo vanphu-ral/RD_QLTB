@@ -99,7 +99,7 @@ public class ExportSampleReportCheckLogResource {
         log.setFile(filePath.toString());
         exportSampleReportCheckLogRepository.save(log);
 
-        return ResponseEntity.ok("Upload success");
+        return ResponseEntity.ok(id);
     }
 
     @GetMapping("/{id}/view-pdf")

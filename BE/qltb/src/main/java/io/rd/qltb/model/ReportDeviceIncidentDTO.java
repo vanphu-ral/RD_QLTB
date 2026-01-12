@@ -18,6 +18,7 @@ public class ReportDeviceIncidentDTO {
     private String reason;
     private String treatmentMeasure;
     private String performer;
+    private String executingDepartment;
     private LocalDateTime timeComplete;
     private String docNumber;
     private String listUser;

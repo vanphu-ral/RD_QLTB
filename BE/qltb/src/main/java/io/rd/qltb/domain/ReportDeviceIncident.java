@@ -29,6 +29,8 @@ public class ReportDeviceIncident {
     @Column
     private String performer;
     @Column
+    private String executingDepartment;
+    @Column
     private LocalDateTime timeComplete;
     @Column
     private String listUser;

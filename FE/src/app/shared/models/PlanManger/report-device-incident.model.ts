@@ -5,7 +5,8 @@ export class ReportDeviceIncident {
     errorDescription?: string;
     reason?: string;
     treatmentMeasure?: string;
-    performer?: string;
+    performer?: any;
+    executingDepartment?: any;
     timeComplete?: Date;
     docNumber?: string;
     listUser?: any;
