@@ -149,9 +149,13 @@
 
       <div class="col-4">
         <p-floatlabel variant="on">
-          <p-select [(ngModel)]="model.userManager" [options]="listUsers" optionLabel="name" optionValue="username" [fluid]="true" [disabled]="isViewMode"
+          <!-- <p-select [(ngModel)]="model.userManager" [options]="listUsers" optionLabel="name" optionValue="username" [fluid]="true" [disabled]="isViewMode"
             [showClear]="true" [appendTo]="'body'" id="userManager" name="userManager" dataKey="username">
-          </p-select>
+          </p-select> -->
+          <p-multiSelect [(ngModel)]="model.userManager" [options]="listUsers" optionLabel="name" optionValue="username"
+            [fluid]="true" [showClear]="true" [appendTo]="'body'" [filter]="true" id="userManager" name="userManager"
+            dataKey="username">
+          </p-multiSelect>
           <label for="userManager">Người quản lý</label>
         </p-floatlabel>
       </div>

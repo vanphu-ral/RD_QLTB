@@ -23,6 +23,8 @@ public class PlanResultDetailDTO {
 
     private String frequency;
 
+    private Integer step;
+
     private OperationsStaff performer;
 
     private String type;

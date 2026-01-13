@@ -37,6 +37,8 @@ export class CheckDeviceDialog {
 
     isCheckAll: boolean = false;
 
+    groupedData: any[] = [];
+
     constructor(
         public ref: DynamicDialogRef,
         public config: DynamicDialogConfig,
@@ -64,6 +66,7 @@ export class CheckDeviceDialog {
                         criticalCode: x.criterial?.code || null,
                         criticalName: x.criterial?.name || null,
                         frequency: x.frequency,
+                        step: x.step,
                         performer: x.performer,
                         result: "OK",
                         status: 1
@@ -73,6 +76,8 @@ export class CheckDeviceDialog {
                 this.model = res;
                 this.cdr.detectChanges();
             }
+            this.updateGroupedData();
+            this.cdr.detectChanges();
         });
         
     }
@@ -134,6 +139,59 @@ export class CheckDeviceDialog {
     }
 
 
+    updateGroupedData() {
+        if (!this.model.planResultDetail) {
+            this.groupedData = [];
+            return;
+        }
+        const groups = _.groupBy(this.model.planResultDetail, (item) => {
+            return `${item.criticalGroup}|${item.step}`;
+        });
+        this.groupedData = Object.keys(groups).map(key => {
+            const firstItem = groups[key][0];
+            return {
+                groupKey: key,
+                groupName: firstItem.criticalGroup,
+                step: firstItem.step,              
+                items: groups[key]                 
+            };
+        });
+    }
+
+    onGroupResultChange(group: any, newValue: any) {
+        group.items.forEach((item: any) => {
+            if (item.status !== 0) item.result = newValue;
+        });
+    }
+
+    onGroupStatusChange(group: any, event: any) {
+        const status = event.checked ? 0 : 1;
+        group.items.forEach((item: any) => {
+            item.status = status;
+            if (status === 0) {
+                item.result = null;
+                item.examinationTime = null;
+                item.inspectionSession = null;
+                item.comment = null;  
+            }
+        });
+        this.isCheckAll = this.model.planResultDetail.every((row: any) => row.status === 0);
+    }
+
+    onGroupExamTimeChange(group: any, newValue: any) {
+        group.items.forEach((item: any) => {
+            if (item.status !== 0) {
+                item.examinationTime = newValue;
+            }
+        });
+    }
+    onGroupSessionChange(group: any, newValue: any) {
+        group.items.forEach((item: any) => {
+            if (item.status !== 0) {
+                item.inspectionSession = newValue;
+            }
+        });
+    }
 
     submit() {
         this.model.planResult = this.data.planResult;

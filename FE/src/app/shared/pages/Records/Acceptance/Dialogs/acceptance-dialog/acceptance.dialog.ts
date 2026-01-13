@@ -20,6 +20,9 @@ import { CriterialService } from "../../../../PlanManager/Criterial/Service/crit
 import { AcceptanceService } from "../../service/acceptance.service";
 import { forkJoin } from "rxjs/internal/observable/forkJoin";
 import { ɵɵDir } from "@angular/cdk/scrolling";
+import { ApprovalService } from "../../../../ApprovalManager/Approval/Service/approval.service";
+import { SignatureService } from "../../../../SystemManager/Signature/Service/signature.service";
+import { catchError, of } from "rxjs";
 
 @Component({
     selector: 'app-acceptance-dialog',
@@ -29,79 +32,66 @@ import { ɵɵDir } from "@angular/cdk/scrolling";
 })
 export class AcceptanceDialog {
 
-    data: any = {};
-    plan: any = {};
     model: Acceptance = new Acceptance();
-    implementationContent: any[] = [];
-    listApprovalWorkflow: any[] = [];
-
-    IsAddModel: boolean = true;
+    listUserApproval: any[] = [];
 
     constructor(
         public ref: DynamicDialogRef,
         public config: DynamicDialogConfig,
-        private acceptanceService: AcceptanceService,
-        private approvalWorkflowService: ApprovalWorlflowService,
-        private deviceService: DeviceService,
-        private criterialService: CriterialService,
+        private approvalService: ApprovalService,
+        private signatureService: SignatureService,
         private cdr: ChangeDetectorRef
     ) {
-        this.IsAddModel = config.data.IsAddModel;
-        if (config.data.IsAddModel === false) {
-            this.model = config.data.data;
-
-        } else {
-            this.data = config.data.planResult;
-            this.plan = config.data.plan;
-        }
+        this.model = config.data.data;
     }
 
     ngOnInit() {
-        if (this.IsAddModel) {
-            this.acceptanceService.checkExistByPlanDetailId(this.data.id).subscribe((res: any) => {
-                if (res.exists == 1) {
-                    Util.ConfirmMessage('Phiếu nghiệm thu đã tồn tại cho phiếu này!', 'error');
-                    this.ref.close(false);
-                    return;
-                }
-                this.model.type = this.plan.planTypeCode == PLANTYPE.REPAIR ? 1 : (this.plan.planTypeCode == PLANTYPE.MAINTENANCE ? 2 : 3);
-                forkJoin({
-                    criterial: this.criterialService.getListBySampleReport(this.data.sampleReportId),
-                    workflows: this.approvalWorkflowService.getAll(),
-                    device: this.deviceService.getById(this.data.deviceId || 0)
-                }).subscribe(result => {
-                    this.implementationContent = result.criterial;
-                    this.listApprovalWorkflow = result.workflows;
-                    this.model.device = result.device;
-                    this.model.docNumber = `BBNTTB-${Util.getInitials(this.model.device.branch.name)}-${this.model.device.code}-${Util.dateToCode()}`;
-                    this.model.dateRecord = new Date();
-                    this.cdr.detectChanges();
-                });
-            });
-            this.model.fromDateAcceptance = new Date();
-            this.model.toDateAcceptance = new Date();
-            this.model.fromDatePerform = new Date();
-            this.model.toDatePerform = new Date();
-        }
+        this.loadApprovals();
     }
 
-    submit() {
-        this.model.name = `BBNTTB-${new Date().getTime()}`
-        this.model.code = this.model.docNumber;
-        this.model.timeAcceptance = new Date();
-        this.model.planDetailId = this.data.id;
-        this.model.status = 1
-        this.acceptanceService.create(this.model).subscribe(res => {
-            this.acceptanceService.createApprovalEntity({ entityId: res, workflowId: this.model.approvalWorkflow.id }, 'acceptances').subscribe({
-                next: () => {
-                    Util.showSuccessMessage("Tạo biên bản nghiệm thu thành công");
-                    this.close();
-                },
-                error: () => {
-                    this.ref.close(false);
-                },
+    loadApprovals(): void {
+        this.approvalService
+            .findApprovalsByEntityIdAndEntityType(this.model.id as any, 'acceptances')
+            .subscribe((data) => {
+                const usernames = data.map(x => x.userApproval?.username);
+                this.signatureService.getByListUsernames(usernames).pipe(
+                    catchError(err => {
+                        console.error('Lỗi lấy danh sách chữ ký:', err);
+                        return of([]); // Trả về mảng rỗng nếu lỗi
+                    })
+                ).subscribe(signatures => {
+                    this.listUserApproval = Object.values(
+                        data.reduce((acc: any, item: any) => {
+                            const groupId = item.group?.groupApprovalName?.id;
+                            acc[groupId] ??= {
+                                groupApprovalName: item.group.groupApprovalName,
+                                items: [],
+                                userApprovals: []
+                            };
+                            acc[groupId].items.push(item);
+                            acc[groupId].userApprovals.push(item.userApproval);
+                            return acc;
+                        }, {})
+                    ).map((group: any) => ({
+                        ...group,
+                        userApprovals: group.userApprovals.map((u: any) => ({
+                            ...u,
+                            imageLink: signatures.find((s: any) => s.username === u.username)?.imageLink || null
+                        }))
+                    }));
+                    this.listUserApproval = this.listUserApproval.map(g => ({
+                        groupName: g.groupApprovalName.name,
+                        signatures: g.userApprovals.map((u: any) => u.imageLink)
+                    }));
+                    this.cdr.detectChanges();
+                });
+                this.cdr.detectChanges();
             });
-        })
+    }
+
+    textForList(reason: string): string[] {
+        if (!reason) return [];
+        return reason.split(/\r?\n/).filter(line => line.trim() !== '');
     }
 
     close() {

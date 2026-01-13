@@ -66,6 +66,9 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
 
   override ngOnInit(): void {
     super.ngOnInit();
+    if(!this.isAddMode) {
+      this.model.userManager = _.split(this.model.userManager, ',');
+    }
     const requests: any = {
       groups: this.deviceGroupService.getAll(),
       branches: this.branchService.getAll(),
@@ -185,6 +188,7 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
     if (!this.model) return;
     this.model.code = this.model.group.code;
     this.model = Util.simplifyMany(this.model, ['team']);
+    this.model.userManager = Util.arrayToString(this.model.userManager);
     if (!_.isEmpty(this.model.maintenanceCycle)) {
       this.model.maintenanceCycle = _.join(
         _.map(this.model.maintenanceCycle, 'code'),

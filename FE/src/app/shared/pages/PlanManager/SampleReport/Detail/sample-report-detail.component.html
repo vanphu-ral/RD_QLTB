@@ -106,7 +106,7 @@
       <p-table [value]="listCriterialBySample" responsiveLayout="scroll">
         <ng-template pTemplate="header">
           <tr>
-            <th>STT</th>
+            <th style="width: 50px;">Bước</th>
             <th>Nhóm Tiêu chí</th>
             <th>Tiêu chí</th>
             <th>Người thực hiện</th>
@@ -117,7 +117,7 @@
         <ng-template pTemplate="body" let-row let-i="rowIndex">
           <ng-container *ngIf="!(isViewMode || isApprovalMode); else viewGroup">
             <tr>
-              <td>{{ i + 1 }}</td>
+              <td><p-inputnumber [useGrouping]="false" inputId="step-{{ i }}" name="step-{{ i }}" [(ngModel)]="row.step" [inputStyle]="{ width: '50px' }" /></td>
               <td style="max-width: 200px;">
                 <p-select [(ngModel)]="row.group" [options]="listCriterialGroup" optionLabel="name" [disabled]="isViewMode || isApprovalMode"
                   [fluid]="true" [showClear]="true" [appendTo]="'body'" (onChange)="onChangeGroup($event, i)" [filter]="true"

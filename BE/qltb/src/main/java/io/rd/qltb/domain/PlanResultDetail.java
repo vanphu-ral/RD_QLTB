@@ -37,6 +37,9 @@ public class PlanResultDetail {
     private String frequency;
 
     @Column
+    private Integer step;
+
+    @Column
     private OperationsStaff performer;
 
     @Column

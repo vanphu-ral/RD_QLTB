@@ -12,7 +12,7 @@ export interface DeviceDetail {
     planDetailId?: number
     device?: Device
     qrCode?: string
-    manager?: string
+    manager?: any
     nameDetail?: string
     estimatedTime?: string
     note?: string

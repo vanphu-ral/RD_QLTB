@@ -29,6 +29,9 @@ public class KeyMapping {
     private String frequency;
 
     @Column
+    private Integer step;
+
+    @Column
     private OperationsStaff performer;
 
     @ManyToOne(fetch = FetchType.LAZY)

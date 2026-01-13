@@ -60,7 +60,7 @@
             (onClick)="declareIssue()"></p-button>
     </div>
 
-    <div class="table-responsive">
+    <!-- <div class="table-responsive">
         <p-table [value]="model.planResultDetail" responsiveLayout="scroll">
             <ng-template pTemplate="header">
                 <tr>
@@ -133,6 +133,202 @@
             </ng-template>
         </p-table>
 
+    </div> -->
+    <!-- <div class="table-responsive">
+        <p-table [value]="groupedData" responsiveLayout="scroll" [tableStyle]="{'min-width': '1000px'}">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 80px">STT</th>
+                    <th>Tên Tiêu chí / Nhóm</th>
+                    <th style="width: 100px">Tần suất</th>
+                    <th style="width: 120px">Người thực hiện</th>
+                    <th *ngIf="data.plan.planType.code == PLANTYPE.DAILYCHECK" style="width: 150px">Ca KT</th>
+                    <th *ngIf="data.plan.planType.code == PLANTYPE.DAILYCHECK" style="width: 150px">Thời gian KT</th>
+                    <th [ngStyle]="data.plan.planType.code == PLANTYPE.MAINTENANCE ? {} : {'min-width': '600px'}">Mô tả</th>
+                    <th *ngIf="data.plan.planType.code == PLANTYPE.MAINTENANCE">Ghi chú</th>
+                    <th *ngIf="data.plan.planType.code == PLANTYPE.MAINTENANCE">Bộ phận thực hiện</th>
+                    <th style="width: 180px">Kết quả đánh giá</th>
+                    <th class="text-center" style="width: 100px">Không KT</th>
+                </tr>
+            </ng-template>
+    
+            <ng-template pTemplate="body" let-group let-groupIndex="rowIndex">
+                <tr style="background-color: #e2e8f0; font-weight: bold;">
+                    <td colspan="4" class="text-primary">
+                        <div class="d-flex align-items-center">
+                            <p-badge [value]="'Bước ' + group.step" severity="info" class="me-2"></p-badge>
+                            <span>NHÓM: {{ group.groupName }}</span>
+                        </div>
+                    </td>
+    
+                    <td *ngIf="data.plan.planType.code == PLANTYPE.DAILYCHECK">
+                        <p-select [options]="listExaminationTimes" placeholder="Ca nhóm" [fluid]="true" appendTo="body"
+                            (onChange)="onGroupExamTimeChange(group, $event.value)">
+                        </p-select>
+                    </td>
+                    <td *ngIf="data.plan.planType.code == PLANTYPE.DAILYCHECK">
+                        <p-select [options]="listInspectionSessions" placeholder="Phiên nhóm" [fluid]="true" appendTo="body"
+                            (onChange)="onGroupSessionChange(group, $event.value)">
+                        </p-select>
+                    </td>
+                    <td></td>
+                    <td>
+                        <p-select [options]="listResult" placeholder="Kết quả nhóm" [fluid]="true" appendTo="body"
+                            (onChange)="onGroupResultChange(group, $event.value)">
+                        </p-select>
+                    </td>
+                    <td class="text-center">
+                        <p-checkbox [binary]="true" (onChange)="onGroupStatusChange(group, $event)"></p-checkbox>
+                    </td>
+                </tr>
+    
+                <tr *ngFor="let row of group.items; let i = index">
+                    <td class="text-center">{{ groupIndex + 1 }}.{{ i + 1 }}</td>
+                    <td class="ps-4">
+                        <span class="text-muted">[{{ row.criticalCode }}]</span> {{ row.criticalName }}
+                    </td>
+                    <td>{{ row.frequency }}</td>
+                    <td>{{ row.performer }}</td>
+    
+                    <td *ngIf="data.plan.planType.code == PLANTYPE.DAILYCHECK">
+                        <p-select [(ngModel)]="row.examinationTime" [options]="listExaminationTimes" [fluid]="true"
+                            appendTo="body" [disabled]="row.status == 0"></p-select>
+                    </td>
+                    <td *ngIf="data.plan.planType.code == PLANTYPE.DAILYCHECK">
+                        <p-select [(ngModel)]="row.inspectionSession" [options]="listInspectionSessions" [fluid]="true"
+                            appendTo="body" [disabled]="row.status == 0"></p-select>
+                    </td>
+                    <td>
+                        <input pInputText [(ngModel)]="row.note" [fluid]="true" [disabled]="row.status == 0" />
+                    </td>
+                    <td *ngIf="data.plan.planType.code == PLANTYPE.MAINTENANCE">
+                        <input pInputText id="comment" name="comment" [(ngModel)]="row.comment" autocomplete="off"
+                            [fluid]="true" [disabled]="row.status == 0"/>
+                    </td>
+                    <td *ngIf="data.plan.planType.code == PLANTYPE.MAINTENANCE">
+                        <input pInputText id="committee" name="committee" [(ngModel)]="row.committee" autocomplete="off"
+                            [fluid]="true" [disabled]="row.status == 0"/>
+                    </td>
+                    <td>
+                        <p-select [(ngModel)]="row.result" [options]="listResult" [fluid]="true" appendTo="body"
+                            [disabled]="row.status == 0"></p-select>
+                    </td>
+                    <td class="text-center">
+                        <p-checkbox [(ngModel)]="row.status" [binary]="true" [trueValue]="0" [falseValue]="1"
+                            (onChange)="onRowCheckChange(row)"></p-checkbox>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div> -->
+    <div class="table-responsive">
+        <p-table [value]="groupedData" responsiveLayout="scroll" [tableStyle]="{'min-width': '1200px'}">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 70px">STT</th>
+                    <th>Tên Tiêu chí / Nhóm</th>
+                    <th style="width: 100px">Tần suất</th>
+                    <th style="width: 120px">Người thực hiện</th>
+
+                    <th *ngIf="data.plan.planType.code == PLANTYPE.DAILYCHECK" style="width: 140px">Ca KT</th>
+                    <th *ngIf="data.plan.planType.code == PLANTYPE.DAILYCHECK" style="width: 140px">Thời gian KT</th>
+
+                    <th
+                        [ngStyle]="data.plan.planType.code == PLANTYPE.MAINTENANCE ? {'width': '200px'} : {'min-width': '400px'}">
+                        Mô tả</th>
+
+                    <th *ngIf="data.plan.planType.code == PLANTYPE.MAINTENANCE" style="width: 200px">Ghi chú</th>
+
+                    <th style="width: 180px">Kết quả đánh giá</th>
+                    <th class="text-center" style="width: 100px">Không KT</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-group let-groupIndex="rowIndex">
+                <tr style="background-color: #f1f5f9; font-weight: bold;">
+                    <td colspan="4" class="text-primary">
+                        <div class="d-flex align-items-center">
+                            <p-badge [value]="'Bước ' + group.step" severity="info" class="me-2"></p-badge>
+                            <span>NHÓM: {{ group.groupName }}</span>
+                        </div>
+                    </td>
+
+                    <ng-container *ngIf="data.plan.planType.code == PLANTYPE.DAILYCHECK">
+                        <td>
+                            <p-select [options]="listExaminationTimes" placeholder="Ca nhóm" [fluid]="true"
+                                appendTo="body" (onChange)="onGroupExamTimeChange(group, $event.value)"></p-select>
+                        </td>
+                        <td>
+                            <p-select [options]="listInspectionSessions" placeholder="Phiên nhóm" [fluid]="true"
+                                appendTo="body" (onChange)="onGroupSessionChange(group, $event.value)"></p-select>
+                        </td>
+                    </ng-container>
+
+                    <td></td>
+
+                    <ng-container *ngIf="data.plan.planType.code == PLANTYPE.MAINTENANCE">
+                        <td></td>
+                    </ng-container>
+
+                    <td>
+                        <p-select [options]="listResult" placeholder="Kết quả nhóm" [fluid]="true" appendTo="body"
+                            (onChange)="onGroupResultChange(group, $event.value)"></p-select>
+                    </td>
+
+                    <td class="text-center">
+                        <p-checkbox [binary]="true" (onChange)="onGroupStatusChange(group, $event)"></p-checkbox>
+                    </td>
+                </tr>
+
+                <tr *ngFor="let row of group.items; let i = index">
+                    <td class="text-center text-muted">{{ groupIndex + 1 }}.{{ i + 1 }}</td>
+                    <td class="ps-4">
+                        <span class="font-medium">{{ row.criticalName }}</span>
+                        <div class="text-xs text-secondary">{{ row.criticalCode }}</div>
+                    </td>
+                    <td>{{ row.frequency }}</td>
+                    <td>{{ row.performer }}</td>
+
+                    <ng-container *ngIf="data.plan.planType.code == PLANTYPE.DAILYCHECK">
+                        <td>
+                            <p-select [(ngModel)]="row.examinationTime" [options]="listExaminationTimes" [fluid]="true"
+                                appendTo="body" [disabled]="row.status == 0"></p-select>
+                        </td>
+                        <td>
+                            <p-select [(ngModel)]="row.inspectionSession" [options]="listInspectionSessions"
+                                [fluid]="true" appendTo="body" [disabled]="row.status == 0"></p-select>
+                        </td>
+                    </ng-container>
+
+                    <td>
+                        <input pInputText [(ngModel)]="row.note" [fluid]="true" [disabled]="row.status == 0"
+                            placeholder="..." />
+                    </td>
+
+                    <ng-container *ngIf="data.plan.planType.code == PLANTYPE.MAINTENANCE">
+                        <td>
+                            <input pInputText [(ngModel)]="row.comment" [fluid]="true" [disabled]="row.status == 0"
+                                placeholder="Ghi chú bảo trì" />
+                        </td>
+                    </ng-container>
+
+                    <td>
+                        <p-select [(ngModel)]="row.result" [options]="listResult" [fluid]="true" appendTo="body"
+                            [disabled]="row.status == 0"></p-select>
+                    </td>
+                    <td class="text-center">
+                        <p-checkbox [(ngModel)]="row.status" [binary]="true" [trueValue]="0" [falseValue]="1"
+                            (onChange)="onRowCheckChange(row)"></p-checkbox>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="99" class="text-center p-4">Chưa có dữ liệu kiểm tra nào</td>
+                </tr>
+            </ng-template>
+        </p-table>
     </div>
 
     <div class="d-flex justify-content-end gap-2 mt-4">

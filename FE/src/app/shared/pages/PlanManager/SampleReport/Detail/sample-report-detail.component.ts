@@ -91,6 +91,7 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
               criterial: x.criterial || null,
               criterials: criterials,
               performer: x.performer || null,
+              step: x.step || null,
               frequency: x.frequency || null,
             };
           });
@@ -112,6 +113,7 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
           criterial: x.criterial || null,
           criterials: criterials,
           performer: x.performer || null,
+          step: x.step || null,
           frequency: x.frequency || null,
         };
       });
@@ -182,6 +184,7 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
             sampleReport: { id: id },
             criterial: { id: item.criterial?.id },
             performer: item.performer,
+            step: item.step || null,
             frequency: item.frequency,
           }));
           if (keyMappings.length > 0) {
@@ -208,6 +211,7 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
             sampleReport: { id: id },
             criterial: { id: item.criterial?.id },
             performer: item.performer,
+            step: item.step || null,
             frequency: item.frequency
           }));
           if (keyMappings.length > 0) {
@@ -246,6 +250,7 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
               sampleReport: { id: id },
               criterial: { id: item.criterial?.id },
               performer: item.performer,
+              step: item.step || null,
               frequency: item.frequency
             }));
             if (keyMappings.length > 0) {

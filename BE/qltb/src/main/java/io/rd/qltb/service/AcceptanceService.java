@@ -117,9 +117,11 @@ public class AcceptanceService {
             deviceCopy.getGroup().setDeviceGroupKeyMappingDeviceSampleReports(null);
             deviceCopy.getGroup().setDeviceGroupPlanDetails(null);
 
-            deviceCopy.setLine(acceptance.getDevice().getLine());
-            deviceCopy.getLine().setLineDevices(null);
-            deviceCopy.getLine().setTeam(null);
+            if(acceptance.getDevice().getLine() != null) {
+                deviceCopy.setLine(acceptance.getDevice().getLine());
+                deviceCopy.getLine().setLineDevices(null);
+                deviceCopy.getLine().setTeam(null);
+            }
 
             deviceCopy.setBranch(acceptance.getDevice().getBranch());
             deviceCopy.getBranch().getFactory().setFactoryBranches(null);

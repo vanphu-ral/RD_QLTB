@@ -20,7 +20,7 @@ export class Device {
     qrCode?: string;
     isMappingScada?: boolean;
     img?: string;
-    userManager?: string;
+    userManager?: any;
     description?: string;
     createdAt?: Date;
     updatedAt?: Date;

@@ -143,7 +143,7 @@ export class PlanListComponent {
   }
 
   isEnabledCheckDevice(row: any) {
-    return (!(row.status === 2 || row.status === 6) && _.includes(row.manager, this.accountService.getUser()?.name));
+    return (!(row.status === 2 || row.status === 6) && row.status !== 5);
   }
 
 
