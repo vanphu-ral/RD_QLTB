@@ -831,7 +831,7 @@ public class PlanService {
                     planResult.setStatusRepair("1");
                     planResult.setNote("");
                     planResult.setDateTest(dateTime);
-                    planResult.setUserTest(manager);
+                    planResult.setUserTest(planDetail.getManager());
                     planResultService.create(planResultService.mapToDTO(planResult, new PlanResultDTO()));
                     startDay++;
                 }

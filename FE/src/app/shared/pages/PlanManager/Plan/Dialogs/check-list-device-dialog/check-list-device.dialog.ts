@@ -46,9 +46,6 @@ export class CheckListDeviceDialog {
 
     loadDeviceCheckList() {
         this.planResultService.getByPlanDetailId(this.data.id).subscribe((res) => {
-            res.map((item: any) => {
-                item.userTest = JSON.parse(item.userTest);
-            });
             if (this.plan.planType.code == PLANTYPE.DAILYCHECK) {
                 const today = new Date();
                 today.setHours(0, 0, 0, 0);

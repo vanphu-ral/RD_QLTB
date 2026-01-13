@@ -92,7 +92,6 @@ export class PlanListComponent {
     this.planDetailService.getByPlanId(plan.id).subscribe({
       next: (res) => {
         _.map(res, (item: any) => item.sampleReport = JSON.parse(item.detail));
-        _.map(res, (item: any) => item.manager = JSON.parse(item.manager));
         plan.details = res;      
         this.cdr.detectChanges(); 
       }
