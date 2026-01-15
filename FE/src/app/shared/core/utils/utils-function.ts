@@ -609,8 +609,15 @@ export class Util {
   /**
    * Chuyển arr sang chuỗi ngăn cách bởi dấu phẩy
    */
-  static arrayToString(arr: any[], separator = ','): string {
-    return arr.map(item => item.toString()).join(separator);
+  static arrayToString(
+    arr: any[] | string,
+    separator = ','
+  ): string {
+    const normalizedArr = Array.isArray(arr) ? arr : [arr];
+
+    return normalizedArr
+      .map(item => item?.toString())
+      .join(separator);
   }
 
   /**
