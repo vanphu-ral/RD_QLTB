@@ -871,50 +871,43 @@ public class PlanService {
 // ================================================================
 
     private List<PlanDetail> buildPlanDetails(Plan plan, PlanRequest request, String userName) {
-
         List<PlanDetail> list = new ArrayList<>();
-        // Dùng Set để lưu ID của các Device đã được xử lý trong Trường hợp 1
         Set<Long> processedDeviceIds = new HashSet<>();
 
+        // 1. Tạo bản đồ (Map) để truy xuất nhanh các PlanDetail cũ đang có trong Database (nếu cần)
+        // Hoặc đơn giản là xử lý trực tiếp dựa trên PlanDetailId từ Request
+
         // -----------------------------
-        // 1. Trường hợp group + sample (Tạo PlanDetail dựa trên PlanDetailRequest và DeviceRequest)
-        //    Cần đảm bảo request.getDevices() không null để vòng lặp lồng nhau hoạt động
+        // 1. Trường hợp group + sample
         // -----------------------------
         if (request.getPlanDetails() != null && !request.getPlanDetails().isEmpty() &&
                 request.getDevices() != null && !request.getDevices().isEmpty()) {
 
             for (PLanDetailRequest detailRequest : request.getPlanDetails()) {
-                // Lặp qua tất cả DeviceRequest, mỗi DeviceRequest sẽ được gán
-                // với DeviceGroup và SampleReport từ detailRequest hiện tại.
                 for (DeviceRequest deviceRequest : request.getDevices()) {
+
+                    // KIỂM TRA: Nếu có planDetailId -> Đây là hàng cũ, cần cập nhật Manager
+                    if (deviceRequest.getPlanDetailId() != null) {
+                        // Logic cập nhật manager cho kế hoạch cũ sẽ nằm ở Trường hợp 2 để tránh lặp logic
+                        continue;
+                    }
+
                     Integer isHadDataPlanReport = deviceRequest.getDevice().getIsHadDataPlanReport() == null ? 0 : deviceRequest.getDevice().getIsHadDataPlanReport();
-                    if (isHadDataPlanReport == 0 && deviceRequest.getPlanDetailId() == null) {
-                        PlanDetail d = new PlanDetail();
+
+                    if (isHadDataPlanReport == 0) {
                         if (deviceRequest.getDevice().getGroup().getId() == detailRequest.getDeviceGroup().getId()) {
+                            PlanDetail d = new PlanDetail();
                             d.setPlan(plan);
-                            // Dùng convertDeviceGroup và convertSampleReport từ PLanDetailRequest
                             d.setDeviceGroup(convertDeviceGroup(detailRequest.getDeviceGroup()));
                             d.setSampleReport(convertSampleReport(detailRequest.getSampleReport()));
 
-                            // Set Device (nếu có) và thêm ID vào Set để đánh dấu đã xử lý
                             if (deviceRequest.getDevice() != null && deviceRequest.getDevice().getId() != null) {
                                 d.setDevice(convertDevice(deviceRequest.getDevice()));
                                 processedDeviceIds.add(deviceRequest.getDevice().getId());
                             }
 
-                            // COMMON FIELDS
-                            d.setNameDetail(deviceRequest.getNameDetail());
-                            d.setNote(deviceRequest.getNote());
-                            d.setEstimatedTime(deviceRequest.getEstimatedTime());
-                            d.setManager(deviceRequest.getManager());
-                            d.setQrCode(deviceRequest.getQrCode()); // Thêm serial từ DeviceRequest
-                            d.setCreatedBy(userName);
-                            d.setUpdatedBy(userName);
-
-                            // TIMESTAMP & STATUS
-                            d.setCreatedAt(LocalDateTime.now());
-                            d.setUpdatedAt(LocalDateTime.now());
-                            d.setStatus(1);
+                            // Set common fields
+                            setCommonFields(d, deviceRequest, userName, true); // true = tạo mới
                             list.add(d);
                         }
                     }
@@ -922,55 +915,70 @@ public class PlanService {
             }
         }
 
-        // ---
-
         // -----------------------------
-        // 2. Trường hợp thiết bị (Chỉ xử lý các DeviceRequest CHƯA được xử lý ở Trường hợp 1)
+        // 2. Xử lý cập nhật Manager cho Kế hoạch cũ & Thêm thiết bị lẻ mới
         // -----------------------------
         if (request.getDevices() != null) {
             for (DeviceRequest dr : request.getDevices()) {
 
-                // Lấy ID của Device nếu có
-                Long currentDeviceId = (dr.getDevice() != null) ? dr.getDevice().getId() : null;
+                PlanDetail d;
+                boolean isNew = false;
 
-                // BỎ QUA nếu Device này đã được xử lý trong Trường hợp 1
-                if (currentDeviceId != null && processedDeviceIds.contains(currentDeviceId)) {
-                    continue;
+                // KIỂM TRA LÀ CŨ HAY MỚI
+                if (dr.getPlanDetailId() != null) {
+                    // ĐÂY LÀ KẾ HOẠCH CŨ -> Cần cập nhật Manager
+                    // Bạn cần lấy PlanDetail cũ từ DB hoặc từ plan.getPlanDetails() hiện có
+                    d = plan.getPlanPlanDetails().stream()
+                            .filter(pd -> pd.getId().equals(dr.getPlanDetailId()))
+                            .findFirst()
+                            .orElse(new PlanDetail()); // Nếu không tìm thấy thì coi như mới (phòng lỗi)
+
+                    if (d.getId() == null) isNew = true;
+                } else {
+                    // ĐÂY LÀ KẾ HOẠCH MỚI
+                    Long currentDeviceId = (dr.getDevice() != null) ? dr.getDevice().getId() : null;
+                    if (currentDeviceId != null && processedDeviceIds.contains(currentDeviceId)) {
+                        continue;
+                    }
+                    d = new PlanDetail();
+                    d.setPlan(plan);
+                    isNew = true;
                 }
 
-                PlanDetail d = new PlanDetail();
-                d.setPlan(plan);
-
-                // DEVICE
+                // CẬP NHẬT THÔNG TIN (Dùng chung cho cả cũ và mới)
                 if (dr.getDevice() != null) {
                     d.setDevice(convertDevice(dr.getDevice()));
+                    if (dr.getDevice().getGroup() != null) {
+                        d.setDeviceGroup(convertDeviceGroup(dr.getDevice().getGroup()));
+                    }
                 }
 
-                // DEVICE GROUP (lấy từ device.group nếu có)
-                if (dr.getDevice() != null && dr.getDevice().getGroup() != null) {
-                    d.setDeviceGroup(convertDeviceGroup(dr.getDevice().getGroup()));
-                }
-
-                // LƯU Ý: Trường hợp 2 không có SampleReport (cần kiểm tra logic nghiệp vụ)
-                // d.setSampleReport(...) // Cần xem xét cách thiết lập SampleReport nếu cần
-
-                // COMMON FIELDS
-                d.setManager(dr.getManager());
-                d.setQrCode(dr.getQrCode());
-                d.setEstimatedTime(dr.getEstimatedTime());
-                d.setNameDetail(dr.getNameDetail());
-                d.setNote(dr.getNote());
-
-                d.setCreatedAt(LocalDateTime.now());
-                d.setUpdatedAt(LocalDateTime.now());
-                d.setStatus(1);
+                // Cập nhật Manager và các trường thông tin khác từ Request
+                setCommonFields(d, dr, userName, isNew);
 
                 list.add(d);
             }
         }
 
-        // List đã chứa kết quả gộp từ cả hai trường hợp
         return list;
+    }
+
+    // Hàm bổ trợ để gán dữ liệu, tránh viết lặp code
+    private void setCommonFields(PlanDetail d, DeviceRequest dr, String userName, boolean isNew) {
+        d.setManager(dr.getManager()); // Cập nhật manager mới từ request
+        d.setQrCode(dr.getQrCode());
+        d.setEstimatedTime(dr.getEstimatedTime());
+        d.setNameDetail(dr.getNameDetail());
+        d.setNote(dr.getNote());
+
+        d.setUpdatedAt(LocalDateTime.now());
+        d.setUpdatedBy(userName);
+
+        if (isNew) {
+            d.setCreatedAt(LocalDateTime.now());
+            d.setCreatedBy(userName);
+            d.setStatus(1);
+        }
     }
 
 // ================================================================

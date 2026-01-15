@@ -14,10 +14,11 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long> {
     List<Approval> findByEntityType(String entityType);
     // Hoặc dùng phương thức tự động của Spring Data
     @Query(
-            value = "SELECT * FROM approvals WHERE user_approval_id IN (:userIds) order by status ",
+            value = "SELECT * FROM approvals WHERE user_approval_id IN (:userIds) or username = :username order by status ",
             nativeQuery = true
     )
-    List<Approval> findApprovalsByUserIds(@Param("userIds") List<Long> userIds);
+    List<Approval> findApprovalsByUserIds(@Param("userIds") List<Long> userIds,
+                                          @Param("username") String username);
     @Query(
             value = "SELECT * FROM approvals WHERE entity_id = :entity and entity_type = :entityType ;",
             nativeQuery = true
