@@ -87,7 +87,7 @@ public class ApprovalService {
 
         // Bước A: Map DTO cơ bản
         ApprovalDTO approvalDTO = mapToDTO(approval, new ApprovalDTO());
-        approvalDTO.setCheckStatus(0); // Mặc định 0
+        approvalDTO.setCheckStatus(1); // Mặc định 1
         responseDTO.setApproval(approvalDTO);
 
         // Bước B: Lấy dữ liệu từ bảng nghiệp vụ (Sửa lỗi hàng 7-10 bị trống)
