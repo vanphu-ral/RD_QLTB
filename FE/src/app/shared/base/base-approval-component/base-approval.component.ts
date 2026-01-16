@@ -15,6 +15,7 @@ import { Subscription } from "rxjs";
 export class BaseApprovalComponent {
 
     @Input() approvalModel: any = { note: '', status: null };
+    @Input() hideUser: boolean = false;
     listUserApprover: any[] = [];
 
     subscription: Subscription = new Subscription();

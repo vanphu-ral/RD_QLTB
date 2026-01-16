@@ -42,6 +42,8 @@ interface GroupedCritical {
   rowspan: number; // Rowspan = Số chi tiết * Số ca (details.length * 5)
 }
 
+
+
 @Component({
   selector: 'view-evaluate',
   standalone: true,
@@ -64,6 +66,8 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
   Math = Math;
 
   sampleReport: any = {};
+
+  weeklySignatures: { [key: number]: { image: string | null, signed: boolean } } = {};
 
   // Dùng để lặp qua 5 ca kiểm tra trong HTML
   public readonly DEFAULT_SESSIONS = DEFAULT_SESSIONS;
@@ -117,6 +121,55 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
   }
 
   loadApprovals(): void {
+    this.approvalService
+      .findApprovalsByEntityIdAndEntityType(this.model.planDetail.id, 'plan_details')
+      .subscribe((data: any[]) => {
+        // 1. Reset dữ liệu cũ
+        this.weeklySignatures = {};
+
+        if (data && data.length > 0) {
+          // 2. Lấy danh sách username duy nhất
+          const usernames = [...new Set(data.map(x => x.username).filter(u => u))];
+
+          // 3. Gọi API lấy chữ ký
+          this.signatureService.getByListUsernames(usernames).pipe(
+            catchError(err => {
+              console.error('Lỗi lấy danh sách chữ ký plan_details:', err);
+              return of([]); // Trả về mảng rỗng để vẫn chạy logic hiển thị text "Đã ký"
+            })
+          ).subscribe((signatures: any[]) => {
+
+            // 4. Map dữ liệu vào các tuần
+            data.forEach(item => {
+              if (!item.createdAt) return;
+
+              const createdDate = new Date(item.createdAt);
+              const day = createdDate.getDate(); // Lấy ngày trong tháng (1-31)
+              let week = 0;
+
+              // Chia tuần dựa trên colspan của bảng (7 ngày/tuần)
+              if (day <= 7) week = 1;
+              else if (day <= 14) week = 2;
+              else if (day <= 21) week = 3;
+              else if (day <= 28) week = 4;
+              else week = 5;
+
+              // Tìm chữ ký tương ứng với username
+              const sig = signatures.find(s => s.username === item.username);
+              const imageLink = sig ? sig.imageLink : null;
+
+              // Lưu vào biến weeklySignatures
+              // Ưu tiên: Nếu tuần đó đã có dữ liệu rồi thì có thể ghi đè (tùy logic, ở đây lấy cái mới nhất tìm thấy)
+              this.weeklySignatures[week] = {
+                image: imageLink,
+                signed: true // Đánh dấu là đã có bản ghi
+              };
+            });
+
+            this.cdr.detectChanges();
+          });
+        }
+      });
     this.approvalService
       .findApprovalsByEntityIdAndEntityType(this.model.planDetail.plan.id, 'plans')
       .subscribe((data) => {
@@ -312,6 +365,17 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
     });
 
     this.cdr.detectChanges();
+  }
+
+  getWeekOfMonth(dateStr: string): number {
+    const date = new Date(dateStr);
+    const day = date.getDate(); // 1 → 31
+
+    if (day <= 7) return 1;
+    if (day <= 14) return 2;
+    if (day <= 21) return 3;
+    if (day <= 28) return 4;
+    return 5;
   }
 
   /**

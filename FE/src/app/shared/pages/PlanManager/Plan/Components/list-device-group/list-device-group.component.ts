@@ -60,20 +60,33 @@ export class ListDeviceComponent implements OnInit {
     }
 
     handleBranchChange(data: any) {
+        // const branchId = data?.id;
+        // if (!branchId) {
+        //     return;
+        // }
+        // if(this.model.plan.planType.code === PLANTYPE.MAINTENANCE && !this.model.plan.maintanceMonth) {
+        //     return;
+        // }
+        // const filteredDeviceGroups = _.filter(this.listDeviceGroupBase, (deviceGroup) => {
+        //     const groupDevices = deviceGroup.groupDevices;
+        //     if (!groupDevices || groupDevices.length === 0) {
+        //         return false;
+        //     }
+        //     return _.some(groupDevices, (device) => {
+        //         return _.get(device, 'branch.id') === branchId;
+        //     });
+        // });
+        // this.listDeviceGroupByBranches = filteredDeviceGroups;
+        // this.cdr.detectChanges();
         const branchId = data?.id;
-        if (!branchId) {
-            return;
-        }
-        if(this.model.plan.planType.code === PLANTYPE.MAINTENANCE && !this.model.plan.maintanceMonth) {
-            return;
-        }
+        const teamId = this.model.plan?.team?.id;
+        if (!branchId) return;
         const filteredDeviceGroups = _.filter(this.listDeviceGroupBase, (deviceGroup) => {
-            const groupDevices = deviceGroup.groupDevices;
-            if (!groupDevices || groupDevices.length === 0) {
-                return false;
-            }
+            const groupDevices = deviceGroup.groupDevices || [];
             return _.some(groupDevices, (device) => {
-                return _.get(device, 'branch.id') === branchId;
+                const matchBranch = _.get(device, 'branch.id') === branchId;
+                const matchTeam = !teamId || _.get(device, 'team.id') === teamId;
+                return matchBranch && matchTeam;
             });
         });
         this.listDeviceGroupByBranches = filteredDeviceGroups;
@@ -125,9 +138,16 @@ export class ListDeviceComponent implements OnInit {
             return;
         } else {
             row.isDuplicate = false;
+            // const branchId = this.model.plan?.branch?.id;
+            // const filteredDevices = _.filter(row.deviceGroup.groupDevices, (device) => {
+            //     return !branchId || _.get(device, 'branch.id') === branchId;
+            // });
             const branchId = this.model.plan?.branch?.id;
+            const teamId = this.model.plan?.team?.id;
             const filteredDevices = _.filter(row.deviceGroup.groupDevices, (device) => {
-                return !branchId || _.get(device, 'branch.id') === branchId;
+                const isMatchBranch = !branchId || _.get(device, 'branch.id') === branchId;
+                const isMatchTeam = !teamId || _.get(device, 'team.id') === teamId;
+                return isMatchBranch && isMatchTeam;
             });
             const devicesInNewGroup: DeviceDetail[] = _.map(filteredDevices, (device, index) => {
                 device.group = { id: _.get(row, 'deviceGroup.id') };

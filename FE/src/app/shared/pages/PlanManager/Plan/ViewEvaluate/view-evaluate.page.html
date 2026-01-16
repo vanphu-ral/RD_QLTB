@@ -1,12 +1,13 @@
 <div class="summary-table">
-    <div class="card mt-3" >
+    <div class="card mt-3">
         <div class="table-responsive" id="print-section">
             <table class="table table-bordered table-hover" style="margin: 0;">
                 <thead>
                     <tr>
                         <th colspan="3"><img src="/assets/imgs/logo-rang-dong.png" style="width:150px;" /></th>
                         <th colspan="17"><b>BẢNG KIỂM TRA, BẢO DƯỠNG MÁY HÀNG NGÀY, HÀNG TUẦN</b></th>
-                        <th colspan="6">Số hiệu:<span id="spanPlanNumber"></span><span id="SpanDieuChinh">{{ sampleReport.documentNumber }}</span></th>
+                        <th colspan="6">Số hiệu:<span id="spanPlanNumber"></span><span id="SpanDieuChinh">{{
+                                sampleReport.documentNumber }}</span></th>
                         <ng-container *ngFor="let appr of listUserApprReport">
                             <th colspan="4" class="text-center">{{ appr.groupName }}</th>
                         </ng-container>
@@ -21,7 +22,9 @@
                             <p>Tháng: <span id="SpanPlanMonth">{{ model.planDetail.createdAt | date:'M' }}</span></p>
                             <p>Năm: <span id="SpanPlanYear">{{ model.planDetail.createdAt | date:'yyyy' }}</span></p>
                         </th>
-                        <th rowspan="2" colspan="6"><span id="spanMainDatePlan">Ngày {{ sampleReport.updatedAt | date:'dd' }} tháng {{ sampleReport.updatedAt | date:'M' }} năm {{ sampleReport.updatedAt | date:'yyyy' }}</span></th>
+                        <th rowspan="2" colspan="6"><span id="spanMainDatePlan">Ngày {{ sampleReport.updatedAt |
+                                date:'dd' }} tháng {{ sampleReport.updatedAt | date:'M' }} năm {{ sampleReport.updatedAt
+                                | date:'yyyy' }}</span></th>
                         <ng-container *ngFor="let appr of listUserApprReport">
                             <th rowspan="3" colspan="4" style="text-align:center;" id="idBranch">
                                 <div *ngFor="let sig of appr.signatures" style="margin-bottom: 10px;">
@@ -44,8 +47,10 @@
                             <i class="fa-solid fa-circle-half-stroke fa-rotate-180"></i>Cuối giờ
                             <i class="fa-solid fa-circle"></i>Hàng tuần
                         </th>
-                        <th colspan="9">Tổ: <span id="spanTeamName">{{ model?.planDetail?.device?.team?.name }}</span></th>
-                        <th colspan="6"><span id="spanLanbanhanh_1">Ban hành lần {{ sampleReport.numberOfIssuances }}</span></th>
+                        <th colspan="9">Tổ: <span id="spanTeamName">{{ model?.planDetail?.device?.team?.name }}</span>
+                        </th>
+                        <th colspan="6"><span id="spanLanbanhanh_1">Ban hành lần {{ sampleReport.numberOfIssuances
+                                }}</span></th>
                     </tr>
                     <tr>
                         <th rowspan="2">TT</th>
@@ -99,7 +104,8 @@
                         </ng-container>
                     </ng-container>
                     <tr class="repair-log-row" style="background-color: #f8f9fa; font-weight: bold;">
-                        <td colspan="7" class="text-center">NHẬT KÝ SỬA CHỮA (Hiển thị các ngày đã xử lý xong sự cố)</td>
+                        <td colspan="7" class="text-center">NHẬT KÝ SỬA CHỮA (Hiển thị các ngày đã xử lý xong sự cố)
+                        </td>
                         <td *ngFor="let day of getDaysArray()" class="text-center">
                             <span [innerHTML]="getRepairStatusForDay(day)"></span>
                         </td>
@@ -114,7 +120,8 @@
                             <p>
                                 1. Đánh dấu [<i class="far fa-circle"></i>] khi OK, Dấu [<i
                                     class="fa-solid fa-circle-play fa-rotate-270"></i>] khi đã điều chỉnh, [<i
-                                    class="fas fa-times"></i>] khi có bất thường, [<i class="fa-solid fa-wrench" style="color: red;"></i>] khi đã sửa.
+                                    class="fas fa-times"></i>] khi có bất thường, [<i class="fa-solid fa-wrench"
+                                    style="color: red;"></i>] khi đã sửa.
                             </p>
                             <p>2. Khi có bất thường, liên lạc với Tổ trưởng hoặc nhóm kỹ thuật, cơ khí Ngành.</p>
                             <p>
@@ -136,11 +143,45 @@
                     </tr>
                     <tr>
                         <td>Tổ trưởng xác nhận ký (1 tuần/lần)</td>
-                        <td colspan="7" id="sign_week_01"></td>
-                        <td colspan="7" id="sign_week_02"></td>
-                        <td colspan="7" id="sign_week_03"></td>
-                        <td colspan="7" id="sign_week_04"></td>
-                        <td colspan="3" id="sign_week_05"></td>
+                        <td colspan="7" id="sign_week_01" class="text-center align-middle">
+                            <ng-container *ngIf="weeklySignatures[1]?.signed">
+                                <img *ngIf="weeklySignatures[1].image" [src]="weeklySignatures[1].image"
+                                    style="width: 100px; height: 50px; object-fit: contain; display: block; margin: 0 auto;">
+                                <span *ngIf="!weeklySignatures[1].image" style="font-weight: bold;">Đã ký</span>
+                            </ng-container>
+                        </td>
+                        
+                        <td colspan="7" id="sign_week_02" class="text-center align-middle">
+                            <ng-container *ngIf="weeklySignatures[2]?.signed">
+                                <img *ngIf="weeklySignatures[2].image" [src]="weeklySignatures[2].image"
+                                    style="width: 100px; height: 50px; object-fit: contain; display: block; margin: 0 auto;">
+                                <span *ngIf="!weeklySignatures[2].image" style="font-weight: bold;">Đã ký</span>
+                            </ng-container>
+                        </td>
+                        
+                        <td colspan="7" id="sign_week_03" class="text-center align-middle">
+                            <ng-container *ngIf="weeklySignatures[3]?.signed">
+                                <img *ngIf="weeklySignatures[3].image" [src]="weeklySignatures[3].image"
+                                    style="width: 100px; height: 50px; object-fit: contain; display: block; margin: 0 auto;">
+                                <span *ngIf="!weeklySignatures[3].image" style="font-weight: bold;">Đã ký</span>
+                            </ng-container>
+                        </td>
+                        
+                        <td colspan="7" id="sign_week_04" class="text-center align-middle">
+                            <ng-container *ngIf="weeklySignatures[4]?.signed">
+                                <img *ngIf="weeklySignatures[4].image" [src]="weeklySignatures[4].image"
+                                    style="width: 100px; height: 50px; object-fit: contain; display: block; margin: 0 auto;">
+                                <span *ngIf="!weeklySignatures[4].image" style="font-weight: bold;">Đã ký</span>
+                            </ng-container>
+                        </td>
+                        
+                        <td colspan="3" id="sign_week_05" class="text-center align-middle">
+                            <ng-container *ngIf="weeklySignatures[5]?.signed">
+                                <img *ngIf="weeklySignatures[5].image" [src]="weeklySignatures[5].image"
+                                    style="width: 100px; height: 50px; object-fit: contain; display: block; margin: 0 auto;">
+                                <span *ngIf="!weeklySignatures[5].image" style="font-weight: bold;">Đã ký</span>
+                            </ng-container>
+                        </td>
                     </tr>
                 </tfoot>
             </table>
@@ -182,14 +223,12 @@
         </table>
     </div>
     <div class="row my-3" *ngIf="isApprovalMode">
-      <app-base-approval
-        [approvalModel]="approvalModel"
-        ></app-base-approval>
+        <app-base-approval [hideUser]="true" [approvalModel]="approvalModel"></app-base-approval>
     </div>
     <div class="d-flex justify-content-end mt-3">
         <p-button label="Quay lại" severity="info" (click)="onBack()" icon="pi pi-arrow-left" class="me-2"></p-button>
         <p-button label="In" icon="pi pi-print" severity="success" (click)="printDiv()" class="me-2"></p-button>
-        <p-button *ngIf="isApprovalMode" label="Duyệt" icon="pi pi-save" severity="success" class="w-full max-w-[17.35rem]"
-            (click)="Approval()" styleClass="w-full mx-auto" />
+        <p-button *ngIf="isApprovalMode" label="Duyệt" icon="pi pi-save" severity="success"
+            class="w-full max-w-[17.35rem]" (click)="Approval()" styleClass="w-full mx-auto" />
     </div>
 </div>
