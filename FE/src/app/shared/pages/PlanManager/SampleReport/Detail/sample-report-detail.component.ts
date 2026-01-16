@@ -30,7 +30,7 @@ import { OperationsStaff, OperationsStaffLabel } from '../../../../enums/operati
 })
 export class SampleReportDetailComponent extends BasePageComponent<SampleReport> {
 
-  listFrequencies: any[] = ["Ngày", "Tuần", "Tháng", "Quỹ", "6 Tháng", "Năm"];
+  listFrequencies: any[] = ["Đầu giờ", "Cuối giờ", "Ngày", "Tuần", "Tháng", "Quỹ", "6 Tháng", "Năm"];
   listTypes: any[] = [];
   listBranchs: any[] = [];
   listApprovalWorkflow: any[] = []

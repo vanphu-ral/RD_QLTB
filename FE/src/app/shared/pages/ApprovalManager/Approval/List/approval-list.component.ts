@@ -25,7 +25,6 @@ export class ApprovalListComponent {
     { Field: 'data.code', Header: 'Mã tài liệu', IsSearch: true, TypeSearch: 'text' },
     { Field: 'data.name', Header: 'Tên tài liệu', IsSearch: true, TypeSearch: 'text' },
     { Field: 'approval', Header: 'Loại tài liệu', IsSearch: true, TypeSearch: 'text' },
-    { Field: 'approval.userApproval.username', Header: 'Người phê duyệt', IsSearch: true, TypeSearch: 'text' },
     { Field: 'approval.status', Header: 'Trạng thái', IsSearch: true, TypeSearch: 'text' },
     { Field: 'approval.createdBy', Header: 'Người tạo', IsSearch: true, TypeSearch: 'text', pipe: DatePipe },
     { Field: 'approval.createdAt', Header: 'Ngày tạo', IsSearch: true, TypeSearch: 'date' },
@@ -47,9 +46,16 @@ export class ApprovalListComponent {
         return 'Biên bản sự cố thiết bị';
       case 'plan_supplies':
         return 'Kế hoạch vật tư';
+      case 'plan_details':
+        return 'Ký duyệt kiểm tra thiết bị hàng tuần';
       default:
         return '';
     }
+  }
+
+  displayName(data: any) {
+    console.log(data);
+    
   }
 
   statusToString(status: any) {
@@ -101,6 +107,7 @@ export class ApprovalListComponent {
       'acceptances': 'Acceptance',
       'report_device_incidents': 'ReportDeviceIncident',
       'plan_supplies': 'PlanSupplies',
+      'plan_details': 'PlanDetails',
       // thêm mapping nếu có entityType khác
     };
 

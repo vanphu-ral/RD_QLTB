@@ -108,6 +108,11 @@ export const routes: Routes = [
         loadChildren: () => import('./shared/pages/PlanManager/Plan/plan.routes').then(m => m.default)
     },
     {
+        path: 'PlanDetails',
+        component: AppLayout,
+        loadChildren: () => import('./shared/pages/PlanManager/Plan/plan-detail.routes').then(m => m.default)
+    },
+    {
         path: 'PlanSupplies',
         component: AppLayout,
         loadChildren: () => import('./shared/pages/PlanManager/PlanSupplie/plan-supplie.routes').then(m => m.default)

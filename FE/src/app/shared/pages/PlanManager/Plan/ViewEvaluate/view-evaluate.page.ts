@@ -45,7 +45,7 @@ interface GroupedCritical {
 @Component({
   selector: 'view-evaluate',
   standalone: true,
-  imports: [SharedModule, FormsModule],
+  imports: [SharedModule, FormsModule, BaseApprovalComponent],
   providers: [ConfirmationService, MessageService],
   templateUrl: './view-evaluate.page.html',
   styleUrls: ['./view-evaluate.page.scss'],
@@ -78,7 +78,7 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
 
   override ngOnInit(): void {
     super.ngOnInit();
-    console.log(this.model);
+    console.log(this.isApprovalMode);
     
     this.sampleReport = JSON.parse(this.model.planDetail.detail);
     this.planInfo = this.model.planDetail;
