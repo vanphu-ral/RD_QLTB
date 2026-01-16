@@ -15,4 +15,6 @@ public interface PlanResultRepository extends JpaRepository<PlanResult, Long> {
     @Modifying
     @Query(value = "DELETE FROM plan_results pr WHERE pr.plan_detail_id = ?1 ",nativeQuery = true)
     void deleteAllByPlanDetailId(Long planDetailId);
+    @Query(value = "SELECT * FROM plan_results pr WHERE pr.plan_detail_id = ?1 and date_test like ?2 ;",nativeQuery = true)
+    List<PlanResult> findByPlanDetailIdAndDateTestLike(Long planDetailId, String dateTestPattern);
 }

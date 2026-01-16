@@ -146,10 +146,14 @@ public class ApprovalService {
         for (ApprovalDTO approval: approvalDTOS){
         // Thêm tên nhóm phê duyệt vào ApprovalDTO
             // Thêm tên nhóm phê duyệt vào ApprovalDTO
+            if (approval.getGroup() == null || approval.getGroup().getId() == null) {
+                continue; // Bỏ qua nếu group hoặc group ID là null
+            }else{
             ApprovalGroup group = approvalGroupRepository.findById(approval.getGroup().getId()).orElseThrow(()-> new NotFoundException("ApprovalGroup not found"));
             approval.getGroup().setGroupApprovalName(groupApprovalNameRepository.findById(group.getGroupApprovalName().getId()).orElseThrow(()-> new NotFoundException("GroupApprovalName not found")));
             System.out.println("Group Approval Name: " + approval.getGroup().getGroupApprovalName().getName());
             approval.getGroup().getGroupApprovalName().setApprovalGroups(null); // tránh vòng lặp
+            }
         }
         return approvalDTOS;
     }

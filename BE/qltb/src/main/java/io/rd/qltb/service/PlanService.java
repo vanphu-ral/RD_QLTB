@@ -9,12 +9,14 @@ import io.rd.qltb.events.BeforeDeletePlan;
 import io.rd.qltb.events.BeforeDeletePlanType;
 import io.rd.qltb.model.*;
 import io.rd.qltb.model.response.PlanSaveDetailLog;
+import io.rd.qltb.model.response.PlanUpdateResponse;
 import io.rd.qltb.repos.*;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
 
 import java.time.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import jakarta.persistence.criteria.*;
 
@@ -682,23 +684,6 @@ public class PlanService {
     public void createApproveForManager(Plan plan, List<PlanDetail> planDetails) {
         LocalDate fromDate = plan.getFromDate().toLocalDate();
         LocalDate toDate = plan.getToDate().toLocalDate();
-//        List<PlanDetail> planDetails = planDetailRepository.findAllByPlanId(plan.getId());
-//        Branch branch = branchRepository.findById(plan.getBranch().getId()).orElseThrow();
-//        List<ApprovalGroup> approvalGroups = approvalGroupRepository.findByWorkflowId(plan.getApprovalWorkflow().getId());
-//        Long userId = null;
-//        for (ApprovalGroup ag : approvalGroups) {
-//            for (ApprovalGroupUser agu : ag.getGroupApprovalGroupUsers()) {
-//                if (agu.getUsername().equals(branch.getManager())) {
-//                    userId = agu.getId();
-//                    break;
-//                }
-//            }
-//        }
-//        ApprovalGroupUser agUser = approvalGroupUserRepository.findById(userId).orElse(null);
-//        if (agUser == null) {
-//            return; // không tìm thấy user quản lý
-//        }
-
         for (PlanDetail planDetail : planDetails) {
             String userManager = null;
             DeviceDTO deviceDTO = deviceService.get(planDetail.getDevice().getId());
@@ -760,7 +745,45 @@ public class PlanService {
     }
 
     @Transactional
-    public Plan updatePlan(Long id, String userName, PlanRequest request) {
+    public PlanUpdateResponse updatePlan(Long id, String userName, PlanRequest request) {
+        PlanUpdateResponse planUpdateResponse = new PlanUpdateResponse();
+        planUpdateResponse.setMessage("Cập nhật kế hoạch thành công");
+        planUpdateResponse.setStatus("SUCCESS");
+        for (DeviceRequest deviceRequest : request.getDevices()) {
+            // 1. Lấy PlanDetail từ DB (hoặc từ Map đã chuẩn bị trước)
+            PlanDetail planDetail = planDetailRepository.findById(deviceRequest.getPlanDetailId())
+                    .orElseThrow(() -> new RuntimeException("PlanDetail not found"));
+
+            // 2. Chuyển đổi Manager từ Request thành Set (để dùng phương thức contains nhanh hơn)
+            String reqManagerStr = deviceRequest.getManager();
+            Set<String> managerRequestSet = (reqManagerStr != null && !reqManagerStr.isEmpty())
+                    ? new HashSet<>(Arrays.asList(reqManagerStr.split(",")))
+                    : new HashSet<>();
+
+            // 3. Chuyển đổi Manager từ DB thành List/Set
+            String existManagerStr = planDetail.getManager();
+            List<String> managerExistList = (existManagerStr != null && !existManagerStr.isEmpty())
+                    ? Arrays.asList(existManagerStr.split(","))
+                    : Collections.emptyList();
+
+            // 4. LỌC: Những người có trong Exist nhưng KHÔNG có trong Request (Danh sách bị loại bỏ)
+            List<String> removedManagers = managerExistList.stream()
+                    .map(String::trim) // Xóa khoảng trắng thừa nếu có
+                    .filter(m -> !managerRequestSet.contains(m.trim()))
+                    .collect(Collectors.toList());
+
+            // In kết quả hoặc xử lý tiếp
+            System.out.println("Managers bị xóa cho thiết bị " + planDetail.getId() + ": " + removedManagers);
+            for(String mgr : removedManagers){
+                Integer countResultDetail = planResultDetailRepository.countByPlanDetailId(planDetail.getId(), mgr);
+                if(countResultDetail > 0){
+                    planUpdateResponse.setStatus("FAIL");
+                    planUpdateResponse.setMessage("Không thể cập nhật kế hoạch do người phụ trách : " + mgr + " đã có dữ liệu kiểm tra.");
+                    System.out.println("Không thể cập nhật kế hoạch do người phụ trách " + mgr + " đã có dữ liệu kiểm tra.");
+                    return planUpdateResponse;
+                }
+            }
+        }
         createLog(id,userName);
 
         Plan exist = planRepository.findById(id)
@@ -774,7 +797,7 @@ public class PlanService {
         List<PlanDetail> savedDetails = addDetailToSampleReport(newDetails);// chuyển detail sang JSON
         planDetailRepository.saveAll(savedDetails);
         autoCreatePlanResult(savedDetails);
-        return exist;
+        return planUpdateResponse;
     }
     @Transactional
     public void createLog(Long id, String userName) {
@@ -821,18 +844,26 @@ public class PlanService {
                     LocalDate date = currentMonth.atDay(startDay);
                     // Trả về LocalDateTime lúc 00:00 của ngày đó
                     LocalDateTime dateTime = date.atTime(17, 00, 00);
-                    PlanResult planResult = new PlanResult();
-                    planResult.setPlanDetail(planDetail);
-                    planResult.setCreatedAt(java.time.LocalDateTime.now());
-                    planResult.setUpdatedAt(java.time.LocalDateTime.now());
-                    planResult.setCreatedBy("system");
-                    planResult.setUpdatedBy(null);
-                    planResult.setStatus(1);
-                    planResult.setStatusRepair("1");
-                    planResult.setNote("");
-                    planResult.setDateTest(dateTime);
-                    planResult.setUserTest(planDetail.getManager());
-                    planResultService.create(planResultService.mapToDTO(planResult, new PlanResultDTO()));
+                    List<PlanResult> planResultCheck = planResultRepository.findByPlanDetailIdAndDateTestLike(planDetail.getId(), "%"+date.toString()+"%");
+                    if (planResultCheck.size() > 0) {
+                        for (PlanResult pr : planResultCheck) {
+                            pr.setUserTest(planDetail.getManager());
+                            planResultRepository.save(pr);
+                        }
+                    }else {
+                        PlanResult planResult = new PlanResult();
+                        planResult.setPlanDetail(planDetail);
+                        planResult.setCreatedAt(java.time.LocalDateTime.now());
+                        planResult.setUpdatedAt(java.time.LocalDateTime.now());
+                        planResult.setCreatedBy("system");
+                        planResult.setUpdatedBy(null);
+                        planResult.setStatus(1);
+                        planResult.setStatusRepair("1");
+                        planResult.setNote("");
+                        planResult.setDateTest(dateTime);
+                        planResult.setUserTest(planDetail.getManager());
+                        planResultService.create(planResultService.mapToDTO(planResult, new PlanResultDTO()));
+                    }
                     startDay++;
                 }
             }

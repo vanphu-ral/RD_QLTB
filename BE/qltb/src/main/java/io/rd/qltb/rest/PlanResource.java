@@ -1,6 +1,7 @@
 package io.rd.qltb.rest;
 
 import io.rd.qltb.model.*;
+import io.rd.qltb.model.response.PlanUpdateResponse;
 import io.rd.qltb.service.PlanService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
@@ -126,6 +127,11 @@ public class PlanResource {
     public ResponseEntity<?> update(@PathVariable Long id,
                                     @AuthenticationPrincipal OidcUser oidcUser,
                                     @RequestBody PlanRequest request) {
-        return ResponseEntity.ok(planService.updatePlan(id,oidcUser.getName(), request));
+        PlanUpdateResponse planUpdateResponse = planService.updatePlan(id, oidcUser.getName(), request);
+        if(planUpdateResponse.getStatus().equals("FAIL")){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(planUpdateResponse);
+        }else {
+            return ResponseEntity.ok(planUpdateResponse);
+        }
     }
 }
