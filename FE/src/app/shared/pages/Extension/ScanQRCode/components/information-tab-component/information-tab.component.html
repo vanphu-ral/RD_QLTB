@@ -1,5 +1,5 @@
 <div class="device-task hidden md:block">
-  <p-tabs value="0" (valueChange)="onTabChange($event)">
+  <p-tabs value="0" (valueChange)="onTabChange($event)" scrollable>
     <p-tablist>
       <p-tab value="0">Lịch sử di chuyển</p-tab>
       <p-tab value="1">Lịch sử sự cố</p-tab>
@@ -7,6 +7,7 @@
       <p-tab value="3">Kiểm tra thiết bị</p-tab>
       <p-tab value="4">Bảo trì thiết bị</p-tab>
       <p-tab value="5">Sửa chữa thiết bị</p-tab>
+      <p-tab value="6">Thống kê thời gian dừng máy</p-tab>
     </p-tablist>
     <p-tabpanels>
       <!-- Lịch sử di chuyển -->
@@ -147,6 +148,29 @@
           5555
         </p>
       </p-tabpanel>
+
+      <!-- Thống kê thời gian dừng máy -->
+      <p-tabpanel value="6">
+        <p-table [value]="listDeviceStops" dataKey="stt" [paginator]="true" [rows]="10" [resizableColumns]="true"
+          [scrollable]="true" scrollHeight="500px">
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 80px">STT</th>
+              <th>Thời gian dừng máy</th>
+              <th>Thời gian bắt đầu chạy lại</th>
+              <th>Tổng thời gian dừng</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
+            <tr>
+              <td>{{ rowIndex +1 }}</td>
+              <td>{{ row.timeReported | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td>{{ row.timeRepaired | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td>{{ row.totalStopTime }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-tabpanel>
     </p-tabpanels>
   </p-tabs>
 </div>
@@ -215,6 +239,42 @@
           facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil
           impedit quo minus.
         </p>
+      </p-accordion-content>
+    </p-accordion-panel>
+
+    <!-- Thống kê thời gian dừng máy -->
+    <p-accordion-panel value="6">
+      <p-accordion-header>Thời gian dừng máy</p-accordion-header>
+      <p-accordion-content>
+        <p-table [value]="listDeviceStops" dataKey="stt" [paginator]="true" [rows]="10" [resizableColumns]="true"
+          [scrollable]="true" scrollHeight="500px">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Thông tin chung</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-row>
+            <tr>
+              <td>
+                <b>Thời gian dừng máy:</b>
+                {{ row.timeReported | date:'dd/MM/yyyy HH:mm' }} <br />
+          
+                <b>Thời gian bắt đầu chạy lại:</b>
+                {{ row.timeRepaired | date:'dd/MM/yyyy HH:mm' }} <br />
+          
+                <b>Tổng thời gian dừng:</b>
+                {{ row.totalStopTime }} <br />
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td [attr.colspan]="999" class="text-center">
+                <p>Không có dữ liệu</p>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
       </p-accordion-content>
     </p-accordion-panel>
   </p-accordion>

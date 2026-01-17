@@ -19,8 +19,8 @@
   <div class="row my-3">
     <div class="col-6">
       <p-floatlabel variant="on">
-        <p-datepicker [(ngModel)]="data.timeReported" appDateConvert [iconDisplay]="'input'" [showIcon]="true"
-          name="timeReported" [dateFormat]="'dd-mm-yy'" appendTo="body" [inputSize]="100" />
+        <p-datepicker [(ngModel)]="data.timeReported" appDateConvert [withTime]="true" [iconDisplay]="'input'" [showIcon]="true"
+          name="timeReported" [dateFormat]="'dd-mm-yy'" appendTo="body" [inputSize]="100" [showTime]="true" hourFormat="24"/>
         <label for="timeReported">Ngày gặp sự cố</label>
       </p-floatlabel>
     </div>

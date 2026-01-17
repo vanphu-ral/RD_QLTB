@@ -20,7 +20,7 @@
   <div class="row my-3">
     <div class="col-12">
       <p-floatlabel variant="on">
-        <p-datepicker [(ngModel)]="data.timeRepaired" appDateConvert [iconDisplay]="'input'" [showIcon]="true"
+        <p-datepicker [(ngModel)]="data.timeRepaired" appDateConvert [iconDisplay]="'input'" [withTime]="true" [showIcon]="true" [showTime]="true" hourFormat="24"
           name="timeRepaired" [dateFormat]="'dd-mm-yy'" appendTo="body" [inputSize]="100" [autofocus]="false">
         </p-datepicker>
         <label for="timeRepaired">Ngày sửa chữa</label>

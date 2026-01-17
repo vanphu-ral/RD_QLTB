@@ -27,6 +27,7 @@ export class InformationTabComponent implements OnChanges {
   listError: any[] = []
   listRepaired: any[] = []
   listPlanAudit: any[] = []
+  listDeviceStops: any[] = []
 
   constructor(private cdr: ChangeDetectorRef, private deviceRelocationHistoryService: DeviceRelocationHistoryService, private planDetailService: PlanDetailService, private errorReportService: ErrorReportService, private dialogService: DialogService) {
   }
@@ -66,6 +67,10 @@ export class InformationTabComponent implements OnChanges {
       case "5":
         // this.loadSuaChua(this.model.id);
         break;
+      
+      case "6":
+        this.loadHistoryError(this.model.id);
+        break;
 
       default:
         break;
@@ -84,6 +89,13 @@ export class InformationTabComponent implements OnChanges {
     this.errorReportService.findByPlanResultId(deviceId).subscribe(res => {
       this.listError = res;
       this.listRepaired = res.filter((item: any) => item.isRepaired);
+      this.listDeviceStops = res.filter((item: any) => item.isRepaired && item.severity == 0).map((error: any) => ({
+        ...error,
+        totalStopTime: this.calculateStopTime(
+          error.timeReported!,
+          error.timeRepaired
+        )
+      }));
       console.log(res); 
       
       this.cdr.detectChanges();
@@ -129,6 +141,25 @@ export class InformationTabComponent implements OnChanges {
       default:
         return '';
     }
+  }
+
+  calculateStopTime(start: string, end: string): string {
+    if (!start || !end) return '';
+
+    const startTime = new Date(start).getTime();
+    const endTime = new Date(end).getTime();
+
+    const diffMs = endTime - startTime;
+    if (diffMs <= 0) return '0 phút';
+
+    const diffMinutes = Math.floor(diffMs / (1000 * 60));
+    const hours = Math.floor(diffMinutes / 60);
+    const minutes = diffMinutes % 60;
+
+    if (hours > 0) {
+      return `${hours} giờ ${minutes} phút`;
+    }
+    return `${minutes} phút`;
   }
 
   checkDevice(data: any) {

@@ -107,6 +107,7 @@ export class ScanQrCodeComponent {
       next: (device) => {
         this.device = device;
         this.device.DateUseAndInstall = `${new Date(this.device.dateManufacture).getFullYear()} - ${new Date(this.device.installationDate).getFullYear()}`;
+        this.device.displayLocation = device.line?.name || device.team?.name || device.branch?.name || ''
         this.serial = '';
         this.cdr.detectChanges();
       },
