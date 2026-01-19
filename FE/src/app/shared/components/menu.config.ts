@@ -26,6 +26,12 @@ export const MENU_ITEMS: MenuItem[] = [
                         roles: ['RD_QLTB_ADMIN', 'RD_QLTB_MANAGER','RD_QLTB_APPROVE']
                     },
                     {
+                        label: 'Kế hoạch mục tiêu thiết bị',
+                        icon: 'pi pi-fw pi-calendar',
+                        routerLink: ['/PlanTargets'],
+                        roles: ['RD_QLTB_ADMIN', 'RD_QLTB_MANAGER', 'RD_QLTB_APPROVE']
+                    },
+                    {
                         label: 'Danh mục loại kế hoạch',
                         icon: 'pi pi-fw pi-list',
                         routerLink: ['/PlanTypes'],

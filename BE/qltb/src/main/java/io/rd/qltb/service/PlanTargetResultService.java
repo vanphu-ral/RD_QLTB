@@ -63,6 +63,7 @@ public class PlanTargetResultService {
         dto.setId(planTargetResult.getId());
         dto.setResult(planTargetResult.getResult());
         dto.setNote(planTargetResult.getNote());
+        dto.setExecutionTime(planTargetResult.getExecutionTime());
         dto.setCreatedAt(planTargetResult.getCreatedAt());
         dto.setUpdatedAt(planTargetResult.getUpdatedAt());
         dto.setCreatedBy(planTargetResult.getCreatedBy());
@@ -73,10 +74,11 @@ public class PlanTargetResultService {
         if (planTargetResult.getPlanTargetDevice() != null) {
             PlanTarget targetCopy = new PlanTarget();
             targetCopy.setId(planTargetResult.getPlanTargetDevice().getId());
-            targetCopy.setBranchId(planTargetResult.getPlanTargetDevice().getBranchId());
-            targetCopy.setTargetDescription(planTargetResult.getPlanTargetDevice().getTargetDescription());
-            targetCopy.setTargetValue(planTargetResult.getPlanTargetDevice().getTargetValue());
-            targetCopy.setCritical(planTargetResult.getPlanTargetDevice().getCritical());
+            targetCopy.setCode(planTargetResult.getPlanTargetDevice().getCode());
+            targetCopy.setName(planTargetResult.getPlanTargetDevice().getName());
+            targetCopy.setYear(planTargetResult.getPlanTargetDevice().getYear());
+            targetCopy.setListItems(planTargetResult.getPlanTargetDevice().getListItems());
+            targetCopy.setDescription(planTargetResult.getPlanTargetDevice().getDescription());
             targetCopy.setCreatedAt(planTargetResult.getPlanTargetDevice().getCreatedAt());
             targetCopy.setUpdatedAt(planTargetResult.getPlanTargetDevice().getUpdatedAt());
             targetCopy.setCreatedBy(planTargetResult.getPlanTargetDevice().getCreatedBy());
@@ -99,6 +101,7 @@ public class PlanTargetResultService {
             final PlanTargetResult planTargetResult) {
         planTargetResult.setResult(planTargetResultDTO.getResult());
         planTargetResult.setNote(planTargetResultDTO.getNote());
+        planTargetResult.setExecutionTime(planTargetResultDTO.getExecutionTime());
         planTargetResult.setCreatedAt(planTargetResultDTO.getCreatedAt());
         planTargetResult.setUpdatedAt(planTargetResultDTO.getUpdatedAt());
         planTargetResult.setCreatedBy(planTargetResultDTO.getCreatedBy());

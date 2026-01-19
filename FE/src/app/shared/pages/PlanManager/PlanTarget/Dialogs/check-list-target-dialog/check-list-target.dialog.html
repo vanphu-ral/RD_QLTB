@@ -1,0 +1,55 @@
+<div class="p-1">
+    <div class="d-flex justify-content-end mt-2 mb-4">
+        <p-button label="Thêm ngày kiểm tra" icon="pi pi-plus" (onClick)="addNewRow()"></p-button>
+    </div>
+
+    <div class="table-responsive">
+        <p-table [value]="checkList" responsiveLayout="scroll">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>STT</th>
+                    <th>Tháng</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-row let-i="rowIndex">
+                <tr>
+                    <td>{{ i + 1 }}</td>
+                    <td>
+                        <p-datepicker [(ngModel)]="row.executionTime" appDateConvert [iconDisplay]="'input'"
+                            [showIcon]="true" view="month" name="executionTime" inputId="icondisplay"
+                            [dateFormat]="'mm-yy'" appendTo="body" [disabled]="row.status == 5" />
+                    </td>
+                    <td>
+                        <p-tag [value]="statusToString(row.status)" [severity]="getSeverity(row.status)" />
+                    </td>
+                    <td class="text-center">
+                        <p-button icon="pi pi-save" styleClass="m-1" *ngIf="row.status != 5" title="Lưu"
+                            (onClick)="saveCheckDate(row)"></p-button>
+                        <p-button icon="pi pi-check-circle" styleClass="m-1" severity="info" title="Kiểm tra"
+                            (onClick)="performPlan(row)" [disabled]="!row.id" *ngIf="row.status != 5"></p-button>
+                        <p-button icon="pi pi-check" styleClass="m-1" severity="success" title="Hoàn thành"
+                            *ngIf="row.status != 5" (onClick)="completeCheckDate(row, $event)"
+                            [disabled]="!row.id"></p-button>
+                        <p-button icon="pi pi-trash" severity="danger" styleClass="m-1" title="Xóa"
+                            *ngIf="row.status != 15" (onClick)="deleteRow(i)">
+                        </p-button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="99" class="text-center">Chưa có đợt kiểm tra nào</td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <p-button label="Đóng" (onClick)="close()"></p-button>
+    </div>
+</div>
+<p-confirmDialog [style]="{width: '500px'}" key="confirmDialog" [baseZIndex]="10000"></p-confirmDialog>

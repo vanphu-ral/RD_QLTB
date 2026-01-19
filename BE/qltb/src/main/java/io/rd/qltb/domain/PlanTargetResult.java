@@ -31,6 +31,9 @@ public class PlanTargetResult {
     @Column
     private String note;
 
+    @Column
+    private LocalDateTime executionTime;
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
 

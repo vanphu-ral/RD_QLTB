@@ -1,12 +1,8 @@
 package io.rd.qltb.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -26,16 +22,19 @@ public class PlanTarget {
     private Long id;
 
     @Column
-    private Long branchId;
-
-    @Column(length = 500)
-    private String targetDescription;
-
-    @Column(length = 100)
-    private String targetValue;
+    private String code;
 
     @Column
-    private String critical;
+    private String name;
+
+    @Column
+    private Integer year;
+
+    @Column
+    private String listItems;
+
+    @Column
+    private String description;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -54,5 +53,15 @@ public class PlanTarget {
 
     @OneToMany(mappedBy = "planTargetDevice")
     private Set<PlanTargetResult> planTargetDevicePlanTargetResults = new HashSet<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "branch_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Branch branch;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "approval_workflow_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private ApprovalWorkflow approvalWorkflow;
 
 }

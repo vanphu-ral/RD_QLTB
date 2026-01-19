@@ -728,4 +728,29 @@ export class Util {
     (obj as any)[startKey] = new Date(now.getFullYear(), now.getMonth(), 1);
     (obj as any)[endKey] = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
   }
+
+
+  /**
+ * Hàm chuyển đổi qua lại giữa Năm (Số) và Chuỗi Date ISO (String)
+ * @param value Giá trị đầu vào (có thể là "2024-01-01T00:00:00" hoặc 2024)
+ * @returns Nếu vào String -> trả về Number (Năm). Nếu vào Number -> trả về String (ISO).
+ */
+  static convertYearData(value: string | number | any): string | number | null {
+    if (value === null || value === undefined || value === '') return null;
+
+    // TRƯỜNG HỢP 1: Đầu vào là STRING (Dạng "2024-01-01...") -> Lấy ra SỐ 2024
+    if (typeof value === 'string') {
+      const date = new Date(value);
+      // Kiểm tra xem string có đúng định dạng ngày tháng không
+      return !isNaN(date.getTime()) ? date.getFullYear() : null;
+    }
+
+    // TRƯỜNG HỢP 2: Đầu vào là SỐ (Dạng 2024) -> Trả về STRING "2024-01-01T00:00:00"
+    if (typeof value === 'number') {
+      return `${value}-01-01T00:00:00`;
+    }
+
+    return value;
+  }
+
 }

@@ -1,0 +1,132 @@
+<div class="p-1">
+
+  <div class="row my-3">
+    <div class="col-12">
+      <div class="form-group">
+        <label for="measurement">Nội dung</label>
+        <textarea rows="5" cols="30" fluid pTextarea class="form-control" placeholder="Enter ..." id="measurement"
+          name="measurement" [(ngModel)]="data.measurement"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="row my-3">
+    <div class="col-12">
+      <div class="form-group">
+        <label for="target">Mục tiêu</label>
+        <textarea rows="5" cols="30" fluid pTextarea class="form-control" placeholder="Enter ..." id="target"
+          name="target" [(ngModel)]="data.target"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="row my-3">
+    <div class="col-12">
+      <div class="form-group">
+        <label for="solution">Biện pháp thực hiện</label>
+        <textarea rows="5" cols="30" fluid pTextarea class="form-control" placeholder="Enter ..." id="solution"
+          name="solution" [(ngModel)]="data.solution"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="row my-3">
+    <div class="col-2">
+      <h5>Thời hạn: </h5>
+    </div>
+    <div class="col-10">
+      <div class="d-flex gap-4">
+        <div class="d-flex items-center">
+          <p-checkbox inputId="weekly" name="targetGroup" value="WEEKLY" [(ngModel)]="data.duaration" />
+          <label for="weekly" class="ml-2"> Hàng Tuần </label>
+        </div>
+        <div class="d-flex items-center">
+          <p-checkbox inputId="monthly" name="targetGroup" value="MONTHLY" [(ngModel)]="data.duaration" />
+          <label for="monthly" class="ml-2"> Hàng Tháng </label>
+        </div>
+        <div class="d-flex items-center">
+          <p-checkbox inputId="quarterly" name="targetGroup" value="QUARTERLY" [(ngModel)]="data.duaration" />
+          <label for="quarterly" class="ml-2"> Hàng Quý </label>
+        </div>
+        <div class="d-flex items-center">
+          <p-checkbox inputId="yearly" name="targetGroup" value="YEARLY" [(ngModel)]="data.duaration" />
+          <label for="yearly" class="ml-2"> Hàng Năm </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row my-3">
+    <div class="col-2">
+      <h5>Mục tiêu về: </h5>
+    </div>
+    <div class="col-10">
+      <div class="d-flex gap-4">
+        <div class="d-flex items-center">
+          <p-radioButton inputId="type0" name="targetType" value="type" [(ngModel)]="data.targetType" />
+          <label for="type00" class="ml-2"> Bỏ chọn </label>
+        </div>
+        <div class="d-flex items-center">
+          <p-radioButton inputId="type01" name="targetType" value="1" [(ngModel)]="data.targetType" />
+          <label for="type01" class="ml-2"> Số lần dừng máy </label>
+        </div>
+        <div class="d-flex items-center">
+          <p-radioButton inputId="type02" name="targetType" value="2" [(ngModel)]="data.targetType" />
+          <label for="type02" class="ml-2"> Thời gian dừng máy </label>
+        </div>
+        <div class="d-flex items-center">
+          <p-radioButton inputId="type03" name="targetType" value="3" [(ngModel)]="data.targetType" />
+          <label for="type03" class="ml-2"> Thời gian sửa chữa </label>
+        </div>
+        <div class="d-flex items-center">
+          <p-radioButton inputId="type04" name="targetType" value="4" [(ngModel)]="data.targetType" />
+          <label for="type04" class="ml-2"> Chi phí sửa chữa </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row my-3">
+    <div class="col-12">
+      <p-floatlabel variant="on">
+        <p-inputnumber [(ngModel)]="data.minValue" [showButtons]="true" inputId="minmax-buttons" [min]="0"
+          [max]="100" />
+        <label for="minValue">Giá trị đối chiếu</label>
+      </p-floatlabel>
+    </div>
+  </div>
+
+  <div class="row my-3">
+    <div class="col-6">
+      <div class="form-group">
+        <label for="userAct">Người thực hiện</label>
+        <textarea rows="5" cols="30" fluid pTextarea class="form-control" placeholder="Enter ..." id="userAct"
+          name="userAct" [(ngModel)]="data.userAct"></textarea>
+      </div>
+    </div>
+
+    <div class="col-6">
+      <div class="form-group">
+        <label for="coordinationUnit">Đơn vị phối hợp</label>
+        <textarea rows="5" cols="30" fluid pTextarea class="form-control" placeholder="Enter ..." id="coordinationUnit"
+          name="coordinationUnit" [(ngModel)]="data.coordinationUnit"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="row my-3">
+    <div class="col-12">
+      <div class="form-group">
+        <label for="note">Ghi chú</label>
+        <textarea rows="5" cols="30" fluid pTextarea class="form-control" placeholder="Enter ..." id="note"
+          name="note" [(ngModel)]="data.note"></textarea>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="d-flex justify-content-end gap-2 mt-4">
+    <p-button label="Lưu" severity="success" (onClick)="submit()"></p-button>
+    <p-button label="Đóng" (onClick)="close()"></p-button>
+  </div>
+</div>

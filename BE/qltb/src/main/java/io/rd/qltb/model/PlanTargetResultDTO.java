@@ -18,6 +18,8 @@ public class PlanTargetResultDTO {
 
     private String note;
 
+    private LocalDateTime executionTime;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;

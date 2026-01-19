@@ -1,5 +1,8 @@
 package io.rd.qltb.model;
 
+import io.rd.qltb.domain.ApprovalWorkflow;
+import io.rd.qltb.domain.Branch;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -13,13 +16,15 @@ public class PlanTargetDTO {
 
     private Long id;
 
-    private Long branchId;
+    private String code;
 
-    private String targetDescription;
+    private String name;
 
-    private String targetValue;
+    private Integer year;
 
-    private String critical;
+    private String listItems;
+
+    private String description;
 
     private LocalDateTime createdAt;
 
@@ -33,5 +38,9 @@ public class PlanTargetDTO {
     private String updatedBy;
 
     private Integer status;
+
+    private Branch branch;
+
+    private ApprovalWorkflow approvalWorkflow;
 
 }
