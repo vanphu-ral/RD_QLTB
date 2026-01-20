@@ -44,7 +44,7 @@ export class PlanTargetListComponent {
   }
 
   viewPlanReport(row: any) {
-    this.router.navigate([row.id, 'view-report'], { relativeTo: this.route });
+    this.router.navigate([row.id, 'view'], { relativeTo: this.route });
   }
 
   approval(data: any, event: any) {

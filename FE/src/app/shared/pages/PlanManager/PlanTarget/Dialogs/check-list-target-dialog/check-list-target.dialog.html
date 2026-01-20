@@ -33,6 +33,9 @@
                         <p-button icon="pi pi-check" styleClass="m-1" severity="success" title="Hoàn thành"
                             *ngIf="row.status != 5" (onClick)="completeCheckDate(row, $event)"
                             [disabled]="!row.id"></p-button>
+                        <p-button icon="pi pi-eye" severity="success" styleClass="m-1" title="Xem"
+                            *ngIf="row.status != 15" (onClick)="view(row)">
+                        </p-button>
                         <p-button icon="pi pi-trash" severity="danger" styleClass="m-1" title="Xóa"
                             *ngIf="row.status != 15" (onClick)="deleteRow(i)">
                         </p-button>

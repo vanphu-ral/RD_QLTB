@@ -93,6 +93,16 @@ export class CheckListTargetDialog {
         }
     }
 
+    view(data: any) {
+        const ref = this.dialogService.open(PerformPlanDialog, {
+            header: 'Thực hiện kế hoạch',
+            width: '100%',
+            modal: true,
+            data: { data: data, plan: this.data, IsView: true },
+            closable: true,
+        });
+    }
+
     performPlan(data: any) {
         const ref = this.dialogService.open(PerformPlanDialog, {
             header: 'Thực hiện kế hoạch',

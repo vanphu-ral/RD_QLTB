@@ -18,6 +18,8 @@ export class PerformPlanDialog {
     data: PlanTargetResult = new PlanTargetResult();
     plan: any;
 
+    isViewMode: boolean = false;
+
     listEvaluate: any[] = [{ value: 0, name: 'Không đánh giá' }, { value: 1, name: 'Đạt' }, { value: 2, name: 'Không đạt' }];
 
     constructor(
@@ -29,6 +31,7 @@ export class PerformPlanDialog {
     ) {
         this.data = config.data.data;
         this.plan = config.data.plan;
+        this.isViewMode = config.data.IsView || false;
     }
 
     ngOnInit() {
@@ -50,6 +53,11 @@ export class PerformPlanDialog {
         }else {
             this.data.result = JSON.parse(this.data.result);
         }
+    }
+
+    evaluateToString(evaluate: number) {
+        const evalItem = this.listEvaluate.find(item => item.value === evaluate);
+        return evalItem ? evalItem.name : 'Không đánh giá';
     }
 
     
