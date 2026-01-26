@@ -68,13 +68,27 @@
     <div class="row my-3">
       <p-table #dt [value]="model.listItems!">
         <ng-template pTemplate="header">
+          <tr *ngIf="isViewMode">
+            <th colspan="2">
+              <img src="/assets/imgs/logo-rang-dong.png" style="width:150px;" />
+            </th>
+            <th colspan="3" class="text-center">
+              <div>
+                <div><strong>KẾT QUẢ THỰC HIỆN MỤC TIÊU QUẢN LÝ THIẾT BỊ</strong></div>
+                <div><span id="SpanPlanYear">{{ model.year | date:'yyyy' }}</span></div>
+              </div>
+            </th>
+            <th colspan="2">
+              <label class="font-semibold">Đơn vị:&nbsp; Đơn vị: LED; Xưởng LED - Điện tử & TBCS</label>
+            </th>
+          </tr>
           <tr>
             <th>Nội dung</th>
             <th>Mục tiêu</th>
             <th>Biện pháp thực hiện</th>
             <th>Thời hạn</th>
-            <th>Mục tiêu thực hiện</th>
-            <th>Giá trị đối chiếu</th>
+            <th *ngIf="!isViewMode && !isApprovalMode">Mục tiêu thực hiện</th>
+            <th *ngIf="!isViewMode && !isApprovalMode">Giá trị đối chiếu</th>
             <th>Người thực hiện</th>
             <th>Đơn vị phối hợp</th>
             <th>Ghi chú</th>
@@ -87,8 +101,8 @@
             <td>{{ row.target }}</td>
             <td>{{ row.solution }}</td>
             <td>{{ frequencyToText(row.duaration) }}</td>
-            <td>{{ targetTypeToText(row.targetType) }}</td>
-            <td>{{ row.minValue }}</td>
+            <td *ngIf="!isViewMode && !isApprovalMode">{{ targetTypeToText(row.targetType) }}</td>
+            <td *ngIf="!isViewMode && !isApprovalMode">{{ row.minValue }}</td>
             <td>{{ row.userAct }}</td>
             <td>{{ row.coordinationUnit }}</td>
             <td>{{ row.note }}</td>
