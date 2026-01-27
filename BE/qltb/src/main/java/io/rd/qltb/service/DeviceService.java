@@ -3,7 +3,6 @@ package io.rd.qltb.service;
 import io.rd.qltb.config.GlobalConfig;
 import io.rd.qltb.domain.*;
 import io.rd.qltb.events.BeforeDeleteBranch;
-import io.rd.qltb.events.BeforeDeleteDevice;
 import io.rd.qltb.events.BeforeDeleteDeviceGroup;
 import io.rd.qltb.events.BeforeDeleteLine;
 import io.rd.qltb.events.BeforeDeleteTeam;
@@ -30,7 +29,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import static io.rd.qltb.config.ConstantStatusGlobal.*;
@@ -49,11 +47,12 @@ public class DeviceService {
     private final ApplicationEventPublisher publisher;
     private final GlobalConfig globalConfig ;
     private final PlanResultDetailRepository planResultDetailRepository;
+    private final PlanResultRepository planResultRepository;
 
     public DeviceService(EntityManager entityManager, final DeviceRepository deviceRepository,
                          final DeviceGroupRepository deviceGroupRepository, DeviceGroupService deviceGroupService, final LineRepository lineRepository,
                          final BranchRepository branchRepository, final TeamRepository teamRepository,
-                         final ApplicationEventPublisher publisher, GlobalConfig globalConfig, PlanResultDetailRepository planResultDetailRepository) {
+                         final ApplicationEventPublisher publisher, GlobalConfig globalConfig, PlanResultDetailRepository planResultDetailRepository, PlanResultRepository planResultRepository) {
         this.entityManager = entityManager;
         this.deviceRepository = deviceRepository;
         this.deviceGroupRepository = deviceGroupRepository;
@@ -64,6 +63,7 @@ public class DeviceService {
         this.publisher = publisher;
         this.globalConfig = globalConfig;
         this.planResultDetailRepository = planResultDetailRepository;
+        this.planResultRepository = planResultRepository;
     }
     @Transactional
     public Page<DeviceDTO> findDevicesPaged(Map<String, Object> filters, int page) {
@@ -98,7 +98,39 @@ public class DeviceService {
 
         return new PageImpl<>(dtos, PageRequest.of(page, pageSize), totalRecords);
     }
+    public Page<DeviceDTO> getDeviceMaintenanceStatus(Map<String, Object> filters, int page) {
+        // 1. Lấy danh sách thiết bị được phân trang dựa trên bộ lọc
+        Page<DeviceDTO> devicePage = findDevicesPaged(filters, page);
 
+        // 2. Duyệt qua từng thiết bị trong trang hiện tại để bổ sung thông tin bảo dưỡng
+        devicePage.getContent().forEach(deviceDTO -> {
+            // Truy vấn bản ghi kết quả bảo dưỡng mới nhất của thiết bị
+            PlanResult lastResult = planResultRepository.findLatestPlanResultByDeviceIdAndPlanTypeMaintenance(deviceDTO.getId());
+
+            if (lastResult != null) {
+                // Cập nhật ngày bảo dưỡng gần nhất
+                deviceDTO.setLastMaintenanceDate(lastResult.getDateTest());
+
+                // Lấy thời gian dự kiến từ chi tiết kế hoạch (Thời gian bảo dưỡng theo kế hoạch)
+                if (lastResult.getPlanDetail() != null) {
+                    deviceDTO.setPlannedTime(lastResult.getPlanDetail().getEstimatedTime());
+                }
+
+                // Tính toán ngày bảo dưỡng tiếp theo (Logic: Ngày thực tế + Chu kỳ bảo dưỡng)
+                if (lastResult.getDateTest() != null) {
+                    long cycleMonths = (deviceDTO.getMaintenanceTime() != null) ? deviceDTO.getMaintenanceTime() : 0;
+                    deviceDTO.setNextMaintenanceDate(lastResult.getDateTest().plusMonths(cycleMonths));
+                }
+            } else {
+                // Nếu chưa từng bảo dưỡng, thiết lập các giá trị về null
+                deviceDTO.setLastMaintenanceDate(null);
+                deviceDTO.setPlannedTime(null);
+                deviceDTO.setNextMaintenanceDate(null);
+            }
+        });
+
+        return devicePage;
+    }
     private Predicate[] buildPredicates(Map<String, Object> filters, CriteriaBuilder cb, Root<Device> root) {
         List<Predicate> predicates = new ArrayList<>();
 

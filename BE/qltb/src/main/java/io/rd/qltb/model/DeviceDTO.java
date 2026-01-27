@@ -91,4 +91,7 @@ public class DeviceDTO {
 
     private Team team;
     private Integer isHadDataPlanReport;
+    private LocalDateTime plannedTime;//Thời gian được ấn định trên ke hoach.
+    private LocalDateTime nextMaintenanceDate;//Con số ước tính dựa trên chu ky bao duong cua máy
+    private LocalDateTime lastMaintenanceDate ;//Thời gian bao duong moi nhat.
 }
