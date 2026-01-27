@@ -85,7 +85,20 @@ public class DeviceResource {
         Page<DeviceDTO> result = deviceService.findDevicesPaged(filters, page);
         return ResponseEntity.ok(result);
     }
+    @GetMapping("/maintain-list/paged")
+    public ResponseEntity<Page<DeviceDTO>> getDeviceMaintenanceStatus(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam MultiValueMap<String, String> params) {
 
+        // Loại bỏ param "page"
+        params.remove("page");
+
+        Map<String, Object> filters = new HashMap<>();
+        params.forEach((k, v) -> filters.put(k, v.get(0)));
+
+        Page<DeviceDTO> result = deviceService.getDeviceMaintenanceStatus(filters, page);
+        return ResponseEntity.ok(result);
+    }
 
     @PostMapping("/creates")
     @ApiResponse(responseCode = "201")
