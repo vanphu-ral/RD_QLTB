@@ -1,0 +1,60 @@
+<div class="p-1">
+    <div class="row my-3">
+        <p-table #dt [value]="data">
+            <ng-template pTemplate="header">
+                <!-- <tr>
+                    <th colspan="2">
+                        <img src="/assets/imgs/logo-rang-dong.png" style="width:150px;" />
+                    </th>
+                    <th colspan="3" class="text-center">
+                        <div>
+                            <div><strong>KẾT QUẢ THỰC HIỆN MỤC TIÊU QUẢN LÝ THIẾT BỊ</strong></div>
+                            <div><span id="SpanPlanYear">{{ data.executionTime | date:'MM/yyyy' }}</span></div>
+                        </div>
+                    </th>
+                    <th colspan="2">
+                        <label class="font-semibold">Đơn vị:&nbsp; Đơn vị: LED; Xưởng LED - Điện tử & TBCS</label>
+                    </th>
+                </tr> -->
+                <tr>
+                    <th>Tên lỗi</th>
+                    <th>Mô tả lỗi</th>
+                    <th>Thời gian gặp lỗi</th>
+                    <th>Loại lỗi</th>
+                    <th>Người khai báo</th>
+                    <th>Trạng thái</th>
+                    <th>Chi tiết sửa chữa</th>
+                    <th>Kết quả</th>
+                    <th>Người thực hiện sửa chữa</th>
+                    <th>Thời gian sửa chữa</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-row let-i="rowIndex">
+                <tr>
+                    <td>{{ row.name }}</td>
+                    <td>{{ row.errorDescription }}</td>
+                    <td>{{ row.timeReported | date : 'dd-MM-yyyy HH:mm' }}</td>
+                    <td>{{ sevirityStatus(row.severity) }}</td>
+                    <td>{{ row.reportedBy }}</td>
+                    <td><span [ngClass]="row.isRepaired ? 'badge text-bg-success' : 'badge text-bg-danger'">{{ row.isRepaired ? 'Đã hoàn thành sửa chữa' : 'Chưa hoàn thành sửa chữa' }}</span></td>
+                    <td>{{ row.repairDescription }}</td>
+                    <td>{{ row.result }}</td>
+                    <td>{{ row.repairedBy }}</td>
+                    <td>{{ row.timeRepaired | date : 'dd-MM-yyyy HH:mm' }}</td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="99" class="text-center">Không có dữ liệu</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <p-button label="Đóng" (onClick)="close()"></p-button>
+    </div>
+</div>
+<p-confirmDialog></p-confirmDialog>
+<p-toast></p-toast>

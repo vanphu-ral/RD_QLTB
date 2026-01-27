@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { BaseApiService } from '../../../../service/base-api.service';
 import { PlanDetail } from '../../../../models/PlanManger/plan-detail.model';
 import { catchError, map, Observable, of } from 'rxjs';
@@ -39,5 +39,17 @@ export class SupplyReplacementHistoryService extends BaseApiService<SupplyReplac
   getHistoryByPlanResultId(planResultId: number): Observable<any[]> {
     return this.http.get<any[]>(`${this['fullBaseUrl']}/plan-result/${planResultId}`);
   }
+
+
+  getSupplyHistoryByDeviceId(deviceId: number, fromDate: string, toDate: string, page: number, size: number): Observable<any> {
+    const params = new HttpParams()
+        .set('deviceId', deviceId.toString())
+        .set('fromDate', fromDate)
+        .set('toDate', toDate)
+        .set('page', page.toString())
+        .set('size', size.toString());
+
+    return this.http.get<any>(`${this.fullBaseUrl}/device-replace-history`, { params });
+}
 
 }

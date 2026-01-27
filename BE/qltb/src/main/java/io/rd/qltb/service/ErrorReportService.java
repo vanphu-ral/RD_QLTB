@@ -10,10 +10,13 @@ import io.rd.qltb.repos.*;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -87,6 +90,12 @@ private final PlanDetailRepository planDetailRepository;
                 .orElseThrow(NotFoundException::new);
         publisher.publishEvent(new BeforeDeleteErrorReport(id));
         errorReportRepository.delete(errorReport);
+    }
+
+    public Page<ErrorReportDTO> getErrorDetails(Long deviceId, LocalDateTime fromDate,
+                                                LocalDateTime toDate, Pageable pageable) {
+        return errorReportRepository.findDetailErrors(deviceId, fromDate, toDate, pageable)
+                .map(errorReport -> mapToDTO(errorReport, new ErrorReportDTO()));
     }
 
     public ErrorReportDTO mapToDTO(final ErrorReport errorReport,

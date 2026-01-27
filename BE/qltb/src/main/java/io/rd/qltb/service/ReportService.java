@@ -3,10 +3,8 @@ package io.rd.qltb.service;
 import io.rd.qltb.model.BranchDTO;
 import io.rd.qltb.model.ReportFilter;
 import io.rd.qltb.model.TeamDTO;
-import io.rd.qltb.model.response.Report2Response;
-import io.rd.qltb.model.response.ReportDetailResponse;
-import io.rd.qltb.model.response.ReportResponse;
-import io.rd.qltb.model.response.ReportSupplyResponse;
+import io.rd.qltb.model.response.*;
+import io.rd.qltb.repos.DeviceRepository;
 import io.rd.qltb.repos.PlanResultDetailRepository;
 import io.rd.qltb.repos.SupplyReplacementHistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -26,6 +25,8 @@ public class ReportService {
     private PlanResultDetailRepository planResultDetailRepository;
     @Autowired
     private SupplyReplacementHistoryRepository supplyReplacementHistoryRepository;
+    @Autowired
+    private DeviceRepository deviceRepository;
 
     public List<ReportResponse> getSupplyReport(ReportFilter filter) {
         List<ReportResponse> reportResponses = new ArrayList<>();
@@ -85,5 +86,14 @@ public class ReportService {
         List<Long> finalBranchIds = (filter.getBranchIds() == null || filter.getBranchIds().isEmpty()) ? null : filter.getBranchIds();
         Page<Report2Response> page = planResultDetailRepository.getMaintenanceReportByBranchAndDateRange(finalBranchIds, filter.getStartDate(), filter.getEndDate(), pageable);
     return page;
+    }
+
+
+
+    public Page<DeviceErrorSummaryDTO> getReport(List<Long> branchIds, List<Long> teamIds, List<Long> groupIds, LocalDateTime fromDate, LocalDateTime toDate, Pageable pageable) {
+        if (fromDate == null) fromDate = LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0);
+        if (toDate == null) toDate = LocalDateTime.now();
+
+        return deviceRepository.getErrorSummaryReport(branchIds,teamIds, groupIds, fromDate, toDate, pageable);
     }
 }

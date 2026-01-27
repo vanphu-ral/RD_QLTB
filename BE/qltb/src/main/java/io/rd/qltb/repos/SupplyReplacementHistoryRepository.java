@@ -2,9 +2,13 @@ package io.rd.qltb.repos;
 
 import io.rd.qltb.domain.SupplyReplacementHistory;
 import io.rd.qltb.model.response.ReportSupplyResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -43,4 +47,17 @@ public interface SupplyReplacementHistoryRepository extends JpaRepository<Supply
             " ;", nativeQuery = true)
     List<ReportSupplyResponse> getSupplyReportByTeamAndDateRange(Long teamId, Long branchId, String startDate, String endDate);
 
+
+
+    @Query("SELECT s FROM SupplyReplacementHistory s " +
+            "LEFT JOIN FETCH s.oldSupplyDetail " + // Fetch để tránh lỗi Lazy Loading khi map sang DTO
+            "LEFT JOIN FETCH s.newSupplyDetail " +
+            "WHERE s.deviceId = :deviceId " +
+            "AND s.createdAt BETWEEN :fromDate AND :toDate " +
+            "ORDER BY s.createdAt DESC")
+    Page<SupplyReplacementHistory> findByDeviceIdAndCreatedAtBetween(
+            @Param("deviceId") Long deviceId,
+            @Param("fromDate") LocalDateTime fromDate,
+            @Param("toDate") LocalDateTime toDate,
+            Pageable pageable);
 }

@@ -43,4 +43,30 @@ export class ReportService extends BaseApiService<any> {
             .set('size', size);
         return this.http.post<any>(`${this['fullBaseUrl']}/maintenance`, payload, { params });
     }
+
+
+    //Report 3
+    getErrorReportSummary(filter: any, page: number, size: number): Observable<any> {
+        let params = new HttpParams()
+            .set('page', page.toString())
+            .set('size', size.toString())
+            .set('fromDate', filter.fromDate.toISOString()) 
+            .set('toDate', filter.toDate.toISOString());
+
+        if (filter.branchIds && filter.branchIds.length > 0) {
+            filter.branchIds.forEach((id: number) => {
+                params = params.append('branchIds', id.toString());
+            });
+        }
+        if (filter.teamIds?.length > 0) {
+            filter.teamIds.forEach((id: any) => params = params.append('teamIds', id.toString()));
+        }
+        if (filter.groupIds && filter.groupIds.length > 0) {
+            filter.groupIds.forEach((id: number) => {
+                params = params.append('groupIds', id.toString());
+            });
+        }
+
+        return this.http.get<any>(`${this['fullBaseUrl']}/error-summary`, { params });
+    }  
 }

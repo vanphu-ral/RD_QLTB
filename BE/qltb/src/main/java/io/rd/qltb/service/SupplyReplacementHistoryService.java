@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -98,6 +100,18 @@ public class SupplyReplacementHistoryService {
                 .map(h -> mapToDTO(h, new SupplyReplacementHistoryDTO()))
                 .toList();
     }
+
+    public Page<SupplyReplacementHistoryDTO> getHistoryByDevice(
+            Long deviceId, LocalDateTime fromDate, LocalDateTime toDate, Pageable pageable) {
+
+        return supplyReplacementHistoryRepository
+                .findByDeviceIdAndCreatedAtBetween(deviceId, fromDate, toDate, pageable)
+                .map(history -> {
+                    SupplyReplacementHistoryDTO dto = new SupplyReplacementHistoryDTO();
+                    return mapToDTO(history, dto);
+                });
+    }
+
     public SupplyReplacementHistoryDTO mapToDTO(
             final SupplyReplacementHistory supplyReplacementHistory,
             final SupplyReplacementHistoryDTO dto) {
