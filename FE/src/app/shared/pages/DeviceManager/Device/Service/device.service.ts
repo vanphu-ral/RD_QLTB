@@ -45,4 +45,22 @@ export class DeviceService extends BaseApiService<Device> {
       { params }
     );
   }
+
+  getMaintainListPaged(page: number, filters: any = {}): Observable<any> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('name', 'THIẾT BỊ GẮN LINH KIỆN HT-E8S1200');
+
+
+    Object.keys(filters).forEach(key => {
+      const value = filters[key];
+      if (value !== null && value !== undefined && value !== '') {
+        params = params.set(key, value);
+      }
+    });
+    return this.http.get<any>(
+      `${this['fullBaseUrl']}/maintain-list/paged`,
+      { params }
+    );
+  }
 }

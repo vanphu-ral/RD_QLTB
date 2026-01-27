@@ -1,0 +1,90 @@
+<div class="p-1">
+
+    <div class="table-responsive">
+        <p-table [value]="data" [paginator]="true" [rows]="size" [totalRecords]="totalRecords" [lazy]="true"
+            [loading]="loading" (onLazyLoad)="onPageChange($event)" [showCurrentPageReport]="true"
+            currentPageReportTemplate="Từ {first} đến {last} trong {totalRecords} bản ghi"
+            [rowsPerPageOptions]="[5, 10, 20, 50]" dataKey="id" [tableStyle]="{ 'min-width': '60rem' }"
+            [responsiveLayout]="'scroll'" [scrollable]="true">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>STT</th>
+                    <th>Ngành</th>
+                    <th>Tổ</th>
+                    <th>Dây chuyền</th>
+                    <th>Nhóm thiết bị</th>
+                    <th>Mã thiết bị</th>
+                    <th>Tên thiết bị</th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th>
+                        <p-columnFilter [showMenu]="false" type="text">
+                            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                <input pInputText [(ngModel)]="filters.branch" (keyup.enter)="filter($event)">
+                            </ng-template>
+                        </p-columnFilter>
+                    </th>
+                    <th>
+                        <p-columnFilter [showMenu]="false" type="text">
+                            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                <input pInputText [(ngModel)]="filters.team" (keyup.enter)="filter($event)">
+                            </ng-template>
+                        </p-columnFilter>
+                    </th>
+                    <th>
+                        <p-columnFilter [showMenu]="false" type="text">
+                            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                <input pInputText [(ngModel)]="filters.line" (keyup.enter)="filter($event)">
+                            </ng-template>
+                        </p-columnFilter>
+                    </th>
+                    <th>
+                        <p-columnFilter [showMenu]="false" type="text">
+                            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                <input pInputText [(ngModel)]="filters.group" (keyup.enter)="filter($event)">
+                            </ng-template>
+                        </p-columnFilter>
+                    </th>
+                    <th>
+                        <p-columnFilter [showMenu]="false" type="text">
+                            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                <input pInputText [(ngModel)]="filters.code" (keyup.enter)="filter($event)">
+                            </ng-template>
+                        </p-columnFilter>
+                    </th>
+                    <th>
+                        <p-columnFilter [showMenu]="false" type="text">
+                            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                <input pInputText [(ngModel)]="filters.name" (keyup.enter)="filter($event)">
+                            </ng-template>
+                        </p-columnFilter>
+                    </th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-row let-i="rowIndex">
+                <tr>
+                    <td>{{ i + 1 + (currentPage * size) }}</td>
+                    <td>{{ row.branch.name }}</td>
+                    <td>{{ row.team?.name }}</td>
+                    <td>{{ row.line?.name }}</td>
+                    <td>{{ row.group?.name }}</td>
+                    <td>{{ row.code }}</td>
+                    <td>{{ row.name }}</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="6" class="text-center">Không có dữ liệu</td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <p-button label="Lưu" severity="success" (onClick)="submit()"></p-button>
+        <p-button label="Đóng" (onClick)="close()"></p-button>
+    </div>
+</div>

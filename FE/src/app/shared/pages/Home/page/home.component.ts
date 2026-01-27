@@ -9,6 +9,8 @@ import { catchError, throwError } from 'rxjs';
 import { LoginFormComponent } from "../component/login-from.component";
 import { ApplicationConfigService } from '../../../core/config/application-config.service';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { DialogService } from 'primeng/dynamicdialog';
+import { ListDeviceMaintanceDialog } from '../Dialogs/list-device-maintance-dialog/list-device-maintance.dialog';
 
 @Component({
     selector: 'app-home',
@@ -32,7 +34,7 @@ export class HomeComponent {
     chartPlugins = [ChartDataLabels];
     pieOptions: any;
 
-    constructor(private accountService: AccountService, private cdr: ChangeDetectorRef) { }
+    constructor(private accountService: AccountService, private cdr: ChangeDetectorRef, private dialogService: DialogService) { }
 
     ngOnInit(): void {
         this.accountService.identity().subscribe(account => this.account.set(account));
@@ -41,6 +43,18 @@ export class HomeComponent {
 
     search() {
         console.log(this.filter);
+    }
+
+    openListDeviceMaintanceDialog() {
+        const ref = this.dialogService.open<any>(ListDeviceMaintanceDialog, {
+            header: 'Danh sách thiết bị bảo trì/bảo dưỡng',
+            width: '100%',
+            modal: true,
+            data: {
+                listBranchs: this.listBranchs,
+                listTeams: this.listTeams
+            }
+        });
     }
 
     initChart() {
