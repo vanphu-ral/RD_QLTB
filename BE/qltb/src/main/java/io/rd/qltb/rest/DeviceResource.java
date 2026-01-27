@@ -3,6 +3,7 @@ package io.rd.qltb.rest;
 import io.rd.qltb.model.DeviceDTO;
 import io.rd.qltb.model.DeviceGroupDTO;
 import io.rd.qltb.model.DeviceSupplyUsageDTO;
+import io.rd.qltb.model.response.DeviceMaintenanceDTO;
 import io.rd.qltb.service.DeviceService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
@@ -12,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -85,21 +88,24 @@ public class DeviceResource {
         Page<DeviceDTO> result = deviceService.findDevicesPaged(filters, page);
         return ResponseEntity.ok(result);
     }
-    @GetMapping("/maintain-list/paged")
-    public ResponseEntity<Page<DeviceDTO>> getDeviceMaintenanceStatus(
+    @GetMapping("/upcoming")
+    public ResponseEntity<Page<DeviceMaintenanceDTO>> getUpcoming(
+            @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam MultiValueMap<String, String> params) {
+            @RequestParam(defaultValue = "10") int size) {
 
-        // Loại bỏ param "page"
-        params.remove("page");
-
-        Map<String, Object> filters = new HashMap<>();
-        params.forEach((k, v) -> filters.put(k, v.get(0)));
-
-        Page<DeviceDTO> result = deviceService.getDeviceMaintenanceStatus(filters, page);
-        return ResponseEntity.ok(result);
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(deviceService.getUpcomingMaintenance(search, pageable));
     }
+    @GetMapping("/report")
+    public ResponseEntity<Page<DeviceMaintenanceDTO>> getReport(
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "ALL") String filterType, // OVERDUE, UPCOMING, ALL
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
+        return ResponseEntity.ok(deviceService.getMaintenanceReport(search, filterType, PageRequest.of(page, size)));
+    }
     @PostMapping("/creates")
     @ApiResponse(responseCode = "201")
     public ResponseEntity<List<Long>> creates(@RequestBody @Valid List<DeviceDTO> deviceDTOS) {

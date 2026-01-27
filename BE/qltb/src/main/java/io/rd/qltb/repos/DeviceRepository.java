@@ -64,4 +64,73 @@ public interface DeviceRepository extends JpaRepository<Device, Long> {
             @Param("fromDate") LocalDateTime fromDate,
             @Param("toDate") LocalDateTime toDate,
             Pageable pageable);
+    @Query(value = """
+        WITH LatestResults AS (
+            SELECT 
+                pr.*,
+                pd.device_id,
+                p.name AS plan_name,
+                pd.estimated_time,
+                ROW_NUMBER() OVER (PARTITION BY pd.device_id ORDER BY pr.id DESC) as rn
+            FROM plan_results pr
+            INNER JOIN plan_details pd ON pr.plan_detail_id = pd.id
+            INNER JOIN plans p ON pd.plan_id = p.id
+            WHERE p.plan_type_id = 5
+        ),
+        FinalData AS (
+            SELECT 
+                d.id AS device_id,
+                d.name AS device_name,
+                d.maintenance_time,
+                lr.date_test,
+                lr.estimated_time,
+                DATE_ADD(lr.date_test, INTERVAL d.maintenance_time MONTH) AS next_test,
+                lr.plan_name,
+                lr.id AS plan_result_id
+            FROM devices d
+            LEFT JOIN LatestResults lr ON d.id = lr.device_id AND lr.rn = 1
+        )
+        SELECT 
+            device_id, device_name, maintenance_time, date_test, estimated_time, 
+            next_test, plan_name, plan_result_id,
+            DATEDIFF(next_test, CURRENT_DATE) AS days_until_next
+        FROM FinalData
+        WHERE next_test >= CURRENT_DATE 
+          AND (:searchText IS NULL OR device_name LIKE %:searchText%)
+        """,
+            countQuery = "SELECT count(*) FROM devices d", // Đơn giản hóa count cho native query
+            nativeQuery = true)
+    Page<Object[]> findDevicesNotYetDue(String searchText, Pageable pageable);
+    @Query(value = """
+        WITH LatestResults AS (
+            SELECT pr.*, pd.device_id, p.name AS plan_name, pd.estimated_time,
+                   ROW_NUMBER() OVER (PARTITION BY pd.device_id ORDER BY pr.id DESC) as rn
+            FROM plan_results pr
+            INNER JOIN plan_details pd ON pr.plan_detail_id = pd.id
+            INNER JOIN plans p ON pd.plan_id = p.id
+            WHERE p.plan_type_id = 5
+        ),
+        FinalData AS (
+            SELECT d.id AS device_id, d.name AS device_name, d.maintenance_time,
+                   lr.date_test, lr.estimated_time,
+                   DATE_ADD(lr.date_test, INTERVAL d.maintenance_time MONTH) AS next_test,
+                   lr.plan_name, lr.id AS plan_result_id
+            FROM devices d
+            LEFT JOIN LatestResults lr ON d.id = lr.device_id AND lr.rn = 1
+        )
+        SELECT *, DATEDIFF(CURRENT_DATE, next_test) AS days_diff
+        FROM FinalData
+        WHERE (:search IS NULL OR device_name LIKE %:search%)
+          AND (
+            (:filterType = 'OVERDUE' AND (next_test < CURRENT_DATE OR next_test IS NULL))
+            OR (:filterType = 'UPCOMING' AND next_test >= CURRENT_DATE)
+            OR (:filterType = 'ALL')
+          )
+        ORDER BY (next_test IS NULL) DESC, next_test ASC
+        """,
+            countQuery = "SELECT count(*) FROM devices WHERE (:search IS NULL OR name LIKE %:search%)",
+            nativeQuery = true)
+    Page<Object[]> findMaintenanceData(@Param("search") String search,
+                                       @Param("filterType") String filterType,
+                                       Pageable pageable);
 }

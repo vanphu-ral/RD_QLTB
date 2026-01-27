@@ -8,10 +8,12 @@ import io.rd.qltb.events.BeforeDeleteLine;
 import io.rd.qltb.events.BeforeDeleteTeam;
 import io.rd.qltb.model.DeviceDTO;
 import io.rd.qltb.model.DeviceGroupDTO;
+import io.rd.qltb.model.response.DeviceMaintenanceDTO;
 import io.rd.qltb.repos.*;
 import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -29,6 +31,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import static io.rd.qltb.config.ConstantStatusGlobal.*;
@@ -98,38 +101,63 @@ public class DeviceService {
 
         return new PageImpl<>(dtos, PageRequest.of(page, pageSize), totalRecords);
     }
-    public Page<DeviceDTO> getDeviceMaintenanceStatus(Map<String, Object> filters, int page) {
-        // 1. Lấy danh sách thiết bị được phân trang dựa trên bộ lọc
-        Page<DeviceDTO> devicePage = findDevicesPaged(filters, page);
+    public Page<DeviceMaintenanceDTO> getUpcomingMaintenance(String searchText, Pageable pageable) {
+        // Repository cần thực hiện câu query với điều kiện: (next_test >= CURRENT_DATE OR next_test IS NULL)
+        Page<Object[]> results = deviceRepository.findDevicesNotYetDue(searchText, pageable);
 
-        // 2. Duyệt qua từng thiết bị trong trang hiện tại để bổ sung thông tin bảo dưỡng
-        devicePage.getContent().forEach(deviceDTO -> {
-            // Truy vấn bản ghi kết quả bảo dưỡng mới nhất của thiết bị
-            PlanResult lastResult = planResultRepository.findLatestPlanResultByDeviceIdAndPlanTypeMaintenance(deviceDTO.getId());
+        return results.map(row -> {
+            // Ánh xạ ngày tháng
+            LocalDate dateTest = row[3] != null ? ((Date) row[3]).toLocalDate() : null;
+            LocalDate nextTest = row[5] != null ? ((Date) row[5]).toLocalDate() : null;
 
-            if (lastResult != null) {
-                // Cập nhật ngày bảo dưỡng gần nhất
-                deviceDTO.setLastMaintenanceDate(lastResult.getDateTest());
+            // daysUntilNext (trong query là DATEDIFF(next_test, CURRENT_DATE))
+            // Kết quả dương: còn bao nhiêu ngày | Kết quả âm: đã quá hạn (nhưng filter đã loại bỏ)
+            Long daysDiff = row[8] != null ? ((Number) row[8]).longValue() : null;
 
-                // Lấy thời gian dự kiến từ chi tiết kế hoạch (Thời gian bảo dưỡng theo kế hoạch)
-                if (lastResult.getPlanDetail() != null) {
-                    deviceDTO.setPlannedTime(lastResult.getPlanDetail().getEstimatedTime());
-                }
+            // Xác định trạng thái cụ thể cho trường hợp "Chưa đến hạn"
+            String status = (nextTest == null) ? "NO_DATA" : "UPCOMING";
 
-                // Tính toán ngày bảo dưỡng tiếp theo (Logic: Ngày thực tế + Chu kỳ bảo dưỡng)
-                if (lastResult.getDateTest() != null) {
-                    long cycleMonths = (deviceDTO.getMaintenanceTime() != null) ? deviceDTO.getMaintenanceTime() : 0;
-                    deviceDTO.setNextMaintenanceDate(lastResult.getDateTest().plusMonths(cycleMonths));
-                }
-            } else {
-                // Nếu chưa từng bảo dưỡng, thiết lập các giá trị về null
-                deviceDTO.setLastMaintenanceDate(null);
-                deviceDTO.setPlannedTime(null);
-                deviceDTO.setNextMaintenanceDate(null);
-            }
+            return new DeviceMaintenanceDTO(
+                    ((Number) row[0]).longValue(),    // deviceId
+                    (String) row[1],                  // deviceName
+                    (Integer) row[2],                 // maintenanceTime
+                    dateTest,                         // dateTest
+                    (String) row[4],                  // estimatedTime
+                    nextTest,                         // nextTest
+                    (String) row[6],                  // planName
+                    row[7] != null ? ((Number) row[7]).longValue() : null, // planResultId
+                    daysDiff,                         // daysDiff (Số ngày còn lại)
+                    status                            // status
+            );
         });
+    }
+    public Page<DeviceMaintenanceDTO> getMaintenanceReport(String search, String filterType, Pageable pageable) {
+        // Mặc định filterType là ALL nếu không truyền
+        String type = (filterType == null) ? "ALL" : filterType.toUpperCase();
+        Page<Object[]> rawResults = deviceRepository.findMaintenanceData(search, type, pageable);
 
-        return devicePage;
+        return rawResults.map(row -> {
+            LocalDate nextTest = row[5] != null ? ((java.sql.Date) row[5]).toLocalDate() : null;
+            Long diff = row[8] != null ? ((Number) row[8]).longValue() : null;
+
+            String status = "NO_DATA";
+            if (nextTest != null) {
+                status = (diff > 0) ? "OVERDUE" : "UPCOMING";
+            }
+
+            return new DeviceMaintenanceDTO(
+                    ((Number) row[0]).longValue(),
+                    (String) row[1],
+                    (Integer) row[2],
+                    row[3] != null ? ((java.sql.Date) row[3]).toLocalDate() : null,
+                    (String) row[4],
+                    nextTest,
+                    (String) row[6],
+                    row[7] != null ? ((Number) row[7]).longValue() : null,
+                    diff,
+                    status
+            );
+        });
     }
     private Predicate[] buildPredicates(Map<String, Object> filters, CriteriaBuilder cb, Root<Device> root) {
         List<Predicate> predicates = new ArrayList<>();
