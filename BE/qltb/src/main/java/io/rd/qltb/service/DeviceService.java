@@ -17,6 +17,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -101,63 +102,140 @@ public class DeviceService {
 
         return new PageImpl<>(dtos, PageRequest.of(page, pageSize), totalRecords);
     }
-    public Page<DeviceMaintenanceDTO> getUpcomingMaintenance(String searchText, Pageable pageable) {
-        // Repository cần thực hiện câu query với điều kiện: (next_test >= CURRENT_DATE OR next_test IS NULL)
-        Page<Object[]> results = deviceRepository.findDevicesNotYetDue(searchText, pageable);
+    public Page<DeviceMaintenanceDTO> getUpcomingMaintenance(
+            String deviceName,
+            String groupName,
+            String lineName,
+            String teamName,
+            String branchName,
+            Pageable pageable
+    ) {
+        // Chuyển chuỗi rỗng thành null để query WHERE (:param IS NULL) hoạt động đúng
+        String dName = (deviceName != null && !deviceName.trim().isEmpty()) ? deviceName : null;
+        String gName = (groupName != null && !groupName.trim().isEmpty()) ? groupName : null;
+        String lName = (lineName != null && !lineName.trim().isEmpty()) ? lineName : null;
+        String tName = (teamName != null && !teamName.trim().isEmpty()) ? teamName : null;
+        String bName = (branchName != null && !branchName.trim().isEmpty()) ? branchName : null;
+
+        Page<Object[]> results = deviceRepository.findDevicesNotYetDue(dName, gName, lName,bName, tName, pageable);
 
         return results.map(row -> {
-            // Ánh xạ ngày tháng
-            LocalDate dateTest = row[3] != null ? ((Date) row[3]).toLocalDate() : null;
-            LocalDate nextTest = row[5] != null ? ((Date) row[5]).toLocalDate() : null;
+            // Xử lý ngày tháng
+            LocalDate dateTest = convertToLocalDate(row[3]);
+            LocalDate nextTest = convertToLocalDate(row[5]);
 
-            // daysUntilNext (trong query là DATEDIFF(next_test, CURRENT_DATE))
-            // Kết quả dương: còn bao nhiêu ngày | Kết quả âm: đã quá hạn (nhưng filter đã loại bỏ)
+            // Xử lý số ngày chênh lệch (Index 8: days_until_next)
             Long daysDiff = row[8] != null ? ((Number) row[8]).longValue() : null;
 
-            // Xác định trạng thái cụ thể cho trường hợp "Chưa đến hạn"
+            // Logic trạng thái
             String status = (nextTest == null) ? "NO_DATA" : "UPCOMING";
 
+            // Mapping dữ liệu vào DTO (Index từ 0 đến 12)
             return new DeviceMaintenanceDTO(
-                    ((Number) row[0]).longValue(),    // deviceId
-                    (String) row[1],                  // deviceName
-                    (Integer) row[2],                 // maintenanceTime
-                    dateTest,                         // dateTest
-                    (String) row[4],                  // estimatedTime
-                    nextTest,                         // nextTest
-                    (String) row[6],                  // planName
-                    row[7] != null ? ((Number) row[7]).longValue() : null, // planResultId
-                    daysDiff,                         // daysDiff (Số ngày còn lại)
-                    status                            // status
+                    row[0] != null ? ((Number) row[0]).longValue() : null,    // deviceId
+                    asString(row[1]),                                         // deviceName
+                    row[2] != null ? ((Number) row[2]).intValue() : null,    // maintenanceTime
+                    dateTest,                                                 // dateTest
+                    asString(row[4]),                                         // estimatedTime
+                    nextTest,                                                 // nextTest
+                    asString(row[6]),                                         // planName
+                    row[7] != null ? ((Number) row[7]).longValue() : null,    // planResultId
+                    daysDiff,                                                 // daysDiff
+                    status,                                                   // status
+                    asString(row[9]),                                         // deviceGroupName
+                    asString(row[10]),                                        // branchName
+                    asString(row[11]),                                        // teamName
+                    asString(row[12])                                         // lineName
             );
         });
     }
-    public Page<DeviceMaintenanceDTO> getMaintenanceReport(String search, String filterType, Pageable pageable) {
-        // Mặc định filterType là ALL nếu không truyền
-        String type = (filterType == null) ? "ALL" : filterType.toUpperCase();
-        Page<Object[]> rawResults = deviceRepository.findMaintenanceData(search, type, pageable);
 
+    /**
+     * Helper method để chuyển Object sang String an toàn
+     */
+    private String asString(Object obj) {
+        return obj != null ? obj.toString() : null;
+    }
+
+    // Hàm hỗ trợ để tránh lặp lại logic và xử lý ép kiểu an toàn
+    private LocalDate convertToLocalDate(Object obj) {
+        if (obj == null) return null;
+
+        // Nếu là Timestamp (thường gặp khi dùng SQL Server/MySQL DATETIME)
+        if (obj instanceof java.sql.Timestamp) {
+            return ((java.sql.Timestamp) obj).toLocalDateTime().toLocalDate();
+        }
+        // Nếu là Date (thường gặp khi dùng SQL DATE)
+        if (obj instanceof java.sql.Date) {
+            return ((java.sql.Date) obj).toLocalDate();
+        }
+        // Trường hợp dự phòng nếu là java.util.Date
+        if (obj instanceof java.util.Date) {
+            return ((java.util.Date) obj).toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+        }
+        return null;
+    }
+    public Page<DeviceMaintenanceDTO> getMaintenanceReport(
+            String deviceName,
+            String branchName,
+            String groupName,
+            String teamName,
+            String lineName,
+            String filterType,
+            Pageable pageable) {
+
+        // 1. Chuẩn hóa tham số (Chuyển chuỗi rỗng thành null để SQL xử lý :param IS NULL)
+        String d = cleanParam(deviceName);
+        String b = cleanParam(branchName);
+        String g = cleanParam(groupName);
+        String t = cleanParam(teamName);
+        String l = cleanParam(lineName);
+        String type = (filterType == null) ? "ALL" : filterType.toUpperCase();
+
+        // 2. Gọi Repository với đầy đủ 6 tham số lọc
+        Page<Object[]> rawResults = deviceRepository.findMaintenanceData(d, b, g, t, l, type, pageable);
+
+        // 3. Mapping dữ liệu từ Object[] sang DTO
         return rawResults.map(row -> {
-            LocalDate nextTest = row[5] != null ? ((java.sql.Date) row[5]).toLocalDate() : null;
+            // Chuyển đổi ngày tháng an toàn (hỗ trợ cả java.sql.Date và java.sql.Timestamp)
+            LocalDate dateTest = convertToLocalDate(row[3]);
+            LocalDate nextTest = convertToLocalDate(row[5]);
+
+            // Lấy số ngày chênh lệch (Index 8: days_until_next)
             Long diff = row[8] != null ? ((Number) row[8]).longValue() : null;
 
+            // Logic trạng thái chính xác hơn
             String status = "NO_DATA";
             if (nextTest != null) {
-                status = (diff > 0) ? "OVERDUE" : "UPCOMING";
+                // Lưu ý: DATEDIFF(next_test, CURDATE()) > 0 là còn hạn, < 0 là quá hạn
+                status = (diff != null && diff < 0) ? "OVERDUE" : "UPCOMING";
             }
 
             return new DeviceMaintenanceDTO(
-                    ((Number) row[0]).longValue(),
-                    (String) row[1],
-                    (Integer) row[2],
-                    row[3] != null ? ((java.sql.Date) row[3]).toLocalDate() : null,
-                    (String) row[4],
-                    nextTest,
-                    (String) row[6],
-                    row[7] != null ? ((Number) row[7]).longValue() : null,
-                    diff,
-                    status
+                    ((Number) row[0]).longValue(),              // deviceId
+                    asString(row[1]),                            // deviceName
+                    row[2] != null ? ((Number) row[2]).intValue() : null, // maintenanceTime
+                    dateTest,                                    // dateTest
+                    asString(row[4]),                            // estimatedTime
+                    nextTest,                                    // nextTest
+                    asString(row[6]),                            // planName
+                    row[7] != null ? ((Number) row[7]).longValue() : null, // planResultId
+                    diff,                                        // daysDiff
+                    status,                                      // status
+                    asString(row[9]),                            // deviceGroupName
+                    asString(row[10]),                           // branchName
+                    asString(row[11]),                           // teamName
+                    asString(row[12])                            // lineName
             );
         });
+    }
+
+// --- Các hàm hỗ trợ để code sạch hơn ---
+
+    private String cleanParam(String s) {
+        return (s != null && !s.trim().isEmpty()) ? s : null;
     }
     private Predicate[] buildPredicates(Map<String, Object> filters, CriteriaBuilder cb, Root<Device> root) {
         List<Predicate> predicates = new ArrayList<>();
