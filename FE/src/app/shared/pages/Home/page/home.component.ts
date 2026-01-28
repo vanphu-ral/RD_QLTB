@@ -45,15 +45,12 @@ export class HomeComponent {
         console.log(this.filter);
     }
 
-    openListDeviceMaintanceDialog() {
+    openListDeviceMaintanceDialog(type: string) {
         const ref = this.dialogService.open<any>(ListDeviceMaintanceDialog, {
-            header: 'Danh sách thiết bị bảo trì/bảo dưỡng',
+            header: `Danh sách thiết bị ${type === 'UPCOMING' ? 'đến hạn bảo trì/bảo dưỡng' : 'đã thực hiện bảo trì/bảo dưỡng'}`,
             width: '100%',
             modal: true,
-            data: {
-                listBranchs: this.listBranchs,
-                listTeams: this.listTeams
-            }
+            data: type
         });
     }
 

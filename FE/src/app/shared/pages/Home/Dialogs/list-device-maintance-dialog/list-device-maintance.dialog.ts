@@ -18,6 +18,8 @@ export class ListDeviceMaintanceDialog {
     listDeviceMaintanceDue: any[] = [];
     ListDeviceMaintanced: any[] = []
 
+    type: any = 'UPCOMING';
+
     // Page
     loading: boolean = false;
     page: number = 0;
@@ -36,7 +38,7 @@ export class ListDeviceMaintanceDialog {
         private cdr: ChangeDetectorRef,
         private deviceService: DeviceService
     ) {
-
+        this.type = this.config.data;
     }
 
     ngOnInit() {
@@ -45,25 +47,13 @@ export class ListDeviceMaintanceDialog {
 
     loadData() {
         this.loading = true;
-        this.deviceService.getReport('', 'OVERDUE', this.page, this.size).subscribe({
+        this.deviceService.getReport(this.filters, this.type, this.page, this.size).subscribe({
             next: (res) => {
                 console.log(res);
-                // this.data = res.content;
-                // this.totalRecords = res.totalElements;
-                // this.loading = false;
-                // this.cdr.detectChanges();
-            },
-            error: () => {
+                this.data = res.content;
+                this.totalRecords = res.totalElements;
                 this.loading = false;
-            }
-        });
-        this.deviceService.getUpcoming('', this.page, this.size).subscribe({
-            next: (res) => {
-                console.log(res);
-                // this.data = res.content;
-                // this.totalRecords = res.totalElements;
-                // this.loading = false;
-                // this.cdr.detectChanges();
+                this.cdr.detectChanges();
             },
             error: () => {
                 this.loading = false;

@@ -61,14 +61,18 @@ export class DeviceService extends BaseApiService<Device> {
   }
 
 
-  getReport(search?: string,filterType: 'OVERDUE' | 'UPCOMING' | 'ALL' = 'ALL',page: number = 0,size: number = 10): Observable<any> {
+  getReport(filters: any, filterType: 'OVERDUE' | 'UPCOMING' | 'ALL' = 'ALL',page: number = 0,size: number = 10): Observable<any> {
     let params = new HttpParams()
       .set('filterType', filterType)
       .set('page', page)
       .set('size', size);
-    if (search) {
-      params = params.set('search', search);
-    }
+    
+      Object.keys(filters).forEach(key => {
+        if (filters[key] !== null && filters[key] !== undefined && filters[key] !== '') {
+          params = params.append(key, filters[key]);
+        }
+      });
+
     return this.http.get<any>(
       `${this['fullBaseUrl']}/report`,
       { params }
