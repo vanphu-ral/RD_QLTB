@@ -40,29 +40,30 @@ export class ListDeviceMaintanceDialog {
     }
 
     ngOnInit() {
-        this.deviceService.getMaintainListPaged(0, {}).subscribe({
-            next: (res) => {
-                console.log(res);
-
-                // this.listDeviceMaintanceDue = res.items.filter((item: any) => !item.isMaintained);
-                // this.ListDeviceMaintanced = res.items.filter((item: any) => item.isMaintained);
-            }
-        })
+        this.loadData();
     }
 
     loadData() {
         this.loading = true;
-        this.deviceService.getMaintainListPaged(this.page, this.filters).subscribe({
+        this.deviceService.getReport('', 'OVERDUE', this.page, this.size).subscribe({
             next: (res) => {
                 console.log(res);
-                this.data = res.content;
-                // this.plans = res.content.map((item: any) => ({
-                //     ...item,
-                //     details: []
-                // }));
-                this.totalRecords = res.totalElements;
+                // this.data = res.content;
+                // this.totalRecords = res.totalElements;
+                // this.loading = false;
+                // this.cdr.detectChanges();
+            },
+            error: () => {
                 this.loading = false;
-                this.cdr.detectChanges();
+            }
+        });
+        this.deviceService.getUpcoming('', this.page, this.size).subscribe({
+            next: (res) => {
+                console.log(res);
+                // this.data = res.content;
+                // this.totalRecords = res.totalElements;
+                // this.loading = false;
+                // this.cdr.detectChanges();
             },
             error: () => {
                 this.loading = false;
