@@ -18,4 +18,8 @@ public class DeviceMaintenanceDTO {
     private Long planResultId;
     private Long daysDiff;           // Số ngày chênh lệch (dương là trễ, âm là chưa tới)
     private String status;           // "OVERDUE", "UPCOMING", "NO_DATA"
+    private String deviceGroupName;
+    private String branchName;
+    private String teamName;
+    private String lineName;
 }

@@ -90,21 +90,56 @@ public class DeviceResource {
     }
     @GetMapping("/upcoming")
     public ResponseEntity<Page<DeviceMaintenanceDTO>> getUpcoming(
-            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String deviceName,
+            @RequestParam(required = false) String groupName,
+            @RequestParam(required = false) String lineName,
+            @RequestParam(required = false) String teamName,
+            @RequestParam(required = false) String branchName,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "next_test,asc") String sort) {
 
+        // Tạo Pageable (Hỗ trợ thêm sắp xếp nếu cần)
         Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(deviceService.getUpcomingMaintenance(search, pageable));
+
+        // Gọi Service với các tham số đã tách bạch
+        Page<DeviceMaintenanceDTO> results = deviceService.getUpcomingMaintenance(
+                deviceName,
+                groupName,
+                lineName,
+                teamName,
+                branchName,
+                pageable
+        );
+
+        return ResponseEntity.ok(results);
     }
     @GetMapping("/report")
     public ResponseEntity<Page<DeviceMaintenanceDTO>> getReport(
-            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String deviceName,
+            @RequestParam(required = false) String branchName,
+            @RequestParam(required = false) String groupName,
+            @RequestParam(required = false) String teamName,
+            @RequestParam(required = false) String lineName,
             @RequestParam(defaultValue = "ALL") String filterType, // OVERDUE, UPCOMING, ALL
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-        return ResponseEntity.ok(deviceService.getMaintenanceReport(search, filterType, PageRequest.of(page, size)));
+        // Tạo đối tượng phân trang
+        Pageable pageable = PageRequest.of(page, size);
+
+        // Gọi Service với đầy đủ các tiêu chí lọc đã tách biệt
+        Page<DeviceMaintenanceDTO> report = deviceService.getMaintenanceReport(
+                deviceName,
+                branchName,
+                groupName,
+                teamName,
+                lineName,
+                filterType,
+                pageable
+        );
+
+        return ResponseEntity.ok(report);
     }
     @PostMapping("/creates")
     @ApiResponse(responseCode = "201")
