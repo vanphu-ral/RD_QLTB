@@ -182,7 +182,7 @@ public interface DeviceRepository extends JpaRepository<Device, Long> {
       AND (:teamName IS NULL OR team_name LIKE CONCAT('%', :teamName, '%'))
       AND (:lineName IS NULL OR line_name LIKE CONCAT('%', :lineName, '%'))
       AND (
-        (:filterType = 'OVERDUE' AND (next_test < CURDATE() OR next_test IS NULL))
+        (:filterType = 'OVERDUE' AND next_test < CURDATE())
         OR (:filterType = 'UPCOMING' AND next_test >= CURDATE())
         OR (:filterType = 'ALL')
       )
