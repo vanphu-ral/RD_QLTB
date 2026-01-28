@@ -173,7 +173,7 @@ export class Report3Page {
       fitToWidth: 1
     };
     worksheet.mergeCells('A1:I1');
-    worksheet.getCell('A1').value = 'SỔ THEO DÕI BẢO DƯỠNG THIẾT BỊ';
+    worksheet.getCell('A1').value = 'Sổ theo dõi lỗi thiết bị';
     worksheet.getCell('A1').font = { bold: true, size: 14 };
     worksheet.getCell('A1').alignment = { horizontal: 'center' };
 
@@ -182,65 +182,47 @@ export class Report3Page {
     worksheet.getCell('A2').alignment = { horizontal: 'center' };
 
     worksheet.mergeCells('A3:I3');
-    worksheet.getCell('A3').value = `Thời gian: từ ngày ${this.filter.startDate ? (new Date(this.filter.startDate)).toLocaleDateString() : ''} đến ngày ${this.filter.endDate ? (new Date(this.filter.endDate)).toLocaleDateString() : ''}`;
+    worksheet.getCell('A3').value = `Thời gian: từ ngày ${this.filter.fromDate ? (new Date(this.filter.fromDate)).toLocaleDateString() : ''} đến ngày ${this.filter.toDate ? (new Date(this.filter.toDate)).toLocaleDateString() : ''}`;
     worksheet.getCell('A3').alignment = { horizontal: 'center' };
 
     worksheet.addRow([]);
     const headerRow = worksheet.addRow([
-      'STT',
-      'Ngành',
-      'Mã thiết bị',
-      'Tên thiết bị',
-      'Mã KH',
-      'Đợt bảo trì',
-      'Nội dung thực hiện',
-      'Người kiểm tra',
-      'Trạng thái'
+        'STT', 'Xưởng', 'Ngành', 'Tổ', 'Nhóm thiết bị', 
+        'Mã thiết bị', 'Tên thiết bị', 'Năm', 'Tháng', 
+        'Số lần lỗi', 'Tổng thời gian dừng', 'Tổng thời gian chạy'
     ]);
 
     headerRow.eachCell(cell => {
-      cell.font = { bold: true };
-      cell.alignment = { horizontal: 'center', vertical: 'middle' };
-      cell.border = {
-        top: { style: 'thin' },
-        left: { style: 'thin' },
-        bottom: { style: 'thin' },
-        right: { style: 'thin' }
-      };
+        cell.font = { bold: true };
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
     });
-    this.data.forEach((item, index) => {
-      const row = worksheet.addRow([
-        index + 1,
-        item.branchName,
-        item.deviceCode,
-        item.deviceName,
-        item.planCode,
-        this.formatDate(item.dateTest),
-        item.criticalName,
-        item.committee,
-        item.result
-      ]);
 
-      row.eachCell(cell => {
-        cell.alignment = { vertical: 'middle', wrapText: true };
-        cell.border = {
-          top: { style: 'thin' },
-          left: { style: 'thin' },
-          bottom: { style: 'thin' },
-          right: { style: 'thin' }
-        };
-      });
+    this.data.forEach((item, index) => {
+        const row = worksheet.addRow([
+            index + 1,
+            'Xưởng LED - Điện tử & TBCS',
+            item.branch,
+            item.team,
+            item.deviceGroup,
+            item.deviceCode,
+            item.deviceName,
+            item.year,
+            item.month,
+            item.errorCount,
+            this.convertHoursToHoursMinutes(item.totalDowntime),
+            item.totalRunTime || 0
+        ]);
+
+        row.eachCell(cell => {
+            cell.alignment = { vertical: 'middle', wrapText: true };
+            cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
+        });
     });
     worksheet.columns = [
-      { width: 6 },
-      { width: 25 },
-      { width: 18 },
-      { width: 40 },
-      { width: 35 },
-      { width: 18 },
-      { width: 60 },
-      { width: 25 },
-      { width: 15 }
+        { width: 6 }, { width: 25 }, { width: 15 }, { width: 15 }, { width: 20 },
+        { width: 15 }, { width: 30 }, { width: 10 }, { width: 10 }, { width: 12 },
+        { width: 20 }, { width: 20 }
     ];
     worksheet.addRow([]);
     const footerIndex = worksheet.rowCount + 1;
@@ -254,7 +236,7 @@ export class Report3Page {
         new Blob([buffer], {
           type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         }),
-        'bao-cao-bao-duong-thiet-bi.xlsx'
+        'bao-cao-theo-doi-loi-thiet-bi.xlsx'
       );
     });
   }
@@ -270,7 +252,7 @@ export class Report3Page {
     popupWin.document.write(`
     <html>
       <head>
-        <title>In báo cáo bảo dưỡng thiết bị</title>
+        <title>In báo cáo theo dõi lỗi thiết bị</title>
         <style>
           @page {
             size: A4 landscape;
@@ -298,6 +280,17 @@ export class Report3Page {
               text-align: center;
               vertical-align: middle;
               word-wrap: break-word;
+            }
+
+            tr th:nth-child(13), 
+            tr td:nth-child(13) {
+                display: none !important;
+            }
+
+            /* Vì bỏ 1 cột, ta cần chỉnh lại colspan của tiêu đề chính để bảng cân đối */
+            /* Tiêu đề chính ban đầu là 9, giữ nguyên hoặc giảm xuống 8 nếu thấy lệch */
+            th[colspan="9"] {
+                colspan: 8 !important;
             }
 
             /* Ẩn các thành phần thừa của PrimeNG */
