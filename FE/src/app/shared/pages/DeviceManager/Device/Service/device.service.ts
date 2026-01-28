@@ -46,20 +46,31 @@ export class DeviceService extends BaseApiService<Device> {
     );
   }
 
-  getMaintainListPaged(page: number, filters: any = {}): Observable<any> {
+
+  getUpcoming(search?: string, page: number = 0, size: number = 10): Observable<any> {
     let params = new HttpParams()
-      .set('page', page.toString())
-      .set('name', 'THIẾT BỊ GẮN LINH KIỆN HT-E8S1200');
-
-
-    Object.keys(filters).forEach(key => {
-      const value = filters[key];
-      if (value !== null && value !== undefined && value !== '') {
-        params = params.set(key, value);
-      }
-    });
+      .set('page', page)
+      .set('size', size);
+    if (search) {
+      params = params.set('search', search);
+    }
     return this.http.get<any>(
-      `${this['fullBaseUrl']}/maintain-list/paged`,
+      `${this['fullBaseUrl']}/upcoming`,
+      { params }
+    );
+  }
+
+
+  getReport(search?: string,filterType: 'OVERDUE' | 'UPCOMING' | 'ALL' = 'ALL',page: number = 0,size: number = 10): Observable<any> {
+    let params = new HttpParams()
+      .set('filterType', filterType)
+      .set('page', page)
+      .set('size', size);
+    if (search) {
+      params = params.set('search', search);
+    }
+    return this.http.get<any>(
+      `${this['fullBaseUrl']}/report`,
       { params }
     );
   }
