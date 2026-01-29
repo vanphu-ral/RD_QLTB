@@ -1,6 +1,7 @@
 package io.rd.qltb.rest;
 
 import io.rd.qltb.model.ReportFilter;
+import io.rd.qltb.model.response.DeviceComprehensiveReportDTO;
 import io.rd.qltb.model.response.DeviceErrorSummaryDTO;
 import io.rd.qltb.model.response.Report2Response;
 import io.rd.qltb.model.response.ReportResponse;
@@ -45,5 +46,18 @@ public class ReportResource {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime toDate,
             Pageable pageable) {
         return ResponseEntity.ok(reportService.getReport(branchIds, teamIds, groupIds, fromDate, toDate, pageable));
+    }
+
+    @GetMapping("/comprehensive-report")
+    public ResponseEntity<Page<DeviceComprehensiveReportDTO>> getComprehensiveReport(
+            @RequestParam(required = false) List<Long> branchIds,
+            @RequestParam(required = false) List<Long> teamIds,
+            @RequestParam(required = false) List<Long> groupIds,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fromDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime toDate,
+            Pageable pageable) {
+
+        return ResponseEntity.ok(reportService.getComprehensiveReport(
+                branchIds, teamIds, groupIds, fromDate, toDate, pageable));
     }
 }

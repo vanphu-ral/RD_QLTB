@@ -1,7 +1,7 @@
 @if (!account()) {
 <app-login-from></app-login-from>
 } @else {
-<div class="p-4 bg-gray-100 min-h-screen">
+<div class="desktop p-4 bg-gray-100 min-h-screen d-none d-lg-block">
   <div class="row my-3">
     <div class="col">
       <p-floatlabel variant="on">
@@ -278,6 +278,61 @@
         <p-chart [plugins]="chartPlugins" type="line" [data]="mixedData" [options]="chartOptions" height="300px" />
       </p-card>
     </div>
+  </div>
+</div>
+<div class="mobile d-block d-lg-none p-4 bg-gray-50 min-h-screen">
+  <div class="text-center mb-6">
+    <img src="assets/imgs/logo-rang-dong-icon.webp" alt="Logo" class="mx-auto w-20 mb-3 logo">
+    <h4 class="text-xl font-bold text-gray-800">Hệ thống quản lý thiết bị</h4>
+  </div>
+
+  <div class="bg-white rounded-2xl shadow-sm p-4 mb-8 d-flex justify-content-between align-items-center">
+    <span class="text-gray-600">Xin chào, <strong class="text-dark">{{ account()?.fullName }}</strong></span>
+    <i class="pi pi-sign-out text-danger fs-5" (click)="loginService.logout()"></i>
+  </div>
+
+  <h3 class="text-center font-bold text-lg mb-4">Chức năng chính</h3>
+
+  <div class="row g-3">
+    <div class="col-6">
+      <div class="menu-card border-blue" routerLink="/qr-code">
+        <div class="icon-wrapper bg-primary">
+          <i class="pi pi-qrcode text-white"></i>
+        </div>
+        <span class="menu-label">Scan thông tin thiết bị</span>
+        <span class="menu-sub">Xem chi tiết thông tin thiết bị</span>
+      </div>
+    </div>
+
+    <div class="col-6">
+      <div class="menu-card border-green" routerLink="/Plans">
+        <div class="icon-wrapper bg-success">
+          <i class="pi pi-calendar text-white"></i>
+        </div>
+        <span class="menu-label">Danh sách kế hoạch</span>
+        <span class="menu-sub">Kế hoạch kiểm tra/bảo trì</span>
+      </div>
+    </div>
+
+    <!-- <div class="col-6">
+      <div class="menu-card border-orange">
+        <div class="icon-wrapper bg-warning">
+          <i class="pi pi-chart-bar text-white"></i>
+        </div>
+        <span class="menu-label">Báo cáo</span>
+        <span class="menu-sub">Thống kê chi tiết</span>
+      </div>
+    </div>
+
+    <div class="col-6">
+      <div class="menu-card border-purple">
+        <div class="icon-wrapper bg-purple">
+          <i class="pi pi-history text-white"></i>
+        </div>
+        <span class="menu-label">Nhật ký lỗi</span>
+        <span class="menu-sub">Lịch sử sửa chữa</span>
+      </div>
+    </div> -->
   </div>
 </div>
 }

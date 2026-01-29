@@ -86,16 +86,16 @@
                         <tr>
                             <td>{{ rowIndex + 1 }}</td>
                             <td> Xưởng LED - Điện tử & TBCS </td>
-                            <td>{{ item.branch }}</td>
-                            <td>{{ item.team }}</td>
-                            <td>{{ item.deviceGroup }}</td>
-                            <td>{{ item.deviceCode }}</td>
-                            <td>{{ item.deviceName }}</td>
-                            <td>{{ item.year }}</td>
-                            <td>{{ item.month }}</td>
-                            <td>{{ item.errorCount }}</td>
-                            <td>{{ convertHoursToHoursMinutes(item.totalDowntime) }}</td>
-                            <td>{{ item.totalRunTime || 0 }}</td>
+                            <td>{{ item.summary.branch }}</td>
+                            <td>{{ item.summary.team }}</td>
+                            <td>{{ item.summary.deviceGroup }}</td>
+                            <td>{{ item.summary.deviceCode }}</td>
+                            <td>{{ item.summary.deviceName }}</td>
+                            <td>{{ item.summary.year }}</td>
+                            <td>{{ item.summary.month }}</td>
+                            <td>{{ item.summary.errorCount }}</td>
+                            <td>{{ convertHoursToHoursMinutes(item.summary.totalDowntime) }}</td>
+                            <td>{{ item.summary.totalRunTime || 0 }}</td>
                             <td>
                                 <div class="d-flex justify-content-center">
                                     <button class="btn btn-sm btn-info me-1" (click)="viewDetails(item)"
@@ -124,5 +124,6 @@
     <div class="d-flex justify-content-end mt-3">
         <p-button label="Quay lại" severity="info" (click)="onBack()" icon="pi pi-arrow-left" class="me-2"></p-button>
         <p-button label="Export" severity="success" (click)="export()" icon="pi pi-file-export" class="me-2"></p-button>
+        <p-button label="Export XLSX Chi tiết" severity="success" (click)="exportFullData()" icon="pi pi-file-export" class="me-2"></p-button>
     </div>
 </div>

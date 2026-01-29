@@ -31,4 +31,15 @@ public interface ErrorReportRepository extends JpaRepository<ErrorReport, Long> 
             @Param("fromDate") LocalDateTime fromDate,
             @Param("toDate") LocalDateTime toDate,
             Pageable pageable);
+
+
+    @Query("SELECT er FROM ErrorReport er " +
+            "JOIN er.planResult pr " +
+            "JOIN pr.planDetail pd " +
+            "WHERE pd.device.id = :deviceId " +
+            "AND er.timeReported BETWEEN :fromDate AND :toDate")
+    List<ErrorReport> findDetailErrorsList(
+                                            @Param("deviceId") Long deviceId,
+                                            @Param("fromDate") LocalDateTime fromDate,
+                                            @Param("toDate") LocalDateTime toDate);
 }

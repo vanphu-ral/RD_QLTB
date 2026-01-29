@@ -42,6 +42,8 @@ export class InformationTabComponent implements OnChanges {
 
   // Tab change
   onTabChange(event: any) {
+    console.log(this.model);
+    
     // if (!this.model?.id) return;
     switch (event) {
       case "0":
@@ -57,7 +59,7 @@ export class InformationTabComponent implements OnChanges {
         break;
 
       case "3":
-        this.loadPlan(this.model.serialNumber);
+        this.loadPlan(this.model.qrCode);
         break;
 
       case "4":

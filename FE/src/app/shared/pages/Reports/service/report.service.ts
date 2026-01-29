@@ -68,5 +68,35 @@ export class ReportService extends BaseApiService<any> {
         }
 
         return this.http.get<any>(`${this['fullBaseUrl']}/error-summary`, { params });
-    }  
+    }
+    
+    // Report 3 - Comprehensive Report
+    getComprehensiveReport(
+        filter: any,
+        page: number = 0,
+        size: number = 100
+    ): Observable<any> {
+
+        let params = new HttpParams()
+            .set('fromDate', filter.fromDate.toISOString()) 
+            .set('toDate', filter.toDate.toISOString())
+            .set('page', page.toString())
+            .set('size', size.toString());
+
+        if (filter.branchIds && filter.branchIds.length > 0) {
+            filter.branchIds.forEach((id: number) => {
+                params = params.append('branchIds', id.toString());
+            });
+        }
+        if (filter.teamIds?.length > 0) {
+            filter.teamIds.forEach((id: any) => params = params.append('teamIds', id.toString()));
+        }
+        if (filter.groupIds && filter.groupIds.length > 0) {
+            filter.groupIds.forEach((id: number) => {
+                params = params.append('groupIds', id.toString());
+            });
+        }
+
+        return this.http.get<any>(`${this['fullBaseUrl']}/comprehensive-report`, { params });
+    }
 }

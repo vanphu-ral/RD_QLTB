@@ -34,7 +34,7 @@ export class HomeComponent {
     chartPlugins = [ChartDataLabels];
     pieOptions: any;
 
-    constructor(private accountService: AccountService, private cdr: ChangeDetectorRef, private dialogService: DialogService) { }
+    constructor(private accountService: AccountService, private cdr: ChangeDetectorRef, private dialogService: DialogService, public loginService: LoginService) { }
 
     ngOnInit(): void {
         this.accountService.identity().subscribe(account => this.account.set(account));

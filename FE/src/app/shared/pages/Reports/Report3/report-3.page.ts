@@ -81,10 +81,8 @@ export class Report3Page {
 
   loadData() {
     this.loading = true;
-    this.reportService.getErrorReportSummary(this.filter, this.page, this.size).subscribe({
+    this.reportService.getComprehensiveReport(this.filter, this.page, this.size).subscribe({
       next: (res) => {
-        console.log(res);
-        
         this.data = res.content
         this.totalRecords = res.totalElements;
         this.loading = false;
@@ -114,35 +112,26 @@ export class Report3Page {
   }
 
   viewDetails(row: any) {
-    const fromDate = this.filter.fromDate.toISOString();
-    const toDate = this.filter.toDate.toISOString();
-    this.errorReportService.getListErrorByDevice(row.deviceId, fromDate, toDate, 0, 10)
-      .subscribe(res => {
-        const ref = this.dialogService.open(DetailListErrorDialog, {
-          header: `Chi tiết lỗi thiết bị - ${row.deviceName}`,
-          width: '100%',
-          data: res.content,
-          modal: true,
-          closable: true
-        });
-      });
+    const ref = this.dialogService.open(DetailListErrorDialog, {
+      header: `Chi tiết lỗi thiết bị - ${row.deviceName}`,
+      width: '100%',
+      data: row.errorDetails,
+      modal: true,
+      closable: true
+    });
   }
 
   viewSupplyReplace(row: any) {
-    const fromDate = this.filter.fromDate.toISOString();
-    const toDate = this.filter.toDate.toISOString();
-    this.supplyReplaceHistoryService.getSupplyHistoryByDeviceId(row.deviceId, fromDate, toDate, 0, 10)
-      .subscribe(res => {
-        const ref = this.dialogService.open(SupplyReplaceHistoryDialog, {
-          header: `Chi tiết thay thế vật tư - ${row.deviceName}`,
-          width: '50%',
-          data: res.content,
-          modal: true,
-          closable: true
-        });
+      const ref = this.dialogService.open(SupplyReplaceHistoryDialog, {
+        header: `Chi tiết thay thế vật tư - ${row.deviceName}`,
+        width: '50%',
+        data: row.replacementHistory,
+        modal: true,
+        closable: true
       });
   }
 
+  // Export
   export() {
     const ref = this.dialogService.open(ExportTypeDialog, {
       header: 'Chọn kiểu xuất dữ liệu',
@@ -202,16 +191,16 @@ export class Report3Page {
         const row = worksheet.addRow([
             index + 1,
             'Xưởng LED - Điện tử & TBCS',
-            item.branch,
-            item.team,
-            item.deviceGroup,
-            item.deviceCode,
-            item.deviceName,
-            item.year,
-            item.month,
-            item.errorCount,
-            this.convertHoursToHoursMinutes(item.totalDowntime),
-            item.totalRunTime || 0
+            item.summary.branch,
+            item.summary.team,
+            item.summary.deviceGroup,
+            item.summary.deviceCode,
+            item.summary.deviceName,
+            item.summary.year,
+            item.summary.month,
+            item.summary.errorCount,
+            this.convertHoursToHoursMinutes(item.summary.totalDowntime),
+            item.summary.totalRunTime || 0
         ]);
 
         row.eachCell(cell => {
@@ -332,6 +321,130 @@ export class Report3Page {
     if (!date) return '';
     const d = new Date(date);
     return d.toLocaleDateString('vi-VN');
+  }
+
+  // Export Detail Full Data
+  async exportFullData() {
+    const workbook = new ExcelJS.Workbook();
+    workbook.creator = 'System';
+    workbook.created = new Date();
+    const errorSheet = workbook.addWorksheet('Chi tiết Lỗi');
+    errorSheet.columns = [
+      { header: 'STT', key: 'stt', width: 5 },
+      { header: 'Nhà máy', key: 'factory', width: 20 },
+      { header: 'Ngành', key: 'branch', width: 20 },
+      { header: 'Tổ', key: 'team', width: 15 },
+      { header: 'Mã thiết bị', key: 'deviceCode', width: 25 },
+      { header: 'Tên thiết bị', key: 'deviceName', width: 30 },
+      // --- Phần chi tiết lỗi ---
+      { header: 'Tên lỗi', key: 'errorName', width: 25 },
+      { header: 'Mô tả', key: 'errorDesc', width: 30 },
+      { header: 'Người báo', key: 'reportedBy', width: 15 },
+      { header: 'Thời gian báo', key: 'timeReported', width: 20 },
+      { header: 'Người sửa', key: 'repairedBy', width: 15 },
+      { header: 'Kết quả', key: 'result', width: 20 },
+      { header: 'Thời gian sửa', key: 'timeRepaired', width: 20 },
+      { header: 'Trạng thái', key: 'isRepaired', width: 15 },
+    ];
+
+    // Duyệt data để đổ vào Sheet Lỗi
+    let errorIndex = 1;
+    this.data.forEach((item: any) => {
+      const summary = item.summary;
+      
+      // Nếu thiết bị không có lỗi nào, có thể in 1 dòng trống hoặc bỏ qua. 
+      // Ở đây ta chỉ in khi có lỗi để báo cáo gọn.
+      if (item.errorDetails && item.errorDetails.length > 0) {
+        item.errorDetails.forEach((err: any) => {
+          errorSheet.addRow({
+            stt: errorIndex++,
+            factory: summary.factory?.trim(),
+            branch: summary.branch,
+            team: summary.team,
+            deviceCode: summary.deviceCode,
+            deviceName: summary.deviceName,
+            // Chi tiết lỗi
+            errorName: err.name,
+            errorDesc: err.errorDescription,
+            reportedBy: err.reportedBy,
+            timeReported: this.formatDate(err.timeReported),
+            repairedBy: err.repairedBy,
+            result: err.result,
+            timeRepaired: this.formatDate(err.timeRepaired),
+            isRepaired: err.isRepaired ? 'Đã sửa' : 'Chưa sửa'
+          });
+        });
+      }
+    });
+
+    this.styleSheetHeader(errorSheet);
+
+
+    // ===========================================
+    // SHEET 2: LỊCH SỬ THAY THẾ (REPLACEMENT HISTORY)
+    // ===========================================
+    const historySheet = workbook.addWorksheet('Lịch sử Thay thế');
+
+    historySheet.columns = [
+      { header: 'STT', key: 'stt', width: 5 },
+      { header: 'Mã thiết bị', key: 'deviceCode', width: 25 },
+      { header: 'Tên thiết bị', key: 'deviceName', width: 30 },
+      // --- Phần thay thế ---
+      { header: 'Vật tư cũ (Tháo ra)', key: 'oldSupply', width: 30 },
+      { header: 'Mã VT cũ', key: 'oldSupplyCode', width: 20 },
+      { header: 'Vật tư mới (Lắp vào)', key: 'newSupply', width: 30 },
+      { header: 'Mã VT mới', key: 'newSupplyCode', width: 20 },
+      { header: 'Số lượng', key: 'quantity', width: 10 },
+      { header: 'Đơn vị', key: 'unit', width: 10 },
+      { header: 'Ngày thực hiện', key: 'createdAt', width: 20 },
+    ];
+
+    let historyIndex = 1;
+    this.data.forEach((item: any) => {
+      const summary = item.summary;
+
+      if (item.replacementHistory && item.replacementHistory.length > 0) {
+        item.replacementHistory.forEach((hist: any) => {
+          historySheet.addRow({
+            stt: historyIndex++,
+            deviceCode: summary.deviceCode,
+            deviceName: summary.deviceName,
+            // Chi tiết thay thế (Xử lý null safe ?. để tránh lỗi)
+            oldSupply: hist.oldSupplyDetail?.supply?.name || '(Không có)',
+            oldSupplyCode: hist.oldSupplyDetail?.supply?.code || '',
+            newSupply: hist.newSupplyDetail?.supply?.name || '(Không có)',
+            newSupplyCode: hist.newSupplyDetail?.supply?.code || '',
+            quantity: hist.quantityChange,
+            unit: hist.newSupplyDetail?.unit || '',
+            createdAt: this.formatDate(hist.createdAt)
+          });
+        });
+      }
+    });
+
+    this.styleSheetHeader(historySheet);
+
+    // 3. Xuất file
+    const buffer = await workbook.xlsx.writeBuffer();
+    const fileName = 'Bao_Cao_Tong_Hop_Thiet_Bi_' + new Date().getTime() + '.xlsx';
+    this.saveAsExcelFile(buffer, fileName);
+  }
+
+  private styleSheetHeader(sheet: ExcelJS.Worksheet) {
+    // Style dòng đầu tiên (Header)
+    const headerRow = sheet.getRow(1);
+    headerRow.font = { bold: true, color: { argb: 'FFFFFF' } };
+    headerRow.fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: '0070C0' } // Màu xanh dương
+    };
+    headerRow.alignment = { vertical: 'middle', horizontal: 'center' };
+  }
+
+  private saveAsExcelFile(buffer: any, fileName: string): void {
+    const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    saveAs(data, fileName);
   }
 
   public onBack(): void {
