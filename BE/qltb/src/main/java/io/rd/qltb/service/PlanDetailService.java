@@ -152,14 +152,14 @@ public class PlanDetailService {
                 planResultDTO.setPlanResultDetails(planResultDetailDTOS);
             }
 
-//            // Giữ lại chỉ những PlanResult KHÔNG có PlanResultDetail
-//            List<PlanResultDTO> resultsWithoutDetails = planResultDTOS.stream()
-//                    .filter(r -> r.getPlanResultDetails() == null || r.getPlanResultDetails().isEmpty())
-//                    .toList();
+            // Giữ lại  PlanResult có status khác 5
+            List<PlanResultDTO> resultsWithoutDetails = planResultDTOS.stream()
+                    .filter(r -> r.getStatus() != 5 )
+                    .toList();
 
             // Nếu còn kết quả hợp lệ thì set vào planDetail
-            if (!planResultDTOS.isEmpty()) {
-                planDetailDTO.setPlanResults(planResultDTOS);
+            if (!resultsWithoutDetails.isEmpty()) {
+                planDetailDTO.setPlanResults(resultsWithoutDetails);
 
                 // Gom về PlanDTO
                 Long planId = planDetailDTO.getPlan().getId();
