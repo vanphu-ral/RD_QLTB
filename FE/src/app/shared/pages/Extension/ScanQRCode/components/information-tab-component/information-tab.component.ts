@@ -232,7 +232,7 @@ export class InformationTabComponent implements OnChanges {
       event,
       'Bạn có chắc đã hoàn thành đợt kiểm tra này này?',
       () => {
-        return this.planResultService.updateStatus(row.id as number, 5);
+        return this.planResultService.updateStatus(row.planResultId as number, 5);
       },
       'Đã hoàn thành đợt kiểm tra',
       'Lỗi khi hoàn thành',
