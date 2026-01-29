@@ -1,10 +1,9 @@
 package io.rd.qltb.service;
 
-import io.rd.qltb.model.BranchDTO;
-import io.rd.qltb.model.ReportFilter;
-import io.rd.qltb.model.TeamDTO;
+import io.rd.qltb.model.*;
 import io.rd.qltb.model.response.*;
 import io.rd.qltb.repos.DeviceRepository;
+import io.rd.qltb.repos.ErrorReportRepository;
 import io.rd.qltb.repos.PlanResultDetailRepository;
 import io.rd.qltb.repos.SupplyReplacementHistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ReportService {
@@ -27,6 +27,12 @@ public class ReportService {
     private SupplyReplacementHistoryRepository supplyReplacementHistoryRepository;
     @Autowired
     private DeviceRepository deviceRepository;
+    @Autowired
+    private ErrorReportService errorReportService;
+    @Autowired
+    private ErrorReportRepository errorReportRepository;
+    @Autowired
+    private SupplyReplacementHistoryService supplyReplacementHistoryService;
 
     public List<ReportResponse> getSupplyReport(ReportFilter filter) {
         List<ReportResponse> reportResponses = new ArrayList<>();
@@ -95,5 +101,44 @@ public class ReportService {
         if (toDate == null) toDate = LocalDateTime.now();
 
         return deviceRepository.getErrorSummaryReport(branchIds,teamIds, groupIds, fromDate, toDate, pageable);
+    }
+
+    public Page<DeviceComprehensiveReportDTO> getComprehensiveReport(
+            List<Long> branchIds, List<Long> teamIds, List<Long> groupIds,
+            LocalDateTime fromDate, LocalDateTime toDate, Pageable pageable) {
+
+        // 1. Xử lý null date (Logic cũ của API 1)
+        if (fromDate == null) fromDate = LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0);
+        if (toDate == null) toDate = LocalDateTime.now();
+        final LocalDateTime finalFrom = fromDate;
+        final LocalDateTime finalTo = toDate;
+
+        // 2. Lấy danh sách Summary (Logic API 1)
+        Page<DeviceErrorSummaryDTO> summaryPage = deviceRepository.getErrorSummaryReport(
+                branchIds, teamIds, groupIds, finalFrom, finalTo, pageable);
+
+        // 3. Map sang DTO tổng hợp và fetch dữ liệu con
+        return summaryPage.map(summary -> {
+            // Lấy DeviceID từ summary row
+            Long deviceId = summary.getDeviceId(); // Giả sử trong DeviceErrorSummaryDTO có field deviceId (API 1 có select d.id)
+
+            // Lấy chi tiết lỗi (API 2 logic) - Trả về List
+            List<ErrorReportDTO> errors = errorReportRepository.findDetailErrorsList(deviceId, finalFrom, finalTo)
+                    .stream()
+                    .map(e -> errorReportService.mapToDTO(e, new ErrorReportDTO())) // Hàm map có sẵn của bạn
+                    .collect(Collectors.toList());
+
+            // Lấy lịch sử thay thế (API 3 logic) - Trả về List
+            List<SupplyReplacementHistoryDTO> history = supplyReplacementHistoryRepository.findHistoryByDeviceList(deviceId, finalFrom, finalTo)
+                    .stream()
+                    .map(h -> {
+                        SupplyReplacementHistoryDTO dto = new SupplyReplacementHistoryDTO();
+                        return supplyReplacementHistoryService.mapToDTO(h, dto); // Hàm map có sẵn của bạn
+                    })
+                    .collect(Collectors.toList());
+
+            // Trả về DTO tổng hợp
+            return new DeviceComprehensiveReportDTO(summary, errors, history);
+        });
     }
 }

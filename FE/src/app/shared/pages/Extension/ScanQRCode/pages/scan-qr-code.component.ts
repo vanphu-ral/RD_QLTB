@@ -17,7 +17,7 @@ import { Device } from '../../../../models/DeviceManager/device.model';
 export class ScanQrCodeComponent {
 
   @ViewChild('preview') preview!: ElementRef<HTMLVideoElement>;
-  serial: string = '';
+  qrCode: string = '';
   reader = new BrowserMultiFormatReader();
   hints = new Map();
   facingMode: 'environment' | 'user' = 'environment';
@@ -74,9 +74,9 @@ export class ScanQrCodeComponent {
 
       this.codeReader.decodeFromVideoElement(videoEl, (result, error) => {
         if (result) {
-          this.serial = result.getText();
+          this.qrCode = result.getText();
           this.cdr.detectChanges();
-          this.getDeviceInfo(this.serial);
+          this.getDeviceInfo(this.qrCode);
         }
       });
     } catch (err) {
@@ -102,13 +102,13 @@ export class ScanQrCodeComponent {
     }
   }
 
-  getDeviceInfo(serial: any) {
-    this.deviceService.getBySerialNumber(serial).subscribe({
+  getDeviceInfo(qrCode: any) {
+    this.deviceService.getBySerialNumber(qrCode).subscribe({
       next: (device) => {
         this.device = device;
         this.device.DateUseAndInstall = `${new Date(this.device.dateManufacture).getFullYear()} - ${new Date(this.device.installationDate).getFullYear()}`;
         this.device.displayLocation = device.line?.name || device.team?.name || device.branch?.name || ''
-        this.serial = '';
+        this.qrCode = '';
         this.cdr.detectChanges();
       },
       error: (err) => {

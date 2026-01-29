@@ -60,4 +60,16 @@ public interface SupplyReplacementHistoryRepository extends JpaRepository<Supply
             @Param("fromDate") LocalDateTime fromDate,
             @Param("toDate") LocalDateTime toDate,
             Pageable pageable);
+
+
+    @Query("SELECT s FROM SupplyReplacementHistory s " +
+            "LEFT JOIN FETCH s.oldSupplyDetail " +
+            "LEFT JOIN FETCH s.newSupplyDetail " +
+            "WHERE s.deviceId = :deviceId " +
+            "AND s.createdAt BETWEEN :fromDate AND :toDate " +
+            "ORDER BY s.createdAt DESC")
+    List<SupplyReplacementHistory> findHistoryByDeviceList(
+                                                            @Param("deviceId") Long deviceId,
+                                                            @Param("fromDate") LocalDateTime fromDate,
+                                                            @Param("toDate") LocalDateTime toDate);
 }

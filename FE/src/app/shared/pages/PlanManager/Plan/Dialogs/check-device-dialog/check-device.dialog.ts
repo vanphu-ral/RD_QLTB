@@ -15,6 +15,7 @@ import { SupplyReplacementHistoryService } from "../../Service/supply-replace-hi
 import { SupplyReplacementHistory } from "../../../../../models/PlanManger/supply-replace-history.model";
 import { SupplyDetailService } from "../../../../DeviceManager/Supply/Service/supply-detail.service";
 import { DeviceService } from "../../../../DeviceManager/Device/Service/device.service";
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 @Component({
     selector: 'app-check-device-dialog',
@@ -39,6 +40,8 @@ export class CheckDeviceDialog {
 
     groupedData: any[] = [];
 
+    isMobile: boolean = false;
+
     constructor(
         public ref: DynamicDialogRef,
         public config: DynamicDialogConfig,
@@ -49,10 +52,15 @@ export class CheckDeviceDialog {
         private deviceService: DeviceService,
         private supplyReplaceHistoryService: SupplyReplacementHistoryService,
         private supplyDetailService: SupplyDetailService,
+        private breakpointObserver: BreakpointObserver
     ) {
         this.data = config.data;
         console.log(this.data);
-        
+        this.breakpointObserver.observe([Breakpoints.Handset, Breakpoints.Small])
+            .subscribe(result => {
+                this.isMobile = result.matches; // True nếu mobile (< ~768px)
+                this.cdr.detectChanges(); // Update view nếu cần
+            });
     }
 
     ngOnInit() {

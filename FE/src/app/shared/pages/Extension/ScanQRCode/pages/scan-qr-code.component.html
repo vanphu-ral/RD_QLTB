@@ -14,7 +14,7 @@
             <p-select [options]="optionScans" [(ngModel)]="scanType" optionLabel="label" optionValue="value" placeholder="Select a Scan Type" class="w-full md:w-56" />
             <video *ngIf="scanType == 2" #preview style="width: 100%; border: 1px solid #ccc; border-radius: 6px;"></video>
             <div class="mt-2">
-              <strong>Mã serial:</strong> <input pInputText id="serial" name="serial" [(ngModel)]="serial" autocomplete="off" [fluid]="true" (keyup.enter)="getDeviceInfo(serial)"/>
+              <strong>Mã QR Code:</strong> <input pInputText id="qrCode" name="qrCode" [(ngModel)]="qrCode" autocomplete="off" [fluid]="true" (keyup.enter)="getDeviceInfo(qrCode)"/>
             </div>
           </div>
           <div style="border: 1px solid;"></div>
@@ -26,8 +26,8 @@
           </div>
           <div class="d-flex my-4">
             <p-floatlabel variant="on">
-              <input pInputText id="code" name="code" autocomplete="off" fluid  [(ngModel)]="device.serialNumber" [disabled]="true" />
-              <label for="code">Mã serial</label>
+              <input pInputText id="code" name="code" autocomplete="off" fluid  [(ngModel)]="device.qrCode" [disabled]="true" />
+              <label for="code">Mã Qr Code</label>
             </p-floatlabel>
           </div>
           <div class="d-flex my-4">
