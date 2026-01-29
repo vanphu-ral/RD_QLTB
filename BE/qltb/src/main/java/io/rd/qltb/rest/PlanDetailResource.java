@@ -72,8 +72,8 @@ public class PlanDetailResource {
     }
     @GetMapping("/plans")
     public ResponseEntity<List<PlanDTO>> getDeviceSupplyUsages(
-            @RequestParam("serial") String serial) {
-        List<PlanDTO> deviceSupplyUsages = planDetailService.getByDetiveId( serial);
+            @RequestParam("qrCode") String qrCode) {
+        List<PlanDTO> deviceSupplyUsages = planDetailService.getByDetiveId( qrCode);
         return ResponseEntity.ok(deviceSupplyUsages);
     }
     @GetMapping("/plan/{id}")

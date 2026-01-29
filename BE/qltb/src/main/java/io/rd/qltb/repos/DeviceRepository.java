@@ -25,7 +25,7 @@ public interface DeviceRepository extends JpaRepository<Device, Long> {
     Device findFirstByTeamId(Long id);
 
     List<Device> findByGroupIdAndStatusOrderByIdDesc(Long groupId,Integer status);
-    Device findFirstBySerialNumber(String serialNumber);
+    Device findFirstByQrCode(String qrCode);
 
     Optional<Device> findByQrCode(String qrCode);
     @Query(value = "SELECT distinct(b.id) FROM device_management.devices a \n" +

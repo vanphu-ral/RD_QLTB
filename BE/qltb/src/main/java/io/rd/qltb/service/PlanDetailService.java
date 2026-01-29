@@ -121,8 +121,8 @@ public class PlanDetailService {
                 .toList();
     }
 
-    public List<PlanDTO> getByDetiveId(final String serial) {
-        Device device = deviceRepository.findFirstBySerialNumber(serial);
+    public List<PlanDTO> getByDetiveId(final String qrCode) {
+        Device device = deviceRepository.findFirstByQrCode(qrCode);
         if (device == null) {
             return Collections.emptyList();
         }
