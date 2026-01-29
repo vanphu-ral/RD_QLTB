@@ -2,11 +2,11 @@
   <p-tabs value="0" (valueChange)="onTabChange($event)" scrollable>
     <p-tablist>
       <p-tab value="0">Lịch sử di chuyển</p-tab>
-      <p-tab value="1">Lịch sử sự cố</p-tab>
+      <p-tab value="1">Danh sách lỗi thiết bị</p-tab>
       <p-tab value="2">Lịch sử bảo dưỡng, sửa chữa</p-tab>
       <p-tab value="3">Kiểm tra thiết bị</p-tab>
-      <p-tab value="4">Bảo trì thiết bị</p-tab>
-      <p-tab value="5">Sửa chữa thiết bị</p-tab>
+      <!-- <p-tab value="4">Bảo trì thiết bị</p-tab> -->
+      <!-- <p-tab value="5">Sửa chữa thiết bị</p-tab> -->
       <p-tab value="6">Thống kê thời gian dừng máy</p-tab>
     </p-tablist>
     <p-tabpanels>
@@ -119,6 +119,7 @@
               <th>Tên thiết bị</th>
               <th>Người thực hiện</th>
               <th>Ngày kiểm tra</th>
+              <th>Trạng thái</th>
               <th>Thao tác</th>
             </tr>
           </ng-template>
@@ -130,9 +131,12 @@
               <td>{{ row.deviceName }}</td>
               <td>{{ row.userPerformer }}</td>
               <td>{{ row.dateTest | date:'dd/MM/yyyy' }}</td>
+              <td><p-tag [value]="statusToString(row.status)" [severity]="getSeverityStatus(row.status)" /></td>
               <td>
-                <p-button icon="pi pi-check-circle" styleClass="m-1" severity="info"
+                <p-button icon="pi pi-check-circle" styleClass="m-1" severity="info" *ngIf="row.status != 15"
                   (onClick)="checkDevice(row)"></p-button>
+                <p-button icon="pi pi-check" styleClass="m-1" severity="success" title="Hoàn thành"
+                  *ngIf="row.status != 15 && row.status != 1" (onClick)="completeCheckDate(row, $event)"></p-button>
               </td>
             </tr>
           </ng-template>
@@ -177,12 +181,12 @@
 
 <div class="device-task-mobile block md:hidden">
   <h5 class="font-bold my-3">Thông tin chi tiết thiết bị</h5>
-  <p-accordion value="0" (valueChange)="onTabChange($event)">
+  <p-accordion value="99" (valueChange)="onTabChange($event)">
     <p-accordion-panel value="3">
       <p-accordion-header>Kiểm tra thiết bị</p-accordion-header>
       <p-accordion-content>
-        <p-table [value]="listPlanAudit" dataKey="stt" [paginator]="true" [rows]="10" [resizableColumns]="true"
-          [scrollable]="true" scrollHeight="500px">
+        <p-table [value]="listPlanAudit" dataKey="stt" [resizableColumns]="true" [scrollable]="true"
+          scrollHeight="500px">
           <ng-template pTemplate="header">
             <tr>
               <th>Thông tin chung</th>
@@ -197,10 +201,14 @@
                 <b>Tên thiết bị:</b> {{ row.deviceName }} <br />
                 <b>Người thực hiện:</b> {{ row.userPerformer }} <br />
                 <b>Ngày kiểm tra:</b> {{ row.dateTest | date:'dd/MM/yyyy' }} <br />
+                <b>Trạng thái:</b> <p-tag [value]="statusToString(row.status)"
+                  [severity]="getSeverityStatus(row.status)" /> <br />
               </td>
               <td>
-                <p-button icon="pi pi-check-circle" styleClass="m-1" severity="info"
+                <p-button icon="pi pi-check-circle" styleClass="m-1" severity="info" *ngIf="row.status != 15"
                   (onClick)="checkDevice(row)"></p-button>
+                <p-button icon="pi pi-check" styleClass="m-1" severity="success" title="Hoàn thành"
+                  *ngIf="row.status != 15 && row.status != 1" (onClick)="completeCheckDate(row, $event)"></p-button>
               </td>
             </tr>
           </ng-template>
@@ -215,30 +223,74 @@
       </p-accordion-content>
     </p-accordion-panel>
 
-    <p-accordion-panel value="4">
-      <p-accordion-header>Header II</p-accordion-header>
+    <p-accordion-panel value="1">
+      <p-accordion-header>Danh sách lỗi thiết bị</p-accordion-header>
       <p-accordion-content>
-        <p class="m-0">
-          Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem
-          aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
-          Nemo
-          enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores
-          eos
-          qui ratione voluptatem sequi nesciunt. Consectetur, adipisci velit, sed quia non numquam eius modi.
-        </p>
+        <p-table [value]="listError" responsiveLayout="scroll">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Thông tin chung</th>
+              <th>Thao tác</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-row let-i="rowIndex">
+            <tr>
+              <td>
+                <b>Tên lỗi:</b> {{ row.name }} <br />
+                <b>Loại lỗi:</b> {{ getSeverity(row.severity) }} <br />
+                <b>Thời gian lỗi:</b> {{ row.timeReported | date:'dd/MM/yyyy HH:mm' }} <br />
+                <b>Trạng thái:</b> <span
+                  [ngClass]="row.isRepaired ? 'badge text-bg-success' : 'badge text-bg-danger'">{{ row.isRepaired ? 'Đã
+                  sửa' : 'Chưa sửa' }}</span> <br />
+              </td>
+              <td>
+                <p-button icon="pi pi-wrench" styleClass="m-1" severity="warn" *ngIf="!row.isRepaired"
+                  (onClick)="repairError(row)"></p-button>
+                <p-button icon="pi pi-check" severity="success" class="m-1" title="Xác nhận đã sửa chữa"
+                  (onClick)="confirmError($event, row)" *ngIf="!row.isRepaired">
+                </p-button>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="99" class="text-center">Chưa có lịch sử di chuyển</td>
+            </tr>
+          </ng-template>
+        </p-table>
       </p-accordion-content>
     </p-accordion-panel>
 
-    <p-accordion-panel value="5">
-      <p-accordion-header>Header III</p-accordion-header>
+    <p-accordion-panel value="0">
+      <p-accordion-header>Lịch sử di chuyển</p-accordion-header>
       <p-accordion-content>
-        <p class="m-0">
-          At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti
-          atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique
-          sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum
-          facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil
-          impedit quo minus.
-        </p>
+        <p-table [value]="listHistory" responsiveLayout="scroll">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Thông tin chung</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-row let-i="rowIndex">
+            <tr>
+              <td>
+                <b>Ngành cũ:</b> {{ row.oldBranchName }} <br />
+                <b>Dây chuyền cũ:</b> {{ row.oldLineName }} <br />
+                <b>Tổ cũ:</b> {{ row.oldTeamName }} <br />
+                <b>Ngành mới:</b> {{ row.newBranchName }} <br />
+                <b>Dây chuyền mới:</b> {{ row.newLineName }} <br />
+                <b>Tổ mới:</b> {{ row.newTeamName }} <br />
+                <b>Lý do:</b> {{ row.reason }} <br />
+                <b>Người di chuyển:</b> {{ row.movedBy }} <br />
+                <b>Thời gian:</b> {{ row.movedAt | date:'dd/MM/yyyy HH:mm' }} <br />
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="99" class="text-center">Chưa có lịch sử di chuyển</td>
+            </tr>
+          </ng-template>
+        </p-table>
       </p-accordion-content>
     </p-accordion-panel>
 
@@ -258,10 +310,10 @@
               <td>
                 <b>Thời gian dừng máy:</b>
                 {{ row.timeReported | date:'dd/MM/yyyy HH:mm' }} <br />
-          
+
                 <b>Thời gian bắt đầu chạy lại:</b>
                 {{ row.timeRepaired | date:'dd/MM/yyyy HH:mm' }} <br />
-          
+
                 <b>Tổng thời gian dừng:</b>
                 {{ row.totalStopTime }} <br />
               </td>
@@ -279,3 +331,6 @@
     </p-accordion-panel>
   </p-accordion>
 </div>
+
+<p-confirmDialog></p-confirmDialog>
+<p-toast></p-toast>
