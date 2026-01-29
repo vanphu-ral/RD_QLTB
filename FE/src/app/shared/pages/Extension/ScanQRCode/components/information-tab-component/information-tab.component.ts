@@ -10,6 +10,11 @@ import { ErrorReportService } from '../../../../PlanManager/Plan/Service/error-r
 import { DialogService } from 'primeng/dynamicdialog';
 import { CheckDeviceDialog } from '../../../../PlanManager/Plan/Dialogs/check-device-dialog/check-device.dialog';
 import _ from 'lodash';
+import { RepairErrorDialog } from '../../../../PlanManager/Plan/Dialogs/repair-error-dialog/repair-error.dialog';
+import { Util } from '../../../../../core/utils/utils-function';
+import { ErrorReport } from '../../../../../models/PlanManger/error-report.model';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { PlanResultService } from '../../../../PlanManager/Plan/Service/plan-result.service';
 
 @Component({
   selector: 'app-information-tab',
@@ -29,7 +34,9 @@ export class InformationTabComponent implements OnChanges {
   listPlanAudit: any[] = []
   listDeviceStops: any[] = []
 
-  constructor(private cdr: ChangeDetectorRef, private deviceRelocationHistoryService: DeviceRelocationHistoryService, private planDetailService: PlanDetailService, private errorReportService: ErrorReportService, private dialogService: DialogService) {
+  constructor(private cdr: ChangeDetectorRef, private deviceRelocationHistoryService: DeviceRelocationHistoryService, 
+    private planDetailService: PlanDetailService, private errorReportService: ErrorReportService, private planResultService: PlanResultService,
+    private dialogService: DialogService, private comfirmService: ConfirmationService, private messageService: MessageService) {
   }
 
   ngOnInit() { this.activeTabIndex = "0"; }
@@ -104,9 +111,9 @@ export class InformationTabComponent implements OnChanges {
     });
   }
 
-  loadPlan(serial: string) {
+  loadPlan(qrCode: string) {
     this.listPlanAudit = [];
-    this.planDetailService.getPlansBySerial(serial).subscribe(res => {
+    this.planDetailService.getPlansBySerial(qrCode).subscribe(res => {
       res.forEach((plan, i) => {
         plan.planDetails.forEach((detail: any) => {
           detail.sampleReport = JSON.parse(detail.detail);
@@ -120,7 +127,8 @@ export class InformationTabComponent implements OnChanges {
               userPerformer: plan.userPerformer || detail.manager || 'N/A',
               dateTest: result.dateTest,
               planResultId: result.id,
-              plan: detail
+              plan: detail,
+              status: result.status
             });
           });
         });
@@ -143,6 +151,14 @@ export class InformationTabComponent implements OnChanges {
       default:
         return '';
     }
+  }
+
+  statusToString(status: number) {
+    return Util.statusToString(status);
+  }
+
+  getSeverityStatus(status: number): string {
+    return Util.statusToSeverity(status);
   }
 
   calculateStopTime(start: string, end: string): string {
@@ -175,9 +191,55 @@ export class InformationTabComponent implements OnChanges {
     });
     childRef.onClose.subscribe((result) => {
       if (result) {
-        this.loadPlan(this.model.serialNumber);
+        this.loadPlan(this.model.qrCode);
       }
     });
+  }
+
+  repairError(row: any) {
+    const ref = this.dialogService.open(RepairErrorDialog, {
+      header: `Sửa lỗi - ${row.name} - ${row.severity ? 'Nghiêm trọng' : row.severity === 1 ? 'Bất thường' : 'Nhẹ'} - ${row.timeReported}`,
+      width: '100%',
+      data: row,
+      modal: true,
+      closable: true
+    });
+    ref.onClose.subscribe((result) => {
+      if (result) {
+        this.loadHistoryError(this.model.id);
+      }
+    });
+  }
+
+  confirmError(event: any, row: ErrorReport) {
+    Util.confirmAndExecute(
+      event,
+      'Bạn có chắc đã hoàn thành sửa chữa lỗi này?',
+      () => {
+        row.isRepaired = true;
+        return this.errorReportService.update(row.id as number, row)
+      },
+      'Đã hoàn thành sửa chữa',
+      'Lỗi khi hoàn thành',
+      this.comfirmService,
+      this.messageService,
+      () => this.loadHistoryError(this.model.id)
+    )
+  }
+
+  completeCheckDate(row: any, event: any) {
+    Util.confirmAndExecute(
+      event,
+      'Bạn có chắc đã hoàn thành đợt kiểm tra này này?',
+      () => {
+        return this.planResultService.updateStatus(row.id as number, 5);
+      },
+      'Đã hoàn thành đợt kiểm tra',
+      'Lỗi khi hoàn thành',
+      this.comfirmService,
+      this.messageService,
+      () => this.loadPlan(this.model.qrCode)
+    )
   }
 
 }

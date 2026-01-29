@@ -25,7 +25,7 @@ export class ScanQrCodeComponent {
   codeReader: BrowserMultiFormatReader = new BrowserMultiFormatReader();
 
   optionScans = [{ label: 'Scan máy', value: 1 }, { label: 'Scan camera', value: 2 }];
-  scanType: number = 2;
+  scanType: number = 1;
 
   device: any = { line: {} };
 
