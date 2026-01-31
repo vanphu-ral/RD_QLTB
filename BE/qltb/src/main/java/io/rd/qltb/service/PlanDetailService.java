@@ -160,6 +160,7 @@ public class PlanDetailService {
             // Nếu còn kết quả hợp lệ thì set vào planDetail
             if (!resultsWithoutDetails.isEmpty()) {
                 planDetailDTO.setPlanResults(resultsWithoutDetails);
+            }
 
                 // Gom về PlanDTO
                 Long planId = planDetailDTO.getPlan().getId();
@@ -181,7 +182,6 @@ public class PlanDetailService {
                     planMap.put(planId, planDTO);
                 }
                 planDTO.getPlanDetails().add(planDetailDTO);
-            }
         }
 
         return new ArrayList<>(planMap.values());
