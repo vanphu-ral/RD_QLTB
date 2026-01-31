@@ -54,7 +54,6 @@ export class PlanTargetDetailComponent extends BasePageComponent<PlanTarget> {
     if(typeof this.model.listItems === 'string'){
       this.model.listItems = JSON.parse(this.model.listItems);
     }
-    this.model.year = Util.convertYearData(this.model.year);
     if(Util.isEmptyArray(this.model.listItems)){
       this.model.listItems = [];
     }
@@ -129,7 +128,7 @@ export class PlanTargetDetailComponent extends BasePageComponent<PlanTarget> {
       this.model = Util.prepareModel(this.model);
       this.model = Util.simplifyMany(this.model, ['branch', 'approvalWorkflow']);
       if (typeof this.model.listItems !== 'string') this.model.listItems = JSON.stringify(this.model.listItems);
-      this.model.year = Util.convertYearData(this.model.year);
+      // this.model.year = Util.convertYearData(this.model.year);
       if (this.isAddMode) {
         this.apiService.create(this.model).subscribe({
           next: () => {

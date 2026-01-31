@@ -28,7 +28,7 @@ public class PlanTarget {
     private String name;
 
     @Column
-    private Integer year;
+    private LocalDateTime year;
 
     @Column
     private String listItems;

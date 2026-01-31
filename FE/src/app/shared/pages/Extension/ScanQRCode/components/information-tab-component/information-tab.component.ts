@@ -15,6 +15,7 @@ import { Util } from '../../../../../core/utils/utils-function';
 import { ErrorReport } from '../../../../../models/PlanManger/error-report.model';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { PlanResultService } from '../../../../PlanManager/Plan/Service/plan-result.service';
+import { PLANTYPE } from '../../../../../enums/plan-type.enum';
 
 @Component({
   selector: 'app-information-tab',
@@ -32,7 +33,10 @@ export class InformationTabComponent implements OnChanges {
   listError: any[] = []
   listRepaired: any[] = []
   listPlanAudit: any[] = []
+  listPlanMaintance: any[] = []
   listDeviceStops: any[] = []
+
+  PLANTYPE = PLANTYPE;
 
   constructor(private cdr: ChangeDetectorRef, private deviceRelocationHistoryService: DeviceRelocationHistoryService, 
     private planDetailService: PlanDetailService, private errorReportService: ErrorReportService, private planResultService: PlanResultService,
@@ -70,7 +74,7 @@ export class InformationTabComponent implements OnChanges {
         break;
 
       case "4":
-        // this.loadBaoTri(this.model.id);
+        this.loadPlan(this.model.qrCode);
         break;
 
       case "5":
@@ -115,23 +119,44 @@ export class InformationTabComponent implements OnChanges {
     this.listPlanAudit = [];
     this.planDetailService.getPlansBySerial(qrCode).subscribe(res => {
       res.forEach((plan, i) => {
-        plan.planDetails.forEach((detail: any) => {
-          detail.sampleReport = JSON.parse(detail.detail);
-          // Mỗi ngày kiểm tra có nhiều kết quả (planResults)
-          detail.planResults?.forEach((result: any) => {
-            this.listPlanAudit.push({
-              stt: this.listPlanAudit.length + 1,
-              planName: plan.name,
-              deviceCode: detail.device?.code,
-              deviceName: detail.device?.name,
-              userPerformer: plan.userPerformer || detail.manager || 'N/A',
-              dateTest: result.dateTest,
-              planResultId: result.id,
-              plan: detail,
-              status: result.status
+        if (plan.planType.code == PLANTYPE.DAILYCHECK) {
+          plan.planDetails.forEach((detail: any) => {
+            detail.sampleReport = JSON.parse(detail.detail);
+            // Mỗi ngày kiểm tra có nhiều kết quả (planResults)
+            detail.planResults?.forEach((result: any) => {
+              this.listPlanAudit.push({
+                stt: this.listPlanAudit.length + 1,
+                planName: plan.name,
+                deviceCode: detail.device?.code,
+                deviceName: detail.device?.name,
+                userPerformer: plan.userPerformer || detail.manager || 'N/A',
+                dateTest: result.dateTest,
+                planResultId: result.id,
+                plan: detail,
+                status: result.status
+              });
             });
           });
-        });
+        }
+        if (plan.planType.code == PLANTYPE.MAINTENANCE) {
+          plan.planDetails.forEach((detail: any) => {
+            detail.sampleReport = JSON.parse(detail.detail);
+            // Mỗi ngày kiểm tra có nhiều kết quả (planResults)
+            detail.planResults?.forEach((result: any) => {
+              this.listPlanMaintance.push({
+                stt: this.listPlanMaintance.length + 1,
+                planName: plan.name,
+                deviceCode: detail.device?.code,
+                deviceName: detail.device?.name,
+                userPerformer: plan.userPerformer || detail.manager || 'N/A',
+                dateTest: result.dateTest,
+                planResultId: result.id,
+                plan: detail,
+                status: result.status
+              });
+            });
+          });
+        }
       });
       console.log(this.listPlanAudit);
       

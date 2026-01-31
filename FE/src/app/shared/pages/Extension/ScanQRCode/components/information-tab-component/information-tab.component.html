@@ -5,7 +5,7 @@
       <p-tab value="1">Danh sách lỗi thiết bị</p-tab>
       <p-tab value="2">Lịch sử bảo dưỡng, sửa chữa</p-tab>
       <p-tab value="3">Kiểm tra thiết bị</p-tab>
-      <!-- <p-tab value="4">Bảo trì thiết bị</p-tab> -->
+      <p-tab value="4">Bảo trì thiết bị</p-tab>
       <!-- <p-tab value="5">Sửa chữa thiết bị</p-tab> -->
       <p-tab value="6">Thống kê thời gian dừng máy</p-tab>
     </p-tablist>
@@ -143,9 +143,38 @@
         </p-table>
       </p-tabpanel>
       <p-tabpanel value="4">
-        <p class="m-0">
-          4444
-        </p>
+        <p-table [value]="listPlanMaintance" dataKey="stt" [paginator]="true" [rows]="10" [resizableColumns]="true"
+          [scrollable]="true" scrollHeight="500px">
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 80px">STT</th>
+              <th>Tên kế hoạch</th>
+              <th>Mã thiết bị</th>
+              <th>Tên thiết bị</th>
+              <th>Người thực hiện</th>
+              <th>Ngày kiểm tra</th>
+              <th>Trạng thái</th>
+              <th>Thao tác</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-row>
+            <tr>
+              <td>{{ row.stt }}</td>
+              <td>{{ row.planName }}</td>
+              <td>{{ row.deviceCode }}</td>
+              <td>{{ row.deviceName }}</td>
+              <td>{{ row.userPerformer }}</td>
+              <td>{{ row.dateTest | date:'dd/MM/yyyy' }}</td>
+              <td><p-tag [value]="statusToString(row.status)" [severity]="getSeverityStatus(row.status)" /></td>
+              <td>
+                <p-button icon="pi pi-check-circle" styleClass="m-1" severity="info" *ngIf="row.status != 15"
+                  (onClick)="checkDevice(row)"></p-button>
+                <p-button icon="pi pi-check" styleClass="m-1" severity="success" title="Hoàn thành"
+                  *ngIf="row.status != 15 && row.status != 1" (onClick)="completeCheckDate(row, $event)"></p-button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
       </p-tabpanel>
       <p-tabpanel value="5">
         <p class="m-0">
@@ -223,6 +252,47 @@
       </p-accordion-content>
     </p-accordion-panel>
 
+    <p-accordion-panel value="4">
+      <p-accordion-header>Kiểm tra bảo trì thiết bị</p-accordion-header>
+      <p-accordion-content>
+        <p-table [value]="listPlanMaintance" dataKey="stt" [resizableColumns]="true" [scrollable]="true"
+          scrollHeight="500px">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Thông tin chung</th>
+              <th>Thao tác</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-row>
+            <tr>
+              <td>
+                <b>Tên kế hoạch:</b> {{ row.planName }} <br />
+                <b>Mã thiết bị:</b> {{ row.deviceCode }} <br />
+                <b>Tên thiết bị:</b> {{ row.deviceName }} <br />
+                <b>Người thực hiện:</b> {{ row.userPerformer }} <br />
+                <b>Ngày kiểm tra:</b> {{ row.dateTest | date:'dd/MM/yyyy' }} <br />
+                <b>Trạng thái:</b> <p-tag [value]="statusToString(row.status)"
+                  [severity]="getSeverityStatus(row.status)" /> <br />
+              </td>
+              <td>
+                <p-button icon="pi pi-check-circle" styleClass="m-1" severity="info" *ngIf="row.status != 15"
+                  (onClick)="checkDevice(row)"></p-button>
+                <p-button icon="pi pi-check" styleClass="m-1" severity="success" title="Hoàn thành"
+                  *ngIf="row.status != 15 && row.status != 1" (onClick)="completeCheckDate(row, $event)"></p-button>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td [attr.colspan]="999" class="text-center">
+                <p>Không có dữ liệu</p>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-accordion-content>
+    </p-accordion-panel>
+
     <p-accordion-panel value="1">
       <p-accordion-header>Danh sách lỗi thiết bị</p-accordion-header>
       <p-accordion-content>
@@ -240,8 +310,7 @@
                 <b>Loại lỗi:</b> {{ getSeverity(row.severity) }} <br />
                 <b>Thời gian lỗi:</b> {{ row.timeReported | date:'dd/MM/yyyy HH:mm' }} <br />
                 <b>Trạng thái:</b> <span
-                  [ngClass]="row.isRepaired ? 'badge text-bg-success' : 'badge text-bg-danger'">{{ row.isRepaired ? 'Đã
-                  sửa' : 'Chưa sửa' }}</span> <br />
+                  [ngClass]="row.isRepaired ? 'badge text-bg-success' : 'badge text-bg-danger'">{{ row.isRepaired ? 'Đã sửa' : 'Chưa sửa' }}</span> <br />
               </td>
               <td>
                 <p-button icon="pi pi-wrench" styleClass="m-1" severity="warn" *ngIf="!row.isRepaired"
