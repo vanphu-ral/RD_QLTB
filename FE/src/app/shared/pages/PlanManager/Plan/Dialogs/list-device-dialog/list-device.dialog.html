@@ -23,12 +23,12 @@
                     <td>{{ i + 1 }}</td>
                     <td>
                         <p-select [(ngModel)]="row.device" [options]="listDeviceOptions" optionLabel="name" [fluid]="true"
-                            [showClear]="true" [appendTo]="'body'" [disabled]="true"
+                            [showClear]="true" [appendTo]="'body'"
                             id="device-{{ i }}" name="device-{{ i }}" dataKey="id">
                         </p-select>
                     </td>
                     <td>
-                        <input type="text" pInputText [(ngModel)]="row.qrCode" [disabled]="true"/>
+                        <input type="text" pInputText [(ngModel)]="row.qrCode"/>
                     </td>
                     <td *ngIf="plan.planType.code == PLANTYPE.MAINTENANCE">
                         <p-datepicker [(ngModel)]="row.estimatedTime" [dateFormat]="'mm-yy'" view="month" appDateConvert

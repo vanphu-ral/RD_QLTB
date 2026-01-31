@@ -142,7 +142,14 @@ export class PlanListComponent {
   }
 
   isEnabledCheckDevice(row: any) {
-    return (!(row.status === 2 || row.status === 6) && _.includes(row.manager, this.accountService.getUser()?.name));
+    // return (!(row.status === 2 || row.status === 6) && _.includes(row.manager, this.accountService.getUser()?.name));
+    if (row.status === 2 || row.status === 6) {
+      return false;
+    }
+    const isPowerUser = this.accountService.hasAnyAuthority(['RD_QLTB_ADMIN', 'RD_QLTB_MANAGER']);
+    const currentUserName = this.accountService.getUser()?.name;
+    const isDirectManager = _.includes(row.manager, currentUserName);
+    return isPowerUser || isDirectManager;
   }
 
 
