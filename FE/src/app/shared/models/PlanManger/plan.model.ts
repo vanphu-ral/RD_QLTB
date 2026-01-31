@@ -21,5 +21,5 @@ export class Plan {
     planDetails: any
 
     // trường FE
-    maintanceMonth?: any;
+    // maintanceMonth?: any;
 }

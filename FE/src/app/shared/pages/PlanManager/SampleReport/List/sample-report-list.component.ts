@@ -11,7 +11,7 @@ import { OptionApprovalDialog } from '../Dialogs/option-approval-dialog/option-a
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ListHistoryChangeDataDialog } from '../../Plan/Dialogs/list-history-change-data-dialog/list-history-change-data.dialog';
 import { DataService } from '../../../../service/send-data.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PrintSampleReportDialog } from '../Dialogs/print-sample-report-dialog/print-sample-report.dialog';
 import * as ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
@@ -54,7 +54,7 @@ export class SampleReportListComponent {
     { Field: 'status', Header: 'Trạng thái', IsSearch: true, TypeSearch: 'text' },
   ];
 
-  constructor(public apiService: SampleReportService, private dialogService: DialogService, private cdr: ChangeDetectorRef, private comfirmService: ConfirmationService, private messageService: MessageService, private dataService: DataService, private router: Router) { }
+  constructor(public apiService: SampleReportService, private dialogService: DialogService, private cdr: ChangeDetectorRef, private comfirmService: ConfirmationService, private messageService: MessageService, private dataService: DataService, private router: Router, private route: ActivatedRoute) { }
 
   statusToString(status: number) {
     return Util.statusToString(status);
@@ -118,6 +118,10 @@ export class SampleReportListComponent {
         return { showEdit: false, showView: true, showDelete: false };
     }
   };
+
+  copy(row: any) {
+    this.router.navigate([row.id, 'copy'], { relativeTo: this.route });
+  }
 
   // In mẫu biên bản
   printSampleReport(row: any) {

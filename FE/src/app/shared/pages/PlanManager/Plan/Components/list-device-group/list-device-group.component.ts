@@ -26,6 +26,7 @@ export class ListDeviceComponent implements OnInit {
     @Input() isAddMode: boolean = false
     @Input() isViewMode: boolean = false
     @Input() isEditMode: boolean = false
+    @Input() isCopyMode: boolean = false
     @Input() model: PlanRequest = new PlanRequest();
 
     listSampleReport: any[] = []
@@ -46,15 +47,15 @@ export class ListDeviceComponent implements OnInit {
         })
         this.deviceGroupService.getAll().subscribe(res => {
             this.listDeviceGroupBase = res
-            if ((this.isEditMode || this.isViewMode) && this.model?.plan?.branch) {
+            if ((this.isEditMode || this.isViewMode || this.isCopyMode) && this.model?.plan?.branch) {
                 this.handleBranchChange(this.model.plan.branch);
             }
-            if (this.isEditMode || this.isViewMode) {
+            if (this.isEditMode || this.isViewMode || this.isCopyMode) {
                 this.mapSampleReportsOnEdit();
             }
             this.cdr.detectChanges()
         })
-        if (this.isEditMode) {
+        if (this.isEditMode || this.isViewMode || this.isCopyMode) {
             this.mapDevicesGroupOnEdit()
         }
     }
@@ -163,8 +164,8 @@ export class ListDeviceComponent implements OnInit {
                     manager: device.userManager
                 };
 
-                if (this.model.plan.planType?.code === PLANTYPE.MAINTENANCE && this.model.plan.maintanceMonth) {
-                    newDevice.estimatedTime = this.model.plan.maintanceMonth;
+                if (this.model.plan.planType?.code === PLANTYPE.MAINTENANCE) {
+                    // newDevice.estimatedTime = this.model.plan.maintanceMonth;
                     newDevice.nameDetail = `${index + 1}.${device.id}.${new Date().getFullYear()}/CTBDCSTB-LED.${this.model.plan?.branch?.code}`;
                 }
                 return newDevice as DeviceDetail;
@@ -202,12 +203,12 @@ export class ListDeviceComponent implements OnInit {
             Util.toastMessage('Vui lòng chọn ngành', 'error');
             return;
         }
-        if(this.model.plan.planType.code === PLANTYPE.MAINTENANCE && !this.model.plan.maintanceMonth) {
-            Util.toastMessage('Vui sống nhập thời gian dự kiến', 'error');
-            return;
-        }else {
-            this.handleBranchChange(this.model.plan.branch);
-        }
+        // if(this.model.plan.planType.code === PLANTYPE.MAINTENANCE && !this.model.plan.maintanceMonth) {
+        //     Util.toastMessage('Vui sống nhập thời gian dự kiến', 'error');
+        //     return;
+        // }else {
+        // }
+        this.handleBranchChange(this.model.plan.branch);
     }
 
     onSampleReportChange(row: any, currentIndex: number) {

@@ -17,7 +17,7 @@ export abstract class BasePageComponent<T> implements OnInit {
   public model: T = {} as T;
   public approvalModel: any = {};
   
-  public mode!: 'add' | 'view' | 'edit' | 'approval' | 'view-history';
+  public mode!: 'add' | 'view' | 'edit' | 'approval' | 'view-history' | 'copy';
   
   public get isAddMode(): boolean {
     return this.mode === 'add';
@@ -37,6 +37,10 @@ export abstract class BasePageComponent<T> implements OnInit {
 
   public get isViewHistory(): boolean {
     return this.mode === 'view-history';
+  }
+
+  public get isCopyMode(): boolean {
+    return this.mode === 'copy';
   }
 
   listStatus: any[] = [
@@ -60,7 +64,7 @@ export abstract class BasePageComponent<T> implements OnInit {
   constructor(protected apiService: BaseApiService<T>) {}
   
   ngOnInit(): void {
-    this.mode = this.route.snapshot.data['mode'] as 'add' | 'view' | 'edit' | 'approval';
+    this.mode = this.route.snapshot.data['mode'] as 'add' | 'view' | 'edit' | 'approval' | 'view-history' | 'copy';
     this.id = this.route.snapshot.paramMap.get('id') ?? undefined;
 
     if (this.route.snapshot.data['data']) {

@@ -265,6 +265,10 @@ export class PlanListComponent {
     });
   }
 
+  copy(row: any) {
+    this.router.navigate([row.id, 'copy'], { relativeTo: this.route });
+  }
+
   // function table child
 
   deviceDateCheckList(planDetail: any, plan: any) {

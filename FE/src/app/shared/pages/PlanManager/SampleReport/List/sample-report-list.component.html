@@ -11,12 +11,14 @@
   </ng-template>
 </app-base-table>
 <ng-template #customActions let-row>
-  <p-button icon="pi pi-file-check" *ngIf="row.status == 1" title="Gửi phê duyệt"
-    styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="approval(row, $event)"></p-button>
-  <p-button icon="pi pi-history" title="Xem lịch sử"
-    styleClass="p-button-sm p-button-rounded p-button-warn m-1" (onClick)="viewHistory(row)"></p-button>
-  <p-button icon="pi pi-print" title="In"
-    styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="printSampleReport(row)"></p-button>
+    <p-button icon="pi pi-copy" title="Copy" styleClass="p-button-sm p-button-rounded p-button-warn m-1"
+        (onClick)="copy(row)"></p-button>
+    <p-button icon="pi pi-file-check" *ngIf="row.status == 1" title="Gửi phê duyệt"
+        styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="approval(row, $event)"></p-button>
+    <p-button icon="pi pi-history" title="Xem lịch sử" styleClass="p-button-sm p-button-rounded p-button-warn m-1"
+        (onClick)="viewHistory(row)"></p-button>
+    <p-button icon="pi pi-print" title="In" styleClass="p-button-sm p-button-rounded p-button-success m-1"
+        (onClick)="printSampleReport(row)"></p-button>
 </ng-template>
 <p-confirmDialog></p-confirmDialog>
 <p-toast></p-toast>

@@ -79,7 +79,7 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
       this.listCriterial = result.criterials;
       this.listTypes = result.planTypes;
       this.cdr.detectChanges();
-      if (this.isEditMode || this.isViewMode || this.isApprovalMode) {
+      if (this.isEditMode || this.isViewMode || this.isApprovalMode || this.isCopyMode) {
         this.keyMappingService.getBySampleReport(this.model.id!).subscribe(res => {
           this.listCriterialBySample = res.map(x => {
             const group = x.criterial?.criterialGroup || null;
@@ -96,6 +96,13 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
               frequency: x.frequency || null,
             };
           });
+          
+    
+          if (this.isCopyMode) {
+            // this.model = _.cloneDeep(this.model);
+            _.set(this.model as any, 'id', null);
+            _.set(this.model as any, 'code', (this.model as any).code + ' - COPY');
+          }
           this.cdr.detectChanges();
         });
       }
@@ -178,7 +185,7 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
     this.prepareModel();
     this.model.code = `BMBB-${Util.dateToCode()}`
     this.model.documentNumber = `${this.model.formCode}-${this.model.code}`
-    if (this.isAddMode) {
+    if (this.isAddMode || this.isCopyMode) {
       this.apiService.create(this.model).subscribe({
         next: (id) => {
           const keyMappings: keyMapping[] = this.listCriterialBySample.map(item => ({

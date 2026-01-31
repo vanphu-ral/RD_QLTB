@@ -57,7 +57,7 @@ export class PlanMaintanceDetailDialog {
                 this.model.planDetail.sampleReport = JSON.parse(this.model.planDetail.detail);
                 console.log(res);
                 this.approvalService
-                    .findApprovalsByEntityIdAndEntityType(this.model.planDetail.sampleReport.approvalWorkflow.id, 'sample_reports')
+                    .findApprovalsByEntityIdAndEntityType(this.model.planDetail.sampleReport.id, 'sample_reports')
                     .subscribe((data) => {
                         const usernames = data.map(x => x.userApproval?.username);
                         this.signatureService.getByListUsernames(usernames).subscribe(signatures => {

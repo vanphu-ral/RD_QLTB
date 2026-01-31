@@ -62,13 +62,13 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
 
   override ngOnInit(): void {
     super.ngOnInit();
-    if(!this.isAddMode) {
-      if (this.model?.devices!.length > 0) {
-        this.model.plan.maintanceMonth = this.model.devices![0].estimatedTime;
-      }
+    if (this.isCopyMode) {
+      // this.model = _.cloneDeep(this.model);
+      _.set(this.model.plan as any, 'id', null);
+      _.set(this.model.plan as any, 'code', (this.model.plan as any).code + ' - COPY');
     }
     
-    if (this.isEditMode) this.oldPlanRequest = _.cloneDeep(this.model);
+    if (this.isEditMode || this.isCopyMode) this.oldPlanRequest = _.cloneDeep(this.model);
     forkJoin({
       branchs: this.branchService.getAll(),
       workflows: this.approvalWorkflowService.getAll(),
@@ -141,7 +141,9 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
     if(this.model.plan?.planType?.code == PLANTYPE.MAINTENANCE) {
       devices.forEach((device: DeviceDetail) => {
         if(!device.estimatedTime) {
-          device.estimatedTime = this.model.plan.maintanceMonth;
+          Util.ConfirmMessage('Vui lòng nhập thời gian dự kiến cho tất cả thiết bị', 'error');
+          throw new Error('Estimated time is required for all devices');
+          return;
         }
       });
     }
@@ -170,13 +172,13 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
       : [of(null)];
     forkJoin(deleteRequests).subscribe({
       next: () => {
-        const apiCall = this.isAddMode
+        const apiCall = (this.isAddMode || this.isCopyMode)
           ? this.apiService.create(this.model)
           : this.apiService.update(this.model.plan.id!, this.model);
         apiCall.subscribe({
           next: () => {
             Util.ConfirmMessage(
-              this.isAddMode ? 'Thêm mới thành công' : 'Cập nhật thành công',
+              (this.isAddMode || this.isCopyMode) ? 'Thêm mới thành công' : 'Cập nhật thành công',
               'success'
             );
             this.navigationService.back(); 

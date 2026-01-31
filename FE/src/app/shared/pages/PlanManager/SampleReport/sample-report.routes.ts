@@ -31,6 +31,14 @@ const sampleReportRoute: Routes = [
     },
   },
   {
+    path: ':id/copy',
+    component: SampleReportDetailComponent,
+    data: { mode: 'copy' },
+    resolve: {
+      data: SampleReportResolve,
+    },
+  },
+  {
     path: ':id/approval',
     component: SampleReportDetailComponent,
     data: { mode: 'approval' },

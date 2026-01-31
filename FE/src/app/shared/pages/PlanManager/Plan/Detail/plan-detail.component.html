@@ -97,7 +97,7 @@
 
       <div class="col-6">
         <p-floatlabel variant="on">
-          <p-select [(ngModel)]="model.plan.approvalWorkflow" [invalid]="!model.plan.approvalWorkflow" required
+          <p-select [(ngModel)]="model.plan.approvalWorkflow"
             [options]="listApprovalWorkflow" optionLabel="name" [fluid]="true" [disabled]="isViewMode || isApprovalMode"
             [showClear]="true" [appendTo]="'body'" id="approvalWorkflow" name="approvalWorkflow" dataKey="id">
           </p-select>
@@ -124,7 +124,7 @@
       </div>
     </div>
 
-    <div class="row my-3" *ngIf="model.plan?.planType?.code == PLANTYPE.MAINTENANCE">
+    <!-- <div class="row my-3" *ngIf="model.plan?.planType?.code == PLANTYPE.MAINTENANCE">
       <div class="col-12">
         <p-floatlabel variant="on">
           <p-datepicker [(ngModel)]="model.plan.maintanceMonth" appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="fromDate" [fluid]="true" view="month"
@@ -132,9 +132,9 @@
           <label for="fromDate">Tháng dự kiến bảo dưỡng</label>
         </p-floatlabel>
       </div>
-    </div>
+    </div> -->
 
-    <list-device-group-component [isAddMode]="isAddMode" [isEditMode]="isEditMode"
+    <list-device-group-component [isAddMode]="isAddMode" [isEditMode]="isEditMode" [isCopyMode]="isCopyMode"
       [isViewMode]="isViewMode || isApprovalMode" [model]="model">
     </list-device-group-component>
 

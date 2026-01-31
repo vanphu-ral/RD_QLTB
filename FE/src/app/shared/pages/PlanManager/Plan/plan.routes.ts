@@ -37,6 +37,14 @@ const planRoute: Routes = [
     },
   },
   {
+    path: ':id/copy',
+    component: PlanDetailComponent,
+    data: { mode: 'copy' },
+    resolve: {
+      data: PlanResolve,
+    },
+  },
+  {
     path: ':id/summary',
     component: ViewEvaluatePage,
     data: { model: 'view' },
