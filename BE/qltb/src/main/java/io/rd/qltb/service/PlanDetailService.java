@@ -138,11 +138,14 @@ public class PlanDetailService {
         Map<Long, PlanDTO> planMap = new LinkedHashMap<>();
 
         for (PlanDetailDTO planDetailDTO : planDetails) {
-            if (planDetailDTO.getPlan() == null || planDetailDTO.getPlan().getId() == null) {
+            // 1. Kiểm tra NULL và lọc bỏ Plan có status = 10
+            if (planDetailDTO.getPlan() == null ||
+                    planDetailDTO.getPlan().getId() == null ||
+                    planDetailDTO.getPlan().getStatus() == 10) { // Thêm điều kiện lọc status 10 ở đây
                 continue;
             }
 
-            // Lấy tất cả PlanResult của PlanDetail
+            // 2. Lấy tất cả PlanResult của PlanDetail
             List<PlanResultDTO> planResultDTOS = planResultService.findAllByPlanDetailId(planDetailDTO.getId());
 
             // Gắn PlanResultDetails cho từng PlanResult
@@ -152,9 +155,9 @@ public class PlanDetailService {
                 planResultDTO.setPlanResultDetails(planResultDetailDTOS);
             }
 
-            // Giữ lại  PlanResult có status khác 5
+            // 3. Giữ lại PlanResult có status khác 5
             List<PlanResultDTO> resultsWithoutDetails = planResultDTOS.stream()
-                    .filter(r -> r.getStatus() != 5 )
+                    .filter(r -> r.getStatus() != 5)
                     .toList();
 
             // Nếu còn kết quả hợp lệ thì set vào planDetail
@@ -162,29 +165,36 @@ public class PlanDetailService {
                 planDetailDTO.setPlanResults(resultsWithoutDetails);
             }
 
-                // Gom về PlanDTO
-                Long planId = planDetailDTO.getPlan().getId();
-                PlanDTO planDTO = planMap.get(planId);
-                if (planDTO == null) {
-                    planDTO = new PlanDTO();
-                    planDTO.setId(planDetailDTO.getPlan().getId());
-                    planDTO.setName(planDetailDTO.getPlan().getName());
-                    planDTO.setFrequency(planDetailDTO.getPlan().getFrequency());
-                    planDTO.setPlanNumber(planDetailDTO.getPlan().getPlanNumber());
-                    planDTO.setDescription(planDetailDTO.getPlan().getDescription());
-                    planDTO.setCreatedBy(planDetailDTO.getPlan().getCreatedBy());
-                    planDTO.setCreatedAt(planDetailDTO.getPlan().getCreatedAt());
-                    planDTO.setUpdatedAt(planDetailDTO.getPlan().getUpdatedAt());
-                    planDTO.setUpdatedBy(planDetailDTO.getPlan().getUpdatedBy());
-                    planDTO.setStatus(planDetailDTO.getPlan().getStatus());
-                    planDTO.setPlanType(planDetailDTO.getPlan().getPlanType());
-                    planDTO.setPlanDetails(new ArrayList<>());
-                    planMap.put(planId, planDTO);
-                }
-                planDTO.getPlanDetails().add(planDetailDTO);
+            // 4. Gom về PlanDTO
+            Long planId = planDetailDTO.getPlan().getId();
+            PlanDTO planDTO = planMap.get(planId);
+            if (planDTO == null) {
+                // Có thể dùng BeanUtils.copyProperties hoặc constructor để code gọn hơn
+                planDTO = createPlanDTOFromPlan(planDetailDTO.getPlan());
+                planMap.put(planId, planDTO);
+            }
+            planDTO.getPlanDetails().add(planDetailDTO);
         }
 
         return new ArrayList<>(planMap.values());
+    }
+
+    // Hàm bổ trợ để code sạch hơn (Refactor)
+    private PlanDTO createPlanDTOFromPlan(Plan planInner) {
+        PlanDTO planDTO = new PlanDTO();
+        planDTO.setId(planInner.getId());
+        planDTO.setName(planInner.getName());
+        planDTO.setFrequency(planInner.getFrequency());
+        planDTO.setPlanNumber(planInner.getPlanNumber());
+        planDTO.setDescription(planInner.getDescription());
+        planDTO.setCreatedBy(planInner.getCreatedBy());
+        planDTO.setCreatedAt(planInner.getCreatedAt());
+        planDTO.setUpdatedAt(planInner.getUpdatedAt());
+        planDTO.setUpdatedBy(planInner.getUpdatedBy());
+        planDTO.setStatus(planInner.getStatus());
+        planDTO.setPlanType(planInner.getPlanType());
+        planDTO.setPlanDetails(new ArrayList<>());
+        return planDTO;
     }
 
 
