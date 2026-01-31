@@ -7,6 +7,6 @@ export class Department {
     updatedBy?: string;
     createdAt?: Date;
     updatedAt?: Date;
-    manager?: string;
+    manager?: any;
     status?: number;
 }

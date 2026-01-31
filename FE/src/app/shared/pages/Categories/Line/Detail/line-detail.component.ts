@@ -34,6 +34,9 @@ export class LineDetailComponent extends BasePageComponent<Line> {
 
   override ngOnInit(): void {
     super.ngOnInit();
+    if(!this.isAddMode) {
+      this.model.manager = _.split(this.model.manager, ',');
+    }
     this.teamApi.getAll().subscribe((teams) => {
       this.listTeams = teams;
       this.cdr.detectChanges();
@@ -54,6 +57,7 @@ export class LineDetailComponent extends BasePageComponent<Line> {
 
   public override save(): void {
     if (this.model) {
+      this.model.manager = Util.arrayToString(this.model.manager);
       if (this.isAddMode) {
         this.model = Util.prepareModel(this.model);
         this.model = Util.simplifyMany(this.model, ['team']);

@@ -32,6 +32,9 @@ export class BranchDetailComponent extends BasePageComponent<Branch> {
 
   override ngOnInit(): void {
     super.ngOnInit();
+    if(!this.isAddMode) {
+      this.model.manager = _.split(this.model.manager, ',');
+    }
     this.factoryApi.getAll().subscribe((factories) => {
       this.listFactories = factories;
       this.cdr.detectChanges();
@@ -53,6 +56,7 @@ export class BranchDetailComponent extends BasePageComponent<Branch> {
   public override save(): void {
     if (this.model) {
       this.model = Util.prepareModel(this.model);
+      this.model.manager = Util.arrayToString(this.model.manager);
       if (this.isAddMode) {
         this.apiService.create(this.model).subscribe({
           next: () => {

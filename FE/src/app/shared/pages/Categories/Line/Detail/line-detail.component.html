@@ -38,10 +38,14 @@
     <div class="row my-3">
       <div class="col-6">
         <p-floatlabel variant="on">
-          <p-select [(ngModel)]="model.manager" [options]="listUsers" optionLabel="name" optionValue="username"
+          <!-- <p-select [(ngModel)]="model.manager" [options]="listUsers" optionLabel="name" optionValue="username"
             [fluid]="true" [disabled]="isViewMode" [showClear]="true" [filter]="true" [appendTo]="'body'" id="manager" name="manager"
             dataKey="username">
-          </p-select>
+          </p-select> -->
+          <p-multiSelect [(ngModel)]="model.manager" [options]="listUsers" optionLabel="name" optionValue="username"
+            [fluid]="true" [showClear]="true" [appendTo]="'body'" [filter]="true" id="manager" name="manager"
+            dataKey="username">
+          </p-multiSelect>
           <label for="manager">Người quản lý</label>
         </p-floatlabel>
       </div>

@@ -26,9 +26,6 @@
                     <label for="selectFactory">Xưởng:</label><span id="spanCurentFactoryName">{{ plan?.factory?.name }}</span>
                   </div>
                 </th>
-                <!-- <td rowspan="2" style="text-align:center;" id="tdPlanCreate_detai">FSDFD</td>
-                <td rowspan="2" style="text-align:center;" id="idBranch_detai">SFSD</td>
-                <td rowspan="2" style="text-align:center;" id="tdAuthority_detai">fDS</td> -->
                 <ng-container *ngFor="let appr of listUserApprReport">
                   <td rowspan="2" style="text-align:center;" id="idBranch">
                     <div *ngFor="let sig of appr.signatures" style="margin-bottom: 10px;">
@@ -85,7 +82,7 @@
                 <td>{{ i + 1 }}</td>
                 <td>{{ item.criticalName }}</td>
                 <td *ngFor="let m of [].constructor(12); let month = index">
-                  {{ getMonthFromEstimatedTime(model.planDetail?.estimatedTime) === (month + 1) ? 'X' : '' }}
+                  {{ getMonthFromEstimatedTime(item.planResult?.dateTest) === (month + 1) ? 'X' : '' }}
                 </td>
                 <td>{{ item.performer }}</td>
                 <td>{{ item.note }}</td>
@@ -95,23 +92,12 @@
           </table>
         </div>
         <div>
-          <!-- <button type="button" class="ml-auto btn btn-success" onclick="ShowModalContentPlanDevice(-1)">Thêm nội
-            dung</button>
-          <button style="display:none;" type="button" class="ml-auto btn btn-success"
-            onclick="ShowModalReportPlan(-1)">Biên bản nghiệm thu</button> -->
         </div>
         <p><span>* Ghi chú: Các đơn vị có thể bổ sung nội dung tùy theo đặc điểm máy móc công nghệ</span></p>
-        <!-- <p>
-          File đính kèm:
-          <button type="button" id="btShowFile" class="btn btn-info btn-xs"><i class="fa-solid fa-eye"></i></button>
-          <button type="button" id="btAddFile" class="btn btn-warning btn-xs"><i
-              class="fa-solid fa-paperclip"></i></button>
-        </p> -->
       </div>
     </div>
   </div>
   <div class="d-flex justify-content-end gap-2 mt-4">
-        <!-- <p-button label="Lưu" severity="success" (onClick)="submit()"></p-button> -->
         <p-button label="Đóng" (onClick)="close()"></p-button>
     </div>
 </div>

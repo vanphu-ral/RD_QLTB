@@ -32,6 +32,9 @@ export class TeamDetailComponent extends BasePageComponent<Team> {
 
   override ngOnInit(): void {
     super.ngOnInit();
+    if(!this.isAddMode) {
+      this.model.manager = _.split(this.model.manager, ',');
+    }
     this.branchApi.getAll().subscribe((branches) => {
       this.listBranches = branches;
       this.cdr.detectChanges();
@@ -53,7 +56,7 @@ export class TeamDetailComponent extends BasePageComponent<Team> {
   public override save(): void {
     if (this.model) {
       this.model = Util.prepareModel(this.model);
-
+      this.model.manager = Util.arrayToString(this.model.manager);
       if (this.isAddMode) {
         this.apiService.create(this.model).subscribe({
           next: () => {

@@ -32,6 +32,9 @@ export class DepartmentDetailComponent extends BasePageComponent<Department> {
 
   override ngOnInit(): void {
     super.ngOnInit();
+    if (!this.isAddMode) {
+      this.model.manager = _.split(this.model.manager, ',');
+    }
     this.factoryApi.getAll().subscribe((factories) => {
       this.listFactories = factories;
     });
@@ -53,7 +56,7 @@ export class DepartmentDetailComponent extends BasePageComponent<Department> {
   public override save(): void {
     if (this.model) {
       this.model = Util.prepareModel(this.model);
-
+      this.model.manager = Util.arrayToString(this.model.manager);
       if (this.isAddMode) {
         this.apiService.create(this.model).subscribe({
           next: () => {
