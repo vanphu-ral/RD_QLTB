@@ -59,6 +59,7 @@
               <th>Loại lỗi</th>
               <th>Thời gian lỗi</th>
               <th>Trạng thái</th>
+              <th>Thao tác</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-row let-i="rowIndex">
@@ -68,6 +69,13 @@
               <td>{{ row.timeReported | date: 'dd-MM-yyyy' }}</td>
               <td><span [ngClass]="row.isRepaired ? 'badge text-bg-success' : 'badge text-bg-danger'">{{ row.isRepaired
                   ? 'Đã sửa' : 'Chưa sửa' }}</span></td>
+              <td>
+                <p-button icon="pi pi-wrench" styleClass="m-1" severity="warn" *ngIf="!row.isRepaired"
+                  (onClick)="repairError(row)"></p-button>
+                <p-button icon="pi pi-check" severity="success" class="m-1" title="Xác nhận đã sửa chữa"
+                  (onClick)="confirmError($event, row)" *ngIf="!row.isRepaired">
+                </p-button>
+              </td>
             </tr>
           </ng-template>
           <ng-template pTemplate="emptymessage">

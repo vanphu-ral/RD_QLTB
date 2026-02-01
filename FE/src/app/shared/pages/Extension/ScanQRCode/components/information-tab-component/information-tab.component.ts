@@ -256,7 +256,7 @@ export class InformationTabComponent implements OnChanges {
   repairError(row: any) {
     const ref = this.dialogService.open(RepairErrorDialog, {
       header: `Sửa lỗi - ${row.name} - ${row.severity ? 'Nghiêm trọng' : row.severity === 1 ? 'Bất thường' : 'Nhẹ'} - ${row.timeReported}`,
-      width: '100%',
+      width: 'auto',
       data: row,
       modal: true,
       closable: true
