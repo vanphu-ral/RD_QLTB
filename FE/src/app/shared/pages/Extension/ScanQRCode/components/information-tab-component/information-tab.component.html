@@ -140,6 +140,11 @@
               </td>
             </tr>
           </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="99" class="text-center">Chưa có đợt kiểm tra nào</td>
+            </tr>
+          </ng-template>
         </p-table>
       </p-tabpanel>
       <p-tabpanel value="4">
@@ -164,7 +169,10 @@
               <td>{{ row.deviceCode }}</td>
               <td>{{ row.deviceName }}</td>
               <td>{{ row.userPerformer }}</td>
-              <td>{{ row.dateTest | date:'dd/MM/yyyy' }}</td>
+              <td>
+                <p-datepicker [(ngModel)]="row.dateTest" appDateConvert [iconDisplay]="'input'" [showIcon]="true"
+                            name="dateTest" inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body" [disabled]="row.status == 15"/>
+              </td>
               <td><p-tag [value]="statusToString(row.status)" [severity]="getSeverityStatus(row.status)" /></td>
               <td>
                 <p-button icon="pi pi-check-circle" styleClass="m-1" severity="info" *ngIf="row.status != 15"
@@ -172,6 +180,11 @@
                 <p-button icon="pi pi-check" styleClass="m-1" severity="success" title="Hoàn thành"
                   *ngIf="row.status != 15 && row.status != 1" (onClick)="completeCheckDate(row, $event)"></p-button>
               </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="99" class="text-center">Chưa có đợt kiểm tra nào</td>
             </tr>
           </ng-template>
         </p-table>
@@ -243,9 +256,7 @@
           </ng-template>
           <ng-template pTemplate="emptymessage">
             <tr>
-              <td [attr.colspan]="999" class="text-center">
-                <p>Không có dữ liệu</p>
-              </td>
+              <td colspan="99" class="text-center">Chưa có đợt kiểm tra nào</td>
             </tr>
           </ng-template>
         </p-table>
@@ -283,12 +294,10 @@
             </tr>
           </ng-template>
           <ng-template pTemplate="emptymessage">
-            <tr>
-              <td [attr.colspan]="999" class="text-center">
-                <p>Không có dữ liệu</p>
-              </td>
-            </tr>
-          </ng-template>
+                <tr>
+                    <td colspan="99" class="text-center">Chưa có đợt kiểm tra nào</td>
+                </tr>
+            </ng-template>
         </p-table>
       </p-accordion-content>
     </p-accordion-panel>

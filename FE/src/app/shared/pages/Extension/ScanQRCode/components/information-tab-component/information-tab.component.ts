@@ -16,6 +16,7 @@ import { ErrorReport } from '../../../../../models/PlanManger/error-report.model
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { PlanResultService } from '../../../../PlanManager/Plan/Service/plan-result.service';
 import { PLANTYPE } from '../../../../../enums/plan-type.enum';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-information-tab',
@@ -117,6 +118,7 @@ export class InformationTabComponent implements OnChanges {
 
   loadPlan(qrCode: string) {
     this.listPlanAudit = [];
+    this.listPlanMaintance = [];
     this.planDetailService.getPlansBySerial(qrCode).subscribe(res => {
       res.forEach((plan, i) => {
         if (plan.planType.code == PLANTYPE.DAILYCHECK) {
@@ -137,24 +139,41 @@ export class InformationTabComponent implements OnChanges {
               });
             });
           });
+          this.cdr.detectChanges();
         }
         if (plan.planType.code == PLANTYPE.MAINTENANCE) {
           plan.planDetails.forEach((detail: any) => {
             detail.sampleReport = JSON.parse(detail.detail);
             // Mỗi ngày kiểm tra có nhiều kết quả (planResults)
-            detail.planResults?.forEach((result: any) => {
+            // { userTest: detail.manager, status: 1, planDetail: detail, dateTest: new Date(), statusRepair: 1 }
+            if(Util.isEmptyArray(detail.planResults)) {
               this.listPlanMaintance.push({
                 stt: this.listPlanMaintance.length + 1,
                 planName: plan.name,
                 deviceCode: detail.device?.code,
                 deviceName: detail.device?.name,
                 userPerformer: plan.userPerformer || detail.manager || 'N/A',
-                dateTest: result.dateTest,
-                planResultId: result.id,
+                dateTest: new Date(),
                 plan: detail,
-                status: result.status
+                status: 1
               });
-            });
+              this.cdr.detectChanges();
+            }else {
+              detail.planResults?.forEach((result: any) => {
+                this.listPlanMaintance.push({
+                  stt: this.listPlanMaintance.length + 1,
+                  planName: plan.name,
+                  deviceCode: detail.device?.code,
+                  deviceName: detail.device?.name,
+                  userPerformer: plan.userPerformer || detail.manager || 'N/A',
+                  dateTest: result.dateTest,
+                  planResultId: result.id,
+                  plan: detail,
+                  status: result.status
+                });
+              });
+              this.cdr.detectChanges();
+            }
           });
         }
       });
@@ -205,8 +224,21 @@ export class InformationTabComponent implements OnChanges {
     return `${minutes} phút`;
   }
 
-  checkDevice(data: any) {
-    const planResult = _.find(data.plan.planResults, x => x.id === data.planResultId);
+  async checkDevice(data: any) {
+    let planResult : any;
+    if (Util.isEmpty(data.planResultId)) {
+      const playload = { dateTest: data.dateTest, userTest: data.userPerformer, status: 1, planDetail: data.plan, statusRepair: 1 };
+      const res = await firstValueFrom(
+        this.planResultService.create(playload)
+      );
+      data.planResultId = res;
+      data.id = res;
+      data.plan.planResults.push(data);
+      Object.assign(data, res);
+      planResult = data;
+    }else {
+      planResult = _.find(data.plan.planResults, x => x.id === data.planResultId);
+    }
     const childRef = this.dialogService.open(CheckDeviceDialog, {
       header: `Kiểm tra thiết bị`,
       width: '100%',
