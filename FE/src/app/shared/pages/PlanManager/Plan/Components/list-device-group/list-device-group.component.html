@@ -19,13 +19,13 @@
                 <td>{{ i + 1 }}</td>
                 <td>
                     <p-select [(ngModel)]="row.deviceGroup" [options]="listDeviceGroupByBranches" optionLabel="name" [fluid]="true"
-                        [disabled]="isViewMode" [showClear]="true" [appendTo]="'body'" id="deviceGroup-{{ i }}"
+                        [disabled]="isViewMode" [showClear]="true" [appendTo]="'body'" id="deviceGroup-{{ i }}" [filter]="true"
                         name="deviceGroup-{{ i }}" dataKey="id" (ngModelChange)="onDeviceGroupChange(row, i)" (onClick)="checkBranch()">
                     </p-select>
                 </td>
                 <td>
-                    <p-select [(ngModel)]="row.sampleReport" [options]="row.sampleReports" optionLabel="name"
-                        [disabled]="isViewMode" [fluid]="true" [showClear]="true" [appendTo]="'body'"
+                    <p-select [(ngModel)]="row.sampleReport" [options]="row.sampleReports" optionLabel="name" 
+                        [disabled]="isViewMode" [fluid]="true" [showClear]="true" [appendTo]="'body'" [filter]="true"
                         id="sampleReport-{{ i }}" name="sampleReport-{{ i }}" dataKey="id" (onClick)="onSampleReportChange(row, i)">
                     </p-select>
                 </td>

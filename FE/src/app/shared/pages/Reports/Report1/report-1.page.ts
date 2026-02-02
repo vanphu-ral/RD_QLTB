@@ -27,6 +27,7 @@ export class Report1Page {
 
   listBranchs: any[] = []
   listTeams: any[] = []
+  filteredTeams: any[] = [];
   data: any[] = []
 
   loading: boolean = false
@@ -69,6 +70,21 @@ export class Report1Page {
 
   search() {
     this.loadData()
+  }
+
+  onBranchChange() {
+    if (!this.filter.branchIds || this.filter.branchIds.length === 0) {
+      this.filteredTeams = [...this.listTeams];
+    } else {
+      this.filteredTeams = this.listTeams.filter(team =>
+        this.filter.branchIds.includes(team.branch.id)
+      );
+    }
+    if (this.filter.groupIds) {
+      this.filter.groupIds = this.filter.groupIds.filter((id: number) =>
+        this.filteredTeams.some(team => team.id === id)
+      );
+    }
   }
 
 

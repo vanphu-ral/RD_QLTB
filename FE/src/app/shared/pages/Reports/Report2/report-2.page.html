@@ -3,7 +3,7 @@
         <div class="filter-box row my-3">
             <div class="col">
                 <p-floatlabel variant="on">
-                    <p-multiselect [options]="listBranchs" [(ngModel)]="filter.branchIds" optionValue="id"
+                    <p-multiselect [options]="listBranchs" [(ngModel)]="filter.branchIds" optionValue="id" [showClear]="true"
                         [fluid]="true" [maxSelectedLabels]="2" optionLabel="name" appendTo="body" dataKey="id" />
                     <label for="branchIds">Ngành</label>
                 </p-floatlabel>

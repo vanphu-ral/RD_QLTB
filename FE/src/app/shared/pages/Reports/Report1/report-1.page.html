@@ -3,15 +3,15 @@
         <div class="filter-box row my-3">
             <div class="col">
                 <p-floatlabel variant="on">
-                    <p-multiselect [options]="listBranchs" [(ngModel)]="filter.branchIds" optionValue="id"
-                        [fluid]="true" [maxSelectedLabels]="2" optionLabel="name" appendTo="body" dataKey="id" />
+                    <p-multiselect [options]="listBranchs" [(ngModel)]="filter.branchIds" optionValue="id" [showClear]="true"
+                        [fluid]="true" [maxSelectedLabels]="2" optionLabel="name" appendTo="body" dataKey="id" (onChange)="onBranchChange()"/>
                     <label for="branchIds">Ngành</label>
                 </p-floatlabel>
             </div>
             <div class="col">
                 <p-floatlabel variant="on">
-                    <p-multiselect [options]="listTeams" [(ngModel)]="filter.groupIds" optionValue="id" [fluid]="true"
-                        [maxSelectedLabels]="2" optionLabel="name" appendTo="body" dataKey="id" />
+                    <p-multiselect [options]="filteredTeams" [(ngModel)]="filter.groupIds" optionValue="id" [fluid]="true"
+                        [maxSelectedLabels]="2" optionLabel="name" appendTo="body" dataKey="id" [showClear]="true"/>
                     <label for="groupIds">Tổ</label>
                 </p-floatlabel>
             </div>

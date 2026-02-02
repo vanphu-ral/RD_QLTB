@@ -32,6 +32,7 @@ export class Report3Page {
 
   listBranchs: any[] = [];
   listTeams: any[] = [];
+  filteredTeams: any[] = [];
   listDeviceGroups: any[] = [];
 
   // Page
@@ -102,6 +103,21 @@ export class Report3Page {
 
   search() {
     this.loadData()
+  }
+
+  onBranchChange() {
+    if (!this.filter.branchIds || this.filter.branchIds.length === 0) {
+      this.filteredTeams = [...this.listTeams];
+    } else {
+      this.filteredTeams = this.listTeams.filter(team =>
+        this.filter.branchIds.includes(team.branch.id)
+      );
+    }
+    if (this.filter.groupIds) {
+      this.filter.groupIds = this.filter.groupIds.filter((id: number) =>
+        this.filteredTeams.some(team => team.id === id)
+      );
+    }
   }
 
   convertHoursToHoursMinutes(totalDowntime: number): string {
