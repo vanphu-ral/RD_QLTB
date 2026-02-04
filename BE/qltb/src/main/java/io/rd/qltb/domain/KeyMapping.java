@@ -32,7 +32,7 @@ public class KeyMapping {
     private Integer step;
 
     @Column
-    private OperationsStaff performer;
+    private String performer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sample_report_id", nullable = false)

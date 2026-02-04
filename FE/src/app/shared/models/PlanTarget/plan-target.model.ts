@@ -4,6 +4,7 @@ export class PlanTarget {
     id?: number;
     code?: string;
     name?: string;
+    planCode?: string;
     year?: any;
     planNumber?: string;
     userPerformer?: string;

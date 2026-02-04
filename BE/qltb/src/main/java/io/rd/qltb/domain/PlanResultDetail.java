@@ -40,7 +40,7 @@ public class PlanResultDetail {
     private Integer step;
 
     @Column
-    private OperationsStaff performer;
+    private String performer;
 
     @Column
     private String inspectionSession; //Ca kiểm tra: ca1 ca2 ngày

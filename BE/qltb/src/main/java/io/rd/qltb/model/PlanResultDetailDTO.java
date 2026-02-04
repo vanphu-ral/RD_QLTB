@@ -25,7 +25,7 @@ public class PlanResultDetailDTO {
 
     private Integer step;
 
-    private OperationsStaff performer;
+    private String performer;
 
     private String type;
 

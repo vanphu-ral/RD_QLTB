@@ -18,7 +18,7 @@ public class KeyMappingDTO {
 
     private Integer step;
 
-    private OperationsStaff performer;
+    private String performer;
 
     private SampleReport sampleReport;
 

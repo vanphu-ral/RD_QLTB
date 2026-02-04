@@ -38,10 +38,11 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
   listDeviceGroup: any[] = []
   listDeviceGroupBase: any[] = []
   listCriterialBySample: any[] = []
-  listPerformers = Object.values(OperationsStaff).map(value => ({
-    label: OperationsStaffLabel.get(value),
-    value: value
-  }));
+  // listPerformers = Object.values(OperationsStaff).map(value => ({
+  //   label: OperationsStaffLabel.get(value),
+  //   value: value
+  // }));
+  listPerformers = Util.listOperationsStaff();
   listCriterial: any[] = []
   listCriterialGroup: any[] = []
 

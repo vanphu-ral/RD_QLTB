@@ -599,6 +599,22 @@ export class Util {
     }
   }
 
+  //List Chức danh Người thực hiện
+  static listOperationsStaff(): { label: string; value: string }[] { {
+    return [
+      { label: 'Công nhân vận hành', value: 'CNVH' },
+      { label: 'Kỹ thuật viên', value: 'KTV' },
+      { label: 'Tổ phó', value: 'TP' },
+      { label: 'Nhân viên quản lý chất lượng', value: 'NVQLCL' },
+      { label: 'Nhân viên hệ thống', value: 'NVHT' },
+      { label: 'Bộ Phận Cơ Điện', value: 'Bộ Phận Cơ Điện' },
+      { label: 'Cơ Khí Tổ', value: 'Cơ Khí Tổ' },
+      { label: 'Cơ khí ngành', value: 'Cơ khí ngành' },
+      { label: 'KT điện', value: 'KT điện' },
+      { label: 'KT cơ điện', value: 'KT cơ điện' },
+    ];
+  }}
+
   /**
    * Get user by username
    */

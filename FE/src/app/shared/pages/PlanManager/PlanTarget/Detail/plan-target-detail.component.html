@@ -18,7 +18,7 @@
     </div>
 
     <div class="row my-3">
-      <div class="col-6">
+      <div class="col-4">
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="factory" [options]="listFactory"
             [fluid]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="factory"
@@ -28,13 +28,20 @@
         </p-floatlabel>
       </div>
 
-      <div class="col-6">
+      <div class="col-4">
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.branch" [options]="listBranchs" [invalid]="!model.branch" required
             [fluid]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="branch"
             name="branch" optionLabel="name" dataKey="id">
           </p-select>
           <label for="branch">Ngành</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="col-4">
+        <p-floatlabel variant="on">
+          <input pInputText id="planCode" name="planCode" [(ngModel)]="model.planCode" [invalid]="!model.planCode" required autocomplete="off" [disabled]="isViewMode || isApprovalMode" [fluid]="true"/>
+          <label for="planCode">Số KH</label>
         </p-floatlabel>
       </div>
     </div>
@@ -69,17 +76,18 @@
       <p-table #dt [value]="model.listItems!">
         <ng-template pTemplate="header">
           <tr *ngIf="isViewMode">
-            <th colspan="2">
+            <th colspan="1">
               <img src="/assets/imgs/logo-rang-dong.png" style="width:150px;" />
             </th>
-            <th colspan="3" class="text-center">
+            <th colspan="4" class="text-center">
               <div>
-                <div><strong>KẾT QUẢ THỰC HIỆN MỤC TIÊU QUẢN LÝ THIẾT BỊ</strong></div>
+                <div><strong>KẾ HOẠCH THỰC HIỆN MỤC TIÊU THIẾT BỊ</strong></div>
                 <div><span id="SpanPlanYear">{{ model.year | date:'yyyy' }}</span></div>
               </div>
             </th>
             <th colspan="2">
               <label class="font-semibold">Đơn vị:&nbsp; Đơn vị: LED; Xưởng LED - Điện tử & TBCS</label>
+              <div><span id="planCode">{{ model.planCode }}</span></div>
             </th>
           </tr>
           <tr>
@@ -111,6 +119,17 @@
                 <p-button icon="pi pi-pencil" severity="warn" (onClick)="addNewRowAndEdit(true, row)" styleClass="mx-2"></p-button>
                 <p-button icon="pi pi-trash" severity="danger" (onClick)="deleteRow(i)" styleClass="mx-2"></p-button>
               </div>
+            </td>
+          </tr>
+          <tr *ngIf="isViewMode">
+            <td colspan="2" class="text-center">
+              <div><strong>Trưởng đơn vị</strong></div>
+            </td>
+            <td colspan="3" class="text-center">
+              <div><strong>Ngành sản xuất</strong></div>
+            </td>
+            <td colspan="2" class="text-center">
+              <div><strong>Phụ trách thiết bị</strong></div>
             </td>
           </tr>
         </ng-template>

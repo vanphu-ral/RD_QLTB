@@ -28,6 +28,9 @@ public class PlanTarget {
     private String name;
 
     @Column
+    private String planCode;
+
+    @Column
     private LocalDateTime year;
 
     @Column

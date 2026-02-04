@@ -99,6 +99,7 @@ public class PlanTargetService {
         planTargetDTO.setId(planTarget.getId());
         planTargetDTO.setCode(planTarget.getCode());
         planTargetDTO.setName(planTarget.getName());
+        planTargetDTO.setPlanCode(planTarget.getPlanCode());
         planTargetDTO.setYear(planTarget.getYear());
         planTargetDTO.setListItems(planTarget.getListItems());
         planTargetDTO.setDescription(planTarget.getDescription());
@@ -150,6 +151,7 @@ public class PlanTargetService {
     private PlanTarget mapToEntity(final PlanTargetDTO planTargetDTO, final PlanTarget planTarget) {
         planTarget.setCode(planTargetDTO.getCode());
         planTarget.setName(planTargetDTO.getName());
+        planTarget.setPlanCode(planTargetDTO.getPlanCode());
         planTarget.setYear(planTargetDTO.getYear());
         planTarget.setListItems(planTargetDTO.getListItems());
         planTarget.setDescription(planTargetDTO.getDescription());
