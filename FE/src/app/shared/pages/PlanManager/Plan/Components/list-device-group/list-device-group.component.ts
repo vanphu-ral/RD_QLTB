@@ -121,58 +121,58 @@ export class ListDeviceComponent implements OnInit {
             this.cdr.detectChanges();
             return;
         }
-        // const hasDuplicate = this.model.planDetails.some((planDetail, index) => {
-        //     return index !== currentIndex && planDetail.deviceGroup?.id === row.deviceGroup.id;
-        // });
-        // if (hasDuplicate) {
-        //     Swal.fire({
-        //         icon: 'error',
-        //         title: 'Thất bại',
-        //         text: 'Nhóm thiết bị đã tồn tại',
-        //         confirmButtonText: 'OK'
-        //     });
-        //     setTimeout(() => {
-        //         row.deviceGroup = null;
-        //         row.isDuplicate = true;
-        //         this.cdr.detectChanges();
-        //     }, 0);
-        //     return;
-        // } else {
-        // }
-        row.isDuplicate = false;
-        // const branchId = this.model.plan?.branch?.id;
-        // const filteredDevices = _.filter(row.deviceGroup.groupDevices, (device) => {
-        //     return !branchId || _.get(device, 'branch.id') === branchId;
-        // });
-        const branchId = this.model.plan?.branch?.id;
-        const teamId = this.model.plan?.team?.id;
-        const filteredDevices = _.filter(row.deviceGroup.groupDevices, (device) => {
-            const isMatchBranch = !branchId || _.get(device, 'branch.id') === branchId;
-            const isMatchTeam = !teamId || _.get(device, 'team.id') === teamId;
-            return isMatchBranch && isMatchTeam;
+        const hasDuplicate = this.model.planDetails.some((planDetail, index) => {
+            return index !== currentIndex && planDetail.deviceGroup?.id === row.deviceGroup.id;
         });
-        const devicesInNewGroup: DeviceDetail[] = _.map(filteredDevices, (device, index) => {
-            device.group = { id: _.get(row, 'deviceGroup.id') };
-            const existingDeviceDetail = this.model.devices?.find(d =>
-                d.device?.id === device.id && _.get(d.device, 'group.id') === device.group.id
-            );
-            if (existingDeviceDetail) {
-                return existingDeviceDetail;
-            }
-            const newDevice: any = {
-                device: device,
-                serialNumber: device.serialNumber,
-                manager: device.userManager
-            };
-
-            if (this.model.plan.planType?.code === PLANTYPE.MAINTENANCE) {
-                // newDevice.estimatedTime = this.model.plan.maintanceMonth;
-                newDevice.nameDetail = `${index + 1}.${device.id}.${new Date().getFullYear()}/CTBDCSTB-LED.${this.model.plan?.branch?.code}`;
-            }
-            return newDevice as DeviceDetail;
-        });
-        this.model.devices = this.replaceGroupDevices(this.model.devices, devicesInNewGroup, _.get(row, 'deviceGroup.id'));
-        this.cdr.detectChanges();
+        if (hasDuplicate) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Thất bại',
+                text: 'Nhóm thiết bị đã tồn tại',
+                confirmButtonText: 'OK'
+            });
+            setTimeout(() => {
+                row.deviceGroup = null;
+                row.isDuplicate = true;
+                this.cdr.detectChanges();
+            }, 0);
+            return;
+        } else {
+            row.isDuplicate = false;
+            // const branchId = this.model.plan?.branch?.id;
+            // const filteredDevices = _.filter(row.deviceGroup.groupDevices, (device) => {
+            //     return !branchId || _.get(device, 'branch.id') === branchId;
+            // });
+            const branchId = this.model.plan?.branch?.id;
+            const teamId = this.model.plan?.team?.id;
+            const filteredDevices = _.filter(row.deviceGroup.groupDevices, (device) => {
+                const isMatchBranch = !branchId || _.get(device, 'branch.id') === branchId;
+                const isMatchTeam = !teamId || _.get(device, 'team.id') === teamId;
+                return isMatchBranch && isMatchTeam;
+            });
+            const devicesInNewGroup: DeviceDetail[] = _.map(filteredDevices, (device, index) => {
+                device.group = { id: _.get(row, 'deviceGroup.id') };
+                const existingDeviceDetail = this.model.devices?.find(d =>
+                    d.device?.id === device.id && _.get(d.device, 'group.id') === device.group.id
+                );
+                if (existingDeviceDetail) {
+                    return existingDeviceDetail;
+                }
+                const newDevice: any = {
+                    device: device,
+                    serialNumber: device.serialNumber,
+                    manager: device.userManager
+                };
+    
+                if (this.model.plan.planType?.code === PLANTYPE.MAINTENANCE) {
+                    // newDevice.estimatedTime = this.model.plan.maintanceMonth;
+                    newDevice.nameDetail = `${index + 1}.${device.id}.${new Date().getFullYear()}/CTBDCSTB-LED.${this.model.plan?.branch?.code}`;
+                }
+                return newDevice as DeviceDetail;
+            });
+            this.model.devices = this.replaceGroupDevices(this.model.devices, devicesInNewGroup, _.get(row, 'deviceGroup.id'));
+            this.cdr.detectChanges();
+        }
     }
 
     /**
