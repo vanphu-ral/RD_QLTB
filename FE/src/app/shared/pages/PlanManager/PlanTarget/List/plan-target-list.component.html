@@ -16,8 +16,8 @@
   </ng-template>
 </app-base-table>
 <ng-template #customActions let-row>
-  <!-- <p-button icon="pi pi-file-check" *ngIf="row.status == 1" title="gửi phê duyệt"
-    styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="approval(row, $event)"></p-button> -->
+  <p-button icon="pi pi-file-check" *ngIf="row.status == 1" title="gửi phê duyệt"
+    styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="approval(row, $event)"></p-button>
   <p-button icon="pi pi-check-square" title="Thực hiện mục tiêu"
     styleClass="p-button-sm p-button-rounded p-button-warn m-1" (onClick)="checkList(row)"></p-button>
   <p-button icon="pi pi-file-pdf" title="Xem báo cáo"

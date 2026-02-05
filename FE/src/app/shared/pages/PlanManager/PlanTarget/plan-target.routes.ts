@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { PlanTargetListComponent } from './List/plan-target-list.component';
 import { PlanTargetResolve } from './Resolve/plan-target-resolve.service';
 import { PlanTargetDetailComponent } from './Detail/plan-target-detail.component';
+import { ViewReportPage } from './ViewReport/view-report.page';
 
 
 const planTargetRoute: Routes = [
@@ -42,6 +43,14 @@ const planTargetRoute: Routes = [
     path: 'view-history',
     component: PlanTargetDetailComponent,
     data: { mode: 'view-history' },
+    resolve: {
+      data: PlanTargetResolve,
+    },
+  },
+  {
+    path: ':id/view-report',
+    component: ViewReportPage,
+    data: { mode: 'view' },
     resolve: {
       data: PlanTargetResolve,
     },

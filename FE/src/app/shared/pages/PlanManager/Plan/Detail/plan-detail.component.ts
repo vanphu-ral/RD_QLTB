@@ -66,6 +66,7 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
       // this.model = _.cloneDeep(this.model);
       _.set(this.model.plan as any, 'id', null);
       _.set(this.model.plan as any, 'code', (this.model.plan as any).code + ' - COPY');
+      _.set(this.model.plan as any, 'status', 1);
     }
     
     if (this.isEditMode || this.isCopyMode) this.oldPlanRequest = _.cloneDeep(this.model);

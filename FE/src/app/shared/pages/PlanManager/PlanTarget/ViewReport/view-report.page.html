@@ -1,0 +1,82 @@
+<div class="plan-report-table">
+    <div class="card mt-3" id="print-section">
+        <div class="table-responsive">
+            <p-table #dt [value]="model.listItems!">
+                <ng-template pTemplate="header">
+                    <tr *ngIf="isViewMode">
+                        <th colspan="1">
+                            <img src="/assets/imgs/logo-rang-dong.png" style="width:150px;" />
+                        </th>
+                        <th colspan="6" class="text-center">
+                            <div>
+                                <div><strong>KẾ HOẠCH THỰC HIỆN MỤC TIÊU THIẾT BỊ</strong></div>
+                                <div><span id="SpanPlanYear">{{ model.year | date:'yyyy' }}</span></div>
+                            </div>
+                        </th>
+                        <th colspan="2">
+                            <label class="font-semibold">Đơn vị:&nbsp; Đơn vị: LED; Xưởng LED - Điện tử & TBCS</label>
+                            <div><span id="planCode">{{ model.planCode }}</span></div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>Nội dung</th>
+                        <th>Mục tiêu</th>
+                        <th>Biện pháp thực hiện</th>
+                        <th>Thời hạn</th>
+                        <th>Mục tiêu thực hiện</th>
+                        <th>Giá trị đối chiếu</th>
+                        <th>Người thực hiện</th>
+                        <th>Đơn vị phối hợp</th>
+                        <th>Ghi chú</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-row let-i="rowIndex">
+                    <tr>
+                        <td>{{ row.measurement }}</td>
+                        <td>{{ row.target }}</td>
+                        <td>{{ row.solution }}</td>
+                        <td>{{ frequencyToText(row.duaration) }}</td>
+                        <td>{{ targetTypeToText(row.targetType) }}</td>
+                        <td>{{ row.minValue }}</td>
+                        <td>{{ row.userAct }}</td>
+                        <td>{{ row.coordinationUnit }}</td>
+                        <td>{{ row.note }}</td>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="99" class="text-center">Không có dữ liệu</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+            <table id="nghemthu-details-table" class="table table-bordered table-hover" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th *ngFor="let g of listUserApproval" class="text-center">
+                            <div class="only-print italic"
+                                style="display: none; font-weight: normal; font-size: 11px; margin-bottom: 5px;">
+                                Ngày ...... tháng ...... năm 20....
+                            </div>
+                            {{ g.groupName }}
+                        </th>
+                    </tr>
+                    <tr>
+                        <td *ngFor="let g of listUserApproval" class="">
+                            <div *ngFor="let sig of g.signatures" style="margin-bottom: 10px;text-align: center;">
+                                <img *ngIf="sig" [src]="sig"
+                                    style="width: 120px; height: 60px; display: block; margin: 0 auto;">
+                                <span *ngIf="!sig" style="font-weight: bold;">Đã ký</span>
+                            </div>
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end mt-3">
+        <p-button label="Quay lại" severity="info" (click)="onBack()" icon="pi pi-arrow-left" class="me-2"></p-button>
+        <p-button label="In" icon="pi pi-file-export" severity="success" (click)="export()" class="me-2"></p-button>
+    </div>
+</div>

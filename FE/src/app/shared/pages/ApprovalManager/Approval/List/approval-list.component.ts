@@ -48,6 +48,8 @@ export class ApprovalListComponent {
         return 'Kế hoạch vật tư';
       case 'plan_details':
         return 'Ký duyệt kiểm tra thiết bị hàng tuần';
+      case 'plan_targets':
+        return 'Ký duyệt mục tiêu thiết bị';
       default:
         return '';
     }
@@ -108,6 +110,7 @@ export class ApprovalListComponent {
       'report_device_incidents': 'ReportDeviceIncident',
       'plan_supplies': 'PlanSupplies',
       'plan_details': 'PlanDetails',
+      'plan_targets': 'PlanTargets',
       // thêm mapping nếu có entityType khác
     };
 

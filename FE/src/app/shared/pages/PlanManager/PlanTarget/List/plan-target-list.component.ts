@@ -44,7 +44,7 @@ export class PlanTargetListComponent {
   }
 
   viewPlanReport(row: any) {
-    this.router.navigate([row.id, 'view'], { relativeTo: this.route });
+    this.router.navigate([row.id, 'view-report'], { relativeTo: this.route });
   }
 
   approval(data: any, event: any) {
@@ -52,7 +52,7 @@ export class PlanTargetListComponent {
     Util.confirmAndExecute(
       event,
       'Bạn có chắc muốn gửi duyệt bản ghi này?',
-      () => this.apiService.createApprovalEntity(modelApproval, 'plan_supplies'),
+      () => this.apiService.createApprovalEntity(modelApproval, 'plan_targets'),
       'Gửi duyệt thành công !',
       'Lỗi gửi duyệt',
       this.comfirmService,

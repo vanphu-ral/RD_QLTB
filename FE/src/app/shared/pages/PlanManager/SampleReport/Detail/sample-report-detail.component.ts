@@ -103,6 +103,7 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
             // this.model = _.cloneDeep(this.model);
             _.set(this.model as any, 'id', null);
             _.set(this.model as any, 'code', (this.model as any).code + ' - COPY');
+            _.set(this.model as any, 'status', 1);
           }
           this.cdr.detectChanges();
         });
