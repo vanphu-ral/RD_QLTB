@@ -45,6 +45,7 @@ export class PlanTargetDetailComponent extends BasePageComponent<PlanTarget> {
     private branchService: BranchService,
     private approvalWorkflowService: ApprovalWorlflowService,
     private dialogService: DialogService,
+    private confirmationService: ConfirmationService,
   ) {
     super(apiService);
   }
@@ -68,15 +69,18 @@ export class PlanTargetDetailComponent extends BasePageComponent<PlanTarget> {
     })
   }
 
-  frequencyToText(targetStr: string | null | undefined): string {
+  frequencyToText(targetStr: string | string[] | null | undefined): string {
     if (!targetStr) return '';
     const dictionary: { [key: string]: string } = {
-      'WEEKLY': 'Hàng Tuần',
-      'MONTHLY': 'Hàng Tháng',
-      'QUARTERLY': 'Hàng Quý',
-      'YEARLY': 'Hàng Năm'
+      WEEKLY: 'Hàng Tuần',
+      MONTHLY: 'Hàng Tháng',
+      QUARTERLY: 'Hàng Quý',
+      YEARLY: 'Hàng Năm'
     };
-    return targetStr
+    const value = Array.isArray(targetStr)
+      ? targetStr.join(',')
+      : targetStr;
+    return value
       .split(',')
       .map(key => dictionary[key.trim()] || key)
       .join(', ');
@@ -147,5 +151,31 @@ export class PlanTargetDetailComponent extends BasePageComponent<PlanTarget> {
         })
       }
     }
+  }
+
+  ApprovalAgain() {
+    if (!this.model) return;
+    this.confirmationService.confirm({
+      message: 'Bạn có chắc muốn sửa và gửi duyệt lại không?',
+      header: 'Xác nhận',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Đồng ý',
+      rejectLabel: 'Hủy',
+      accept: () => {
+        this.model.status = 2;
+        this.model = Util.prepareModel(this.model);
+        this.model = Util.simplifyMany(this.model, ['branch', 'approvalWorkflow']);
+        if (typeof this.model.listItems !== 'string') this.model.listItems = JSON.stringify(this.model.listItems);
+        this.apiService.update(this.model.id!, this.model).subscribe({
+          next: () => {
+            Util.ConfirmMessage('Cập nhật thành công', 'success');
+            this.navigationService.back()
+          },
+          error: Util.handleError
+        });
+      },
+      reject: () => {
+      }
+    });
   }
 }

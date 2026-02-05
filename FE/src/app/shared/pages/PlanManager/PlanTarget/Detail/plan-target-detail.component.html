@@ -171,6 +171,10 @@
         class="w-full max-w-[17.35rem] me-2" (click)="save()" styleClass="w-full mx-auto" />
       <p-button *ngIf="isApprovalMode" label="Duyệt" icon="pi pi-save" severity="success"
         class="w-full max-w-[17.35rem]" (click)="Approval()" styleClass="w-full mx-auto" />
+      <p-button *ngIf="isEditMode" label="Gửi duyệt lại" icon="pi pi-file-check" severity="success"
+        [disabled]="!f.valid" class="w-full max-w-[17.35rem]" (click)="ApprovalAgain()" styleClass="w-full mx-auto" />
     </div>
   </form>
 </div>
+<p-confirmDialog></p-confirmDialog>
+<p-toast></p-toast>
