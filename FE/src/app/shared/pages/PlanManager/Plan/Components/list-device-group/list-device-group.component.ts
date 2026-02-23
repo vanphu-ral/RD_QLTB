@@ -61,24 +61,6 @@ export class ListDeviceComponent implements OnInit {
     }
 
     handleBranchChange(data: any) {
-        // const branchId = data?.id;
-        // if (!branchId) {
-        //     return;
-        // }
-        // if(this.model.plan.planType.code === PLANTYPE.MAINTENANCE && !this.model.plan.maintanceMonth) {
-        //     return;
-        // }
-        // const filteredDeviceGroups = _.filter(this.listDeviceGroupBase, (deviceGroup) => {
-        //     const groupDevices = deviceGroup.groupDevices;
-        //     if (!groupDevices || groupDevices.length === 0) {
-        //         return false;
-        //     }
-        //     return _.some(groupDevices, (device) => {
-        //         return _.get(device, 'branch.id') === branchId;
-        //     });
-        // });
-        // this.listDeviceGroupByBranches = filteredDeviceGroups;
-        // this.cdr.detectChanges();
         const branchId = data?.id;
         const teamId = this.model.plan?.team?.id;
         if (!branchId) return;
@@ -139,10 +121,6 @@ export class ListDeviceComponent implements OnInit {
             return;
         } else {
             row.isDuplicate = false;
-            // const branchId = this.model.plan?.branch?.id;
-            // const filteredDevices = _.filter(row.deviceGroup.groupDevices, (device) => {
-            //     return !branchId || _.get(device, 'branch.id') === branchId;
-            // });
             const branchId = this.model.plan?.branch?.id;
             const teamId = this.model.plan?.team?.id;
             const filteredDevices = _.filter(row.deviceGroup.groupDevices, (device) => {
@@ -203,11 +181,6 @@ export class ListDeviceComponent implements OnInit {
             Util.toastMessage('Vui lòng chọn ngành', 'error');
             return;
         }
-        // if(this.model.plan.planType.code === PLANTYPE.MAINTENANCE && !this.model.plan.maintanceMonth) {
-        //     Util.toastMessage('Vui sống nhập thời gian dự kiến', 'error');
-        //     return;
-        // }else {
-        // }
         this.handleBranchChange(this.model.plan.branch);
     }
 
@@ -281,18 +254,20 @@ export class ListDeviceComponent implements OnInit {
         });
     }
 
-
     updateDeviceDetails(listDeviceDetail: DeviceDetail[] | null | undefined, edited: DeviceDetail[]): DeviceDetail[] {
         const currentDevices = listDeviceDetail || [];
         if (!edited || edited.length === 0) {
             return currentDevices;
         }
-        const mapEdited = new Map(edited.map(e => [e.device!.id, e]));
-        let updatedDevices: DeviceDetail[] = edited
-        const currentIds = new Set(currentDevices.map(d => d.device!.id));
-        // const newDevicesToAdd = edited.filter(e => !currentIds.has(e.device!.id));
-        // updatedDevices.push(...newDevicesToAdd);
-        return updatedDevices;
+        const groupId = _.get(edited[0], 'device.group.id');
+        if (!groupId) {
+            return currentDevices;
+        }
+        const devicesToKeep = currentDevices.filter(d =>
+            _.get(d, 'device.group.id') !== groupId
+        );
+        devicesToKeep.push(...edited);
+        return devicesToKeep;
     }
 
 

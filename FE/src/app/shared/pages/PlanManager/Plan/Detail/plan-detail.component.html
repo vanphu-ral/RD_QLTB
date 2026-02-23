@@ -124,16 +124,6 @@
       </div>
     </div>
 
-    <!-- <div class="row my-3" *ngIf="model.plan?.planType?.code == PLANTYPE.MAINTENANCE">
-      <div class="col-12">
-        <p-floatlabel variant="on">
-          <p-datepicker [(ngModel)]="model.plan.maintanceMonth" appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="fromDate" [fluid]="true" view="month"
-            inputId="icondisplay" [dateFormat]="'mm-yy'" [invalid]="!model.plan.maintanceMonth" required  appendTo="body" [inputSize]="100" [disabled]="isViewMode || isApprovalMode"/>
-          <label for="fromDate">Tháng dự kiến bảo dưỡng</label>
-        </p-floatlabel>
-      </div>
-    </div> -->
-
     <list-device-group-component [isAddMode]="isAddMode" [isEditMode]="isEditMode" [isCopyMode]="isCopyMode"
       [isViewMode]="isViewMode || isApprovalMode" [model]="model">
     </list-device-group-component>
