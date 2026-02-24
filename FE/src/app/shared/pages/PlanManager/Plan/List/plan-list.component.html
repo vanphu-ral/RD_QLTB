@@ -22,7 +22,6 @@
         <th style="min-width: 150px;">Loại kế hoạch</th>
         <th style="min-width: 150px;">Xưởng</th>
         <th style="min-width: 150px;">Ban</th>
-        <th style="min-width: 150px;">Quy trình duyệt</th>
         <th style="min-width: 150px;">Người tạo</th>
         <th style="min-width: 150px;">Người cập nhật</th>
         <th style="min-width: 150px;">Ngày tạo</th>
@@ -92,13 +91,6 @@
         <th>
           <p-columnFilter [showMenu]="false" type="text">
             <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-              <input pInputText [(ngModel)]="filters.approvalWorkflow" (keyup.enter)="filter($event)">
-            </ng-template>
-          </p-columnFilter>
-        </th>
-        <th>
-          <p-columnFilter [showMenu]="false" type="text">
-            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
               <input pInputText [(ngModel)]="filters.createdBy" (keyup.enter)="filter($event)">
             </ng-template>
           </p-columnFilter>
@@ -147,7 +139,6 @@
         <td>{{ row.planType.name }}</td>
         <td>{{ row.factory.name }}</td>
         <td>{{ row.branch.name }}</td>
-        <td>{{ row.approvalWorkflow.name }}</td>
         <td>{{ row.createdBy }}</td>
         <td>{{ row.updatedBy }}</td>
         <td>{{ row.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
