@@ -67,7 +67,7 @@
       <div class="col-4">
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.approvalWorkflow" [options]="listApprovalWorkflow" optionLabel="name" required [invalid]="!model.approvalWorkflow"
-            [fluid]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="approvalWorkflow"
+            [fluid]="true" [filter]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="approvalWorkflow"
             name="approvalWorkflow" dataKey="id">
           </p-select>
           <label for="approvalWorkflow">Kịch bản phê duyệt</label>
