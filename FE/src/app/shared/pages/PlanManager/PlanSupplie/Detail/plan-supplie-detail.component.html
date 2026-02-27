@@ -31,7 +31,7 @@
       <div class="col-4">
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.branch" [options]="listBranchs"
-            [fluid]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="branch"
+            [fluid]="true" [filter]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="branch"
             name="branch" optionLabel="name" dataKey="id">
           </p-select>
           <label for="branch">Ngành</label>
@@ -41,7 +41,7 @@
       <div class="col-4">
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.team" [options]="listTeamsFiltered" optionLabel="name"
-            [fluid]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="team"
+            [fluid]="true" [filter]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="team"
             name="team" dataKey="id">
           </p-select>
           <label for="team">Tổ</label>
@@ -84,7 +84,7 @@
       <div class="col-6">
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.approvalWorkflow" [invalid]="!model.approvalWorkflow" required
-            [options]="listApprovalWorkflow" optionLabel="name" [fluid]="true" [disabled]="isViewMode || isApprovalMode"
+            [options]="listApprovalWorkflow" optionLabel="name" [fluid]="true" [filter]="true" [disabled]="isViewMode || isApprovalMode"
             [showClear]="true" [appendTo]="'body'" id="approvalWorkflow" name="approvalWorkflow" dataKey="id">
           </p-select>
           <label for="approvalWorkflow">Kịch bản phê duyệt</label>
@@ -140,15 +140,15 @@
               </p-select>
             </td>
             <td>
-              <p-select [(ngModel)]="row.line" [options]="listLines" optionLabel="name" [fluid]="true" [disabled]="isViewMode || isApprovalMode"
+              <p-select [(ngModel)]="row.line" [options]="listLines" optionLabel="name" [fluid]="true" [filter]="true" [disabled]="isViewMode || isApprovalMode"
                 [appendTo]="'body'" id="line-{{i}}" name="line-{{i}}" dataKey="id" *ngIf="row.targetUse == 0">
               </p-select>
-              <p-select [(ngModel)]="row.deviceGroup" [options]="listDeviceGroups" optionLabel="name" [fluid]="true" [disabled]="isViewMode || isApprovalMode"
+              <p-select [(ngModel)]="row.deviceGroup" [options]="listDeviceGroups" optionLabel="name" [fluid]="true" [filter]="true" [disabled]="isViewMode || isApprovalMode"
                 [appendTo]="'body'" id="deviceGroup-{{i}}" name="deviceGroup-{{i}}" dataKey="id" *ngIf="row.targetUse == 1">
               </p-select>
             </td>
             <td>
-              <p-select [(ngModel)]="row.supply" [options]="listSupplies" optionLabel="name" [fluid]="true" [disabled]="isViewMode  || isApprovalMode"
+              <p-select [(ngModel)]="row.supply" [options]="listSupplies" optionLabel="name" [fluid]="true" [filter]="true" [disabled]="isViewMode  || isApprovalMode"
                 [appendTo]="'body'" id="supply-{{i}}" name="supply-{{i}}" dataKey="id">
               </p-select>
             </td>

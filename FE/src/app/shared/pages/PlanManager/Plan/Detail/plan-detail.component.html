@@ -65,7 +65,7 @@
       <div class="col-4">
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.plan.branch" [options]="listBranchs"
-            [fluid]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="branch"
+            [fluid]="true" [filter]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="branch"
             name="branch" optionLabel="name" dataKey="id" (ngModelChange)="generateCode()">
           </p-select>
           <label for="branch">Ngành</label>
@@ -75,7 +75,7 @@
       <div class="col-4">
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.plan.team" [options]="listTeamsFiltered" optionLabel="name"
-            [fluid]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="team"
+            [fluid]="true" [filter]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="team"
             name="team" dataKey="id">
           </p-select>
           <label for="team">Tổ</label>
@@ -98,7 +98,7 @@
       <div class="col-6">
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.plan.approvalWorkflow"
-            [options]="listApprovalWorkflow" optionLabel="name" [fluid]="true" [disabled]="isViewMode || isApprovalMode"
+            [options]="listApprovalWorkflow" optionLabel="name" [fluid]="true" [filter]="true" [disabled]="isViewMode || isApprovalMode"
             [showClear]="true" [appendTo]="'body'" id="approvalWorkflow" name="approvalWorkflow" dataKey="id">
           </p-select>
           <label for="approvalWorkflow">Kịch bản phê duyệt</label>

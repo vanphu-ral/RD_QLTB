@@ -20,7 +20,7 @@
     <div class="row my-3">
       <div class="col-12">
         <p-floatlabel variant="on">
-          <p-select [(ngModel)]="model.group" [options]="listDeviceGroups" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
+          <p-select [(ngModel)]="model.group" [options]="listDeviceGroups" optionLabel="name" [fluid]="true" [filter]="true" [disabled]="isViewMode"
             [showClear]="true" [appendTo]="'body'" id="group" name="group" required [invalid]="!model.group" dataKey="id">
           </p-select>
           <label for="group">Tên nhóm thiết bị</label>

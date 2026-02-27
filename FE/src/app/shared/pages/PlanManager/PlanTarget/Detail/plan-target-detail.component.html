@@ -31,7 +31,7 @@
       <div class="col-4">
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.branch" [options]="listBranchs" [invalid]="!model.branch" required
-            [fluid]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="branch"
+            [fluid]="true" [filter]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="branch"
             name="branch" optionLabel="name" dataKey="id">
           </p-select>
           <label for="branch">Ngành</label>
@@ -58,7 +58,7 @@
       <div class="col-6">
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.approvalWorkflow" [invalid]="!model.approvalWorkflow" required
-            [options]="listApprovalWorkflow" optionLabel="name" [fluid]="true" [disabled]="isViewMode || isApprovalMode"
+            [options]="listApprovalWorkflow" optionLabel="name" [fluid]="true" [filter]="true" [disabled]="isViewMode || isApprovalMode"
             [showClear]="true" [appendTo]="'body'" id="approvalWorkflow" name="approvalWorkflow" dataKey="id">
           </p-select>
           <label for="approvalWorkflow">Kịch bản phê duyệt</label>
