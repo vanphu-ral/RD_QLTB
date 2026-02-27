@@ -6,6 +6,8 @@ import { BasePageComponent } from '../../../../base/base-page-component/base-pag
 import { PlanService } from '../Service/plan.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { PlanMaintanceDetailDialog } from '../Dialogs/plan-maintance-detail-dialog/plan-maintance-detail.dialog';
+import { SignatureService } from '../../../SystemManager/Signature/Service/signature.service';
+import { catchError, of } from 'rxjs';
 
 @Component({
   selector: 'view-plan-maintance',
@@ -20,8 +22,12 @@ export class ViewPlanMaintancePage extends BasePageComponent<any> {
   months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   ref?: DynamicDialogRef;
 
+  listUserStatusAppr: any[] = [];
+  listUserApproval: any[] = [];
+
   constructor(
     protected override apiService: PlanService,
+    private signatureService: SignatureService,
     private dialogService: DialogService
   ) {
     super(apiService);
@@ -30,7 +36,46 @@ export class ViewPlanMaintancePage extends BasePageComponent<any> {
   override ngOnInit(): void {
     super.ngOnInit();
     console.log(this.model);
-    
+    this.approvalService
+      .findApprovalsByEntityIdAndEntityType(this.model.id, 'plans')
+      .subscribe((data) => {
+        this.listUserStatusAppr = data;
+        const usernames = data.map(x => x.userApproval?.username);
+        this.signatureService.getByListUsernames(usernames).pipe(
+          catchError(err => {
+            console.error('Lỗi lấy danh sách chữ ký:', err);
+            return of([]); // Trả về mảng rỗng nếu lỗi
+          })
+        ).subscribe(signatures => {
+          this.listUserApproval = Object.values(
+            data.reduce((acc: any, item: any) => {
+              const groupId = item.group?.groupApprovalName?.id;
+              acc[groupId] ??= {
+                groupApprovalName: item.group.groupApprovalName,
+                items: [],
+                userApprovals: []
+              };
+              acc[groupId].items.push(item);
+              acc[groupId].userApprovals.push(item.userApproval);
+              return acc;
+            }, {})
+          ).map((group: any) => ({
+            ...group,
+            userApprovals: group.userApprovals.map((u: any) => ({
+              ...u,
+              imageLink: signatures.find((s: any) => s.username === u.username)?.imageLink || null
+            }))
+          }));
+          this.listUserApproval = this.listUserApproval.map(g => ({
+            groupName: g.groupApprovalName.name,
+            signatures: g.userApprovals.map((u: any) => u.imageLink)
+          }));
+          console.log(this.listUserApproval);
+
+          this.cdr.detectChanges();
+        });
+        this.cdr.detectChanges();
+      });
   }
 
   getEstimatedMonth(planDetail: any): number {
@@ -59,6 +104,45 @@ export class ViewPlanMaintancePage extends BasePageComponent<any> {
       if (result && result.length > 0) {
       }
     });
+  }
+
+  exportPDF() {
+    const printContents = document.getElementById('print-section')?.innerHTML;
+    if (!printContents) return;
+
+    const popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+    if (!popupWin) return;
+
+    popupWin.document.open();
+    popupWin.document.write(`
+      <html>
+        <head>
+          <title>LỊCH BẢO DƯỠNG, SỬA CHỮA THIẾT BỊ ĐỊNH KỲ</title>
+          <style>
+            @media print {
+              @page { size: landscape; margin: 10mm; }
+              .only-print { display: block !important; }
+              body { -webkit-print-color-adjust: exact; font-family: 'Times New Roman', serif; }
+              .no-print { display: none; }
+            }
+            table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+            th, td { border: 1px solid #000 !important; padding: 8px; font-size: 12px; }
+            .text-center { text-center: center; }
+            .font-semibold { font-weight: bold; }
+            img { max-width: 150px; }
+            /* Định dạng bảng chữ ký phía dưới */
+            #nghemthu-details-table { margin-top: 30px; border: none !important; }
+            #nghemthu-details-table th, #nghemthu-details-table td { border: none !important; }
+          </style>
+        </head>
+        <body onload="window.print();window.close()">
+          <div class="container-fluid">
+            ${printContents}
+          </div>
+        </body>
+      </html>
+    `);
+    popupWin.document.close();
   }
 
 

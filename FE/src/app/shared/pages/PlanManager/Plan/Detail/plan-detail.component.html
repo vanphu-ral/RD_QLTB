@@ -99,7 +99,9 @@
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.plan.approvalWorkflow"
             [options]="listApprovalWorkflow" optionLabel="name" [fluid]="true" [filter]="true" [disabled]="isViewMode || isApprovalMode"
-            [showClear]="true" [appendTo]="'body'" id="approvalWorkflow" name="approvalWorkflow" dataKey="id">
+            [showClear]="true" [appendTo]="'body'" id="approvalWorkflow" name="approvalWorkflow" dataKey="id"
+            [required]="model.plan?.planType?.code === PLANTYPE.MAINTENANCE"
+            [invalid]="model.plan?.planType?.code === PLANTYPE.MAINTENANCE && !model.plan.approvalWorkflow">
           </p-select>
           <label for="approvalWorkflow">Kịch bản phê duyệt</label>
         </p-floatlabel>

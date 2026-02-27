@@ -148,6 +148,8 @@
         </td>
         <td pFrozenColumn alignFrozen="right" [frozen]="true">
           <ng-container *appHasRole="['RD_QLTB_ADMIN', 'RD_QLTB_MANAGER']">
+            <p-button icon="pi pi-file-check" *ngIf="row.status == 1 && row.planType.code == PLANTYPE.MAINTENANCE" title="Gửi phê duyệt"
+            styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="approval(row, $event)"></p-button>
             <p-button icon="pi pi-copy" title="Copy"
               styleClass="p-button-sm p-button-rounded p-button-warn m-1" (onClick)="copy(row)"></p-button>
             <p-button icon="pi pi-file-check" *ngIf="row.status == 5" title="gửi phê duyệt"
