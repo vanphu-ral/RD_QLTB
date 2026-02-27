@@ -750,6 +750,7 @@ public class PlanService {
         planUpdateResponse.setMessage("Cập nhật kế hoạch thành công");
         planUpdateResponse.setStatus("SUCCESS");
         for (DeviceRequest deviceRequest : request.getDevices()) {
+            if(deviceRequest.getPlanDetailId() != null){
             // 1. Lấy PlanDetail từ DB (hoặc từ Map đã chuẩn bị trước)
             PlanDetail planDetail = planDetailRepository.findById(deviceRequest.getPlanDetailId())
                     .orElseThrow(() -> new RuntimeException("PlanDetail not found"));
@@ -782,6 +783,7 @@ public class PlanService {
                     System.out.println("Không thể cập nhật kế hoạch do người phụ trách " + mgr + " đã có dữ liệu kiểm tra.");
                     return planUpdateResponse;
                 }
+            }
             }
         }
         createLog(id,userName);
