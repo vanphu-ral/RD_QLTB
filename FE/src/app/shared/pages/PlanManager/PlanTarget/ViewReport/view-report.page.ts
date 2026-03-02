@@ -87,15 +87,18 @@ export class ViewReportPage extends BasePageComponent<any> {
       });
   }
 
-  frequencyToText(targetStr: string | null | undefined): string {
+  frequencyToText(targetStr: string | string[] | null | undefined): string {
     if (!targetStr) return '';
     const dictionary: { [key: string]: string } = {
-      'WEEKLY': 'Hàng Tuần',
-      'MONTHLY': 'Hàng Tháng',
-      'QUARTERLY': 'Hàng Quý',
-      'YEARLY': 'Hàng Năm'
+      WEEKLY: 'Hàng Tuần',
+      MONTHLY: 'Hàng Tháng',
+      QUARTERLY: 'Hàng Quý',
+      YEARLY: 'Hàng Năm'
     };
-    return targetStr
+    const value = Array.isArray(targetStr)
+      ? targetStr.join(',')
+      : targetStr;
+    return value
       .split(',')
       .map(key => dictionary[key.trim()] || key)
       .join(', ');
