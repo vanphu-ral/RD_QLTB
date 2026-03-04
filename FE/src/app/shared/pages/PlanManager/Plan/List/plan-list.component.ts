@@ -21,6 +21,7 @@ import { DataService } from '../../../../service/send-data.service';
 import { PlanDetailService } from '../Service/plan-detail.service';
 import _ from 'lodash';
 import { AccountService } from '../../../../core/auth/account/account.service';
+import { BranchService } from '../../../Categories/Branch/Service/branch.service';
 
 @Component({
   selector: 'plan-list',
@@ -48,12 +49,19 @@ export class PlanListComponent {
   currentPage = 0;
   filters: any = {};
 
+  frequencyOptions: any[] = ["Ngày", "Tuần", "Tháng", "Quỹ", "6 Tháng", "Năm"];
+  listBranchs: any[] = [];
+  listUser: any[] = [];
+  listStatus: any[] = Util.statusRecord();
+  planTypes: any[] = ["Kiểm tra máy móc thiết bị hàng ngày", "Bảo trì, bảo dưỡng"];
+
   constructor(public apiService: PlanService, private router: Router, private route: ActivatedRoute, private planDetailService: PlanDetailService,
     private dialogService: DialogService, private cdr: ChangeDetectorRef, private messageService: MessageService, private accountService: AccountService,
-    private confirmationService: ConfirmationService, private acceptanceService: AcceptanceService, private dataService: DataService) { }
+    private confirmationService: ConfirmationService, private acceptanceService: AcceptanceService, private dataService: DataService, private branchService: BranchService) { }
 
   ngOnInit(): void {
     this.loadData();
+    this.loadDataFilter();
   }
 
   loadData() {
@@ -109,6 +117,26 @@ export class PlanListComponent {
     });
     this.ref.onClose.subscribe((result) => {
       if (result && result.length > 0) {
+      }
+    });
+  }
+
+  loadDataFilter() {
+    this.branchService.getAll().subscribe({
+      next: (res) => {
+        this.listBranchs = res;
+      }
+    });
+    this.apiService.getUsers().subscribe({
+      next: (res) => {
+        this.listUser = _.chain(res)
+          .map(user => {
+            const fullName = _.chain([user.firstName, user.lastName]).filter(Boolean).join(' ').trim().value();
+            return {
+              name: fullName,
+              username: user.username
+            };
+          }).filter(item => !_.isEmpty(item.name)).value();
       }
     });
   }

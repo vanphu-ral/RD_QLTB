@@ -50,7 +50,7 @@
               [showMenu]="false">
               <ng-template pTemplate="filter" let-value let-filter="filterCallback">
                 <p-select [ngModel]="value" (ngModelChange)="filter($event)" [options]="col.Options || []"
-                  optionLabel="label" optionValue="value" [showClear]="true" [appendTo]="'body'">
+                  optionLabel="label" optionValue="value" [showClear]="true" [appendTo]="'body'" styleClass="w-100" [filter]="true" [fluid]="true">
                 </p-select>
               </ng-template>
             </p-columnFilter>

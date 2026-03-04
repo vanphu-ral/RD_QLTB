@@ -8,6 +8,11 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MoveDeviceDialog } from '../Dialog/move-device-dialog/move-device.dialog';
 import { ListHistoryMoveDeviceDialog } from '../Dialog/list-history-move-device-dialog/list-history-move-device.dialog';
 import { Util } from '../../../../core/utils/utils-function';
+import { DeviceGroupService } from '../../DeviceGroup/Service/device-group.service';
+import { forkJoin } from 'rxjs';
+import { LineService } from '../../../Categories/Line/Service/line.service';
+import { TeamService } from '../../../Categories/Team/Service/team.service';
+import { BranchService } from '../../../Categories/Branch/Service/branch.service';
 
 @Component({
   selector: 'device-list',
@@ -20,6 +25,8 @@ export class DeviceListComponent {
 
   selectedStatus: string | null = null;
   ref?: DynamicDialogRef;
+  frequencyOptions: any[] = [{ label: 'Ngày', value: 'Ngày' }, { label: 'Tuần', value: 'Tuần' }, { label: 'Tháng', value: 'Tháng' }, { label: 'Quỹ', value: 'Quỹ' }, { label: '6 Tháng', value: '6 Tháng' }, { label: 'Năm', value: 'Năm' }];
+  statusOptions: any[] = Util.statusDevice();
 
   data: any[] = [];
 
@@ -27,11 +34,11 @@ export class DeviceListComponent {
     { Field: 'id', Header: 'ID', IsHide: true },
     { Field: 'code', Header: 'Mã thiết bị', IsSearch: true, TypeSearch: 'text' },
     { Field: 'name', Header: 'Tên thiết bị', IsSearch: true, TypeSearch: 'text' },
-    { Field: 'group.name', Header: 'Nhóm thiết bị', IsSearch: true, TypeSearch: 'text' },
-    { Field: 'branch.name', Header: 'Ngành', IsSearch: true, TypeSearch: 'text' },
-    { Field: 'team.name', Header: 'Tổ', IsSearch: true, TypeSearch: 'text' },
-    { Field: 'line.name', Header: 'Dây chuyền', IsSearch: true, TypeSearch: 'text' },
-    { Field: 'maintenanceCycle', Header: 'Chu kỳ bảo trì', IsSearch: true, TypeSearch: 'text' },
+    { Field: 'group.name', Header: 'Nhóm thiết bị', IsSearch: true, TypeSearch: 'select', Options: [], style: { 'min-width': '200px', 'width': '200px' } },
+    { Field: 'branch.name', Header: 'Ngành', IsSearch: true, TypeSearch: 'select', Options: [], style: { 'min-width': '200px', 'width': '200px' } },
+    { Field: 'team.name', Header: 'Tổ', IsSearch: true, TypeSearch: 'select', Options: [], style: { 'min-width': '200px', 'width': '200px' } },
+    { Field: 'line.name', Header: 'Dây chuyền', IsSearch: true, TypeSearch: 'select', Options: [], style: { 'min-width': '200px', 'width': '200px' } },
+    { Field: 'maintenanceCycle', Header: 'Chu kỳ bảo trì', IsSearch: true, TypeSearch: 'select', Options: this.frequencyOptions, style: { 'min-width': '200px', 'width': '200px' } },
     { Field: 'source', Header: 'Nguồn thiết bị', IsSearch: true, TypeSearch: 'text' },
     { Field: 'supplier', Header: 'Nhà cung cấp', IsSearch: true, TypeSearch: 'text' },
     { Field: 'timeRecieve', Header: 'Thời gian tiếp nhận', IsSearch: true, TypeSearch: 'date', style: { 'min-width': '150px' } },
@@ -51,10 +58,37 @@ export class DeviceListComponent {
     { Field: 'createdAt', Header: 'Ngày tạo', IsSearch: true, TypeSearch: 'date', style: { 'min-width': '150px' } },
     { Field: 'updatedAt', Header: 'Ngày cập nhật', IsSearch: true, TypeSearch: 'date', style: { 'min-width': '150px' } },
     { Field: 'description', Header: 'Mô tả', style: { 'max-width': '300px', 'white-space': 'nowrap', 'overflow': 'hidden', 'text-overflow': 'ellipsis' } },
-    { Field: 'status', Header: 'Trạng thái', IsSearch: true, TypeSearch: 'text' },
+    { Field: 'status', Header: 'Trạng thái', IsSearch: true, TypeSearch: 'select', Options: this.statusOptions, style: { 'min-width': '200px', 'width': '200px' } },
   ];
 
-  constructor(public apiService: DeviceService, private dialogService: DialogService) {}
+  constructor(public apiService: DeviceService, private dialogService: DialogService, private deviceGroupService: DeviceGroupService,
+    private branchService: BranchService, private teamService: TeamService, private lineService: LineService
+  ) {}
+
+  ngOnInit() {
+    forkJoin({
+      deviceGroup: this.deviceGroupService.getAll(),
+      branch: this.branchService.getAll(),
+      team: this.teamService.getAll(),
+      line: this.lineService.getAll()
+    }).subscribe(({ deviceGroup, branch, team, line }) => {
+      const groupOptions = deviceGroup.map(g => ({ label: g.name ?? '', value: g.name ?? null }));
+      const branchOptions = branch.map(b => ({ label: b.name ?? '', value: b.name ?? null }));
+      const teamOptions = team.map(t => ({ label: t.name ?? '', value: t.name ?? null }));
+      const lineOptions = line.map(l => ({ label: l.name ?? '', value: l.name ?? null }));
+      this.columns = this.columns.map(col =>
+        col.Field === 'group.name'
+          ? { ...col, Options: groupOptions }
+          : col.Field === 'branch.name'
+          ? { ...col, Options: branchOptions }
+          : col.Field === 'team.name'
+          ? { ...col, Options: teamOptions }
+          : col.Field === 'line.name'
+          ? { ...col, Options: lineOptions }
+          : col
+      );
+    });
+  }
 
   moveDeviceDialog(data: any) {
     this.ref = this.dialogService.open(MoveDeviceDialog, {

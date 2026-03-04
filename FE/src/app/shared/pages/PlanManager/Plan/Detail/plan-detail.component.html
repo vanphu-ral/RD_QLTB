@@ -100,15 +100,15 @@
           <p-select [(ngModel)]="model.plan.approvalWorkflow"
             [options]="listApprovalWorkflow" optionLabel="name" [fluid]="true" [filter]="true" [disabled]="isViewMode || isApprovalMode"
             [showClear]="true" [appendTo]="'body'" id="approvalWorkflow" name="approvalWorkflow" dataKey="id"
-            [required]="model.plan?.planType?.code === PLANTYPE.MAINTENANCE"
-            [invalid]="model.plan?.planType?.code === PLANTYPE.MAINTENANCE && !model.plan.approvalWorkflow">
+            [required]="model.plan.planType?.code === PLANTYPE.MAINTENANCE"
+            [invalid]="model.plan.planType?.code === PLANTYPE.MAINTENANCE && !model.plan.approvalWorkflow">
           </p-select>
           <label for="approvalWorkflow">Kịch bản phê duyệt</label>
         </p-floatlabel>
       </div>
     </div>
 
-    <div class="row my-3" *ngIf="model.plan?.planType?.code != PLANTYPE.MAINTENANCE">
+    <div class="row my-3" *ngIf="model.plan.planType?.code != PLANTYPE.MAINTENANCE">
       <div class="col-6">
         <p-floatlabel variant="on">
           <p-datepicker [(ngModel)]="model.plan.fromDate" appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="fromDate" [fluid]="true"

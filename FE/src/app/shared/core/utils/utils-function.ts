@@ -525,6 +525,18 @@ export class Util {
     }
   }
 
+  static statusRecord() {
+    return [
+      { label: 'Mới tạo', code: 1 },
+      { label: 'Chờ duyệt', code: 2 },
+      { label: 'Đã duyệt', code: 3 },
+      { label: 'Đang thực hiện', code: 4 },
+      { label: 'Đã hoàn thành', code: 5 },
+      { label: 'Bị từ chối', code: 6 },
+      { label: 'Ngày nghỉ', code: 15 }
+    ];
+  }
+
   static statusToSeverity(status: number): string {
     switch (status) {
       case 1:

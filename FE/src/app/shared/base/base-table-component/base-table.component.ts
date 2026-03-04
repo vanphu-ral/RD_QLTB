@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ContentChildren, QueryList, TemplateRef, AfterContentInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, OnInit, ContentChildren, QueryList, TemplateRef, AfterContentInit, ViewChild, ChangeDetectorRef, SimpleChanges } from '@angular/core';
 import { Table, TableLazyLoadEvent } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
@@ -63,6 +63,12 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
     this.selectedColumns = [...this.columns];
     if (!this.isLazy) {
       this.loadData(); // logic cũ
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['columns'] && this.columns) {
+      this.selectedColumns = [...this.columns];
     }
   }
 
