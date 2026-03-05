@@ -63,4 +63,13 @@ public class PlanTargetResultResource {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/by-plan-target/{planTargetId}")
+    public ResponseEntity<List<PlanTargetResultDTO>> getByPlanTarget(
+            @PathVariable Long planTargetId) {
+
+        return ResponseEntity.ok(
+                planTargetResultService.getByPlanTargetId(planTargetId)
+        );
+    }
+
 }

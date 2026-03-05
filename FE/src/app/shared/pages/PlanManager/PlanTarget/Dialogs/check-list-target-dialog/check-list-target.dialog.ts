@@ -39,7 +39,7 @@ export class CheckListTargetDialog {
     }
 
     loadCheckList() {
-        this.planTargetResultService.getAll().subscribe(res => {
+        this.planTargetResultService.getByPlanTargetId(this.data.id).subscribe(res => {
             this.checkList = res;
             this.cdr.detectChanges();
         });

@@ -58,6 +58,15 @@ public class PlanTargetResultService {
         planTargetResultRepository.delete(planTargetResult);
     }
 
+    public List<PlanTargetResultDTO> getByPlanTargetId(Long planTargetId) {
+
+        List<PlanTargetResult> list = planTargetResultRepository.findByPlanTargetDevice_Id(planTargetId);
+
+        return list.stream()
+                .map(planTargetResult -> mapToDTO(planTargetResult, new PlanTargetResultDTO()))
+                .toList();
+    }
+
     private PlanTargetResultDTO mapToDTO(final PlanTargetResult planTargetResult,
                                          final PlanTargetResultDTO dto) {
         dto.setId(planTargetResult.getId());
