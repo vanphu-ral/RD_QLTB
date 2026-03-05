@@ -125,6 +125,7 @@ export class PlanListComponent {
     this.branchService.getAll().subscribe({
       next: (res) => {
         this.listBranchs = res;
+        this.cdr.detectChanges();
       }
     });
     this.apiService.getUsers().subscribe({
@@ -137,6 +138,7 @@ export class PlanListComponent {
               username: user.username
             };
           }).filter(item => !_.isEmpty(item.name)).value();
+        this.cdr.detectChanges();
       }
     });
   }
