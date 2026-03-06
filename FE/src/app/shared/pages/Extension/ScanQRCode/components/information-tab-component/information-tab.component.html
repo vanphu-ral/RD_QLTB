@@ -117,7 +117,10 @@
       </p-tabpanel>
       <!-- Các ngày kiểm tra chưa thực hiện -->
       <p-tabpanel value="3">
-        <p-table [value]="listPlanAudit" dataKey="stt" [paginator]="true" [rows]="10" [resizableColumns]="true"
+        <div class="d-flex justify-content-end mb-2">
+          <p-button styleClass="m-1 w-100" severity="info" (onClick)="addDayCheck()">Thêm ngày kiểm tra</p-button>
+        </div>
+        <p-table [value]="listPlanAudit" dataKey="stt" [resizableColumns]="true"
           [scrollable]="true" scrollHeight="500px">
           <ng-template pTemplate="header">
             <tr>
@@ -141,10 +144,14 @@
               <td>{{ row.dateTest | date:'dd/MM/yyyy' }}</td>
               <td><p-tag [value]="statusToString(row.status)" [severity]="getSeverityStatus(row.status)" /></td>
               <td>
-                <p-button icon="pi pi-check-circle" styleClass="m-1" severity="info" *ngIf="row.status != 15"
-                  (onClick)="checkDevice(row)"></p-button>
-                <p-button icon="pi pi-check" styleClass="m-1" severity="success" title="Hoàn thành"
-                  *ngIf="row.status != 15 && row.status != 1" (onClick)="completeCheckDate(row, $event)"></p-button>
+                <ng-container *appHasRole="['RD_QLTB_ADMIN', 'RD_QLTB_OP', 'RD_QLTB_MANAGER']">
+                  <p-button icon="pi pi-check-circle" styleClass="m-1" severity="info" *ngIf="row.enabledCheck" 
+                    (onClick)="checkDevice(row)"></p-button>
+                  <p-button icon="pi pi-check" styleClass="m-1" severity="success" title="Hoàn thành"
+                    *ngIf="row.enabledCheck && row.status != 1" (onClick)="completeCheckDate(row, $event)"></p-button>
+                  <p-button icon="pi pi-calendar-minus" styleClass="m-1" severity="secondary" title="Ngày nghỉ"
+                    *ngIf="row.enabledCheck" (onClick)="dayOff(row, $event)"></p-button>
+                </ng-container>
               </td>
             </tr>
           </ng-template>
@@ -156,6 +163,9 @@
         </p-table>
       </p-tabpanel>
       <p-tabpanel value="4">
+        <!-- <div class="d-flex justify-content-end mb-2">
+          <p-button styleClass="m-1 w-100" severity="info">Thêm ngày kiểm tra</p-button>
+        </div> -->
         <p-table [value]="listPlanMaintance" dataKey="stt" [paginator]="true" [rows]="10" [resizableColumns]="true"
           [scrollable]="true" scrollHeight="500px">
           <ng-template pTemplate="header">
@@ -235,7 +245,10 @@
     <p-accordion-panel value="3">
       <p-accordion-header>Kiểm tra thiết bị</p-accordion-header>
       <p-accordion-content>
-        <p-table [value]="listPlanAudit" dataKey="stt" [resizableColumns]="true" [scrollable]="true"
+        <div class="d-flex justify-content-center align-items-center mb-2">
+          <p-button styleClass="m-1 w-100" severity="info" (onClick)="addDayCheck()">Thêm ngày kiểm tra</p-button>
+        </div>
+        <p-table [value]="listPlanAudit" dataKey="stt" [scrollable]="true"
           scrollHeight="500px">
           <ng-template pTemplate="header">
             <tr>
@@ -255,10 +268,14 @@
                   [severity]="getSeverityStatus(row.status)" /> <br />
               </td>
               <td>
-                <p-button icon="pi pi-check-circle" styleClass="m-1" severity="info" *ngIf="row.status != 15"
-                  (onClick)="checkDevice(row)"></p-button>
-                <p-button icon="pi pi-check" styleClass="m-1" severity="success" title="Hoàn thành"
-                  *ngIf="row.status != 15 && row.status != 1" (onClick)="completeCheckDate(row, $event)"></p-button>
+                <ng-container *appHasRole="['RD_QLTB_ADMIN', 'RD_QLTB_OP', 'RD_QLTB_MANAGER']">
+                  <p-button icon="pi pi-check-circle" styleClass="m-1" severity="info" *ngIf="row.enabledCheck" 
+                    (onClick)="checkDevice(row)"></p-button>
+                  <p-button icon="pi pi-check" styleClass="m-1" severity="success" title="Hoàn thành"
+                    *ngIf="row.enabledCheck && row.status != 1" (onClick)="completeCheckDate(row, $event)"></p-button>
+                  <p-button icon="pi pi-calendar-minus" styleClass="m-1" severity="secondary" title="Ngày nghỉ"
+                    *ngIf="row.enabledCheck" (onClick)="dayOff(row, $event)"></p-button>
+                </ng-container>
               </td>
             </tr>
           </ng-template>

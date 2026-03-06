@@ -17,6 +17,8 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { PlanResultService } from '../../../../PlanManager/Plan/Service/plan-result.service';
 import { PLANTYPE } from '../../../../../enums/plan-type.enum';
 import { firstValueFrom } from 'rxjs';
+import { AccountService } from '../../../../../core/auth/account/account.service';
+import { AddCheckListDialog } from '../../Dialog/add-check-list-dialog/add-check-list.dialog';
 
 @Component({
   selector: 'app-information-tab',
@@ -39,7 +41,7 @@ export class InformationTabComponent implements OnChanges {
 
   PLANTYPE = PLANTYPE;
 
-  constructor(private cdr: ChangeDetectorRef, private deviceRelocationHistoryService: DeviceRelocationHistoryService, 
+  constructor(private cdr: ChangeDetectorRef, private deviceRelocationHistoryService: DeviceRelocationHistoryService, private accountService: AccountService,
     private planDetailService: PlanDetailService, private errorReportService: ErrorReportService, private planResultService: PlanResultService,
     private dialogService: DialogService, private comfirmService: ConfirmationService, private messageService: MessageService) {
   }
@@ -54,9 +56,6 @@ export class InformationTabComponent implements OnChanges {
 
   // Tab change
   onTabChange(event: any) {
-    console.log(this.model);
-    
-    // if (!this.model?.id) return;
     switch (event) {
       case "0":
         this.loadHistoryMove(this.model.id);
@@ -110,24 +109,73 @@ export class InformationTabComponent implements OnChanges {
           error.timeRepaired
         )
       }));
-      console.log(res); 
-      
       this.cdr.detectChanges();
     });
   }
 
-  loadPlan(qrCode: string) {
+  async loadPlan(qrCode: string) {
     this.listPlanAudit = [];
     this.listPlanMaintance = [];
-    this.planDetailService.getPlansBySerial(qrCode).subscribe(res => {
-      res.forEach((plan, i) => {
-        if (plan.planType.code == PLANTYPE.DAILYCHECK) {
-          plan.planDetails.forEach((detail: any) => {
-            detail.sampleReport = JSON.parse(detail.detail);
-            // Mỗi ngày kiểm tra có nhiều kết quả (planResults)
+    const res = await firstValueFrom(
+      this.planDetailService.getPlansBySerial(qrCode)
+    );
+    res.forEach((plan, i) => {
+      if (plan.planType.code == PLANTYPE.DAILYCHECK) {
+        plan.planDetails.forEach((detail: any) => {
+          detail.sampleReport = JSON.parse(detail.detail);
+          // Mỗi ngày kiểm tra có nhiều kết quả (planResults)
+          // detail.planResults?.forEach((result: any) => {
+          //   this.listPlanAudit.push({
+          //     stt: this.listPlanAudit.length + 1,
+          //     planName: plan.name,
+          //     deviceCode: detail.device?.code,
+          //     deviceName: detail.device?.name,
+          //     userPerformer: plan.userPerformer || detail.manager || 'N/A',
+          //     dateTest: result.dateTest,
+          //     planResultId: result.id,
+          //     plan: detail,
+          //     status: result.status,
+          //     enabledCheck: this.isEnabledCheckDevice(result)
+          //   });
+          // });
+          detail.planResults?.forEach((result: any) => {
+            const row = {
+              stt: this.listPlanAudit.length + 1,
+              planName: plan.name,
+              deviceCode: detail.device?.code,
+              deviceName: detail.device?.name,
+              userPerformer: plan.userPerformer || detail.manager || 'N/A',
+              dateTest: result.dateTest,
+              planResultId: result.id,
+              plan: detail,
+              status: result.status,
+              enabledCheck: false
+            };
+            row.enabledCheck = this.isEnabledCheckDevice(row);
+            this.listPlanAudit.push(row);
+          });
+        });
+        // this.cdr.detectChanges();
+      }
+      if (plan.planType.code == PLANTYPE.MAINTENANCE) {
+        plan.planDetails.forEach((detail: any) => {
+          detail.sampleReport = JSON.parse(detail.detail);
+          if(Util.isEmptyArray(detail.planResults)) {
+            this.listPlanMaintance.push({
+              stt: this.listPlanMaintance.length + 1,
+              planName: plan.name,
+              deviceCode: detail.device?.code,
+              deviceName: detail.device?.name,
+              userPerformer: plan.userPerformer || detail.manager || 'N/A',
+              dateTest: new Date(),
+              plan: detail,
+              status: 1
+            });
+            // this.cdr.detectChanges();
+          }else {
             detail.planResults?.forEach((result: any) => {
-              this.listPlanAudit.push({
-                stt: this.listPlanAudit.length + 1,
+              this.listPlanMaintance.push({
+                stt: this.listPlanMaintance.length + 1,
                 planName: plan.name,
                 deviceCode: detail.device?.code,
                 deviceName: detail.device?.name,
@@ -138,49 +186,12 @@ export class InformationTabComponent implements OnChanges {
                 status: result.status
               });
             });
-          });
-          this.cdr.detectChanges();
-        }
-        if (plan.planType.code == PLANTYPE.MAINTENANCE) {
-          plan.planDetails.forEach((detail: any) => {
-            detail.sampleReport = JSON.parse(detail.detail);
-            // Mỗi ngày kiểm tra có nhiều kết quả (planResults)
-            // { userTest: detail.manager, status: 1, planDetail: detail, dateTest: new Date(), statusRepair: 1 }
-            if(Util.isEmptyArray(detail.planResults)) {
-              this.listPlanMaintance.push({
-                stt: this.listPlanMaintance.length + 1,
-                planName: plan.name,
-                deviceCode: detail.device?.code,
-                deviceName: detail.device?.name,
-                userPerformer: plan.userPerformer || detail.manager || 'N/A',
-                dateTest: new Date(),
-                plan: detail,
-                status: 1
-              });
-              this.cdr.detectChanges();
-            }else {
-              detail.planResults?.forEach((result: any) => {
-                this.listPlanMaintance.push({
-                  stt: this.listPlanMaintance.length + 1,
-                  planName: plan.name,
-                  deviceCode: detail.device?.code,
-                  deviceName: detail.device?.name,
-                  userPerformer: plan.userPerformer || detail.manager || 'N/A',
-                  dateTest: result.dateTest,
-                  planResultId: result.id,
-                  plan: detail,
-                  status: result.status
-                });
-              });
-              this.cdr.detectChanges();
-            }
-          });
-        }
-      });
-      console.log(this.listPlanAudit);
-      
-      this.cdr.detectChanges();
+            // this.cdr.detectChanges();
+          }
+        });
+      }
     });
+    this.cdr.detectChanges();
   }
 
 
@@ -203,6 +214,16 @@ export class InformationTabComponent implements OnChanges {
 
   getSeverityStatus(status: number): string {
     return Util.statusToSeverity(status);
+  }
+
+  isEnabledCheckDevice(row: any) {
+    if (row.status === 15) {
+      return false;
+    }
+    const isPowerUser = this.accountService.hasAnyAuthority(['RD_QLTB_ADMIN', 'RD_QLTB_MANAGER']);
+    const currentUserName = this.accountService.getUser()?.name;
+    const isDirectManager = _.includes(row.userPerformer, currentUserName);
+    return isPowerUser || isDirectManager;
   }
 
   calculateStopTime(start: string, end: string): string {
@@ -293,6 +314,41 @@ export class InformationTabComponent implements OnChanges {
       },
       'Đã hoàn thành đợt kiểm tra',
       'Lỗi khi hoàn thành',
+      this.comfirmService,
+      this.messageService,
+      () => this.loadPlan(this.model.qrCode)
+    )
+  }
+
+  addDayCheck() {
+      const ref = this.dialogService.open(AddCheckListDialog, {
+        header: `Thêm ngày kiểm tra`,
+        width: 'auto',
+        modal: true,
+        closable: true,
+        data: this.listPlanAudit || [],
+      });
+      ref.onClose.subscribe(async (result) => {
+        if (result) {
+          const res = await firstValueFrom(
+            this.planResultService.create(result.plaload)
+          );
+          await this.loadPlan(this.model.qrCode)
+          const newData = _.find(this.listPlanAudit, x => x.planResultId === res);
+          this.checkDevice(newData);
+        }
+      });
+  }
+
+  dayOff(row: any, event: any) {
+    Util.confirmAndExecute(
+      event,
+      'Bạn có chắc ngày này là ngày nghỉ?',
+      () => {
+        return this.planResultService.updateStatus(row.planResultId as number, 15);
+      },
+      'Đã chuyển ngày kiểm tra sang ngày nghỉ',
+      'Lỗi khi chuyển ngày kiểm tra sang ngày nghỉ',
       this.comfirmService,
       this.messageService,
       () => this.loadPlan(this.model.qrCode)

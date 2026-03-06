@@ -28,9 +28,8 @@ export class CheckDeviceDialog {
     data: any;
     model: PlanCheck = new PlanCheck();
     listCriterial: PlanResultDetail[] = [];
-    listFrequencies: any[] = ["Ngày", "Tuần", "Tháng", "Quỹ", "6 Tháng", "Năm"];
-    listInspectionSessions: any[] = ["Đầu ca", "Giữa ca", "Cuối ca", "Hằng tuần"];
-    listExaminationTimes: any[] = ["Ca 1", "Ca 2", "Ngày"];
+    listInspectionSessions: any[] = Util.listInspectionSession();
+    listExaminationTimes: any[] = Util.listExaminationTime();
     listResult: any[] = ["OK", "Đã điều chỉnh", "Có bất thường"];
     listStatus: any[] = [{ label: 'Đã kiểm tra', value: 1 }, { label: 'Chưa kiểm tra', value: 2 }, { label: 'Không kiểm tra', value: 3 }];
     listSupplyReplaceHistory: SupplyReplacementHistory[] = [];
@@ -74,6 +73,9 @@ export class CheckDeviceDialog {
                         criticalCode: x.criterial?.code || null,
                         criticalName: x.criterial?.name || null,
                         frequency: x.frequency,
+                        examinationTimeRequired: x.examinationTime,
+                        inspectionSession: x.frequency,
+                        examinationTime: x.examinationTime,
                         step: x.step,
                         performer: x.performer,
                         result: "OK",
@@ -152,6 +154,8 @@ export class CheckDeviceDialog {
             this.groupedData = [];
             return;
         }
+        console.log(this.model.planResultDetail);
+        
         const groups = _.groupBy(this.model.planResultDetail, (item) => {
             return `${item.criticalGroup}|${item.step}`;
         });
@@ -164,6 +168,8 @@ export class CheckDeviceDialog {
                 items: groups[key]                 
             };
         });
+        console.log(this.groupedData);
+        
     }
 
     onGroupResultChange(group: any, newValue: any) {

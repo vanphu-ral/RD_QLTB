@@ -34,6 +34,9 @@ public class KeyMapping {
     @Column
     private String performer;
 
+    @Column
+    private String examinationTime;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sample_report_id", nullable = false)
     private SampleReport sampleReport;

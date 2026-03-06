@@ -31,7 +31,7 @@ import { PLANTYPE } from '../../../../enums/plan-type.enum';
 })
 export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
 
-  listFrequencies: any[] = ["Ngày", "Tuần", "Tháng", "Quỹ", "6 Tháng", "Năm"];
+  listFrequencies: any[] = Util.listFrequency();;
   listTypes: any[] = [];
   listBranchs: any[] = [];
   listFactory: any[] = []

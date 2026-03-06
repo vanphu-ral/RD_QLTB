@@ -49,7 +49,7 @@ export class PlanListComponent {
   currentPage = 0;
   filters: any = {};
 
-  frequencyOptions: any[] = ["Ngày", "Tuần", "Tháng", "Quỹ", "6 Tháng", "Năm"];
+  frequencyOptions: any[] = Util.listFrequency();
   listBranchs: any[] = [];
   listUser: any[] = [];
   listStatus: any[] = Util.statusRecord();

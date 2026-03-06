@@ -35,9 +35,6 @@ export class CheckListDeviceDialog {
     ) {
         this.data = config.data.planDetail;
         this.plan = config.data.plan;
-        console.log(this.data);
-        console.log(this.plan);
-
     }
 
     ngOnInit() {
@@ -46,20 +43,22 @@ export class CheckListDeviceDialog {
 
     loadDeviceCheckList() {
         this.planResultService.getByPlanDetailId(this.data.id).subscribe((res) => {
-            if (this.plan.planType.code == PLANTYPE.DAILYCHECK) {
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                this.checkList = res.filter((item: any) => {
-                    const testDate = new Date(item.dateTest);
-                    const compareDate = new Date(testDate.getTime());
-                    compareDate.setHours(0, 0, 0, 0);
-                    return compareDate <= today;
-                });
-                this.checkDayOff();
-            }else {
-                this.checkList = res;
-            }
-            console.log(res);
+            this.checkList = res;
+            this.checkDayOff();
+            // if (this.plan.planType.code == PLANTYPE.DAILYCHECK) {
+            //     const today = new Date();
+            //     today.setHours(0, 0, 0, 0);
+            //     this.checkList = res.filter((item: any) => {
+            //         const testDate = new Date(item.dateTest);
+            //         const compareDate = new Date(testDate.getTime());
+            //         compareDate.setHours(0, 0, 0, 0);
+            //         return compareDate <= today;
+            //     });
+            //     this.checkDayOff();
+            // }else {
+            //     this.checkList = res;
+            // }
+            // console.log(res);
             
             this.cdr.detectChanges();
         });

@@ -62,6 +62,16 @@ export class ListDeviceDialog {
         })
     }
 
+    onDeviceChange(row: any, index: number) {
+        const selectedDevice = this.listDeviceOptions.find(device => device.id === row.device.id);
+        if (selectedDevice) {
+            row.manager = _.split(selectedDevice.userManager, ',');
+            row.qrCode = selectedDevice.qrCode;
+        } else {
+            row.manager = [];
+            row.qrCode = null;
+        }
+    }
 
 
     addNewRow() {

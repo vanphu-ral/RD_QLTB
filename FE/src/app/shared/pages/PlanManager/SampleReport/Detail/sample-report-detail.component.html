@@ -111,6 +111,7 @@
             <th>Tiêu chí</th>
             <th>Người thực hiện</th>
             <th>Tần suất</th>
+            <th>Ca kiểm tra</th>
             <th *ngIf="!(isViewMode ||isApprovalMode)">Thao tác</th>
           </tr>
         </ng-template>
@@ -139,6 +140,11 @@
                   [showClear]="true" [appendTo]="'body'" id="frequency-{{ i }}" name="frequency-{{ i }}">
                 </p-select>
               </td>
+              <td>
+                <p-select [(ngModel)]="row.examinationTime" [options]="listExaminationTimes" [fluid]="true" [disabled]="isViewMode || isApprovalMode"
+                  [showClear]="true" [appendTo]="'body'" id="examinationTime-{{ i }}" name="examinationTime-{{ i }}">
+                </p-select>
+              </td>
               <td class="text-center" *ngIf="!(isViewMode ||isApprovalMode)">
                 <p-button icon="pi pi-trash" severity="danger" (onClick)="deleteRow(i)">
                 </p-button>
@@ -152,12 +158,13 @@
               <td>{{ row.criterial?.name }}</td>
               <td>{{ row.performer }}</td>
               <td>{{ row.frequency }}</td>
+              <td>{{ row.examinationTime }}</td>
             </tr>
           </ng-template>
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td colspan="6" class="text-center">Chưa có Tiêu chí nào được thêm</td>
+            <td colspan="99" class="text-center">Chưa có Tiêu chí nào được thêm</td>
           </tr>
         </ng-template>
       </p-table>

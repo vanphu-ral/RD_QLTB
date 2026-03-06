@@ -627,6 +627,21 @@ export class Util {
     ];
   }}
 
+  // List Tần suất 
+  static listFrequency(): [string, string, string, string, string, string] { 
+    return ["Ngày", "Tuần", "Tháng", "Quỹ", "6 Tháng", "Năm"];
+  }
+
+  // List Thời gian kiểm tra
+  static listExaminationTime(): [string, string, string] {
+    return ["Ca 1", "Ca 2", "Ngày"];
+  }
+
+  // List Ca kiểm tra
+  static listInspectionSession(): [string, string, string, string, string] {
+    return ["Đầu ca", "Giữa ca", "Cuối ca", "Hằng tuần", "Ngày"];
+  }
+
   /**
    * Get user by username
    */

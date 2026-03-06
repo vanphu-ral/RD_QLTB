@@ -24,7 +24,7 @@
                     <td>
                         <p-select [(ngModel)]="row.device" [options]="listDeviceOptions" optionLabel="name" [fluid]="true"
                             [showClear]="true" [appendTo]="'body'" [filter]="true"
-                            id="device-{{ i }}" name="device-{{ i }}" dataKey="id">
+                            id="device-{{ i }}" name="device-{{ i }}" dataKey="id" (ngModelChange)="onDeviceChange(row, i)">
                         </p-select>
                     </td>
                     <td>

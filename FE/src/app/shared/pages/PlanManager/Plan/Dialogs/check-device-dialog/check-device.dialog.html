@@ -67,7 +67,8 @@
                         <th style="width: 70px">STT</th>
                         <th>Tên Tiêu chí / Nhóm</th>
                         <th style="width: 100px">Tần suất</th>
-                        <th style="width: 120px">Người thực hiện</th>
+                        <th style="width: 100px">Ca YC</th>
+                        <th style="width: 100px">Người KT</th>
 
                         <th *ngIf="data.plan.planType.code == PLANTYPE.DAILYCHECK" style="width: 140px">Ca KT</th>
                         <th *ngIf="data.plan.planType.code == PLANTYPE.DAILYCHECK" style="width: 140px">Thời gian KT
@@ -86,7 +87,7 @@
 
                 <ng-template pTemplate="body" let-group let-groupIndex="rowIndex">
                     <tr style="background-color: #f1f5f9; font-weight: bold;">
-                        <td colspan="4" class="text-primary">
+                        <td colspan="5" class="text-primary">
                             <div class="d-flex align-items-center">
                                 <p-badge [value]="'Bước ' + group.step" severity="info" class="me-2"></p-badge>
                                 <span>NHÓM: {{ group.groupName }}</span>
@@ -124,9 +125,9 @@
                         <td class="text-center text-muted">{{ groupIndex + 1 }}.{{ i + 1 }}</td>
                         <td class="ps-4">
                             <span class="font-medium">{{ row.criticalName }}</span>
-                            <!-- <div class="text-xs text-secondary">{{ row.criticalCode }}</div> -->
                         </td>
                         <td>{{ row.frequency }}</td>
+                        <td>{{ row.examinationTimeRequired }}</td>
                         <td>{{ row.performer }}</td>
 
                         <ng-container *ngIf="data.plan.planType.code == PLANTYPE.DAILYCHECK">
