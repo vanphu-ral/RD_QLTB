@@ -52,6 +52,9 @@ public class PlanResult {
     private Set<PlanResultDetail> planResultPlanResultDetails = new HashSet<>();
 
     @OneToMany(mappedBy = "planResult")
+    private Set<PlanResultCheckLog> planResultCheckLogs = new HashSet<>();
+
+    @OneToMany(mappedBy = "planResult")
     private Set<ErrorReport> planResultErrorReports = new HashSet<>();
 
     @OneToMany(mappedBy = "planResult")

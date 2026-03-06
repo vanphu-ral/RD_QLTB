@@ -39,4 +39,5 @@ public class PlanResultDTO {
     private String statusRepair;
     private PlanDetail planDetail;
     private List<PlanResultDetailDTO> planResultDetails;
+    private List<PlanResultCheckLogDTO> planResultCheckLogDTOS;
 }
