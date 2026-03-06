@@ -633,8 +633,8 @@ export class Util {
   }
 
   // List Thời gian kiểm tra
-  static listExaminationTime(): [string, string, string] {
-    return ["Ca 1", "Ca 2", "Ngày"];
+  static listExaminationTime(): [string, string, string, string] {
+    return ["Ca 1", "Ca 2", "Ca 3", "Ngày"];
   }
 
   // List Ca kiểm tra
