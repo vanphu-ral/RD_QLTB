@@ -55,10 +55,17 @@
         </div>
 
         <div class="d-flex justify-content-between align-items-center mt-2 mb-4">
-            <div class="d-flex align-items-center gap-2">
-                <span class="font-bold">Lọc theo ca:</span>
-                <p-select [options]="listExaminationTimes" [(ngModel)]="selectedShift" placeholder="Tất cả ca" 
-                    [showClear]="true" (onChange)="onShiftFilterChange($event)" [style]="{'min-width': '200px'}"></p-select>
+            <div class="d-flex align-items-center gap-3">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="font-bold">Lọc theo ca:</span>
+                    <p-select [options]="listExaminationTimes" [(ngModel)]="selectedShift" placeholder="Tất cả ca" 
+                        [showClear]="true" (onChange)="onShiftFilterChange($event)" [style]="{'min-width': '200px'}"></p-select>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="font-bold">Thời gian:</span>
+                    <p-select [options]="listInspectionSessions" [(ngModel)]="selectedSession" placeholder="Tất cả thời gian" 
+                        [showClear]="true" (onChange)="onSessionFilterChange($event)" [style]="{'min-width': '200px'}"></p-select>
+                </div>
             </div>
             <div class="d-flex gap-2">
                 <p-button label="Khai báo vật tư thay thế" icon="pi pi-wrench" severity="info"
@@ -246,10 +253,17 @@
 
         <!-- Buttons khai báo stack dọc, full width -->
         <div class="d-flex flex-column gap-2 mt-2 mb-4">
-            <div class="mb-2">
-                <span class="font-bold d-block mb-1">Lọc theo ca:</span>
-                <p-select [options]="listExaminationTimes" [(ngModel)]="selectedShift" placeholder="Tất cả ca" 
-                    [showClear]="true" (onChange)="onShiftFilterChange($event)" [fluid]="true"></p-select>
+            <div class="row">
+                <div class="col-6">
+                    <span class="text-xs font-bold d-block mb-1">Lọc theo ca:</span>
+                    <p-select [options]="listExaminationTimes" [(ngModel)]="selectedShift" placeholder="Tất cả ca" 
+                        [showClear]="true" (onChange)="onShiftFilterChange($event)" [fluid]="true"></p-select>
+                </div>
+                <div class="col-6">
+                    <span class="text-xs font-bold d-block mb-1">Thời gian:</span>
+                    <p-select [options]="listInspectionSessions" [(ngModel)]="selectedSession" placeholder="Tất cả" 
+                        [showClear]="true" (onChange)="onSessionFilterChange($event)" [fluid]="true"></p-select>
+                </div>
             </div>
             <p-button label="Khai báo vật tư thay thế" icon="pi pi-wrench" severity="info"
                 (onClick)="declareSupplyReplacement()" styleClass="w-100"></p-button>

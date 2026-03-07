@@ -42,6 +42,7 @@ export class CheckDeviceDialog {
     isMobile: boolean = false;
 
     selectedShift: any = null;
+    selectedSession: any = null;
 
     constructor(
         public ref: DynamicDialogRef,
@@ -172,9 +173,11 @@ export class CheckDeviceDialog {
             return;
         }
         
-        const filteredDetails = this.model.planResultDetail.filter((item: any) => 
-            item.examinationTimeRequired === this.selectedShift
-        );
+        const filteredDetails = this.model.planResultDetail.filter((item: any) => {
+            const matchesShift = item.examinationTimeRequired === this.selectedShift;
+            const matchesSession = !this.selectedSession || item.inspectionSession === this.selectedSession;
+            return matchesShift && matchesSession;
+        });
         
         const groups = _.groupBy(filteredDetails, (item) => {
             return `${item.criticalGroup}|${item.step}`;
@@ -193,6 +196,12 @@ export class CheckDeviceDialog {
 
     onShiftFilterChange(event: any) {
         this.selectedShift = event.value;
+        this.updateGroupedData();
+        this.cdr.detectChanges();
+    }
+
+    onSessionFilterChange(event: any) {
+        this.selectedSession = event.value;
         this.updateGroupedData();
         this.cdr.detectChanges();
     }
