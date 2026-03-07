@@ -8,6 +8,7 @@ export class PlanResultDetail {
     performer?: string;
     inspectionSession?: string;
     examinationTime?: string;
+    examinationTimeRequired?: string;
     type?: string;
     result?: string;
     note?: string;
@@ -17,6 +18,7 @@ export class PlanResultDetail {
     committee?: string;
     comment?: string;
     status?: number;
+    isCheck?: boolean;
     createdBy?: string;
     createdAt?: Date;
     updatedBy?: string;

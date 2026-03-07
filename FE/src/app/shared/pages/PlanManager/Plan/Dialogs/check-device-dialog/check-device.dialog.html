@@ -54,11 +54,18 @@
             </div>
         </div>
 
-        <div class="d-flex justify-content-end mt-2 mb-4">
-            <p-button label="Khai báo vật tư thay thế" icon="pi pi-wrench" severity="info"
-                (onClick)="declareSupplyReplacement()"></p-button>
-            <p-button label="Khai báo sự cố" icon="pi pi-exclamation-circle" severity="danger" class="mx-2"
-                (onClick)="declareIssue()"></p-button>
+        <div class="d-flex justify-content-between align-items-center mt-2 mb-4">
+            <div class="d-flex align-items-center gap-2">
+                <span class="font-bold">Lọc theo ca:</span>
+                <p-select [options]="listExaminationTimes" [(ngModel)]="selectedShift" placeholder="Tất cả ca" 
+                    [showClear]="true" (onChange)="onShiftFilterChange($event)" [style]="{'min-width': '200px'}"></p-select>
+            </div>
+            <div class="d-flex gap-2">
+                <p-button label="Khai báo vật tư thay thế" icon="pi pi-wrench" severity="info"
+                    (onClick)="declareSupplyReplacement()"></p-button>
+                <p-button label="Khai báo sự cố" icon="pi pi-exclamation-circle" severity="danger"
+                    (onClick)="declareIssue()"></p-button>
+            </div>
         </div>
         <div class="table-responsive">
             <p-table [value]="groupedData" responsiveLayout="scroll" [tableStyle]="{'min-width': '1200px'}">
@@ -81,7 +88,8 @@
                         <th *ngIf="data.plan.planType.code == PLANTYPE.MAINTENANCE" style="width: 200px">Ghi chú</th>
 
                         <th style="width: 180px">Kết quả đánh giá</th>
-                        <th class="text-center" style="width: 100px">Không KT</th>
+                        <th class="text-center" style="width: 80px">Đã lưu</th>
+                        <th class="text-center" style="width: 80px">Không KT</th>
                     </tr>
                 </ng-template>
 
@@ -115,6 +123,8 @@
                             <p-select [options]="listResult" placeholder="Kết quả nhóm" [fluid]="true" appendTo="body"
                                 (onChange)="onGroupResultChange(group, $event.value)"></p-select>
                         </td>
+
+                        <td></td>
 
                         <td class="text-center">
                             <p-checkbox [binary]="true" (onChange)="onGroupStatusChange(group, $event)"></p-checkbox>
@@ -158,6 +168,9 @@
                                 [disabled]="row.status == 0"></p-select>
                         </td>
                         <td class="text-center">
+                            <p-checkbox [(ngModel)]="row.isCheck" [binary]="true" [disabled]="true"></p-checkbox>
+                        </td>
+                        <td class="text-center">
                             <p-checkbox [(ngModel)]="row.status" [binary]="true" [trueValue]="0" [falseValue]="1"
                                 (onChange)="onRowCheckChange(row)"></p-checkbox>
                         </td>
@@ -187,14 +200,57 @@
                     <label for="deviceCode">Mã thiết bị</label>
                 </p-floatlabel>
             </div>
-            <!-- ... lặp cho tất cả fields khác, dùng col-12 mb-3 để spacing -->
-        </div>
-        <div class="row my-3">
-            <!-- ... fields thứ hai, tương tự col-12 mb-3 -->
+
+            <div class="col-12 mb-3">
+                <p-floatlabel variant="on">
+                    <input pInputText id="deviceName" name="deviceName" [(ngModel)]="data.device.device.name"
+                        autocomplete="off" [fluid]="true" [disabled]="true" />
+                    <label for="deviceName">Tên thiết bị</label>
+                </p-floatlabel>
+            </div>
+
+            <div class="col-12 mb-3">
+                <p-floatlabel variant="on">
+                    <input pInputText id="qrCode" name="qrCode" [(ngModel)]="data.device.qrCode" autocomplete="off"
+                        [fluid]="true" [disabled]="true" />
+                    <label for="qrCode">qrCode</label>
+                </p-floatlabel>
+            </div>
+
+            <div class="col-12 mb-3">
+                <p-floatlabel variant="on">
+                    <input pInputText id="sampleReportName" name="sampleReportName"
+                        [(ngModel)]="data.device.sampleReport.name" autocomplete="off" [fluid]="true"
+                        [disabled]="true" />
+                    <label for="sampleReportName">Mẫu biên bản</label>
+                </p-floatlabel>
+            </div>
+
+            <div class="col-12 mb-3">
+                <p-floatlabel variant="on">
+                    <p-datepicker [(ngModel)]="data.planResult.dateTest" appDateConvert [iconDisplay]="'input'"
+                        [showIcon]="true" name="dateTest" inputId="dateTest" [dateFormat]="'dd-mm-yy'"
+                        appendTo="body" [fluid]="true" [disabled]="true" />
+                    <label for="dateTest">Ngày đánh giá</label>
+                </p-floatlabel>
+            </div>
+
+            <div class="col-12 mb-3">
+                <p-floatlabel variant="on">
+                    <input pInputText id="userTest" name="userTest" [(ngModel)]="data.planResult.userTest"
+                        autocomplete="off" [fluid]="true" [disabled]="true" />
+                    <label for="userTest">Người đánh giá</label>
+                </p-floatlabel>
+            </div>
         </div>
 
         <!-- Buttons khai báo stack dọc, full width -->
         <div class="d-flex flex-column gap-2 mt-2 mb-4">
+            <div class="mb-2">
+                <span class="font-bold d-block mb-1">Lọc theo ca:</span>
+                <p-select [options]="listExaminationTimes" [(ngModel)]="selectedShift" placeholder="Tất cả ca" 
+                    [showClear]="true" (onChange)="onShiftFilterChange($event)" [fluid]="true"></p-select>
+            </div>
             <p-button label="Khai báo vật tư thay thế" icon="pi pi-wrench" severity="info"
                 (onClick)="declareSupplyReplacement()" styleClass="w-100"></p-button>
             <p-button label="Khai báo sự cố" icon="pi pi-exclamation-circle" severity="danger"
@@ -229,10 +285,16 @@
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <span class="font-bold text-primary">{{ groupIndex + 1 }}.{{ i + 1 }} - {{ row.criticalName
                                 }}</span>
-                            <div class="d-flex align-items-center gap-1">
-                                <span class="text-xs text-gray-500">Không KT</span>
-                                <p-checkbox [(ngModel)]="row.status" [binary]="true" [trueValue]="0" [falseValue]="1"
-                                    (onChange)="onRowCheckChange(row)"></p-checkbox>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="d-flex align-items-center gap-1">
+                                    <span class="text-xs text-gray-500">Đã lưu</span>
+                                    <p-checkbox [(ngModel)]="row.isCheck" [binary]="true" [disabled]="true"></p-checkbox>
+                                </div>
+                                <div class="d-flex align-items-center gap-1">
+                                    <span class="text-xs text-gray-500">Không KT</span>
+                                    <p-checkbox [(ngModel)]="row.status" [binary]="true" [trueValue]="0" [falseValue]="1"
+                                        (onChange)="onRowCheckChange(row)"></p-checkbox>
+                                </div>
                             </div>
                         </div>
 

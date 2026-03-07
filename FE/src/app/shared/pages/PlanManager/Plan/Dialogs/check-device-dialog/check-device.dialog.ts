@@ -41,6 +41,8 @@ export class CheckDeviceDialog {
 
     isMobile: boolean = false;
 
+    selectedShift: any = null;
+
     constructor(
         public ref: DynamicDialogRef,
         public config: DynamicDialogConfig,
@@ -63,33 +65,48 @@ export class CheckDeviceDialog {
     }
 
     ngOnInit() {
+        // 1. Luôn lấy bộ khung đầy đủ từ template gốc trước
+        const detail = JSON.parse(this.data.device.detail);
+        const fullTemplate = detail.sampleReportKeyMappings.map((x: any) => {
+            return {
+                criticalGroup: x.criterial.criterialGroup.name || null,
+                criticalCode: x.criterial?.code || null,
+                criticalName: x.criterial?.name || null,
+                frequency: x.frequency,
+                examinationTimeRequired: x.examinationTime,
+                inspectionSession: x.frequency,
+                examinationTime: x.examinationTime,
+                step: x.step,
+                performer: x.performer,
+                result: "OK",
+                status: 1
+            };
+        });
+
         this.planResultService.getEvaluationByPlanDetailId(this.data.planResult.id).subscribe(res => {
-            if(Util.isEmptyArray(res.planResultDetail)) {
-                const detail = JSON.parse(this.data.device.detail);
-                console.log(detail);
-                this.model.planResultDetail = detail.sampleReportKeyMappings.map((x: any) => {
-                    return {
-                        criticalGroup: x.criterial.criterialGroup.name || null,
-                        criticalCode: x.criterial?.code || null,
-                        criticalName: x.criterial?.name || null,
-                        frequency: x.frequency,
-                        examinationTimeRequired: x.examinationTime,
-                        inspectionSession: x.frequency,
-                        examinationTime: x.examinationTime,
-                        step: x.step,
-                        performer: x.performer,
-                        result: "OK",
-                        status: 1
-                    };
-                });
-            }else {
+            if (res && !Util.isEmptyArray(res.planResultDetail)) {
+                // 2. Nếu đã có dữ liệu từ server (có thể là của ca khác đã lưu)
+                const savedDetails = res.planResultDetail;
                 this.model = res;
-                this.cdr.detectChanges();
+                
+                // Merge: Duyệt qua template gốc, nếu tiêu chí nào đã có kết quả lưu thì lấy kết quả đó
+                this.model.planResultDetail = fullTemplate.map((templateItem: any) => {
+                    // Tìm kiếm dựa trên cả mã tiêu chí VÀ ca yêu cầu (examinationTimeRequired)
+                    const savedItem = savedDetails.find((s: any) => 
+                        s.criticalCode === templateItem.criticalCode && 
+                        (s.examinationTimeRequired === templateItem.examinationTimeRequired || s.examinationTime === templateItem.examinationTimeRequired)
+                    );
+                    // Nếu có savedItem và có id thì đánh dấu là đã lưu (isCheck = true)
+                    return savedItem ? { ...templateItem, ...savedItem, isCheck: !!savedItem.id } : { ...templateItem, isCheck: false };
+                });
+            } else {
+                // 3. Nếu chưa có dữ liệu thì dùng toàn bộ template gốc
+                this.model.planResultDetail = fullTemplate.map((x: any) => ({ ...x, isCheck: false }));
             }
+            
             this.updateGroupedData();
             this.cdr.detectChanges();
         });
-        
     }
 
     declareSupplyReplacement() {
@@ -150,13 +167,16 @@ export class CheckDeviceDialog {
 
 
     updateGroupedData() {
-        if (!this.model.planResultDetail) {
+        if (!this.model.planResultDetail || !this.selectedShift) {
             this.groupedData = [];
             return;
         }
-        console.log(this.model.planResultDetail);
         
-        const groups = _.groupBy(this.model.planResultDetail, (item) => {
+        const filteredDetails = this.model.planResultDetail.filter((item: any) => 
+            item.examinationTimeRequired === this.selectedShift
+        );
+        
+        const groups = _.groupBy(filteredDetails, (item) => {
             return `${item.criticalGroup}|${item.step}`;
         });
         this.groupedData = Object.keys(groups).map(key => {
@@ -168,8 +188,13 @@ export class CheckDeviceDialog {
                 items: groups[key]                 
             };
         });
-        console.log(this.groupedData);
         
+    }
+
+    onShiftFilterChange(event: any) {
+        this.selectedShift = event.value;
+        this.updateGroupedData();
+        this.cdr.detectChanges();
     }
 
     onGroupResultChange(group: any, newValue: any) {
@@ -208,10 +233,21 @@ export class CheckDeviceDialog {
     }
 
     submit() {
-        this.model.planResult = this.data.planResult;
-        if(Array.isArray(this.model.planResult.userTest)) {
-            this.model.planResult.userTest = JSON.stringify(this.model.planResult.userTest);
+        if (!this.selectedShift) {
+            Util.toastMessage("Vui lòng chọn ca kiểm tra trước khi lưu", "error");
+            return;
         }
+
+        const submitModel = _.cloneDeep(this.model);
+        submitModel.planResult = this.data.planResult;
+        
+        if(Array.isArray(submitModel.planResult.userTest)) {
+            submitModel.planResult.userTest = JSON.stringify(submitModel.planResult.userTest);
+        }
+
+        // Chỉ gửi đi các tiêu chí thuộc ca đang chọn để tránh đánh dấu sai trạng thái "Đã lưu" cho các ca khác
+        submitModel.planResultDetail = this.model.planResultDetail.filter((x: any) => x.examinationTimeRequired === this.selectedShift);
+
         this.listSupplyReplaceHistory = this.listSupplyReplaceHistory.map(x => {
             return {
                 ...x,
@@ -220,7 +256,7 @@ export class CheckDeviceDialog {
                 deviceId: this.data.device.device.id
             }
         });
-        this.planResultService.saveEvaluation(this.model).subscribe({
+        this.planResultService.saveEvaluation(submitModel).subscribe({
             next: (res) => {
                 Util.showSuccessMessage("Lưu kết quả kiểm tra thành công");
                 this.ref.close(true);
