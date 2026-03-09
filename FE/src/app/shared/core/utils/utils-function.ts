@@ -638,8 +638,8 @@ export class Util {
   }
 
   // List Ca kiểm tra
-  static listInspectionSession(): [string, string, string, string, string, string] {
-    return ["Đầu ca", "Giữa ca", "Cuối ca", "Hằng tuần", "Hằng ngày", "Hằng Năm"];
+  static listInspectionSession(): [string, string, string, string, string, string, string, string] {
+    return ["Đầu ca", "Giữa ca", "Cuối ca", "Hằng ngày", "Hằng tuần", "Hằng Tháng", "Hằng Quỹ", "Hằng Năm"];
   }
 
   /**
