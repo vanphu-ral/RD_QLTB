@@ -6,11 +6,14 @@ import { CommonModule } from '@angular/common';
 import { InformationTabComponent } from "../components/information-tab-component/information-tab.component";
 import { DeviceService } from '../../../DeviceManager/Device/Service/device.service';
 import { Device } from '../../../../models/DeviceManager/device.model';
+import { DialogService } from 'primeng/dynamicdialog';
+import { SearchDeviceDialog } from '../Dialog/search-device-dialog/search-device.dialog';
 
 @Component({
   selector: 'app-scan-qr-code',
   standalone: true,
   imports: [SharedModule, CommonModule, InformationTabComponent],
+  providers: [DialogService],
   templateUrl: './scan-qr-code.component.html',
   styleUrls: ['./scan-qr-code.component.scss']
 })
@@ -29,7 +32,7 @@ export class ScanQrCodeComponent {
 
   device: any = { line: {} };
 
-  constructor(private cdr: ChangeDetectorRef, private deviceService: DeviceService) {
+  constructor(private cdr: ChangeDetectorRef, private deviceService: DeviceService, private dialogService: DialogService) {
   }
 
   ngOnInit(): void {
@@ -117,5 +120,21 @@ export class ScanQrCodeComponent {
     });
   }
 
+  openSearchDialog() {
+    const ref = this.dialogService.open(SearchDeviceDialog, {
+      header: 'Tìm kiếm thiết bị theo Ngành/Tổ/Dây chuyền',
+      width: '80%',
+      modal: true,
+      closable: true,
+    });
+    ref.onClose.subscribe((device: any) => {
+      if (device) {
+        this.device = device;
+        this.device.DateUseAndInstall = `${new Date(this.device.dateManufacture).getFullYear()} - ${new Date(this.device.installationDate).getFullYear()}`;
+        this.device.displayLocation = device.line?.name || device.team?.name || device.branch?.name || '';
+        this.cdr.detectChanges();
+      }
+    });
+  }
 
-}
+}
