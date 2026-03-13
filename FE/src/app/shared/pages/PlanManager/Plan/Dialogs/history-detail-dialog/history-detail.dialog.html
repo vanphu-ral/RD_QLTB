@@ -1,0 +1,42 @@
+<div class="p-1">
+
+    <div class="table-responsive">
+        <p-table [value]="data.content.planResultDetail" responsiveLayout="scroll">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>STT</th>
+                    <th>Bước</th>
+                    <th>Nhóm tiêu chí</th>
+                    <th>Tên tiêu chí</th>
+                    <th>Thời gian kiểm tra</th>
+                    <th>Kết quả</th>
+                    <th>Ghi chú</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-row let-i="rowIndex">
+                <tr>
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ row.step }}</td>
+                    <td>{{ row.criticalGroup }}</td>
+                    <td>{{ row.criticalName }}</td>
+                    <td>{{ row.frequency }}</td>
+                    <td>{{ row.result }}</td>
+                    <td>{{ row.note }}</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="99" class="text-center">Chưa có đợt kiểm tra nào</td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <p-button label="Đóng" (onClick)="close()"></p-button>
+    </div>
+</div>
+<p-confirmDialog></p-confirmDialog>
+<p-toast></p-toast>

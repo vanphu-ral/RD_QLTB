@@ -167,7 +167,7 @@ export class PlanTargetDetailComponent extends BasePageComponent<PlanTarget> {
         if (typeof this.model.listItems !== 'string') this.model.listItems = JSON.stringify(this.model.listItems);
         this.apiService.update(this.model.id!, this.model).subscribe({
           next: (id) => {
-            this.apiService.createApprovalEntity({ entityId: this.model.id, workflowId: this.model.approvalWorkflow.id }, 'plans').subscribe({
+            this.apiService.createApprovalEntity({ entityId: this.model.id, workflowId: this.model.approvalWorkflow.id }, 'plan_targets').subscribe({
               next: () => {
                 Util.ConfirmMessage('Đã sửa và gửi duyệt thành công', 'success');
                 this.navigationService.back();

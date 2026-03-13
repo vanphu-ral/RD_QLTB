@@ -16,6 +16,8 @@ import { SupplyReplacementHistory } from "../../../../../models/PlanManger/suppl
 import { SupplyDetailService } from "../../../../DeviceManager/Supply/Service/supply-detail.service";
 import { DeviceService } from "../../../../DeviceManager/Device/Service/device.service";
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { PlanResultCheckLogService } from "../../Service/plan-result-check-log.service";
+import { CheckHistoryDialog } from "../check-history-dialog/check-history.dialog";
 
 @Component({
     selector: 'app-check-device-dialog',
@@ -49,6 +51,7 @@ export class CheckDeviceDialog {
         public config: DynamicDialogConfig,
         private cdr: ChangeDetectorRef,
         private keyMappingService: KeyMappingService,
+        private planResultCheckLogService: PlanResultCheckLogService,
         private dialogService: DialogService,
         private planResultService: PlanResultService,
         private deviceService: DeviceService,
@@ -241,6 +244,16 @@ export class CheckDeviceDialog {
         });
     }
 
+    viewCheckHistory() {
+        const checkHistoryDialog = this.dialogService.open(CheckHistoryDialog, {
+            header: `Lịch sử kiểm tra`,
+            width: 'auto',
+            modal: true,
+            closable: true,
+            data: this.data.planResult,
+        });
+    }
+
     submit() {
         if (!this.selectedShift) {
             Util.toastMessage("Vui lòng chọn ca kiểm tra trước khi lưu", "error");
@@ -269,6 +282,17 @@ export class CheckDeviceDialog {
             next: (res) => {
                 Util.showSuccessMessage("Lưu kết quả kiểm tra thành công");
                 this.ref.close(true);
+            }
+        });
+        const planResultCheckLog = {
+            inspection: this.selectedShift,
+            content: JSON.stringify(submitModel),
+            status: 1,
+            planResult: {id: this.data.planResult.id},
+        }
+        this.planResultCheckLogService.create(planResultCheckLog).subscribe({
+            next: (res) => {
+                Util.showSuccessMessage("Lưu lịch sử kiểm tra thành công");
             }
         });
         this.supplyReplaceHistoryService.createList(this.listSupplyReplaceHistory).subscribe({
