@@ -59,5 +59,6 @@ public class Approval {
 
     @Column
     private String updatedBy;
-
+    @Column(name = "sign_number")
+    private Integer signNumber;
 }

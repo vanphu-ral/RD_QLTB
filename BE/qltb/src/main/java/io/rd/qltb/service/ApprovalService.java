@@ -251,6 +251,12 @@ public class ApprovalService {
 //            newRound.setCreatedBy(userName);
 //            approvalRoundRepository.save(newRound);
 //        }
+        Integer index = approvalRepository.getMaxIndexByEntityIdAndEntityType(approvalRequestDTO.getEntityId(), entityType);
+        if (index == null) {
+            index = 0;
+        } else {
+            index += 1;
+        }
         for(ApprovalGroup approvalGroup: approvalWorkflow.getWorkflowApprovalGroups()){
             for (ApprovalGroupUser approvalGroupUser:approvalGroup.getGroupApprovalGroupUsers()){
                 Approval approval = new Approval();
@@ -263,6 +269,7 @@ public class ApprovalService {
                 approval.setCreatedBy(userName);
                 approval.setGroup(approvalGroup);
                 approval.setWorkflow(approvalWorkflow);
+                approval.setSignNumber(index);
 //                approval.setRound(newRound);
                 approval.setRound(null);
                 approvalRepository.save(approval);

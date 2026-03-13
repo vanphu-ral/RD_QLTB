@@ -47,4 +47,5 @@ public class ApprovalDTO {
     private ApprovalRound round;
     private Integer checkStatus;
     private String username;
+    private Integer signNumber;
 }

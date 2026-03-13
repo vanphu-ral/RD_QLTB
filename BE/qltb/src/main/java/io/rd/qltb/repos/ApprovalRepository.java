@@ -20,7 +20,10 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long> {
     List<Approval> findApprovalsByUserIds(@Param("userIds") List<Long> userIds,
                                           @Param("username") String username);
     @Query(
-            value = "SELECT * FROM approvals WHERE entity_id = :entity and entity_type = :entityType ;",
+            value = "SELECT * FROM approvals " +
+                    "WHERE entity_id = :entity AND entity_type = :entityType " +
+                    "AND sign_number = (SELECT MAX(sign_number) FROM approvals " +
+                    "                   WHERE entity_id = :entity AND entity_type = :entityType)",
             nativeQuery = true
     )
     List<Approval> findApprovalsByEntityIdAndEntityType(@Param("entity") String entity,
@@ -47,4 +50,7 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long> {
             @Param("workflowId") Long workflowId,
             @Param("entityId") Long entityId
     );
+    @Query(value ="select max(sign_number) from approvals where entity_id = ?1 and entity_type = ?2 ;", nativeQuery = true)
+    Integer getMaxIndexByEntityIdAndEntityType( Long entityId,
+                                                String entityType);
 }
