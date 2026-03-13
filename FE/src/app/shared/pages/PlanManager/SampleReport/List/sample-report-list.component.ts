@@ -15,6 +15,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PrintSampleReportDialog } from '../Dialogs/print-sample-report-dialog/print-sample-report.dialog';
 import * as ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
+import { forkJoin } from 'rxjs';
+import { DeviceGroupService } from '../../../DeviceManager/DeviceGroup/Service/device-group.service';
+import { BranchService } from '../../../Categories/Branch/Service/branch.service';
 
 @Component({
   selector: 'sample-report-list',
@@ -35,6 +38,8 @@ export class SampleReportListComponent {
   groupedData: any[] = [];
   daysInMonth = Array.from({ length: 31 }, (_, i) => i + 1);
   listPlanAppr: any[] = [];
+  frequencyOptions: any[] = [{ label: 'Ngày', value: 'Ngày' }, { label: 'Tuần', value: 'Tuần' }, { label: 'Tháng', value: 'Tháng' }, { label: 'Quỹ', value: 'Quỹ' }, { label: '6 Tháng', value: '6 Tháng' }, { label: 'Năm', value: 'Năm' }];
+  planTypes: any[] = [{ label: 'DAILYCHECK', value: 'DAILYCHECK' }, { label: 'MAINTENANCE', value: 'MAINTENANCE' }];
 
   columns: Column[] = [
     { Field: 'id', Header: 'ID', IsHide: true },
@@ -43,10 +48,10 @@ export class SampleReportListComponent {
     { Field: 'formCode', Header: 'Biểu mẫu', IsSearch: true, TypeSearch: 'text' },
     { Field: 'numberOfIssuances', Header: 'Số lần ban hành', IsSearch: true, TypeSearch: 'text' },
     { Field: 'documentNumber', Header: 'Số hiệu biên bản', IsSearch: true, TypeSearch: 'text' },
-    { Field: 'frequency', Header: 'Tần suất', IsSearch: true, TypeSearch: 'text' },
-    { Field: 'type', Header: 'Loại kế hoạch áp dụng', IsSearch: true, TypeSearch: 'text' },
-    { Field: 'deviceGroup.name', Header: 'Nhóm thiết bị áp dụng', IsSearch: true, TypeSearch: 'text' },
-    { Field: 'branch.name', Header: 'Ngành áp dụng', IsSearch: true, TypeSearch: 'text' },
+    { Field: 'frequency', Header: 'Tần suất', IsSearch: true, TypeSearch: 'select', Options: this.frequencyOptions, style: { 'min-width': '200px', 'width': '200px' } },
+    { Field: 'type', Header: 'Loại kế hoạch áp dụng', IsSearch: true, TypeSearch: 'select', Options: this.planTypes, style: { 'min-width': '200px', 'width': '200px' } },
+    { Field: 'deviceGroup.name', Header: 'Nhóm thiết bị áp dụng', IsSearch: true, TypeSearch: 'select', Options: [], style: { 'min-width': '200px', 'width': '200px' } },
+    { Field: 'branch.name', Header: 'Ngành áp dụng', IsSearch: true, TypeSearch: 'select', Options: [], style: { 'min-width': '200px', 'width': '200px' } },
     { Field: 'createdBy', Header: 'Người tạo', IsSearch: true, TypeSearch: 'text' },
     { Field: 'createdAt', Header: 'Ngày tạo', IsSearch: true, TypeSearch: 'date' },
     { Field: 'updatedAt', Header: 'Ngày cập nhật', IsSearch: true, TypeSearch: 'date', style: { 'min-width': '150px' } },
@@ -54,7 +59,27 @@ export class SampleReportListComponent {
     { Field: 'status', Header: 'Trạng thái', IsSearch: true, TypeSearch: 'text' },
   ];
 
-  constructor(public apiService: SampleReportService, private dialogService: DialogService, private cdr: ChangeDetectorRef, private comfirmService: ConfirmationService, private messageService: MessageService, private dataService: DataService, private router: Router, private route: ActivatedRoute) { }
+  constructor(public apiService: SampleReportService, private dialogService: DialogService, private cdr: ChangeDetectorRef,
+    private comfirmService: ConfirmationService, private messageService: MessageService, private dataService: DataService,
+    private router: Router, private route: ActivatedRoute, private deviceGroupService: DeviceGroupService,
+    private branchService: BranchService) { }
+
+  ngOnInit(): void {
+    forkJoin({
+      deviceGroup: this.deviceGroupService.getAll(),
+      branch: this.branchService.getAll(),
+    }).subscribe(({ deviceGroup, branch }) => {
+      const groupOptions = deviceGroup.map(g => ({ label: g.name ?? '', value: g.name ?? null }));
+      const branchOptions = branch.map(b => ({ label: b.name ?? '', value: b.name ?? null }));
+      this.columns = this.columns.map(col =>
+        col.Field === 'deviceGroup.name'
+          ? { ...col, Options: groupOptions }
+          : col.Field === 'branch.name'
+            ? { ...col, Options: branchOptions }
+            : col
+      );
+    });
+  }
 
   statusToString(status: number) {
     return Util.statusToString(status);
