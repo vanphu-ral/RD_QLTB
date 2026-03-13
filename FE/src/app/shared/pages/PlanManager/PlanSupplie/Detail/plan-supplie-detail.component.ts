@@ -169,7 +169,6 @@ export class PlanSupplieDetailComponent extends BasePageComponent<PlanSupplie> {
 
   ApprovalAgain() {
     if (!this.model) return;
-    this.model.status = 2;
     this.confirmationService.confirm({
       message: 'Bạn có chắc muốn sửa và gửi duyệt lại không?',
       header: 'Xác nhận',
@@ -177,13 +176,20 @@ export class PlanSupplieDetailComponent extends BasePageComponent<PlanSupplie> {
       acceptLabel: 'Đồng ý',
       rejectLabel: 'Hủy',
       accept: () => {
+        this.model.status = 2;
         this.apiService.update(this.model.id!, this.model).subscribe({
-          next: () => {
-            Util.ConfirmMessage('Cập nhật thành công', 'success');
-            this.navigationService.back()
+          next: (id) => {
+            this.apiService.createApprovalEntity({ entityId: this.model.id, workflowId: this.model.approvalWorkflow.id }, 'plans').subscribe({
+              next: () => {
+                Util.ConfirmMessage('Đã sửa và gửi duyệt thành công', 'success');
+                this.navigationService.back();
+              },
+              error: () => {
+                Util.ConfirmMessage('Thất bại', 'error');
+              }
+            });
           },
-          error: Util.handleError
-        });
+        }).add(() => this.navigationService.back());
       },
       reject: () => {
       }

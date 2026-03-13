@@ -1,5 +1,8 @@
 import { Injectable, effect, signal, computed } from '@angular/core';
 import { Subject } from 'rxjs';
+import { MenuItem } from 'primeng/api';
+import { MENU_ITEMS } from '../components/menu.config';
+import _ from 'lodash';
 
 export interface layoutConfig {
     preset?: string;
@@ -45,6 +48,8 @@ export class LayoutService {
     layoutConfig = signal<layoutConfig>(this._config);
 
     layoutState = signal<LayoutState>(this._state);
+
+    menuModel = signal<MenuItem[]>([]);
 
     private configUpdate = new Subject<layoutConfig>();
 
@@ -95,6 +100,34 @@ export class LayoutService {
             }
 
             this.handleDarkModeTransition(config);
+        });
+    }
+
+    public initializeMenu(userRoles: string[]) {
+        if (this.menuModel().length > 0) return;
+
+        const model = _.cloneDeep(MENU_ITEMS);
+        this.mapMenuVisibility(model, userRoles);
+        this.menuModel.set(model);
+    }
+
+    private mapMenuVisibility(items: MenuItem[], userRoles: string[]): void {
+        items.forEach((item) => {
+            const roles = (item as any).roles as string[];
+            if (roles && roles.length > 0) {
+                item.visible = roles.some((role) => userRoles.includes(role));
+            } else {
+                item.visible = true;
+            }
+
+            if (item.items && item.items.length > 0) {
+                item.expanded = true; // Default expanded
+                this.mapMenuVisibility(item.items, userRoles);
+                if (item.visible !== false) {
+                    const hasVisibleChild = item.items.some((child) => child.visible !== false);
+                    item.visible = hasVisibleChild;
+                }
+            }
         });
     }
 
