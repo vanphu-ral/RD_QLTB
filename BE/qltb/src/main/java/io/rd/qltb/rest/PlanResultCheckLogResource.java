@@ -25,7 +25,7 @@ public class PlanResultCheckLogResource {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PlanResultCheckLogDTO> getPlanResultCheckLog(@PathVariable(name = "id") final Long id) {
+    public ResponseEntity<List<PlanResultCheckLogDTO>> getPlanResultCheckLog(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(planResultCheckLogService.get(id));
     }
 

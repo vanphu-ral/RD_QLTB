@@ -30,10 +30,10 @@ public class PlanResultCheckLogService {
                 .toList();
     }
 
-    public PlanResultCheckLogDTO get(final Long id) {
-        return planResultCheckLogRepository.findById(id)
+    public List<PlanResultCheckLogDTO> get(final Long id) {
+        return planResultCheckLogRepository.findByPlanResultId(id).stream()
                 .map(planResultCheckLog -> mapToDTO(planResultCheckLog, new PlanResultCheckLogDTO()))
-                .orElseThrow(NotFoundException::new);
+                .toList();
     }
 
     public Long create(final PlanResultCheckLogDTO planResultCheckLogDTO) {
