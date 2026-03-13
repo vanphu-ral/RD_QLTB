@@ -93,17 +93,17 @@ export class AppMenuitem {
         this.menuSourceSubscription = this.layoutService.menuSource$.subscribe((value) => {
             Promise.resolve(null).then(() => {
                 if (value.routeEvent) {
-                    this.active = value.key === this.key || value.key.startsWith(this.key + '-') ? true : false;
+                    this.item.expanded = value.key === this.key || value.key.startsWith(this.key + '-') ? true : this.item.expanded;
                 } else {
                     if (value.key !== this.key && !value.key.startsWith(this.key + '-')) {
-                        this.active = false;
+                        // Keep current expanded state
                     }
                 }
             });
         });
 
         this.menuResetSubscription = this.layoutService.resetSource$.subscribe(() => {
-            this.active = false;
+            this.item.expanded = false;
         });
 
         this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe((params) => {
@@ -143,19 +143,19 @@ export class AppMenuitem {
 
         // toggle active state
         if (this.item.items) {
-            this.active = !this.active;
+            this.item.expanded = !this.item.expanded;
         }
 
         this.layoutService.onMenuStateChange({ key: this.key });
     }
 
     get submenuAnimation() {
-        return this.root ? 'expanded' : this.active ? 'expanded' : 'collapsed';
+        return this.root ? 'expanded' : this.item.expanded ? 'expanded' : 'collapsed';
     }
 
     @HostBinding('class.active-menuitem')
     get activeClass() {
-        return this.active && !this.root;
+        return this.item.expanded && !this.root;
     }
 
     ngOnDestroy() {

@@ -163,16 +163,21 @@ export class PlanTargetDetailComponent extends BasePageComponent<PlanTarget> {
       rejectLabel: 'Hủy',
       accept: () => {
         this.model.status = 2;
-        this.model = Util.prepareModel(this.model);
         this.model = Util.simplifyMany(this.model, ['branch', 'approvalWorkflow']);
         if (typeof this.model.listItems !== 'string') this.model.listItems = JSON.stringify(this.model.listItems);
         this.apiService.update(this.model.id!, this.model).subscribe({
-          next: () => {
-            Util.ConfirmMessage('Cập nhật thành công', 'success');
-            this.navigationService.back()
+          next: (id) => {
+            this.apiService.createApprovalEntity({ entityId: this.model.id, workflowId: this.model.approvalWorkflow.id }, 'plans').subscribe({
+              next: () => {
+                Util.ConfirmMessage('Đã sửa và gửi duyệt thành công', 'success');
+                this.navigationService.back();
+              },
+              error: () => {
+                Util.ConfirmMessage('Thất bại', 'error');
+              }
+            });
           },
-          error: Util.handleError
-        });
+        }).add(() => this.navigationService.back());
       },
       reject: () => {
       }
