@@ -40,6 +40,7 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
     showView: boolean,
     showDelete: boolean
   };
+  @Input() defaultFilters: { [field: string]: any } = {};
   @ContentChildren(CustomFilterDirective) customFilters!: QueryList<CustomFilterDirective>;
   @ContentChildren(CustomColumnDirective) columnTemplates!: QueryList<CustomColumnDirective>;
   private filterTpls = new Map<string, TemplateRef<any>>();
@@ -119,11 +120,22 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
       next: (res) => {
         this.data = this.transformDateFields(res);
         this.loading = false;
+        this.applyDefaultFilters();
         this.cdr.detectChanges();
       },
       error: () => {
         this.loading = false;
         this.cdr.detectChanges();
+      }
+    });
+  }
+
+  applyDefaultFilters(): void {
+    if (!this.dt || !this.defaultFilters) return;
+    Object.keys(this.defaultFilters).forEach(field => {
+      const value = this.defaultFilters[field];
+      if (value !== null && value !== undefined) {
+        this.dt.filter(value, field, 'contains');
       }
     });
   }

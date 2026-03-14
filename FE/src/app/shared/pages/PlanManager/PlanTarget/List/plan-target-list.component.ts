@@ -11,6 +11,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ListHistoryChangeDataDialog } from '../../Plan/Dialogs/list-history-change-data-dialog/list-history-change-data.dialog';
 import { CheckListTargetDialog } from '../Dialogs/check-list-target-dialog/check-list-target.dialog';
+import { AccountService } from '../../../../core/auth/account/account.service';
 
 @Component({
   selector: 'plan-target-list',
@@ -21,6 +22,7 @@ import { CheckListTargetDialog } from '../Dialogs/check-list-target-dialog/check
 })
 export class PlanTargetListComponent {
   selectedStatus: string | null = null;
+  defaultFilters: { [field: string]: any } = {};
 
   columns: Column[] = [
     { Field: 'id', Header: 'ID', IsHide: true },
@@ -33,7 +35,11 @@ export class PlanTargetListComponent {
     { Field: 'status', Header: 'Trạng thái', IsSearch: true, TypeSearch: 'text' },
   ];
 
-  constructor(public apiService: PlanTargetService, private route: ActivatedRoute, private dialogService: DialogService, private cdr: ChangeDetectorRef, private comfirmService: ConfirmationService, private messageService: MessageService, private dataService: DataService, private router: Router) {}
+  constructor(public apiService: PlanTargetService, private route: ActivatedRoute, private dialogService: DialogService, private cdr: ChangeDetectorRef, private comfirmService: ConfirmationService, private messageService: MessageService, private dataService: DataService, private router: Router, private accountService: AccountService) {}
+
+  ngOnInit(): void {
+    this.defaultFilters = { 'branch.name': this.accountService.getBranch() };
+  } 
 
   statusToString(status: number) {
     return Util.statusToString(status);

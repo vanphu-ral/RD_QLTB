@@ -62,9 +62,11 @@ export class PlanListComponent {
   ngOnInit(): void {
     this.loadData();
     this.loadDataFilter();
+    console.log(this.accountService.getBranch());
   }
 
   loadData() {
+    this.filters.branch = this.accountService.getBranch();
     this.loading = true;
     this.apiService.getPlans(this.page, this.size, this.filters).subscribe({
       next: (res) => {

@@ -32,7 +32,7 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
 
   listFrequencies: any[] = Util.listFrequency();
   listFrequencieForCriterial: any[] = Util.listInspectionSession();
-  listExaminationTimes: any[] = Util.listExaminationTime();
+  listExaminationTimes: any[] = Util.listExaminationTime().map(item => ({ label: item, value: item }));
   listTypes: any[] = [];
   listBranchs: any[] = [];
   listApprovalWorkflow: any[] = []
@@ -91,7 +91,7 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
               criterials: criterials,
               performer: x.performer || null,
               step: x.step || null,
-              examinationTime: x.examinationTime || null,
+              examinationTime: _.split(x.examinationTime, ',') || null,
               frequency: x.frequency || null,
             };
           });
@@ -122,7 +122,7 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
           criterials: criterials,
           performer: x.performer || null,
           step: x.step || null,
-          examinationTime: x.examinationTime || null,
+          examinationTime: _.split(x.examinationTime, ',') || null,
           frequency: x.frequency || null,
         };
       });
@@ -194,7 +194,7 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
             criterial: { id: item.criterial?.id },
             performer: item.performer,
             step: item.step || null,
-            examinationTime: item.examinationTime || null,
+            examinationTime: Util.arrayToString(item.examinationTime) || null,
             frequency: item.frequency,
           }));
           if (keyMappings.length > 0) {
@@ -222,7 +222,7 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
             criterial: { id: item.criterial?.id },
             performer: item.performer,
             step: item.step || null,
-            examinationTime: item.examinationTime || null,
+            examinationTime: Util.arrayToString(item.examinationTime) || null,
             frequency: item.frequency
           }));
           if (keyMappings.length > 0) {
@@ -262,7 +262,7 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
               criterial: { id: item.criterial?.id },
               performer: item.performer,
               step: item.step || null,
-              examinationTime: item.examinationTime || null,
+              examinationTime: Util.arrayToString(item.examinationTime) || undefined,
               frequency: item.frequency
             }));
             if (keyMappings.length > 0) {

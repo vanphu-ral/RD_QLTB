@@ -141,9 +141,12 @@
                 </p-select>
               </td>
               <td>
-                <p-select [(ngModel)]="row.examinationTime" [options]="listExaminationTimes" [fluid]="true" [disabled]="isViewMode || isApprovalMode"
+                <!-- <p-select [(ngModel)]="row.examinationTime" [options]="listExaminationTimes" [fluid]="true" [disabled]="isViewMode || isApprovalMode"
                   [showClear]="true" [appendTo]="'body'" id="examinationTime-{{ i }}" name="examinationTime-{{ i }}">
-                </p-select>
+                </p-select> -->
+                <p-multiSelect [(ngModel)]="row.examinationTime" [options]="listExaminationTimes" [fluid]="true" [disabled]="isViewMode || isApprovalMode"
+                  [showClear]="true" [appendTo]="'body'" id="examinationTime-{{ i }}" name="examinationTime-{{ i }}" optionLabel="label" optionValue="value">
+                </p-multiSelect>
               </td>
               <td class="text-center" *ngIf="!(isViewMode ||isApprovalMode)">
                 <p-button icon="pi pi-trash" severity="danger" (onClick)="deleteRow(i)">

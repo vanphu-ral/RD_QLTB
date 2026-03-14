@@ -10,6 +10,7 @@ import { DataService } from '../../../../service/send-data.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ListHistoryChangeDataDialog } from '../../Plan/Dialogs/list-history-change-data-dialog/list-history-change-data.dialog';
+import { AccountService } from '../../../../core/auth/account/account.service';
 
 @Component({
   selector: 'plan-supplie-list',
@@ -20,11 +21,13 @@ import { ListHistoryChangeDataDialog } from '../../Plan/Dialogs/list-history-cha
 })
 export class PlanSupplieListComponent {
   selectedStatus: string | null = null;
+  defaultFilters: { [field: string]: any } = {};
 
   columns: Column[] = [
     { Field: 'id', Header: 'ID', IsHide: true },
     { Field: 'code', Header: 'Mã nhóm tiêu chí', IsSearch: true, TypeSearch: 'text' },
     { Field: 'name', Header: 'Tên nhóm tiêu chí', IsSearch: true, TypeSearch: 'text' },
+    { Field: 'branch.name', Header: 'Ngành', IsSearch: false, style: { 'min-width': '200px' } },
     { Field: 'createdBy', Header: 'Người tạo', IsSearch: true, TypeSearch: 'text' },
     { Field: 'createdAt', Header: 'Ngày tạo', IsSearch: true, TypeSearch: 'date' },
     { Field: 'updatedAt', Header: 'Ngày cập nhật', IsSearch: true, TypeSearch: 'date', style: { 'min-width': '150px' } },
@@ -32,7 +35,13 @@ export class PlanSupplieListComponent {
     { Field: 'status', Header: 'Trạng thái', IsSearch: true, TypeSearch: 'text' },
   ];
 
-  constructor(public apiService: PlanSupplieService, private route: ActivatedRoute, private dialogService: DialogService, private cdr: ChangeDetectorRef, private comfirmService: ConfirmationService, private messageService: MessageService, private dataService: DataService, private router: Router) {}
+  constructor(public apiService: PlanSupplieService, private route: ActivatedRoute, private dialogService: DialogService, 
+    private cdr: ChangeDetectorRef, private comfirmService: ConfirmationService, private messageService: MessageService, 
+    private dataService: DataService, private router: Router, private accountService: AccountService) {}
+
+  ngOnInit(): void {
+    this.defaultFilters = { 'branch.name': this.accountService.getBranch() };
+  }
 
   statusToString(status: number) {
     return Util.statusToString(status);

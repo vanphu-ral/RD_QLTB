@@ -71,20 +71,21 @@ export class CheckDeviceDialog {
     ngOnInit() {
         // 1. Luôn lấy bộ khung đầy đủ từ template gốc trước
         const detail = JSON.parse(this.data.device.detail);
-        const fullTemplate = detail.sampleReportKeyMappings.map((x: any) => {
-            return {
+        const fullTemplate = detail.sampleReportKeyMappings.flatMap((x: any) => {
+            const times = x.examinationTime ? x.examinationTime.split(',').map((t: string) => t.trim()) : [null];
+            return times.map((time: string | null) => ({
                 criticalGroup: x.criterial.criterialGroup.name || null,
                 criticalCode: x.criterial?.code || null,
                 criticalName: x.criterial?.name || null,
                 frequency: x.frequency,
-                examinationTimeRequired: x.examinationTime,
+                examinationTimeRequired: time,
                 inspectionSession: x.frequency,
-                examinationTime: x.examinationTime,
+                examinationTime: time,
                 step: x.step,
                 performer: x.performer,
                 result: "OK",
                 status: 1
-            };
+            }));
         });
 
         this.planResultService.getEvaluationByPlanDetailId(this.data.planResult.id).subscribe(res => {

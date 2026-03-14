@@ -5,6 +5,7 @@ import { tap, shareReplay, catchError, map } from 'rxjs/operators';
 
 import { Account } from './account.model';
 import { ApplicationConfigService } from '../../config/application-config.service';
+import _ from 'lodash';
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
@@ -68,5 +69,10 @@ export class AccountService {
       return authorities.some(auth => userAuthorities.includes(auth));
     }
     return userAuthorities.includes(authorities);
+  }
+
+  // Lấy ngành theo tài khoản
+  getBranch() {
+    return _.get(this.accountSignal(), 'attributes.branch');
   }
 }

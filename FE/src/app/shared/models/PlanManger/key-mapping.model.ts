@@ -4,6 +4,6 @@ export class keyMapping {
     criterial?: any
     frequency?: string
     performer?: string
-    examinationTime?: string
+    examinationTime?: any
     step?: number
 }
