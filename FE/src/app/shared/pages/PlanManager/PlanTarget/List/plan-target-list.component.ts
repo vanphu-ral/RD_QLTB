@@ -12,6 +12,8 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { ListHistoryChangeDataDialog } from '../../Plan/Dialogs/list-history-change-data-dialog/list-history-change-data.dialog';
 import { CheckListTargetDialog } from '../Dialogs/check-list-target-dialog/check-list-target.dialog';
 import { AccountService } from '../../../../core/auth/account/account.service';
+import { BranchService } from '../../../Categories/Branch/Service/branch.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'plan-target-list',
@@ -28,6 +30,7 @@ export class PlanTargetListComponent {
     { Field: 'id', Header: 'ID', IsHide: true },
     { Field: 'code', Header: 'Mã kế hoạch mục tiêu', IsSearch: true, TypeSearch: 'text' },
     { Field: 'name', Header: 'Tên kế hoạch mục tiêu', IsSearch: true, TypeSearch: 'text' },
+    { Field: 'branch.name', Header: 'Ngành áp dụng', IsSearch: true, TypeSearch: 'select', Options: [], style: { 'min-width': '200px', 'width': '200px' } },
     { Field: 'createdBy', Header: 'Người tạo', IsSearch: true, TypeSearch: 'text' },
     { Field: 'createdAt', Header: 'Ngày tạo', IsSearch: true, TypeSearch: 'date' },
     { Field: 'updatedAt', Header: 'Ngày cập nhật', IsSearch: true, TypeSearch: 'date', style: { 'min-width': '150px' } },
@@ -35,9 +38,19 @@ export class PlanTargetListComponent {
     { Field: 'status', Header: 'Trạng thái', IsSearch: true, TypeSearch: 'text' },
   ];
 
-  constructor(public apiService: PlanTargetService, private route: ActivatedRoute, private dialogService: DialogService, private cdr: ChangeDetectorRef, private comfirmService: ConfirmationService, private messageService: MessageService, private dataService: DataService, private router: Router, private accountService: AccountService) {}
+  constructor(public apiService: PlanTargetService, private route: ActivatedRoute, private dialogService: DialogService, private cdr: ChangeDetectorRef, private comfirmService: ConfirmationService, private messageService: MessageService, private dataService: DataService, private router: Router, private accountService: AccountService, private branchService: BranchService) {}
 
   ngOnInit(): void {
+    forkJoin({
+      branch: this.branchService.getAll(),
+    }).subscribe(({ branch }) => {
+      const branchOptions = branch.map(b => ({ label: b.name ?? '', value: b.name ?? null }));
+      this.columns = this.columns.map(col =>
+        col.Field === 'branch.name'
+          ? { ...col, Options: branchOptions }
+          : col
+      );
+    });
     this.defaultFilters = { 'branch.name': this.accountService.getBranch() };
   } 
 

@@ -20,8 +20,8 @@
         <th style="min-width: 150px;">Số hiệu</th>
         <th style="min-width: 150px;">Người thực hiện</th>
         <th style="min-width: 150px;">Loại kế hoạch</th>
-        <!-- <th style="min-width: 150px;">Xưởng</th> -->
-        <!-- <th style="min-width: 150px;">Ngành</th> -->
+        <th style="min-width: 150px;">Xưởng</th>
+        <th style="min-width: 150px;">Ngành</th>
         <th style="min-width: 150px;">Người tạo</th>
         <th style="min-width: 150px;">Người cập nhật</th>
         <th style="min-width: 150px;">Ngày tạo</th>
@@ -80,14 +80,14 @@
             </ng-template>
           </p-columnFilter>
         </th>
-        <!-- <th>
+        <th>
           <p-columnFilter [showMenu]="false" type="text">
             <ng-template pTemplate="filter" let-value let-filter="filterCallback">
               <input pInputText [(ngModel)]="filters.factory" (keyup.enter)="filter($event)">
             </ng-template>
           </p-columnFilter>
-        </th> -->
-        <!-- <th>
+        </th>
+        <th>
           <p-columnFilter [showMenu]="false" type="text">
             <ng-template pTemplate="filter">
               <p-select [options]="listBranchs" [(ngModel)]="filters.branch" placeholder="Chọn ngành" optionLabel="name" optionValue="name" [showClear]="true"
@@ -95,7 +95,7 @@
               </p-select>
             </ng-template>
           </p-columnFilter>
-        </th> -->
+        </th>
         <th>
           <p-columnFilter [showMenu]="false" type="text">
             <ng-template pTemplate="filter">
@@ -158,8 +158,8 @@
         <td>{{ row.planNumber }}</td>
         <td>{{ row.userPerformer }}</td>
         <td>{{ row.planType.name }}</td>
-        <!-- <td>{{ row.factory.name }}</td> -->
-        <!-- <td>{{ row.branch.name }}</td> -->
+        <td>{{ row.factory.name }}</td>
+        <td>{{ row.branch.name }}</td>
         <td>{{ row.createdBy }}</td>
         <td>{{ row.updatedBy }}</td>
         <td>{{ row.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
