@@ -67,6 +67,9 @@ export class ListDeviceDialog {
         if (selectedDevice) {
             row.manager = _.split(selectedDevice.userManager, ',');
             row.qrCode = selectedDevice.qrCode;
+            if(this.plan.planType.code == PLANTYPE.MAINTENANCE) {
+                row.nameDetail = `${index + 1}.${selectedDevice.id}.${new Date().getFullYear()}/CTBDCSTB-LED.${this.plan?.branch?.code}`;
+            }
         } else {
             row.manager = [];
             row.qrCode = null;

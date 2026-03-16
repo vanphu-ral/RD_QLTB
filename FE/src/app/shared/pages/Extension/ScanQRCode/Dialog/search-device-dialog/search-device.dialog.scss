@@ -1,3 +1,61 @@
 :host {
     display: block;
 }
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+:host ::ng-deep .row-hover:hover {
+    background-color: var(--surface-hover, #f3f4f6) !important;
+    transition: background-color 0.2s;
+}
+
+/* Responsive Table */
+@media screen and (max-width: 768px) {
+    :host ::ng-deep .p-datatable {
+        .p-datatable-thead > tr > th {
+            display: none !important;
+        }
+
+        .p-datatable-tbody > tr {
+            display: block;
+            width: 100%;
+            margin-bottom: 1rem;
+            border: 1px solid var(--surface-border, #e2e8f0);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 8px;
+            background-color: var(--surface-card, #ffffff);
+        }
+
+        .p-datatable-tbody > tr > td {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            width: 100%;
+            padding: 10px 8px !important;
+            border: none !important;
+            border-bottom: 1px dashed var(--surface-border, #e2e8f0) !important;
+            text-align: right !important;
+        }
+
+        .p-datatable-tbody > tr > td:last-child {
+            border-bottom: none !important;
+            justify-content: center !important;
+        }
+        
+        .p-datatable-tbody > tr > td:first-child {
+            display: none !important; /* Ẩn cột STT trên mobile */
+        }
+
+        .p-datatable-tbody > tr > td::before {
+            content: attr(data-label);
+            font-weight: 600;
+            display: inline-block;
+            width: 45%;
+            text-align: left;
+            color: var(--text-color-secondary, #64748b);
+        }
+    }
+}

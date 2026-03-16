@@ -115,12 +115,25 @@ export class ListDeviceComponent implements OnInit {
             });
             setTimeout(() => {
                 row.deviceGroup = null;
+                row.sampleReport = null;
+                row.sampleReports = [];
                 row.isDuplicate = true;
                 this.cdr.detectChanges();
             }, 0);
             return;
         } else {
             row.isDuplicate = false;
+            row.sampleReport = null; // Reset mẫu biên bản đã chọn
+            
+            // Tính toán lại danh sách mẫu biên bản phù hợp cho nhóm mới
+            if (this.model.plan?.planType) {
+                row.sampleReports = this.listSampleReportBase.filter(sr =>
+                    sr.deviceGroup?.id === row.deviceGroup.id && sr.type === this.model.plan.planType!.code
+                );
+            } else {
+                row.sampleReports = [];
+            }
+
             const branchId = this.model.plan?.branch?.id;
             const teamId = this.model.plan?.team?.id;
             const filteredDevices = _.filter(row.deviceGroup.groupDevices, (device) => {

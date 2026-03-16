@@ -60,13 +60,16 @@ export class PlanListComponent {
     private confirmationService: ConfirmationService, private acceptanceService: AcceptanceService, private dataService: DataService, private branchService: BranchService) { }
 
   ngOnInit(): void {
+    const userBranch = this.accountService.getBranch();
+    if (userBranch) {
+      this.filters.branch = userBranch;
+    }
     this.loadData();
     this.loadDataFilter();
     console.log(this.accountService.getBranch());
   }
 
   loadData() {
-    this.filters.branch = this.accountService.getBranch();
     this.loading = true;
     this.apiService.getPlans(this.page, this.size, this.filters).subscribe({
       next: (res) => {
@@ -191,11 +194,17 @@ export class PlanListComponent {
   }
 
   editItem(row: any) {
-    this.router.navigate([row.id, 'edit'], { relativeTo: this.route });
+    // this.router.navigate([row.id, 'edit'], { relativeTo: this.route });
+    const urlTree = this.router.createUrlTree([row.id, 'edit'], { relativeTo: this.route });
+    const url = this.router.serializeUrl(urlTree);
+    window.open(url, '_blank');
   }
 
   viewItem(row: any) {
-    this.router.navigate([row.id, 'view'], { relativeTo: this.route });
+    // this.router.navigate([row.id, 'view'], { relativeTo: this.route });
+    const urlTree = this.router.createUrlTree([row.id, 'view'], { relativeTo: this.route });
+    const url = this.router.serializeUrl(urlTree);
+    window.open(url, '_blank');
   }
 
   deleteItem(item: any, event: Event, type: number = 0) {
@@ -262,7 +271,10 @@ export class PlanListComponent {
   }
 
   viewPlanMaintance(row: any) {
-    this.router.navigate([row.id, 'maintenance-plan'], { relativeTo: this.route });
+    // this.router.navigate([row.id, 'maintenance-plan'], { relativeTo: this.route });
+    const urlTree = this.router.createUrlTree([row.id, 'maintenance-plan'], { relativeTo: this.route });
+    const url = this.router.serializeUrl(urlTree);
+    window.open(url, '_blank');
   }
 
   approval(data: any, event: any) {
@@ -305,7 +317,10 @@ export class PlanListComponent {
   }
 
   copy(row: any) {
-    this.router.navigate([row.id, 'copy'], { relativeTo: this.route });
+    // this.router.navigate([row.id, 'copy'], { relativeTo: this.route });
+    const urlTree = this.router.createUrlTree([row.id, 'copy'], { relativeTo: this.route });
+    const url = this.router.serializeUrl(urlTree);
+    window.open(url, '_blank');
   }
 
   // function table child
@@ -344,19 +359,25 @@ export class PlanListComponent {
         Util.ConfirmMessage('Phiếu nghiệm thu đã tồn tại cho phiếu này!', 'error');
         return;
       }
-      this.router.navigate(
-        ['/Acceptance/add'],
-        {
-          state: {
-            planResult: data,
-            plan: plan
-          }
-        }
-      );
+      // this.router.navigate(
+      //   ['/Acceptance/add'],
+      //   {
+      //     state: {
+      //       planResult: data,
+      //       plan: plan
+      //     }
+      //   }
+      // );
+      const urlTree = this.router.createUrlTree(['/Acceptance/add'], { relativeTo: this.route });
+      const url = this.router.serializeUrl(urlTree);
+      window.open(url, '_blank');
     });
   }
 
   viewEvaluateDevice(row: any) {
-    this.router.navigate([row.id, 'summary'], { relativeTo: this.route });
+    // this.router.navigate([row.id, 'summary'], { relativeTo: this.route });
+    const urlTree = this.router.createUrlTree([row.id, 'summary'], { relativeTo: this.route });
+    const url = this.router.serializeUrl(urlTree);
+    window.open(url, '_blank');
   }
 }

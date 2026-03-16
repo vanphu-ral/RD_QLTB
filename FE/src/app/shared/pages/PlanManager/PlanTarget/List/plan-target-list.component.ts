@@ -63,7 +63,10 @@ export class PlanTargetListComponent {
   }
 
   viewPlanReport(row: any) {
-    this.router.navigate([row.id, 'view-report'], { relativeTo: this.route });
+    // this.router.navigate([row.id, 'view-report'], { relativeTo: this.route });
+    const urlTree = this.router.createUrlTree([row.id, 'view-report'], { relativeTo: this.route });
+    const url = this.router.serializeUrl(urlTree);
+    window.open(url, '_blank');
   }
 
   approval(data: any, event: any) {

@@ -72,7 +72,9 @@ export class CheckDeviceDialog {
         // 1. Luôn lấy bộ khung đầy đủ từ template gốc trước
         const detail = JSON.parse(this.data.device.detail);
         const fullTemplate = detail.sampleReportKeyMappings.flatMap((x: any) => {
-            const times = x.examinationTime ? x.examinationTime.split(',').map((t: string) => t.trim()) : [null];
+            const times = x.examinationTime 
+                ? x.examinationTime.split(',').map((t: string) => t.trim()).filter((t: string) => t !== "") 
+                : [null];
             return times.map((time: string | null) => ({
                 criticalGroup: x.criterial.criterialGroup.name || null,
                 criticalCode: x.criterial?.code || null,

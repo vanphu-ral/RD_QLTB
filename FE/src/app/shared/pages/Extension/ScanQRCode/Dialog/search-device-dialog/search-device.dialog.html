@@ -43,14 +43,14 @@
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-row let-i="rowIndex">
-                <tr>
-                    <td>{{ i + 1 }}</td>
-                    <td>{{ row.code }}</td>
-                    <td>{{ row.name }}</td>
-                    <td>{{ row.branch?.name }}</td>
-                    <td>{{ row.team?.name }}</td>
-                    <td>{{ row.line?.name }}</td>
-                    <td>
+                <tr (click)="selectDevice(row)" class="cursor-pointer row-hover">
+                    <td data-label="STT">{{ i + 1 }}</td>
+                    <td data-label="Mã thiết bị">{{ row.code }}</td>
+                    <td data-label="Tên thiết bị">{{ row.name }}</td>
+                    <td data-label="Ngành">{{ row.branch?.name }}</td>
+                    <td data-label="Tổ">{{ row.team?.name }}</td>
+                    <td data-label="Dây chuyền">{{ row.line?.name }}</td>
+                    <td data-label="Thao tác">
                         <p-button icon="pi pi-check" severity="success" [rounded]="true" [text]="true"
                             (onClick)="selectDevice(row)" title="Chọn thiết bị này"></p-button>
                     </td>
