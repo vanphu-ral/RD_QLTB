@@ -225,4 +225,5 @@ public interface DeviceRepository extends JpaRepository<Device, Long> {
             @Param("filterType") String filterType,
             Pageable pageable
     );
+
 }

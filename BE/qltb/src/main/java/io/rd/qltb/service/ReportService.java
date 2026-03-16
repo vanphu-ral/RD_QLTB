@@ -1,5 +1,6 @@
 package io.rd.qltb.service;
 
+import com.sun.jna.platform.unix.Reboot;
 import io.rd.qltb.model.*;
 import io.rd.qltb.model.response.*;
 import io.rd.qltb.repos.DeviceRepository;
@@ -33,7 +34,11 @@ public class ReportService {
     private ErrorReportRepository errorReportRepository;
     @Autowired
     private SupplyReplacementHistoryService supplyReplacementHistoryService;
-
+//private ReportReponse reportReponse(){
+//    ReportReponse reportReponse = new ReportReponse();
+//    reportReponse.setActiveAssets(deviceRepository.countActiveAssets());
+//    return new ReportReponse();
+//}
     public List<ReportResponse> getSupplyReport(ReportFilter filter) {
         List<ReportResponse> reportResponses = new ArrayList<>();
 

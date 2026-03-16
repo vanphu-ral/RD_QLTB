@@ -746,6 +746,7 @@ public class PlanService {
 
     @Transactional
     public PlanUpdateResponse updatePlan(Long id, String userName, PlanRequest request) {
+
         PlanUpdateResponse planUpdateResponse = new PlanUpdateResponse();
         planUpdateResponse.setMessage("Cập nhật kế hoạch thành công");
         planUpdateResponse.setStatus("SUCCESS");
@@ -754,7 +755,25 @@ public class PlanService {
             // 1. Lấy PlanDetail từ DB (hoặc từ Map đã chuẩn bị trước)
             PlanDetail planDetail = planDetailRepository.findById(deviceRequest.getPlanDetailId())
                     .orElseThrow(() -> new RuntimeException("PlanDetail not found"));
-
+            Integer count = planResultDetailRepository.getCountByPlanDetailId(planDetail.getId() );
+            if(count > 0){
+                planUpdateResponse.setStatus("FAIL");
+                planUpdateResponse.setMessage( "Không thể cập nhật kế hoạch do thiết bị " + planDetail.getDevice().getName() + " đã có dữ liệu kiểm tra.");
+                System.out.println("Không thể cập nhật kế hoạch do thiết bị " + planDetail.getDevice().getName() + " đã có dữ liệu kiểm tra.");
+                return planUpdateResponse;
+            }else {
+                // Nếu không có dữ liệu kiểm tra nào , ta sẽ tiến hành cập nhật lại PlanDetail
+                for( PLanDetailRequest  pLanDetailRequest :request.getPlanDetails()){
+                    if(pLanDetailRequest.getDeviceGroup().getId() == planDetail.getDeviceGroup().getId()){
+                        // gán lại deviceGroup và sampleReport nếu có sự thay đổi
+                        planDetail.setSampleReport(sampleReportRepository.findById(pLanDetailRequest.getSampleReport().getId()).orElseThrow());
+                        List<PlanDetail> planDetailList = new ArrayList<>();
+                        planDetailList.add(planDetail);
+                        planDetailRepository.saveAll(addDetailToSampleReport(planDetailList));
+                        break;
+                    }
+                }
+            }
             // 2. Chuyển đổi Manager từ Request thành Set (để dùng phương thức contains nhanh hơn)
             String reqManagerStr = deviceRequest.getManager();
             Set<String> managerRequestSet = (reqManagerStr != null && !reqManagerStr.isEmpty())
