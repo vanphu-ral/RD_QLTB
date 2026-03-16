@@ -151,11 +151,17 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
   }
 
   editItem(row: any) {
-    this.router.navigate([row.id, 'edit'], { relativeTo: this.route });
+    // this.router.navigate([row.id, 'edit'], { relativeTo: this.route });
+    const urlTree = this.router.createUrlTree([row.id, 'edit'], { relativeTo: this.route });
+    const url = this.router.serializeUrl(urlTree);
+    window.open(url, '_blank');
   }
 
   viewItem(row: any) {
-    this.router.navigate([row.id, 'view'], { relativeTo: this.route });
+    // this.router.navigate([row.id, 'view'], { relativeTo: this.route });
+    const urlTree = this.router.createUrlTree([row.id, 'view'], { relativeTo: this.route });
+    const url = this.router.serializeUrl(urlTree);
+    window.open(url, '_blank');
   }
 
   deleteItem(item: T & { id: number | string }, event: Event) {

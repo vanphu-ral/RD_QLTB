@@ -148,7 +148,10 @@ export class SampleReportListComponent {
   };
 
   copy(row: any) {
-    this.router.navigate([row.id, 'copy'], { relativeTo: this.route });
+    // this.router.navigate([row.id, 'copy'], { relativeTo: this.route });
+    const urlTree = this.router.createUrlTree([row.id, 'copy'], { relativeTo: this.route });
+    const url = this.router.serializeUrl(urlTree);
+    window.open(url, '_blank');
   }
 
   // In mẫu biên bản
