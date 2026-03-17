@@ -55,7 +55,20 @@ export class PlanMaintanceDetailDialog {
             this.ngZone.run(() => {
                 this.model = res;
                 this.model.planDetail.sampleReport = JSON.parse(this.model.planDetail.detail);
-                console.log(res);
+
+                if (!this.model.planResultDetail || this.model.planResultDetail.length === 0) {
+                    const mappings = this.model.planDetail?.sampleReport?.sampleReportKeyMappings || [];
+                    this.model.planResultDetail = mappings.map((mapping: any) => ({
+                        criticalName: mapping.criterial?.name,
+                        planResult: {
+                            dateTest: this.model.estimatedTime
+                        },
+                        performer: mapping.performer,
+                        note: mapping.criterial?.detail || mapping.criterial?.description || '',
+                        comment: ''
+                    }));
+                }
+
                 this.approvalService
                     .findApprovalsByEntityIdAndEntityType(this.model.planDetail.sampleReport.id, 'sample_reports')
                     .subscribe((data) => {
