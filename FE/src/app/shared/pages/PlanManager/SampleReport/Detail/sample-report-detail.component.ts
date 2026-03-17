@@ -98,9 +98,16 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
           
     
           if (this.isCopyMode) {
-            // this.model = _.cloneDeep(this.model);
+            let code = (this.model as any).code;
             _.set(this.model as any, 'id', null);
-            _.set(this.model as any, 'code', (this.model as any).code + ' - COPY');
+            if (code) {
+              if (/\d{12}/.test(code)) {
+                code = code.replace(/\d{12}.*/, Util.dateToCode());
+              } else if (!code.includes('COPY')) {
+                code = code + ' - COPY';
+              }
+              _.set(this.model as any, 'code', code);
+            }
             _.set(this.model as any, 'status', 1);
           }
           this.cdr.detectChanges();

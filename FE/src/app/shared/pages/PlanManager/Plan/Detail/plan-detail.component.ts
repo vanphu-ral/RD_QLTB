@@ -63,10 +63,15 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
   override ngOnInit(): void {
     super.ngOnInit();
     if (this.isCopyMode) {
-      const code = (this.model.plan as any).code;
+      let code = (this.model.plan as any).code;
       _.set(this.model.plan as any, 'id', null);
-      if (!code?.includes('COPY')) {
-        _.set(this.model.plan as any, 'code', code + ' - COPY');
+      if (code) {
+        if (/\d{12}/.test(code)) {
+          code = code.replace(/\d{12}.*/, Util.dateToCode());
+        } else if (!code.includes('COPY')) {
+          code = code + ' - COPY';
+        }
+        _.set(this.model.plan as any, 'code', code);
       }
       _.set(this.model.plan as any, 'status', 1);
     }
