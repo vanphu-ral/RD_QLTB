@@ -38,9 +38,13 @@ export class ListDeviceDialog {
 
     ngOnInit() {
         this.deviceService.getByGroupId(this.group.id).subscribe(devices => {
-            this.listDeviceOptions = devices;
+            if (this.plan?.team) {
+                this.listDeviceOptions = devices.filter((device: any) => device.team?.id === this.plan.team.id);
+            } else {
+                this.listDeviceOptions = devices;
+            }
             this.ListDevice = this.data
-                .filter((device: any) => device.device.status === 1) 
+                .filter((device: any) => device.device.status === 1 && (!this.plan?.team || device.device.team?.id === this.plan.team.id)) 
                 .map((device: any) => ({
                     ...device,
                     manager: _.split(device.manager || device.device.userManager, ','),
