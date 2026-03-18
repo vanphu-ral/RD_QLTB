@@ -82,7 +82,7 @@ export class ListDeviceDialog {
     }
 
     deleteRow(index: number) {
-        if(this.ListDevice[index].device.isHadDataPlanReport == 1) {
+        if(this.ListDevice[index].device?.isHadDataPlanReport == 1) {
             Util.ConfirmMessage("Thiết bị này đã có dữ liệu kiểm tra. không thể xóa!", 'error');
             return
         } 
