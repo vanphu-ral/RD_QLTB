@@ -46,6 +46,28 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
 
   @ViewChild(ListDeviceComponent) listDeviceComponent?: ListDeviceComponent;
 
+  private _lastFromDateStr?: any;
+  private _parsedFromDate?: Date;
+  get parsedFromDate(): Date | undefined {
+    const current = this.model?.plan?.fromDate;
+    if (current !== this._lastFromDateStr) {
+      this._lastFromDateStr = current;
+      this._parsedFromDate = current ? new Date(current as any) : undefined;
+    }
+    return this._parsedFromDate;
+  }
+
+  private _lastToDateStr?: any;
+  private _parsedToDate?: Date;
+  get parsedToDate(): Date | undefined {
+    const current = this.model?.plan?.toDate;
+    if (current !== this._lastToDateStr) {
+      this._lastToDateStr = current;
+      this._parsedToDate = current ? new Date(current as any) : undefined;
+    }
+    return this._parsedToDate;
+  }
+
   constructor(
     protected override apiService: PlanService,
     private branchService: BranchService,

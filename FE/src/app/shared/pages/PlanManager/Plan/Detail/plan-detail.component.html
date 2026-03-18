@@ -111,7 +111,7 @@
     <div class="row my-3" *ngIf="model.plan.planType?.code != PLANTYPE.MAINTENANCE">
       <div class="col-6">
         <p-floatlabel variant="on">
-          <p-datepicker [(ngModel)]="model.plan.fromDate" appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="fromDate" [fluid]="true"
+          <p-datepicker [(ngModel)]="model.plan.fromDate" appDateConvert [maxDate]="parsedToDate" [iconDisplay]="'input'" [showIcon]="true" name="fromDate" [fluid]="true"
             inputId="icondisplay" [dateFormat]="'dd-mm-yy'" [invalid]="!model.plan.fromDate" required  appendTo="body" [inputSize]="100" [disabled]="isViewMode || isApprovalMode"/>
           <label for="fromDate">Thời gian bắt đầu</label>
         </p-floatlabel>
@@ -119,7 +119,7 @@
 
       <div class="col-6">
         <p-floatlabel variant="on">
-          <p-datepicker [(ngModel)]="model.plan.toDate" appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="toDate" [fluid]="true"
+          <p-datepicker [(ngModel)]="model.plan.toDate" appDateConvert [minDate]="parsedFromDate" [iconDisplay]="'input'" [showIcon]="true" name="toDate" [fluid]="true"
             inputId="icondisplay" [dateFormat]="'dd-mm-yy'" [invalid]="!model.plan.toDate" required appendTo="body" [inputSize]="100" [disabled]="isViewMode || isApprovalMode"/>
           <label for="toDate">Thời gian kết thúc</label>
         </p-floatlabel>
