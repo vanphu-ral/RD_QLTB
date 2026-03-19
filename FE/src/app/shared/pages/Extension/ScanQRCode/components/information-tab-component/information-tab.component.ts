@@ -50,12 +50,13 @@ export class InformationTabComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['model'] && this.model?.id) {
-      this.loadHistoryMove(this.model.id);
+      this.onTabChange(this.activeTabIndex);
     }
   }
 
   // Tab change
   onTabChange(event: any) {
+    this.activeTabIndex = event;
     switch (event) {
       case "0":
         this.loadHistoryMove(this.model.id);
