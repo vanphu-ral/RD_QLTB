@@ -56,8 +56,12 @@ export class InformationTabComponent implements OnChanges {
 
   // Tab change
   onTabChange(event: any) {
-    this.activeTabIndex = event;
-    switch (event) {
+    if (event == null) return;
+    const tabVal = Array.isArray(event) ? event[0] : event;
+    if (tabVal == null) return;
+    
+    this.activeTabIndex = String(tabVal);
+    switch (this.activeTabIndex) {
       case "0":
         this.loadHistoryMove(this.model.id);
         break;
