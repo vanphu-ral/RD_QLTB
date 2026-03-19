@@ -266,8 +266,12 @@ export class CheckDeviceDialog {
             submitModel.planResult.userTest = JSON.stringify(submitModel.planResult.userTest);
         }
 
-        // Chỉ gửi đi các tiêu chí thuộc ca đang chọn để tránh đánh dấu sai trạng thái "Đã lưu" cho các ca khác
-        submitModel.planResultDetail = this.model.planResultDetail.filter((x: any) => x.examinationTimeRequired === this.selectedShift);
+        // Chỉ gửi đi các tiêu chí đang hiển thị trên màn hình (để tránh lưu rác các tiêu chí đang bị ẩn bởi bộ lọc Thời gian)
+        submitModel.planResultDetail = this.model.planResultDetail.filter((item: any) => {
+            const matchesShift = item.examinationTimeRequired === this.selectedShift;
+            const matchesSession = !this.selectedSession || item.inspectionSession === this.selectedSession;
+            return matchesShift && matchesSession;
+        });
 
         // FIX: Đảm bảo không bị mất dấu Ca / Thời gian khi trạng thái là Không KT (status = 0)
         // Nếu không có bước này, mapping data ở lần load sau sẽ thất bại và sinh ra các bản ghi duplicate.
