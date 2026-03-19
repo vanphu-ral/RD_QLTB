@@ -162,8 +162,6 @@ export class CheckDeviceDialog {
         console.log(row);
         if(row.status == 0) {
             row.result = null;
-            row.examinationTime = null;
-            row.inspectionSession = null;
         }
         if (this.model.planResultDetail && this.model.planResultDetail.length > 0) {
             this.isCheckAll = this.model.planResultDetail.every((row: any) => row.status === 0);
@@ -224,8 +222,6 @@ export class CheckDeviceDialog {
             item.status = status;
             if (status === 0) {
                 item.result = null;
-                item.examinationTime = null;
-                item.inspectionSession = null;
                 item.comment = null;  
             }
         });
@@ -272,6 +268,15 @@ export class CheckDeviceDialog {
 
         // Chỉ gửi đi các tiêu chí thuộc ca đang chọn để tránh đánh dấu sai trạng thái "Đã lưu" cho các ca khác
         submitModel.planResultDetail = this.model.planResultDetail.filter((x: any) => x.examinationTimeRequired === this.selectedShift);
+
+        // FIX: Đảm bảo không bị mất dấu Ca / Thời gian khi trạng thái là Không KT (status = 0)
+        // Nếu không có bước này, mapping data ở lần load sau sẽ thất bại và sinh ra các bản ghi duplicate.
+        submitModel.planResultDetail.forEach((x: any) => {
+            if (x.status === 0) {
+                if (!x.examinationTime) x.examinationTime = x.examinationTimeRequired;
+                if (!x.inspectionSession) x.inspectionSession = x.frequency;
+            }
+        });
 
         this.listSupplyReplaceHistory = this.listSupplyReplaceHistory.map(x => {
             return {

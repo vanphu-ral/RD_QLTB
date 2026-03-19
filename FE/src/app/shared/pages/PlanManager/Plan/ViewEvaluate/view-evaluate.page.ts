@@ -306,15 +306,15 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
           }))
         }));
         const usersByDay = new Map<number, Set<string>>();
-        // Chỉ lấp đầy kết quả nếu không phải là dữ liệu placeholder
         if (!items[0]?.isPlaceholder) {
           items.forEach((res: any) => {
             const dateTest = res.planResult?.dateTest;
             const resultValue = this.mapResultToIcon(res.result);
-            const inspectionSession = res.inspectionSession;
+            const inspectionSession = res.inspectionSession || res.frequency;
             const examinationTime = res.examinationTime;
+            const status = res.status;
 
-            if (dateTest && resultValue && resultValue !== '//' && this.model.planDetail?.createdAt) {
+            if (dateTest && this.model.planDetail?.createdAt) {
               const testDate = new Date(dateTest);
               const planDate = new Date(this.model.planDetail.createdAt);
 
@@ -328,7 +328,11 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
                     s.session.toLowerCase() === (inspectionSession || '').toLowerCase().trim()
                   );
                   if (sessionResult) {
-                    sessionResult.results.push({ value: resultValue, time: examinationTime || '', createdBy: res.createdBy || '' });
+                    if (status === 0) {
+                      sessionResult.results.push({ value: 'EMPTY', time: examinationTime || '', createdBy: res.createdBy || '' });
+                    } else if (resultValue && resultValue !== '//') {
+                      sessionResult.results.push({ value: resultValue, time: examinationTime || '', createdBy: res.createdBy || '' });
+                    }
                   }
                 }
               }
@@ -433,6 +437,7 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
     const baseUrl = window.location.origin;
 
     const icons = results.map((res: any) => {
+      if (res.value === 'EMPTY') return ''; // Hiển thị rỗng nếu status == 0
       const timeKey = (res.time || '').toLowerCase().replace(/\s/g, '');
       const creatorName = this.userMap[res.createdBy] || res.createdBy || 'N/A';
       const tooltipText = `Người thực hiện: ${creatorName}`;
@@ -456,9 +461,9 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
         default:
           return '';
       }
-    }).filter(Boolean);
+    });
 
-    return icons.join(' ');
+    return icons.join(' ').trim();
   }
 
   // Hàm mapResultToIcon và các hàm khác giữ nguyên...
