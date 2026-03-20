@@ -30,6 +30,10 @@ export class SearchDeviceDialog {
     listDevice: any[] = [];
     selectedDevice: any = null;
 
+    totalRecords: number = 0;
+    page: number = 0;
+    size: number = 10;
+
     constructor(
         public ref: DynamicDialogRef,
         public config: DynamicDialogConfig,
@@ -105,10 +109,17 @@ export class SearchDeviceDialog {
             if (line) filters['line.name'] = line.name;
         }
 
-        this.deviceService.getAllByPaged(filters).subscribe((res: any) => {
+        this.deviceService.getAllByPaged(filters, this.page).subscribe((res: any) => {
             this.listDevice = res.content || [];
+            this.totalRecords = res.totalElements;
             this.cdr.detectChanges();
         });
+    }
+
+    onPageChange(event: any) {
+        this.page = event.first / event.rows;
+        this.size = event.rows;
+        this.search();
     }
 
     selectDevice(device: any) {

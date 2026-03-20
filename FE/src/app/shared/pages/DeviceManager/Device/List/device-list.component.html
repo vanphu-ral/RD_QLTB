@@ -18,8 +18,27 @@
   <ng-template appColumnTemplate="updatedAt" let-rowData>
     {{ rowData | date: 'dd/MM/yyyy' }}
   </ng-template>
+
+  <ng-template appCustomFilter="branch.name" let-value="value" let-filter="filter">
+    <p-select [ngModel]="value" (ngModelChange)="onBranchChange($event, filter)" [options]="branchOptions"
+      optionLabel="label" optionValue="value" [showClear]="true" appendTo="body" styleClass="w-100" [filter]="true" [fluid]="true">
+    </p-select>
+  </ng-template>
+
+  <ng-template appCustomFilter="team.name" let-value="value" let-filter="filter">
+    <p-select [ngModel]="value" (ngModelChange)="onTeamChange($event, filter)" [options]="teamOptions"
+      optionLabel="label" optionValue="value" [showClear]="true" appendTo="body" styleClass="w-100" [filter]="true" [fluid]="true">
+    </p-select>
+  </ng-template>
+
+  <ng-template appCustomFilter="line.name" let-value="value" let-filter="filter">
+    <p-select [ngModel]="value" (ngModelChange)="onLineChange($event, filter)" [options]="lineOptions"
+      optionLabel="label" optionValue="value" [showClear]="true" appendTo="body" styleClass="w-100" [filter]="true" [fluid]="true">
+    </p-select>
+  </ng-template>
 </app-base-table>
 <ng-template #customActions let-row>
+  <p-button title="Đánh giá thiết bị" icon="pi pi-check" styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="evaluateDevice(row)"></p-button>
   <p-button title="Xem lịch sử di chuyển" icon="pi pi-history" styleClass="p-button-sm p-button-rounded p-button-warn m-1" (onClick)="historyMoveDialog(row)"></p-button>
   <p-button title="Di chuyển thiết bị" icon="pi pi-arrows-h" styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="moveDeviceDialog(row)"></p-button>
 </ng-template>

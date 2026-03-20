@@ -8,6 +8,7 @@ import { DeviceService } from '../../../DeviceManager/Device/Service/device.serv
 import { Device } from '../../../../models/DeviceManager/device.model';
 import { DialogService } from 'primeng/dynamicdialog';
 import { SearchDeviceDialog } from '../Dialog/search-device-dialog/search-device.dialog';
+import { Util } from '../../../../core/utils/utils-function';
 
 @Component({
   selector: 'app-scan-qr-code',
@@ -115,7 +116,9 @@ export class ScanQrCodeComponent {
         this.cdr.detectChanges();
       },
       error: (err) => {
-        console.error('Error fetching device info:', err);
+        Util.ConfirmMessage('Không tìm thấy thiết bị', 'error');
+        this.qrCode = '';
+        this.cdr.detectChanges();
       }
     });
   }
@@ -137,4 +140,4 @@ export class ScanQrCodeComponent {
     });
   }
 
-}
+}

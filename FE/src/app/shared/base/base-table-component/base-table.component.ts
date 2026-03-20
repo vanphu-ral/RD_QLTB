@@ -234,6 +234,10 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
 
 
   // function support template
+  trackColumn(index: number, col: Column): string {
+    return col.Field;
+  }
+
   ngAfterContentInit(): void {
     const rebuild = () => {
       this.filterTpls.clear();

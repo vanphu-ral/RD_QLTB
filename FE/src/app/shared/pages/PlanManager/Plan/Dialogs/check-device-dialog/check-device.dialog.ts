@@ -60,11 +60,10 @@ export class CheckDeviceDialog {
         private breakpointObserver: BreakpointObserver
     ) {
         this.data = config.data;
-        console.log(this.data);
         this.breakpointObserver.observe([Breakpoints.Handset, Breakpoints.Small])
             .subscribe(result => {
-                this.isMobile = result.matches; // True nếu mobile (< ~768px)
-                this.cdr.detectChanges(); // Update view nếu cần
+                this.isMobile = result.matches; 
+                this.cdr.markForCheck(); 
             });
     }
 
@@ -85,8 +84,8 @@ export class CheckDeviceDialog {
                 examinationTime: time,
                 step: x.step,
                 performer: x.performer,
-                result: "OK",
-                status: 1
+                result: x.frequency === 'Hằng tuần' ? null : "OK",
+                status: x.frequency === 'Hằng tuần' ? 0 : 1
             }));
         });
 
@@ -195,7 +194,6 @@ export class CheckDeviceDialog {
                 items: groups[key]                 
             };
         });
-        
     }
 
     onShiftFilterChange(event: any) {
@@ -294,6 +292,9 @@ export class CheckDeviceDialog {
             next: (res) => {
                 Util.showSuccessMessage("Lưu kết quả kiểm tra thành công");
                 this.ref.close(true);
+            },
+            error: (err) => {
+                Util.ConfirmMessage('Lưu kết quả kiểm tra thất bại', 'error');
             }
         });
         const planResultCheckLog = {

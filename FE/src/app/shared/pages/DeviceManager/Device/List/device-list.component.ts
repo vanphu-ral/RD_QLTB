@@ -13,11 +13,14 @@ import { forkJoin } from 'rxjs';
 import { LineService } from '../../../Categories/Line/Service/line.service';
 import { TeamService } from '../../../Categories/Team/Service/team.service';
 import { BranchService } from '../../../Categories/Branch/Service/branch.service';
+import { CustomFilterDirective } from '../../../../directive/app.custom-filter.directive';
+import { SelectModule } from 'primeng/select'; // Just in case it's not exported by SharedModule
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'device-list',
   standalone: true,
-  imports: [SharedModule, BaseTableComponent, FormsModule],
+  imports: [SharedModule, BaseTableComponent, FormsModule, CustomFilterDirective, SelectModule],
   templateUrl: './device-list.component.html',
   styleUrls: ['./device-list.component.scss'],
 })
@@ -27,6 +30,17 @@ export class DeviceListComponent {
   ref?: DynamicDialogRef;
   frequencyOptions: any[] = [{ label: 'Ngày', value: 'Ngày' }, { label: 'Tuần', value: 'Tuần' }, { label: 'Tháng', value: 'Tháng' }, { label: 'Quỹ', value: 'Quỹ' }, { label: '6 Tháng', value: '6 Tháng' }, { label: 'Năm', value: 'Năm' }];
   statusOptions: any[] = Util.statusDevice();
+
+  allBranches: any[] = [];
+  allTeams: any[] = [];
+  allLines: any[] = [];
+
+  branchOptions: any[] = [];
+  teamOptions: any[] = [];
+  lineOptions: any[] = [];
+
+  selectedBranch: string | null = null;
+  selectedTeam: string | null = null;
 
   data: any[] = [];
 
@@ -62,7 +76,7 @@ export class DeviceListComponent {
   ];
 
   constructor(public apiService: DeviceService, private dialogService: DialogService, private deviceGroupService: DeviceGroupService,
-    private branchService: BranchService, private teamService: TeamService, private lineService: LineService
+    private branchService: BranchService, private teamService: TeamService, private lineService: LineService, private router: Router, private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
@@ -72,22 +86,65 @@ export class DeviceListComponent {
       team: this.teamService.getAll(),
       line: this.lineService.getAll()
     }).subscribe(({ deviceGroup, branch, team, line }) => {
+      this.allBranches = branch;
+      this.allTeams = team;
+      this.allLines = line;
+
+      this.updateDropdownOptions();
+
       const groupOptions = deviceGroup.map(g => ({ label: g.name ?? '', value: g.name ?? null }));
-      const branchOptions = branch.map(b => ({ label: b.name ?? '', value: b.name ?? null }));
-      const teamOptions = team.map(t => ({ label: t.name ?? '', value: t.name ?? null }));
-      const lineOptions = line.map(l => ({ label: l.name ?? '', value: l.name ?? null }));
       this.columns = this.columns.map(col =>
-        col.Field === 'group.name'
-          ? { ...col, Options: groupOptions }
-          : col.Field === 'branch.name'
-          ? { ...col, Options: branchOptions }
-          : col.Field === 'team.name'
-          ? { ...col, Options: teamOptions }
-          : col.Field === 'line.name'
-          ? { ...col, Options: lineOptions }
-          : col
+        col.Field === 'group.name' ? { ...col, Options: groupOptions } : col
       );
     });
+  }
+
+  onBranchChange(event: any, filterCallback: Function) {
+    this.selectedBranch = event;
+    filterCallback(event);
+    this.updateDropdownOptions();
+  }
+
+  onTeamChange(event: any, filterCallback: Function) {
+    this.selectedTeam = event;
+    filterCallback(event);
+    this.updateDropdownOptions();
+  }
+
+  onLineChange(event: any, filterCallback: Function) {
+    filterCallback(event);
+  }
+
+  updateDropdownOptions() {
+    this.branchOptions = this.allBranches.map(b => ({ label: b.name ?? '', value: b.name ?? null }));
+
+    if (this.selectedBranch) {
+      this.teamOptions = this.allTeams
+        .filter(t => t.branch?.name === this.selectedBranch)
+        .map(t => ({ label: t.name ?? '', value: t.name ?? null }));
+    } else {
+      this.teamOptions = this.allTeams.map(t => ({ label: t.name ?? '', value: t.name ?? null }));
+    }
+
+    if (this.selectedTeam) {
+      this.lineOptions = this.allLines
+        .filter(l => l.team?.name === this.selectedTeam)
+        .map(l => ({ label: l.name ?? '', value: l.name ?? null }));
+    } else if (this.selectedBranch) {
+      const filteredTeamNames = this.teamOptions.map(t => t.value);
+      this.lineOptions = this.allLines
+        .filter(l => filteredTeamNames.includes(l.team?.name))
+        .map(l => ({ label: l.name ?? '', value: l.name ?? null }));
+    } else {
+      this.lineOptions = this.allLines.map(l => ({ label: l.name ?? '', value: l.name ?? null }));
+    }
+    
+    // update columns so that the original dropdown lists are mapped incase not using custom filter? Optional, but cleanly handled via custom filters anyway.
+    this.columns = this.columns.map(col =>
+      col.Field === 'branch.name' ? { ...col, Options: this.branchOptions } :
+      col.Field === 'team.name' ? { ...col, Options: this.teamOptions } :
+      col.Field === 'line.name' ? { ...col, Options: this.lineOptions } : col
+    );
   }
 
   moveDeviceDialog(data: any) {
@@ -125,5 +182,12 @@ export class DeviceListComponent {
 
   statusToSeverity(status: number) {
     return Util.statusDeviceToSeverity(status);
+  }
+
+  evaluateDevice(row: any) {
+    // this.router.navigate([row.id, 'summary'], { relativeTo: this.route });
+    const urlTree = this.router.createUrlTree([row.id, 'evaluate'], { relativeTo: this.route });
+    const url = this.router.serializeUrl(urlTree);
+    window.open(url, '_blank');
   }
 }

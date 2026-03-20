@@ -10,6 +10,7 @@ import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
@@ -112,6 +113,24 @@ public class PlanDetailService {
                 errorReportService.mapToDTO(item,new ErrorReportDTO())).toList();
         planCheckDTO.setErrorReport(errorReportDTOS);
         return planCheckDTO;
+    }
+
+    public PlanCheckDTO getPlanCheckDetailByDeviceId(final Long deviceId, String entityType) {
+        List<PlanDetail> planDetails = planDetailRepository.findAllByDeviceId(deviceId);
+        
+        List<PlanDetail> validPlanDetails = planDetails.stream()
+            .filter(detail -> detail.getPlan() != null && detail.getPlan().getStatus() != 10)
+            .collect(Collectors.toList());
+
+        if (validPlanDetails.isEmpty()) {
+            throw new NotFoundException("Thiết bị này không có trong kế hoạch kiểm tra");
+        }
+        
+        PlanDetail latestPlanDetail = validPlanDetails.stream()
+            .max(Comparator.comparing(PlanDetail::getId))
+            .orElseThrow(NotFoundException::new);
+
+        return getPlanCheckDetail(latestPlanDetail.getId(), entityType);
     }
 
     public List<PlanDetailDTO> findAll() {
@@ -346,7 +365,7 @@ public class PlanDetailService {
             sampleReportCopy.setBranch(null);
             sampleReportCopy.setApprovalWorkflow(null);
         }
-        if (planDetail.getPlanResults().isEmpty() || planDetail.getPlanResults() == null) {
+        if (planDetail.getPlanResults() == null || planDetail.getPlanResults().isEmpty()) {
             dto.setPlanResults(new ArrayList<>());
         } else {
             List<PlanResultDTO> planResultDTOS = new ArrayList<>();

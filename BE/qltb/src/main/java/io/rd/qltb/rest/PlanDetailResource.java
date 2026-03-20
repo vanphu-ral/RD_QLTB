@@ -39,6 +39,14 @@ public class PlanDetailResource {
         PlanCheckDTO planCheckDTO = planDetailService.getPlanCheckDetail(id, entityType);
         return ResponseEntity.ok(planCheckDTO);
     }
+    
+    @GetMapping("/summary/device/{deviceId}")
+    public ResponseEntity<PlanCheckDTO> getPlanCheckDetailByDeviceId(
+            @PathVariable("deviceId") Long deviceId,
+            @RequestParam("entityType") String entityType) {
+        PlanCheckDTO planCheckDTO = planDetailService.getPlanCheckDetailByDeviceId(deviceId, entityType);
+        return ResponseEntity.ok(planCheckDTO);
+    }
     @GetMapping("/{id}")
     public ResponseEntity<PlanDetailDTO> getPlanDetail(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(planDetailService.get(id));

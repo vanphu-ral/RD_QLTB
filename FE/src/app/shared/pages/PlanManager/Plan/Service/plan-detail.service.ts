@@ -32,4 +32,9 @@ export class PlanDetailService extends BaseApiService<PlanDetail> {
   getByPlanId(id: number): Observable<any[]> {
     return this.http.get<any[]>(`${this['fullBaseUrl']}/plan/${id}`);
   }
+
+  getSummaryCheckDetailByDeviceId(deviceId: number | string, entityType: string = 'PLAN'): Observable<any> {
+    const params = new HttpParams().set('entityType', entityType);
+    return this.http.get<any>(`${this['fullBaseUrl']}/summary/device/${deviceId}`, { params });
+  }
 }

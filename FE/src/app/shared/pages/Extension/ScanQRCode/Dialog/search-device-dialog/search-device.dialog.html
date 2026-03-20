@@ -29,8 +29,10 @@
     </div>
 
     <div class="table-responsive">
-        <p-table [value]="listDevice" responsiveLayout="scroll" [paginator]="true" [rows]="10" selectionMode="single"
-            [(selection)]="selectedDevice">
+        <p-table [value]="listDevice" responsiveLayout="scroll" [paginator]="true" [rows]="size" [totalRecords]="totalRecords"
+            [lazy]="true" (onLazyLoad)="onPageChange($event)" [showCurrentPageReport]="true" paginatorDropdownAppendTo="body"
+            currentPageReportTemplate="Từ {first} đến {last} trong {totalRecords} bản ghi"
+            [rowsPerPageOptions]="[5, 10, 20, 50]" dataKey="id" [(selection)]="selectedDevice">
             <ng-template pTemplate="header">
                 <tr>
                     <th>STT</th>
