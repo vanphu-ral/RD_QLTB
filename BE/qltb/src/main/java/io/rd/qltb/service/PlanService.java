@@ -667,7 +667,10 @@ public class PlanService {
 
     @Transactional
     public Plan createPlan(PlanRequest request, String userName) {
-
+        // Kiểm tra mã kế hoạch đã tồn tại hay chưa
+        for(DeviceRequest deviceRequest: request.getDevices()){
+            deviceRequest.setPlanDetailId(null);
+        }
         Plan plan = preparePlanForCreate(request.getPlan());
         plan = planRepository.save(plan);
 
