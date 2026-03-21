@@ -124,9 +124,9 @@
           [scrollable]="true" scrollHeight="500px">
           <ng-template pTemplate="header">
             <tr>
-              <th style="width: 80px">STT</th>
-              <th>Tên kế hoạch</th>
-              <th>Mã thiết bị</th>
+              <!-- <th style="width: 80px">STT</th> -->
+              <!-- <th>Tên kế hoạch</th> -->
+              <!-- <th>Mã thiết bị</th> -->
               <th>Tên thiết bị</th>
               <th>Người thực hiện</th>
               <th>Ngày kiểm tra</th>
@@ -136,9 +136,9 @@
           </ng-template>
           <ng-template pTemplate="body" let-row>
             <tr>
-              <td>{{ row.stt }}</td>
-              <td>{{ row.planName }}</td>
-              <td>{{ row.deviceCode }}</td>
+              <!-- <td>{{ row.stt }}</td> -->
+              <!-- <td>{{ row.planName }}</td> -->
+              <!-- <td>{{ row.deviceCode }}</td> -->
               <td>{{ row.deviceName }}</td>
               <td>{{ row.userPerformer }}</td>
               <td>{{ row.dateTest | date:'dd/MM/yyyy' }}</td>
@@ -259,11 +259,11 @@
           <ng-template pTemplate="body" let-row>
             <tr>
               <td>
-                <b>Tên kế hoạch:</b> {{ row.planName }} <br />
-                <b>Mã thiết bị:</b> {{ row.deviceCode }} <br />
+                <!-- <b>Tên kế hoạch:</b> {{ row.planName }} <br /> -->
+                <!-- <b>Mã thiết bị:</b> {{ row.deviceCode }} <br /> -->
                 <b>Tên thiết bị:</b> {{ row.deviceName }} <br />
                 <b>Người thực hiện:</b> {{ row.userPerformer }} <br />
-                <b>Ngày kiểm tra:</b> {{ row.dateTest | date:'dd/MM/yyyy' }} <br />
+                <b>Ngày kiểm tra:</b> <span class="text-primary">{{ row.dateTest | date:'dd/MM/yyyy' }}</span> <br />
                 <b>Trạng thái:</b> <p-tag [value]="statusToString(row.status)"
                   [severity]="getSeverityStatus(row.status)" /> <br />
               </td>
@@ -302,8 +302,8 @@
           <ng-template pTemplate="body" let-row>
             <tr>
               <td>
-                <b>Tên kế hoạch:</b> {{ row.planName }} <br />
-                <b>Mã thiết bị:</b> {{ row.deviceCode }} <br />
+                <!-- <b>Tên kế hoạch:</b> {{ row.planName }} <br /> -->
+                <!-- <b>Mã thiết bị:</b> {{ row.deviceCode }} <br /> -->
                 <b>Tên thiết bị:</b> {{ row.deviceName }} <br />
                 <b>Người thực hiện:</b> {{ row.userPerformer }} <br />
                 <b>Ngày kiểm tra:</b> {{ row.dateTest | date:'dd/MM/yyyy' }} <br />
