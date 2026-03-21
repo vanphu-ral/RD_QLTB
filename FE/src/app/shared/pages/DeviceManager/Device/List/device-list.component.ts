@@ -185,9 +185,9 @@ export class DeviceListComponent {
   }
 
   evaluateDevice(row: any) {
-    // this.router.navigate([row.id, 'summary'], { relativeTo: this.route });
-    const urlTree = this.router.createUrlTree([row.id, 'evaluate'], { relativeTo: this.route });
-    const url = this.router.serializeUrl(urlTree);
-    window.open(url, '_blank');
+    this.router.navigate([row.id, 'summary'], { relativeTo: this.route });
+    // const urlTree = this.router.createUrlTree([row.id, 'summary'], { relativeTo: this.route });
+    // const url = this.router.serializeUrl(urlTree);
+    // window.open(url, '_blank');
   }
 }
