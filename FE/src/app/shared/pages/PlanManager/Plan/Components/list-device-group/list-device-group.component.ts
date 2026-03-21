@@ -128,7 +128,9 @@ export class ListDeviceComponent implements OnInit {
             // Tính toán lại danh sách mẫu biên bản phù hợp cho nhóm mới
             if (this.model.plan?.planType) {
                 row.sampleReports = this.listSampleReportBase.filter(sr =>
-                    sr.deviceGroup?.id === row.deviceGroup.id && sr.type === this.model.plan.planType!.code
+                    sr.deviceGroup?.id === row.deviceGroup.id &&
+                    sr.type === this.model.plan.planType!.code &&
+                    sr.branch?.id === this.model.plan?.branch?.id
                 );
             } else {
                 row.sampleReports = [];
@@ -201,7 +203,9 @@ export class ListDeviceComponent implements OnInit {
         if (this.model.plan.planType) {
             if (row.deviceGroup) {
                 const listSampleReport = this.listSampleReportBase.filter(sr =>
-                    sr.deviceGroup?.id === row.deviceGroup.id && sr.type === this.model.plan.planType.code
+                    sr.deviceGroup?.id === row.deviceGroup.id &&
+                    sr.type === this.model.plan.planType.code &&
+                    sr.branch?.id === this.model.plan?.branch?.id
                 );
                 if (listSampleReport.length > 0) {
                     row.sampleReports = listSampleReport;
@@ -222,7 +226,8 @@ export class ListDeviceComponent implements OnInit {
             if (row.deviceGroup) {
                 row.sampleReports = this.listSampleReportBase.filter(sr =>
                     sr.deviceGroup?.id === row.deviceGroup.id &&
-                    sr.type === this.model.plan.planType.code
+                    sr.type === this.model.plan.planType.code &&
+                    sr.branch?.id === this.model.plan?.branch?.id
                 );
             }
         });
