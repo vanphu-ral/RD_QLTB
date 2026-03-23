@@ -19,7 +19,7 @@
 <ng-template #customActions let-row>
   <p-button icon="pi pi-file-check" *ngIf="row.status == 1" title="gửi phê duyệt"
     styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="approval(row, $event)"></p-button>
-  <p-button icon="pi pi-check-square" title="Thực hiện mục tiêu"
+  <p-button icon="pi pi-check-square" title="Thực hiện mục tiêu" *ngIf="row.status == 3"
     styleClass="p-button-sm p-button-rounded p-button-warn m-1" (onClick)="checkList(row)"></p-button>
   <p-button icon="pi pi-file-pdf" title="Xem báo cáo"
     styleClass="p-button-sm p-button-rounded p-button-info m-1" (onClick)="viewPlanReport(row)"></p-button>
