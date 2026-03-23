@@ -69,6 +69,14 @@ export class ListDeviceDialog {
     onDeviceChange(row: any, index: number) {
         const selectedDevice = this.listDeviceOptions.find(device => device.id === row.device.id);
         if (selectedDevice) {
+            const isDuplicate = this.ListDevice.some((item, i) => i !== index && item.device?.id === selectedDevice.id);
+            if (isDuplicate) {
+                Util.ConfirmMessage(`Thiết bị "${selectedDevice.name || selectedDevice.code}" đã tồn tại trong danh sách!`, 'error');
+                row.device = null;
+                row.manager = [];
+                row.qrCode = null;
+                return;
+            }
             row.manager = _.split(selectedDevice.userManager, ',');
             row.qrCode = selectedDevice.qrCode;
             if(this.plan.planType.code == PLANTYPE.MAINTENANCE) {

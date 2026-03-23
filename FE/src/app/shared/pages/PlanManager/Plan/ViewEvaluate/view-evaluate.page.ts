@@ -429,10 +429,17 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
     const dayResult = detail.dailyResults.find(d => d.day === day);
     if (!dayResult) return '//';
 
+    // Kiểm tra xem trong ngày này có bất kỳ ca nào có dữ liệu không
+    const anySessionHasData = dayResult.sessionResults.some(s => s.results && s.results.length > 0);
+
     const sessionResult = dayResult.sessionResults.find(s => s.session === session);
     const results = sessionResult ? sessionResult.results : [];
 
-    if (!results || results.length === 0) return '//';
+    if (!results || results.length === 0) {
+      // Nếu có ít nhất 1 ca khác có dữ liệu trong ngày này → hiển thị trống
+      // Nếu tất cả ca đều không có dữ liệu → hiển thị //
+      return anySessionHasData ? '' : '//';
+    }
 
     const baseUrl = window.location.origin;
 
