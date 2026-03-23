@@ -123,6 +123,7 @@ public class PlanSupplieService {
         planSupplieDTO.setName(planSupplie.getName());
         planSupplieDTO.setType(planSupplie.getType());
         planSupplieDTO.setPlanNumber(planSupplie.getPlanNumber());
+        planSupplieDTO.setNumberOfIssuances(planSupplie.getNumberOfIssuances());
         planSupplieDTO.setDescription(planSupplie.getDescription());
         planSupplieDTO.setUserPerformer(planSupplie.getUserPerformer());
         planSupplieDTO.setFromDate(planSupplie.getFromDate());
@@ -224,6 +225,7 @@ public class PlanSupplieService {
         planSupplie.setName(planSupplieDTO.getName());
         planSupplie.setType(planSupplieDTO.getType());
         planSupplie.setPlanNumber(planSupplieDTO.getPlanNumber());
+        planSupplie.setNumberOfIssuances(planSupplieDTO.getNumberOfIssuances());
         planSupplie.setDescription(planSupplieDTO.getDescription());
         planSupplie.setUserPerformer(planSupplieDTO.getUserPerformer());
         planSupplie.setFromDate(planSupplieDTO.getFromDate());

@@ -28,6 +28,8 @@ public class PlanSupplieDTO {
 
     private String planNumber;
 
+    private Integer numberOfIssuances;
+
     private String userPerformer;
 
     private LocalDateTime fromDate;

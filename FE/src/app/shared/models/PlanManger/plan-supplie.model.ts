@@ -6,6 +6,7 @@ export class PlanSupplie {
     code?: string;
     type?: 'ANNUAL' | 'REPAIR_AND_MAINTENANCE';
     planNumber?: string;
+    numberOfIssuances?: number;
     userPerformer?: string;
     fromDate?: Date;
     toDate?: Date;

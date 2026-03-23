@@ -22,6 +22,10 @@ public class PlanTargetDTO {
 
     private String planCode;
 
+    private String planNumber;
+
+    private Integer numberOfIssuances;
+
     private LocalDateTime year;
 
     private String listItems;

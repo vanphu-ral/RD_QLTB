@@ -30,6 +30,10 @@ public class PlanTarget {
     @Column
     private String planCode;
 
+    private String planNumber;
+
+    private Integer numberOfIssuances;
+
     @Column
     private LocalDateTime year;
 

@@ -100,6 +100,8 @@ public class PlanTargetService {
         planTargetDTO.setCode(planTarget.getCode());
         planTargetDTO.setName(planTarget.getName());
         planTargetDTO.setPlanCode(planTarget.getPlanCode());
+        planTargetDTO.setPlanNumber(planTarget.getPlanNumber());
+        planTargetDTO.setNumberOfIssuances(planTarget.getNumberOfIssuances());
         planTargetDTO.setYear(planTarget.getYear());
         planTargetDTO.setListItems(planTarget.getListItems());
         planTargetDTO.setDescription(planTarget.getDescription());
@@ -152,6 +154,8 @@ public class PlanTargetService {
         planTarget.setCode(planTargetDTO.getCode());
         planTarget.setName(planTargetDTO.getName());
         planTarget.setPlanCode(planTargetDTO.getPlanCode());
+        planTarget.setPlanNumber(planTargetDTO.getPlanNumber());
+        planTarget.setNumberOfIssuances(planTargetDTO.getNumberOfIssuances());
         planTarget.setYear(planTargetDTO.getYear());
         planTarget.setListItems(planTargetDTO.getListItems());
         planTarget.setDescription(planTargetDTO.getDescription());

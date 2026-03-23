@@ -179,7 +179,7 @@ export class PlanSupplieDetailComponent extends BasePageComponent<PlanSupplie> {
         this.model.status = 2;
         this.apiService.update(this.model.id!, this.model).subscribe({
           next: (id) => {
-            this.apiService.createApprovalEntity({ entityId: this.model.id, workflowId: this.model.approvalWorkflow.id }, 'plan_supplie_details').subscribe({
+            this.apiService.createApprovalEntity({ entityId: this.model.id, workflowId: this.model.approvalWorkflow.id }, 'plan_supplies').subscribe({
               next: () => {
                 Util.ConfirmMessage('Đã sửa và gửi duyệt thành công', 'success');
                 this.navigationService.back();

@@ -7,6 +7,7 @@ export class PlanTarget {
     planCode?: string;
     year?: any;
     planNumber?: string;
+    numberOfIssuances?: number;
     userPerformer?: string;
     listItems?: any;
     description?: string;

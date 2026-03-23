@@ -18,7 +18,7 @@
     </div>
 
     <div class="row my-3">
-      <div class="col-4">
+      <div class="col-6">
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="factory" [options]="listFactory"
             [fluid]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="factory"
@@ -28,7 +28,7 @@
         </p-floatlabel>
       </div>
 
-      <div class="col-4">
+      <div class="col-6">
         <p-floatlabel variant="on">
           <p-select [(ngModel)]="model.branch" [options]="listBranchs" [invalid]="!model.branch" required
             [fluid]="true" [filter]="true" [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="branch"
@@ -37,11 +37,19 @@
           <label for="branch">Ngành</label>
         </p-floatlabel>
       </div>
-
-      <div class="col-4">
+    </div>
+    <div class="row my-3">
+      <div class="col-6">
         <p-floatlabel variant="on">
-          <input pInputText id="planCode" name="planCode" [(ngModel)]="model.planCode" [invalid]="!model.planCode" required autocomplete="off" [disabled]="isViewMode || isApprovalMode" [fluid]="true"/>
-          <label for="planCode">Số KH</label>
+          <input pInputText id="planNumber" name="planNumber" [(ngModel)]="model.planNumber" [invalid]="!model.planNumber" required autocomplete="off" [disabled]="isViewMode || isApprovalMode" [fluid]="true"/>
+          <label for="planNumber">Số KH</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="col-6">
+        <p-floatlabel variant="on">
+          <p-inputnumber id="numberOfIssuances" name="numberOfIssuances" [(ngModel)]="model.numberOfIssuances" [invalid]="!model.numberOfIssuances" required autocomplete="off" [disabled]="isViewMode" [fluid]="true" mode="decimal" [disabled]="isViewMode || isApprovalMode"/>
+          <label for="numberOfIssuances">Lần ban hành</label>
         </p-floatlabel>
       </div>
     </div>

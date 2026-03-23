@@ -30,11 +30,13 @@ public class PlanSupplie {
     @Column(length = 150)
     private String name;
 
-    @Enumerated(EnumType.STRING) // Lưu vào DB dưới dạng chữ (ANNUAL/REPAIR_AND_MAINTENANCE)
-    @Column(name = "plan_type")   // Có thể đổi tên cột nếu muốn
+    @Enumerated(EnumType.STRING)
+    @Column(name = "plan_type")
     private PlanSupplieType type;
 
     private String planNumber;
+
+    private Integer numberOfIssuances;
 
     private String userPerformer;
 

@@ -129,11 +129,12 @@ export class PlanTargetDetailComponent extends BasePageComponent<PlanTarget> {
   
   public override save(): void {
     if (this.model) {
+      const planCode = `${Util.dateToCode()}-${new Date(this.model.year).getFullYear().toString()}/KHMTTB-LED.${this.model.branch.code}`;
       this.model = Util.prepareModel(this.model);
       this.model = Util.simplifyMany(this.model, ['branch', 'approvalWorkflow']);
       if (typeof this.model.listItems !== 'string') this.model.listItems = JSON.stringify(this.model.listItems);
-      // this.model.year = Util.convertYearData(this.model.year);
       if (this.isAddMode) {
+        this.model.planCode = planCode;
         this.apiService.create(this.model).subscribe({
           next: () => {
             Util.ConfirmMessage('Thêm mới thành công', 'success');
