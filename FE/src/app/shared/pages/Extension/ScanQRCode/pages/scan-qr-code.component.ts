@@ -107,6 +107,10 @@ export class ScanQrCodeComponent {
   }
 
   getDeviceInfo(qrCode: any) {
+    if (!qrCode) {
+      Util.ConfirmMessage('Vui lòng nhập mã QR Code', 'error');
+      return;
+    }
     this.deviceService.getBySerialNumber(qrCode).subscribe({
       next: (device) => {
         this.device = device;

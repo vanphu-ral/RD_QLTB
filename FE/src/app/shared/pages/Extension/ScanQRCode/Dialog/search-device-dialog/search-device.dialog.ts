@@ -26,6 +26,7 @@ export class SearchDeviceDialog {
     selectedBranch: any = null;
     selectedTeam: any = null;
     selectedLine: any = null;
+    deviceName: string = '';
 
     listDevice: any[] = [];
     selectedDevice: any = null;
@@ -96,6 +97,9 @@ export class SearchDeviceDialog {
 
     search() {
         const filters: any = {};
+        if (this.deviceName && this.deviceName.trim() !== '') {
+            filters['name'] = this.deviceName.trim();
+        }
         if (this.selectedBranch) {
             const branch = this.listBranch.find((b: any) => b.id === this.selectedBranch);
             if (branch) filters['branch.name'] = branch.name;
