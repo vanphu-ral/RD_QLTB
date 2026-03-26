@@ -1247,11 +1247,11 @@ public class PlanService {
         }
     }
 
-//    public PlanDTO getById(final Long id) {
-//        return planRepository.findById(id)
-//                .map(plan -> mapToDTO(plan, new PlanDTO()))
-//                .orElseThrow(NotFoundException::new);
-//    }
+    public PlanDTO getById(final Long id) {
+        return planRepository.findById(id)
+                .map(plan -> mapToDTO(plan, new PlanDTO()))
+                .orElseThrow(NotFoundException::new);
+    }
 public PlanDTO getMaintainById(final Long id) {
     return planRepository.findById(id)
             .map(plan -> {

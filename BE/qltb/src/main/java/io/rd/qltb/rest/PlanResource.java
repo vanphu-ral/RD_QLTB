@@ -109,6 +109,10 @@ public class PlanResource {
     public ResponseEntity<PlanDTO> getPlanWithDetailsDaily(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(planService.getDailyById(id));
     }
+    @GetMapping("/details/{id}")
+    public ResponseEntity<PlanDTO> getPlanWithDetails(@PathVariable(name = "id") final Long id) {
+        return ResponseEntity.ok(planService.getById(id));
+    }
     @GetMapping("/details/maintain/{id}")
     public ResponseEntity<PlanDTO> getPlanWithDetailsMaintain(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(planService.getMaintainById(id));
