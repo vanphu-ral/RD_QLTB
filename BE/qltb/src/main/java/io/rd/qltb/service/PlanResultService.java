@@ -285,8 +285,12 @@ public class PlanResultService {
             planDetailCopy.setUpdatedBy(planResult.getPlanDetail().getUpdatedBy());
             planDetailCopy.setManager(planResult.getPlanDetail().getManager());
             planDetailCopy.setStatus(planResult.getPlanDetail().getStatus());
+            if(planResult.getPlanDetail().getPlan() != null) {
+                Plan planCopy = new Plan();
+                planCopy.setPlanType(planResult.getPlanDetail().getPlan().getPlanType());
+                planDetailCopy.setPlan(planCopy);
+            }
             // Xóa các quan hệ con để tránh vòng lặp
-            planDetailCopy.setPlan(null);
             planDetailCopy.setDevice(null);
             planDetailCopy.setDeviceGroup(null);
             planDetailCopy.setSampleReport(null);
