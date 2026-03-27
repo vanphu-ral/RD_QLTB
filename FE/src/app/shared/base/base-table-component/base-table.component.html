@@ -1,6 +1,11 @@
 <div class="base-table-header my-3">
   <h2>{{ title }}</h2>
-  <p-button *ngIf="showAddButton" [label]="addButtonText" class="p-button-sm" (click)="addItem()" />
+  <div class="flex gap-2">
+    <ng-container *ngIf="headerActionTemplate">
+      <ng-container *ngTemplateOutlet="headerActionTemplate"></ng-container>
+    </ng-container>
+    <p-button *ngIf="showAddButton" [label]="addButtonText" class="p-button-sm" (click)="addItem()" />
+  </div>
 </div>
 <p-table #dt [value]="data" [columns]="selectedColumns" [scrollable]="true" [paginator]="true" [rows]="10"
   [loading]="loading" [rowsPerPageOptions]="[5, 10, 20, 50]" [lazy]="isLazy" (onLazyLoad)="loadDataLazy($event)"

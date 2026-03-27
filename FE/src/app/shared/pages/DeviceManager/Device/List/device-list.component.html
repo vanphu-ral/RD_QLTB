@@ -5,6 +5,7 @@
   [title]="'Danh sách thiết bị'"
   [showAddButton]="true"
   [actionTemplate]="customActions"
+  [headerActionTemplate]="headerActionTemplate"
   [isLazy]="true">
   <ng-template appColumnTemplate="status" let-rowData>
     <p-tag [value]="statusToString(rowData)" [severity]="statusToSeverity(rowData)"></p-tag>
@@ -41,4 +42,8 @@
   <p-button title="Đánh giá thiết bị" icon="pi pi-check" styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="evaluateDevice(row)"></p-button>
   <p-button title="Xem lịch sử di chuyển" icon="pi pi-history" styleClass="p-button-sm p-button-rounded p-button-warn m-1" (onClick)="historyMoveDialog(row)"></p-button>
   <p-button title="Di chuyển thiết bị" icon="pi pi-arrows-h" styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="moveDeviceDialog(row)"></p-button>
+</ng-template>
+
+<ng-template #headerActionTemplate>
+  <p-button label="Xuất Excel" icon="pi pi-file-excel" styleClass="p-button-sm p-button-success" (onClick)="exportExcel()"></p-button>
 </ng-template>

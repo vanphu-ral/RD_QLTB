@@ -16,6 +16,9 @@ import { BranchService } from '../../../Categories/Branch/Service/branch.service
 import { CustomFilterDirective } from '../../../../directive/app.custom-filter.directive';
 import { SelectModule } from 'primeng/select'; // Just in case it's not exported by SharedModule
 import { ActivatedRoute, Router } from '@angular/router';
+import { ExportDeviceDialog } from '../Dialog/export-device-dialog/export-device.dialog';
+import * as ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'device-list',
@@ -46,12 +49,13 @@ export class DeviceListComponent {
 
   columns: Column[] = [
     { Field: 'id', Header: 'ID', IsHide: true },
-    { Field: 'code', Header: 'Mã thiết bị', IsSearch: true, TypeSearch: 'text' },
+    { Field: 'qrCode', Header: 'Qr Code thiết bị', IsSearch: true, TypeSearch: 'text' },
     { Field: 'name', Header: 'Tên thiết bị', IsSearch: true, TypeSearch: 'text' },
     { Field: 'group.name', Header: 'Nhóm thiết bị', IsSearch: true, TypeSearch: 'select', Options: [], style: { 'min-width': '200px', 'width': '200px' } },
     { Field: 'branch.name', Header: 'Ngành', IsSearch: true, TypeSearch: 'select', Options: [], style: { 'min-width': '200px', 'width': '200px' } },
     { Field: 'team.name', Header: 'Tổ', IsSearch: true, TypeSearch: 'select', Options: [], style: { 'min-width': '200px', 'width': '200px' } },
     { Field: 'line.name', Header: 'Dây chuyền', IsSearch: true, TypeSearch: 'select', Options: [], style: { 'min-width': '200px', 'width': '200px' } },
+    { Field: 'code', Header: 'Mã thiết bị', IsSearch: true, TypeSearch: 'text' },
     { Field: 'maintenanceCycle', Header: 'Chu kỳ bảo trì', IsSearch: true, TypeSearch: 'select', Options: this.frequencyOptions, style: { 'min-width': '200px', 'width': '200px' } },
     { Field: 'source', Header: 'Nguồn thiết bị', IsSearch: true, TypeSearch: 'text' },
     { Field: 'supplier', Header: 'Nhà cung cấp', IsSearch: true, TypeSearch: 'text' },
@@ -65,7 +69,6 @@ export class DeviceListComponent {
     { Field: 'unit', Header: 'Đơn vị tiền', IsSearch: true, TypeSearch: 'text' },
     { Field: 'userManager', Header: 'Người quản lý', IsSearch: true, TypeSearch: 'text' },
     { Field: 'serialNumber', Header: 'Serial', IsSearch: true, TypeSearch: 'text' },
-    { Field: 'qrCode', Header: 'Qr Code', IsSearch: true, TypeSearch: 'text' },
     { Field: 'isMappingScada', Header: 'Có mapping với SCADA', IsSearch: true, TypeSearch: 'text' },
     { Field: 'isImportant', Header: 'Là thiết bị trọng yếu', IsSearch: true, TypeSearch: 'text' },
     { Field: 'createdBy', Header: 'Người tạo', IsSearch: true, TypeSearch: 'text' },
@@ -186,8 +189,67 @@ export class DeviceListComponent {
 
   evaluateDevice(row: any) {
     this.router.navigate([row.id, 'summary'], { relativeTo: this.route });
-    // const urlTree = this.router.createUrlTree([row.id, 'summary'], { relativeTo: this.route });
-    // const url = this.router.serializeUrl(urlTree);
-    // window.open(url, '_blank');
+  }
+
+  exportExcel() {
+    const dialogRef = this.dialogService.open(ExportDeviceDialog, {
+      header: 'Xuất dữ liệu thiết bị',
+      width: '600px',
+      modal: true,
+      closable: true
+    });
+
+    dialogRef.onClose.subscribe((filter: any) => {
+      if (filter) {
+        const queryFilter: any = { size: 100 };
+        Object.keys(filter).forEach(k => {
+          if (filter[k]) queryFilter[k] = filter[k];
+        });
+
+        this.apiService.getAllByPaged(queryFilter, 0).subscribe({
+          next: async (res: any) => {
+            let data: any[] = [];
+            if (Array.isArray(res)) data = res;
+            else if (res && Array.isArray(res.content)) data = res.content;
+
+            if (data.length === 0) {
+              Util.ConfirmMessage('Không có dữ liệu', 'error');
+              return;
+            }
+
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet('Danh sách thiết bị');
+
+            const excelColumns = this.columns.filter(c => !c.IsHide).map(c => ({
+              header: c.Header,
+              key: c.Field,
+              width: 25
+            }));
+            worksheet.columns = excelColumns;
+
+            data.forEach((row) => {
+              const rowData: any = {};
+              this.columns.forEach(c => {
+                if (c.IsHide) return;
+                let val = c.Field.split('.').reduce((acc, part) => acc && acc[part], row);
+                if (c.Field === 'status') val = this.statusToString(row.status);
+                if (c.Field === 'isImportant') val = row.isImportant == 1 ? 'Có' : 'Không';
+                if (c.TypeSearch === 'date' && val) val = new Date(val).toLocaleDateString('vi-VN');
+                rowData[c.Field] = val;
+              });
+              worksheet.addRow(rowData);
+            });
+
+            const buffer = await workbook.xlsx.writeBuffer();
+            const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            saveAs(blob, 'Danh_sach_thiet_bi.xlsx');
+          },
+          error: (err) => {
+            console.error('Lỗi khi xuất excel', err);
+            Util.ConfirmMessage('Có lỗi xảy ra khi xuất dữ liệu', 'error');
+          }
+        });
+      }
+    });
   }
 }
