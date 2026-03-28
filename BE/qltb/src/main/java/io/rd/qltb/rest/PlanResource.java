@@ -105,7 +105,6 @@ public class PlanResource {
     public ResponseEntity<List<PlanWithDetailsDTO>> getAllPlansWithDetails() {
         return ResponseEntity.ok(planService.findAllWithDetails());
     }
-<<<<<<< HEAD
     @GetMapping("/details/daily/{id}")
     public ResponseEntity<PlanDTO> getPlanWithDetailsDaily(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(planService.getDailyById(id));
@@ -117,11 +116,6 @@ public class PlanResource {
     @GetMapping("/details/maintain/{id}")
     public ResponseEntity<PlanDTO> getPlanWithDetailsMaintain(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(planService.getMaintainById(id));
-=======
-    @GetMapping("/details/{id}")
-    public ResponseEntity<PlanDTO> getPlanWithDetails(@PathVariable(name = "id") final Long id) {
-        return ResponseEntity.ok(planService.getById(id));
->>>>>>> parent of 6d06845 (update sort device)
     }
     @PutMapping("/{id}/status")
     public ResponseEntity<Void> updateStatus(
