@@ -10,6 +10,8 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ExportTypeDialog } from '../dialog/select-export-type/select-export-type.dialog';
 import * as ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
+import _ from 'lodash';
+import { AccountService } from '../../../core/auth/account/account.service';
 
 @Component({
   selector: 'report-2',
@@ -39,12 +41,13 @@ export class Report2Page {
   ref?: DynamicDialogRef
 
   constructor(private navigationService: NavigationService, private branchService: BranchService, private reportService: ReportService,
-    private cdr: ChangeDetectorRef, private dialogService: DialogService) { }
+    private cdr: ChangeDetectorRef, private dialogService: DialogService, private accountService: AccountService) { }
 
   ngOnInit(): void {
     this.branchService.getAll().subscribe(res => {
       this.listBranchs = res;
-      this.filter.branchIds = this.listBranchs.map(item => item.id);
+      const userBranch = _.find(res, item => item.name === this.accountService.getBranch());
+      this.filter.branchIds = [_.get(userBranch, 'id', null)];
       Util.setCurrentMonthRange(this.filter, 'startDate', 'endDate');
       this.loadData()
     })

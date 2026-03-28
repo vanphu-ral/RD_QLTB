@@ -12,6 +12,8 @@ import { ExportTypeDialog } from '../dialog/select-export-type/select-export-typ
 import { DialogService } from 'primeng/dynamicdialog';
 import * as ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
+import { AccountService } from '../../../core/auth/account/account.service';
+import _ from 'lodash';
 
 @Component({
   selector: 'report-1',
@@ -33,7 +35,7 @@ export class Report1Page {
   loading: boolean = false
 
   constructor(private navigationService: NavigationService, private branchService: BranchService, private teamService: TeamService,
-    private reportService: ReportService, private cdr: ChangeDetectorRef, private dialogService: DialogService) { }
+    private reportService: ReportService, private cdr: ChangeDetectorRef, private dialogService: DialogService, private accountService: AccountService) { }
 
   ngOnInit(): void {
     Util.setCurrentMonthRange(this.filter, 'startDate', 'endDate');
@@ -50,8 +52,9 @@ export class Report1Page {
       tap(({ branches, teams }) => {
         this.listBranchs = branches;
         this.listTeams = teams;
-
-        this.filter.branchIds = branches.map(item => item.id);
+        
+        const userBranch = _.find(branches, item => item.name === this.accountService.getBranch());
+        this.filter.branchIds = [_.get(userBranch, 'id', null)];
         this.filter.groupIds = teams.map(item => item.id);
 
         this.cdr.detectChanges();

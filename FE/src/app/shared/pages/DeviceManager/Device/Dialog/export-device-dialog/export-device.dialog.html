@@ -1,0 +1,26 @@
+<div class="row w-100 m-0">
+  <div class="col-12 col-md-6 mb-3">
+    <label class="form-label mb-2 block">Ngành</label>
+    <p-select [options]="allBranches" [(ngModel)]="filter['branch.name']" optionLabel="name" optionValue="name"
+      placeholder="Chọn ngành" (onChange)="onBranchChange()" [showClear]="true" appendTo="body" [filter]="true" styleClass="w-100" [fluid]="true"></p-select>
+  </div>
+  <div class="col-12 col-md-6 mb-3">
+    <label class="form-label mb-2 block">Tổ</label>
+    <p-select [options]="teamOptions" [(ngModel)]="filter['team.name']" optionLabel="name" optionValue="name"
+      placeholder="Chọn tổ" (onChange)="onTeamChange()" [showClear]="true" appendTo="body" [filter]="true" styleClass="w-100" [fluid]="true"></p-select>
+  </div>
+  <div class="col-12 col-md-6 mb-3">
+    <label class="form-label mb-2 block">Dây chuyền</label>
+    <p-select [options]="lineOptions" [(ngModel)]="filter['line.name']" optionLabel="name" optionValue="name"
+      placeholder="Chọn dây chuyền" [showClear]="true" appendTo="body" [filter]="true" styleClass="w-100" [fluid]="true"></p-select>
+  </div>
+  <div class="col-12 col-md-6 mb-3">
+    <label class="form-label mb-2 block">Nhóm thiết bị</label>
+    <p-select [options]="allGroups" [(ngModel)]="filter['group.name']" optionLabel="name" optionValue="name"
+      placeholder="Chọn nhóm thiết bị" [showClear]="true" appendTo="body" [filter]="true" styleClass="w-100" [fluid]="true"></p-select>
+  </div>
+</div>
+<div class="d-flex justify-content-end gap-2 mt-4 w-100 px-3">
+  <p-button label="Hủy" icon="pi pi-times" styleClass="p-button-text p-button-secondary" (onClick)="onCancel()"></p-button>
+  <p-button label="Xuất" icon="pi pi-check" styleClass="p-button-success" (onClick)="onSubmit()"></p-button>
+</div>

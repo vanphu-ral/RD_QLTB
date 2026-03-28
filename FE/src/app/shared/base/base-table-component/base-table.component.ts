@@ -40,6 +40,7 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
     showView: boolean,
     showDelete: boolean
   };
+  @Input() headerActionTemplate?: TemplateRef<any>;
   @Input() defaultFilters: { [field: string]: any } = {};
   @ContentChildren(CustomFilterDirective) customFilters!: QueryList<CustomFilterDirective>;
   @ContentChildren(CustomColumnDirective) columnTemplates!: QueryList<CustomColumnDirective>;

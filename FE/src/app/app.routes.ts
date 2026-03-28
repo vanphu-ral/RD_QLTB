@@ -8,6 +8,7 @@ import { CallbackComponent } from './shared/core/auth/callback.component';
 import { ScanQrCodeComponent } from './shared/pages/Extension/ScanQRCode/pages/scan-qr-code.component';
 import { ImportDataComponent } from './shared/pages/Extension/ImportData/pages/import-data.component';
 import { RoleGuard } from './shared/directive/role.guard';
+import { ExportDataComponent } from './shared/pages/Extension/ExportData/pages/export-data.component';
 
 export const routes: Routes = [
     {
@@ -169,6 +170,13 @@ export const routes: Routes = [
         component: AppLayout,
         children: [
             { path: '', component: ImportDataComponent }
+        ]
+    },
+    {
+        path: 'export-data',
+        component: AppLayout,
+        children: [
+            { path: '', component: ExportDataComponent }
         ]
     },
     // Record Manager

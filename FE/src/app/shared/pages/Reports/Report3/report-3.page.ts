@@ -17,6 +17,8 @@ import { ErrorReportService } from '../../PlanManager/Plan/Service/error-report.
 import { DetailListErrorDialog } from '../dialog/detail-list-error-dialog/detail-list-error.dialog';
 import { SupplyReplacementHistoryService } from '../../PlanManager/Plan/Service/supply-replace-history.service';
 import { SupplyReplaceHistoryDialog } from '../../PlanManager/Plan/Dialogs/supply-replace-history-dialog/supply-replace-history.dialog';
+import _ from 'lodash';
+import { AccountService } from '../../../core/auth/account/account.service';
 
 @Component({
   selector: 'report-3',
@@ -49,7 +51,7 @@ export class Report3Page {
   ref?: DynamicDialogRef
 
   constructor(private navigationService: NavigationService, private branchService: BranchService, private teamService: TeamService, private deviceGroupService: DeviceGroupService, private reportService: ReportService,
-    private cdr: ChangeDetectorRef, private dialogService: DialogService, private errorReportService: ErrorReportService, private supplyReplaceHistoryService: SupplyReplacementHistoryService) { }
+    private cdr: ChangeDetectorRef, private dialogService: DialogService, private errorReportService: ErrorReportService, private supplyReplaceHistoryService: SupplyReplacementHistoryService, private accountService: AccountService) { }
 
 
   ngOnInit(): void {
@@ -70,7 +72,8 @@ export class Report3Page {
         this.listTeams = teams;
         this.listDeviceGroups = deviceGroups;
 
-        this.filter.branchIds = branches.map(item => item.id);
+        const userBranch = _.find(branches, item => item.name === this.accountService.getBranch());
+        this.filter.branchIds = [_.get(userBranch, 'id', null)];
         this.filter.teamIds = teams.map(item => item.id);
         this.filter.groupIds = deviceGroups.map(item => item.id);
 
