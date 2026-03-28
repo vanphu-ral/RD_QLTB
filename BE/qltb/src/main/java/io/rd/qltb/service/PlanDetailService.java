@@ -311,13 +311,10 @@ public class PlanDetailService {
             deviceCopy.setStatus(planDetail.getDevice().getStatus());
             deviceCopy.setCreatedAt(planDetail.getDevice().getCreatedAt());
             deviceCopy.setUpdatedAt(planDetail.getDevice().getUpdatedAt());
-            deviceCopy.setLine(planDetail.getDevice().getLine());
-            if(deviceCopy.getLine() != null){
-            deviceCopy.getLine().setLineDevices(null);
-            deviceCopy.getLine().setTeam(null);
-            }
+
             // Xóa các quan hệ con
             deviceCopy.setGroup(null);
+            deviceCopy.setLine(null);
             deviceCopy.setBranch(null);
             deviceCopy.setTeam(null);
             deviceCopy.setDeviceDeviceParameterUses(null);
@@ -376,7 +373,7 @@ public class PlanDetailService {
                 PlanResultDTO planResultDTO = planResultService.mapToDTO(planResult, new PlanResultDTO());
                 // Xóa các quan hệ con không cần thiết
 
-//                planResultDTO.setPlanDetail(null);
+                planResultDTO.setPlanDetail(null);
                 planResultDTOS.add(planResultDTO);
             }
             dto.setPlanResults(planResultDTOS);
