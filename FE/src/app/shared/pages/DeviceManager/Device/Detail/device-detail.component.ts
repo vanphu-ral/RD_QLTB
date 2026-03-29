@@ -186,7 +186,6 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
 
   public override save(): void {
     if (!this.model) return;
-    this.model.code = this.model.group.code;
     this.model = Util.simplifyMany(this.model, ['team', 'branch', 'line', 'group']);
     this.model.userManager = Util.arrayToString(this.model.userManager);
     if (!_.isEmpty(this.model.maintenanceCycle)) {
@@ -238,6 +237,7 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
       });
     };
     if (this.isAddMode) {
+      this.model.code = this.model.group.code;
       this.apiService.create(this.model).subscribe({
         next: (id) => {
           this.model.id = id as number;
