@@ -1,5 +1,6 @@
 package io.rd.qltb.model;
 
+import io.rd.qltb.domain.Branch;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -30,5 +31,7 @@ public class ApprovalWorkflowDTO {
     private String updatedBy;
 
     private Integer status;
+
+    private Branch branch;
 
 }

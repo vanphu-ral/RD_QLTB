@@ -50,6 +50,7 @@ public class Factory {
     private Integer status;
 
     @OneToMany(mappedBy = "factory")
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Set<Branch> factoryBranches = new HashSet<>();
 
 }

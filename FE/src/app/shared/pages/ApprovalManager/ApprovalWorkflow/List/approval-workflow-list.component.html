@@ -3,7 +3,8 @@
   [apiService]="apiService"
   [columns]="columns"
   [title]="'Danh sách kịch bản phê duyệt'"
-  [showAddButton]="true">
+  [showAddButton]="true"
+  [defaultFilters]="defaultFilters">
   <ng-template appColumnTemplate="createdAt" let-rowData>
     {{ rowData | date: 'dd/MM/yyyy' }}
   </ng-template>

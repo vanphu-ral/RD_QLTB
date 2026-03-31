@@ -101,7 +101,7 @@ export class PlanDetailComponent extends BasePageComponent<PlanRequest> {
     if (this.isEditMode || this.isCopyMode) this.oldPlanRequest = _.cloneDeep(this.model);
     forkJoin({
       branchs: this.branchService.getAll(),
-      workflows: this.approvalWorkflowService.getAll(),
+      workflows: this.approvalWorkflowService.getAllByBranchAndApprove(this.accountService.getBranch() || ''),
       planTypes: this.planTypeService.getAll(),
       users: this.apiService.getUsers(),
       factories: this.factoryService.getAll(),

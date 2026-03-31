@@ -61,7 +61,7 @@ export class PlanTargetDetailComponent extends BasePageComponent<PlanTarget> {
     this.factory = 1;
     forkJoin({
       branchs: this.branchService.getAll(),
-      workflows: this.approvalWorkflowService.getAll(),
+      workflows: this.approvalWorkflowService.getAllByBranchAndApprove(this.accountService.getBranch() || ''),
     }).subscribe(result => {
       this.listBranchs = result.branchs;
       this.listApprovalWorkflow = result.workflows;

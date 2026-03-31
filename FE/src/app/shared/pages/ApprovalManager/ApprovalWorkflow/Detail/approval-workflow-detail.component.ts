@@ -15,6 +15,8 @@ import { ApprovalGroup } from '../../../../models/ApprovalManager/approval-group
 import { ApprovalGroupUser } from '../../../../models/ApprovalManager/approval-group-user.model';
 import { ConfirmationService } from 'primeng/api';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+import { BranchService } from '../../../Categories/Branch/Service/branch.service';
+import { Branch } from '../../../../models/Catogories/branch.model';
 
 
 @Component({
@@ -29,13 +31,15 @@ export class ApprovalWorkflowDetailComponent extends BasePageComponent<ApprovalW
 
   listApprovalGroupsName: any[] = [];
   listUsers: any[] = []
+  listIndustries: any[] = [];
   override model: ApprovalWorkflow = { approvalGroups: [] as ApprovalGroup[] } as ApprovalWorkflow;
   constructor(
     protected override apiService: ApprovalWorlflowService,
     private approvalGroupNameService: GroupApprovalNameService,
     private approvalGroupService: ApprovalGroupService,
     private approvalGroupUserService: ApprovalGroupUserService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private branchService: BranchService
   ) {
     super(apiService);
   }
@@ -56,6 +60,10 @@ export class ApprovalWorkflowDetailComponent extends BasePageComponent<ApprovalW
     })
     this.approvalGroupNameService.getAll().subscribe(res => {
       this.listApprovalGroupsName = res
+      this.cdr.detectChanges();
+    })
+    this.branchService.getAll().subscribe((res: any) => {
+      this.listIndustries = res;
       this.cdr.detectChanges();
     })
 

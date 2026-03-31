@@ -40,6 +40,7 @@ export class PlanMaintanceDetailDialog {
         private approvalWorkflowService: ApprovalWorlflowService,
         private approvalService: ApprovalService,
         private signatureService: SignatureService,
+        private accountService: AccountService,
         private cdr: ChangeDetectorRef,
         private ngZone: NgZone
     ) {
@@ -48,7 +49,7 @@ export class PlanMaintanceDetailDialog {
     }
 
     ngOnInit() {
-        this.approvalWorkflowService.getAll().subscribe(res => {
+        this.approvalWorkflowService.getAllByBranchAndApprove(this.accountService.getBranch() || '').subscribe(res => {
             this.listApprovalWorkflow = res
         })
         this.planDetailService.getSummaryCheckDetail(this.data.id).subscribe(res => {

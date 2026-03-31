@@ -58,19 +58,19 @@ public class Branch {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "factory_id")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "factoryBranches"})
     private Factory factory;
 
     @OneToMany(mappedBy = "branch")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private Set<Team> branchTeams = new HashSet<>();
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "branch"})
+    private Set<io.rd.qltb.domain.Team> branchTeams = new HashSet<>();
 
     @OneToMany(mappedBy = "branch")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "branch"})
     private Set<Device> branchDevices = new HashSet<>();
 
     @OneToMany(mappedBy = "branch")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "branch"})
     private Set<SampleReport> sampleReports = new HashSet<>();
 
 }

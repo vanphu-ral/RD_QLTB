@@ -9,10 +9,21 @@
           <label for="code">Mã kịch bản phê duyệt</label>
         </p-floatlabel>
       </div>
-      <div [ngClass]="isAddMode ? 'col-12' : 'col-6'">
+    <div [ngClass]="isAddMode ? 'col-12' : 'col-6'">
         <p-floatlabel variant="on">
           <input pInputText id="name" name="name" [(ngModel)]="model.name" required [invalid]="!model.name" autocomplete="off" [disabled]="isViewMode" [fluid]="true"/>
           <label for="name">Tên kịch bản phê duyệt</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <div class="row my-3">
+      <div class="col-12">
+        <p-floatlabel variant="on">
+          <p-select [(ngModel)]="model.branch" [options]="listIndustries" optionLabel="name" [fluid]="true" [disabled]="isViewMode"
+            [showClear]="true" [appendTo]="'body'" id="branch" name="branch" required [invalid]="!model.branch" dataKey="id">
+          </p-select>
+          <label for="branch">Ngành sản xuất</label>
         </p-floatlabel>
       </div>
     </div>

@@ -85,7 +85,7 @@ export class PlanSupplieDetailComponent extends BasePageComponent<PlanSupplie> {
     }
     forkJoin({
       branchs: this.branchService.getAll(),
-      workflows: this.approvalWorkflowService.getAll(),
+      workflows: this.approvalWorkflowService.getAllByBranchAndApprove(this.accountService.getBranch() || ''),
       users: this.apiService.getUsers(),
       factories: this.factoryService.getAll(),
       teams: this.teamService.getAll(),

@@ -49,7 +49,7 @@ export class AcceptancePage extends BasePageComponent<Acceptance> {
             this.model.type = this.plan.planType.code == PLANTYPE.REPAIR ? 1 : (this.plan.planType.code == PLANTYPE.MAINTENANCE ? 2 : 3);
             forkJoin({
                 criterial: this.criterialService.getListBySampleReport(this.planResult.sampleReport.id),
-                workflows: this.approvalWorkflowService.getAll(),
+                workflows: this.approvalWorkflowService.getAllByBranchAndApprove(this.accountService.getBranch() || ''),
                 device: this.deviceService.getById(this.planResult.device.id || 0)
             }).subscribe(result => {
                 this.implementationContent = result.criterial;

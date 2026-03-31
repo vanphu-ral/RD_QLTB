@@ -359,18 +359,18 @@ export class PlanListComponent {
         Util.ConfirmMessage('Phiếu nghiệm thu đã tồn tại cho phiếu này!', 'error');
         return;
       }
-      // this.router.navigate(
-      //   ['/Acceptance/add'],
-      //   {
-      //     state: {
-      //       planResult: data,
-      //       plan: plan
-      //     }
-      //   }
-      // );
-      const urlTree = this.router.createUrlTree(['/Acceptance/add'], { relativeTo: this.route });
-      const url = this.router.serializeUrl(urlTree);
-      window.open(url, '_blank');
+      this.router.navigate(
+        ['/Acceptance/add'],
+        {
+          state: {
+            planResult: data,
+            plan: plan
+          }
+        }
+      );
+      // const urlTree = this.router.createUrlTree(['/Acceptance/add'], { relativeTo: this.route });
+      // const url = this.router.serializeUrl(urlTree);
+      // window.open(url, '_blank');
     });
   }
 

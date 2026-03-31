@@ -14,8 +14,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.data.domain.Page;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.RequestParam;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @RestController
@@ -34,7 +39,28 @@ public class ApprovalWorkflowResource {
     }
     @GetMapping("/approve")
     public ResponseEntity<List<ApprovalWorkflowDTO>> getAllApprovalWorkflowsByApprove() {
-        return ResponseEntity.ok(approvalWorkflowService.findAll());
+        return ResponseEntity.ok(approvalWorkflowService.findAllByApprove());
+    }
+    
+    @GetMapping("/branch/approve")
+    public ResponseEntity<List<ApprovalWorkflowDTO>> getAllApprovalWorkflowsByBranchAndApprove(@RequestParam String branchName) {
+        return ResponseEntity.ok(approvalWorkflowService.findAllByBranchAndApprove(branchName));
+    }
+
+
+    @GetMapping("/paged")
+    public ResponseEntity<Page<ApprovalWorkflowDTO>> getApprovalWorkflows(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam MultiValueMap<String, String> params) {
+
+        // Loại bỏ param "page"
+        params.remove("page");
+
+        Map<String, Object> filters = new HashMap<>();
+        params.forEach((k, v) -> filters.put(k, v.get(0)));
+
+        Page<ApprovalWorkflowDTO> result = approvalWorkflowService.findWorkflowsPaged(filters, page);
+        return ResponseEntity.ok(result);
     }
     @GetMapping("/{id}")
     public ResponseEntity<ApprovalWorkflowDTO> getApprovalWorkflow(

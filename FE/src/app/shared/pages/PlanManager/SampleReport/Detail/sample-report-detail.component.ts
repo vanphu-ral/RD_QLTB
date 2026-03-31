@@ -63,7 +63,7 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
     super.ngOnInit();
     forkJoin({
       branchs: this.branchService.getAll(),
-      workflows: this.approvalWorkflowService.getAll(),
+      workflows: this.approvalWorkflowService.getAllByBranchAndApprove(this.accountService.getBranch() || ''),
       deviceGroups: this.deviceGroupService.getAll(),
       criterialGroups: this.criterialGroupServie.getAll(),
       criterials: this.criterialService.getAll(),

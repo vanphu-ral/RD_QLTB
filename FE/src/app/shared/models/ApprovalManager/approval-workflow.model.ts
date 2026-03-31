@@ -1,3 +1,4 @@
+import { Branch } from "../Catogories/branch.model";
 import { ApprovalGroup } from "./approval-group.model";
 
 export class ApprovalWorkflow {
@@ -10,5 +11,6 @@ export class ApprovalWorkflow {
     createdAt?: Date;
     updatedAt?: Date;
     status?: number;
+    branch?: Branch;
     approvalGroups: ApprovalGroup[] = [];
 }

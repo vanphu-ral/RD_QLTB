@@ -60,7 +60,7 @@ export class ErrorReportSeriousPage extends BasePageComponent<ReportDeviceIncide
                 this.model.timeComplete = this.data.timeRepaired;
                 this.model.createdAt = new Date();
                 const requests = {
-                    workflows: this.approvalWorkflowService.getAll(),
+                    workflows: this.approvalWorkflowService.getAllByBranchAndApprove(this.accountService.getBranch() || ''),
                     device: this.deviceService.getById(this.planDetail.device.id),
                 };
                 forkJoin(requests).subscribe(res => {
