@@ -284,7 +284,7 @@ public class DeviceService {
                 .toList();
     }
     public List<DeviceDTO> getDevicesByGroupId(Long groupId) {
-        final List<Device> devices = deviceRepository.findByGroupIdAndStatusOrderByIdDesc(groupId,DRAFF);
+        final List<Device> devices = deviceRepository.findByGroupIdAndStatusNotOrderByIdDesc(groupId,DELETED);
         return devices.stream()
                 .map(device -> mapToDTO(device, new DeviceDTO()))
                 .toList();
@@ -300,7 +300,7 @@ public class DeviceService {
         return deviceGroupDTOS;
     }
     public List<DeviceDTO> getDevicesByGroupIdAndPlanID(Long groupId,Long planId) {
-        final List<Device> devices = deviceRepository.findByGroupIdAndStatusOrderByIdDesc(groupId,DRAFF);
+        final List<Device> devices = deviceRepository.findByGroupIdAndStatusNotOrderByIdDesc(groupId,DELETED);
         List<DeviceDTO> deviceDTOS =  devices.stream()
                 .map(device -> mapToDTO(device, new DeviceDTO()))
                 .toList();
@@ -340,6 +340,7 @@ public class DeviceService {
             mapToEntity(dto, entity);
             Device saved = deviceRepository.save(entity);
             saved.setCode(dto.getCode()+"-"+globalConfig.createNumberPrefix(saved.getId(),6)); // Tạo mã thiết bị theo định dạng
+
             deviceRepository.save(saved);
             createdIds.add(saved.getId());
         }

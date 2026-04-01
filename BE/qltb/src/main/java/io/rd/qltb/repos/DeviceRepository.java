@@ -24,7 +24,7 @@ public interface DeviceRepository extends JpaRepository<Device, Long> {
 
     Device findFirstByTeamId(Long id);
 
-    List<Device> findByGroupIdAndStatusOrderByIdDesc(Long groupId,Integer status);
+    List<Device> findByGroupIdAndStatusNotOrderByIdDesc(Long groupId,Integer status);
     Device findFirstByQrCode(String qrCode);
 
     Optional<Device> findByQrCode(String qrCode);

@@ -1007,7 +1007,14 @@ public class PlanService {
                         d.setDeviceGroup(convertDeviceGroup(dr.getDevice().getGroup()));
                     }
                 }
-
+                for (PLanDetailRequest detailRequest : request.getPlanDetails()) {
+                    if (dr.getDevice() != null && dr.getDevice().getGroup() != null &&
+                            dr.getDevice().getGroup().getId().equals(detailRequest.getDeviceGroup().getId())) {
+                        d.setDeviceGroup(convertDeviceGroup(detailRequest.getDeviceGroup()));
+                        d.setSampleReport(convertSampleReport(detailRequest.getSampleReport()));
+                        break;
+                    }
+                }
                 // Cập nhật Manager và các trường thông tin khác từ Request
                 setCommonFields(d, dr, userName, isNew);
 
