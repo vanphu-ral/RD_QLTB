@@ -87,7 +87,7 @@ public class KeyMappingDeviceSampleReportService {
             sampleReportCopy.setStatus(keyMappingDeviceSampleReport.getSampleReport().getStatus());
 
             // Xóa các quan hệ con
-            sampleReportCopy.setDeviceGroup(null);
+            sampleReportCopy.setDeviceGroups(null);
             sampleReportCopy.setSampleReportKeyMappingDeviceSampleReports(null);
             sampleReportCopy.setSampleReportKeyMappings(null);
 

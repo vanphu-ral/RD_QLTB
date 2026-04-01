@@ -8,6 +8,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -69,10 +71,14 @@ public class SampleReport {
     @Column
     private Integer status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "device_group_id", nullable = false)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "SampleReportDeviceGroups",
+            joinColumns = @JoinColumn(name = "sample_report_id"),
+            inverseJoinColumns = @JoinColumn(name = "device_group_id")
+    )
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private DeviceGroup deviceGroup;
+    private Set<DeviceGroup> deviceGroups = new HashSet<>();
 
     @OneToMany(mappedBy = "sampleReport")
     private Set<KeyMappingDeviceSampleReport> sampleReportKeyMappingDeviceSampleReports = new HashSet<>();

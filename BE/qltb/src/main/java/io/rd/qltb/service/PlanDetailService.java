@@ -71,7 +71,7 @@ public class PlanDetailService {
         // Set thêm thông tin liên quan
         if (planDetail.getDeviceGroup() != null) {
         planDetailDTO.setSampleReport(planDetail.getSampleReport());
-        planDetailDTO.getSampleReport().setDeviceGroup(null);
+        planDetailDTO.getSampleReport().setDeviceGroups(null);
         planDetailDTO.getSampleReport().setBranch(null);
         planDetailDTO.getSampleReport().setApprovalWorkflow(null);
         planDetailDTO.getSampleReport().setSampleReportKeyMappingDeviceSampleReports(null);
@@ -359,7 +359,7 @@ public class PlanDetailService {
             sampleReportCopy.setStatus(planDetail.getSampleReport().getStatus());
 
             // Xóa các quan hệ con
-            sampleReportCopy.setDeviceGroup(null);
+            sampleReportCopy.setDeviceGroups(null);
             sampleReportCopy.setSampleReportKeyMappingDeviceSampleReports(null);
             sampleReportCopy.setSampleReportKeyMappings(null);
             sampleReportCopy.setBranch(null);

@@ -11,4 +11,6 @@ export class PlanDetail {
     device?: any
     deviceGroup?: any
     sampleReport?: any
+    selectableDevices?: any[]
+    selectedDevices?: any[]
 }

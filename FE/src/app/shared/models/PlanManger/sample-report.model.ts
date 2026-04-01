@@ -16,7 +16,7 @@ export class SampleReport {
     updatedAt?: Date;
     status?: number;
     branch?: any;
-    deviceGroup?: any
+    deviceGroups?: any[] = [];
     approvalWorkflow?: any
 
     keyMappings?: keyMapping[] = [];

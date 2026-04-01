@@ -11,6 +11,7 @@
                 <th>STT</th>
                 <th>Nhóm thiết bị</th>
                 <th>Mẫu biên bản</th>
+                <th>Thiết bị (Chọn nhanh)</th>
                 <th *ngIf="!isViewMode">Thao tác</th>
             </tr>
         </ng-template>
@@ -28,6 +29,14 @@
                         [disabled]="isViewMode" [fluid]="true" [showClear]="true" [appendTo]="'body'" [filter]="true"
                         id="sampleReport-{{ i }}" name="sampleReport-{{ i }}" dataKey="id" (onClick)="onSampleReportChange(row, i)">
                     </p-select>
+                </td>
+                <td>
+                    <p-multiSelect [(ngModel)]="row.selectedDevices" [options]="row.selectableDevices" 
+                        optionLabel="name" [disabled]="isViewMode" [fluid]="true" [showClear]="true" 
+                        [appendTo]="'body'" [filter]="true" display="chip"
+                        id="quickDevices-{{ i }}" name="quickDevices-{{ i }}" dataKey="id" 
+                        (ngModelChange)="onQuickSelectDeviceChange(row)">
+                    </p-multiSelect>
                 </td>
                 <td class="text-center" *ngIf="!isViewMode">
                     <p-button *ngIf="row.deviceGroup" icon="pi pi-pencil" severity="warn" class="m-1" (onClick)="editRow(i)"></p-button>

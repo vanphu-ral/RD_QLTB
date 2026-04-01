@@ -128,7 +128,7 @@ export class ListDeviceComponent implements OnInit {
             // Tính toán lại danh sách mẫu biên bản phù hợp cho nhóm mới
             if (this.model.plan?.planType) {
                 row.sampleReports = this.listSampleReportBase.filter(sr =>
-                    sr.deviceGroup?.id === row.deviceGroup.id &&
+                    sr.deviceGroups?.some((g: any) => g.id === row.deviceGroup.id) &&
                     sr.type === this.model.plan.planType!.code &&
                     sr.branch?.id === this.model.plan?.branch?.id
                 );
@@ -143,29 +143,43 @@ export class ListDeviceComponent implements OnInit {
                 const isMatchTeam = !teamId || _.get(device, 'team.id') === teamId;
                 return isMatchBranch && isMatchTeam;
             });
-            const devicesInNewGroup: DeviceDetail[] = _.map(filteredDevices, (device, index) => {
-                device.group = { id: _.get(row, 'deviceGroup.id') };
-                const existingDeviceDetail = this.model.devices?.find(d =>
-                    d.device?.id === device.id && _.get(d.device, 'group.id') === device.group.id
-                );
-                if (existingDeviceDetail) {
-                    return existingDeviceDetail;
-                }
-                const newDevice: any = {
-                    device: device,
-                    serialNumber: device.serialNumber,
-                    manager: device.userManager
-                };
-    
-                if (this.model.plan.planType?.code === PLANTYPE.MAINTENANCE) {
-                    // newDevice.estimatedTime = this.model.plan.maintanceMonth;
-                    newDevice.nameDetail = `${index + 1}.${device.id}.${new Date().getFullYear()}/CTBDCSTB-LED.${this.model.plan?.branch?.code}`;
-                }
-                return newDevice as DeviceDetail;
-            });
+
+            row.selectableDevices = filteredDevices;
+            row.selectedDevices = filteredDevices; 
+
+            const devicesInNewGroup: DeviceDetail[] = this.mapToDeviceDetail(filteredDevices, row.deviceGroup.id);
             this.model.devices = this.replaceGroupDevices(this.model.devices, devicesInNewGroup, _.get(row, 'deviceGroup.id'));
             this.cdr.detectChanges();
         }
+    }
+
+    mapToDeviceDetail(devices: any[], groupId: number): DeviceDetail[] {
+        return _.map(devices, (device, index) => {
+            device.group = { id: groupId };
+            const existingDeviceDetail = this.model.devices?.find(d =>
+                d.device?.id === device.id && _.get(d.device, 'group.id') === groupId
+            );
+            if (existingDeviceDetail) {
+                return existingDeviceDetail;
+            }
+            const newDevice: any = {
+                device: device,
+                serialNumber: device.serialNumber,
+                manager: _.split(device.userManager, ','),
+                qrCode: device.qrCode
+            };
+
+            if (this.model.plan.planType?.code === PLANTYPE.MAINTENANCE) {
+                newDevice.nameDetail = `${index + 1}.${device.id}.${new Date().getFullYear()}/CTBDCSTB-LED.${this.model.plan?.branch?.code}`;
+            }
+            return newDevice as DeviceDetail;
+        });
+    }
+
+    onQuickSelectDeviceChange(row: any) {
+        const devicesInGroup: DeviceDetail[] = this.mapToDeviceDetail(row.selectedDevices, row.deviceGroup.id);
+        this.model.devices = this.replaceGroupDevices(this.model.devices, devicesInGroup, row.deviceGroup.id);
+        this.cdr.detectChanges();
     }
 
     /**
@@ -203,7 +217,7 @@ export class ListDeviceComponent implements OnInit {
         if (this.model.plan.planType) {
             if (row.deviceGroup) {
                 const listSampleReport = this.listSampleReportBase.filter(sr =>
-                    sr.deviceGroup?.id === row.deviceGroup.id &&
+                    sr.deviceGroups?.some((g: any) => g.id === row.deviceGroup.id) &&
                     sr.type === this.model.plan.planType.code &&
                     sr.branch?.id === this.model.plan?.branch?.id
                 );
@@ -225,10 +239,21 @@ export class ListDeviceComponent implements OnInit {
         this.model.planDetails.forEach((row: any) => {
             if (row.deviceGroup) {
                 row.sampleReports = this.listSampleReportBase.filter(sr =>
-                    sr.deviceGroup?.id === row.deviceGroup.id &&
+                    sr.deviceGroups?.some((g: any) => g.id === row.deviceGroup.id) &&
                     sr.type === this.model.plan.planType.code &&
                     sr.branch?.id === this.model.plan?.branch?.id
                 );
+
+                const branchId = this.model.plan?.branch?.id;
+                const teamId = this.model.plan?.team?.id;
+                row.selectableDevices = _.filter(row.deviceGroup.groupDevices, (device) => {
+                    const isMatchBranch = !branchId || _.get(device, 'branch.id') === branchId;
+                    const isMatchTeam = !teamId || _.get(device, 'team.id') === teamId;
+                    return isMatchBranch && isMatchTeam;
+                });
+                row.selectedDevices = (this.model.devices || [])
+                    .filter(d => _.get(d, 'device.group.id') === row.deviceGroup.id)
+                    .map(d => d.device);
             }
         });
     }
@@ -267,6 +292,10 @@ export class ListDeviceComponent implements OnInit {
         this.ref.onClose.subscribe((result: DeviceDetail[] | undefined) => {
             if (result) {
                 this.model.devices = this.updateDeviceDetails(this.model.devices!, result);
+                const currentRow = this.model.planDetails[index];
+                if (currentRow) {
+                    currentRow.selectedDevices = result.map(d => d.device);
+                }
                 this.cdr.detectChanges();
             }
         });

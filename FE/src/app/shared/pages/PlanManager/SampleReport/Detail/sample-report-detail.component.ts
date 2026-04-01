@@ -185,7 +185,14 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
 
   prepareModel(): void {
     if (!this.model) return;
-    _.set(this.model, 'deviceGroup.groupDevices', undefined);
+    if (this.model.deviceGroups && Array.isArray(this.model.deviceGroups)) {
+      this.model.deviceGroups.forEach(dg => {
+        _.set(dg, 'groupDevices', undefined);
+        _.set(dg, 'deviceGroupSampleReports', undefined);
+        _.set(dg, 'deviceGroupKeyMappingDeviceSampleReports', undefined);
+        _.set(dg, 'deviceGroupPlanDetails', undefined);
+      });
+    }
   }
 
   public override save(): void {

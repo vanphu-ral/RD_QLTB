@@ -14,7 +14,10 @@ import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
@@ -22,7 +25,6 @@ import org.springframework.stereotype.Service;
 
 import static io.rd.qltb.config.ConstantStatusGlobal.APPROVED;
 import static io.rd.qltb.config.ConstantStatusGlobal.DELETED;
-
 
 @Service
 public class SampleReportService {
@@ -143,28 +145,30 @@ public class SampleReportService {
         dto.setStatus(sampleReport.getStatus());
 
 
-        // Sao chép DeviceGroup có kiểm soát
-        if (sampleReport.getDeviceGroup() != null) {
-            DeviceGroup groupCopy = new DeviceGroup();
-            groupCopy.setId(sampleReport.getDeviceGroup().getId());
-            groupCopy.setCode(sampleReport.getDeviceGroup().getCode());
-            groupCopy.setName(sampleReport.getDeviceGroup().getName());
-            groupCopy.setDescription(sampleReport.getDeviceGroup().getDescription());
-            groupCopy.setCreatedAt(sampleReport.getDeviceGroup().getCreatedAt());
-            groupCopy.setUpdatedAt(sampleReport.getDeviceGroup().getUpdatedAt());
-            groupCopy.setCreatedBy(sampleReport.getDeviceGroup().getCreatedBy());
-            groupCopy.setUpdatedBy(sampleReport.getDeviceGroup().getUpdatedBy());
-            groupCopy.setStatus(sampleReport.getDeviceGroup().getStatus());
+        // Sao chép DeviceGroups có kiểm soát
+        if (sampleReport.getDeviceGroups() != null) {
+            Set<DeviceGroup> groupsCopy = sampleReport.getDeviceGroups().stream().map(group -> {
+                DeviceGroup groupCopy = new DeviceGroup();
+                groupCopy.setId(group.getId());
+                groupCopy.setCode(group.getCode());
+                groupCopy.setName(group.getName());
+                groupCopy.setDescription(group.getDescription());
+                groupCopy.setCreatedAt(group.getCreatedAt());
+                groupCopy.setUpdatedAt(group.getUpdatedAt());
+                groupCopy.setCreatedBy(group.getCreatedBy());
+                groupCopy.setUpdatedBy(group.getUpdatedBy());
+                groupCopy.setStatus(group.getStatus());
 
-            // Xóa các quan hệ con để tránh vòng lặp
-            groupCopy.setDeviceGroupSampleReports(null);
-            groupCopy.setDeviceGroupKeyMappingDeviceSampleReports(null);
-            groupCopy.setGroupDevices(null);
-            groupCopy.setDeviceGroupPlanDetails(null);
-
-            dto.setDeviceGroup(groupCopy);
+                // Xóa các quan hệ con để tránh vòng lặp
+                groupCopy.setDeviceGroupSampleReports(null);
+                groupCopy.setDeviceGroupKeyMappingDeviceSampleReports(null);
+                groupCopy.setGroupDevices(null);
+                groupCopy.setDeviceGroupPlanDetails(null);
+                return groupCopy;
+            }).collect(Collectors.toSet());
+            dto.setDeviceGroups(groupsCopy);
         } else {
-            dto.setDeviceGroup(null);
+            dto.setDeviceGroups(new HashSet<>());
         }
 
         if (sampleReport.getBranch() != null) {
@@ -224,9 +228,13 @@ public class SampleReportService {
         sampleReport.setCreatedBy(sampleReportDTO.getCreatedBy());
         sampleReport.setUpdatedBy(sampleReportDTO.getUpdatedBy());
         sampleReport.setStatus(sampleReportDTO.getStatus());
-        final DeviceGroup deviceGroup = sampleReportDTO.getDeviceGroup() == null ? null : deviceGroupRepository.findById(sampleReportDTO.getDeviceGroup().getId())
-                .orElseThrow(() -> new NotFoundException("deviceGroup not found"));
-        sampleReport.setDeviceGroup(deviceGroup);
+        final Set<DeviceGroup> deviceGroups = sampleReportDTO.getDeviceGroups() == null ? new HashSet<>() :
+                new HashSet<>(deviceGroupRepository.findAllById(
+                        sampleReportDTO.getDeviceGroups().stream()
+                                .map(DeviceGroup::getId)
+                                .collect(Collectors.toList())
+                ));
+        sampleReport.setDeviceGroups(deviceGroups);
 
         final Branch branch = sampleReportDTO.getBranch() == null ? null :
                 branchRepository.findById(sampleReportDTO.getBranch().getId())
@@ -243,7 +251,7 @@ public class SampleReportService {
     @EventListener(BeforeDeleteDeviceGroup.class)
     public void on(final BeforeDeleteDeviceGroup event) {
         final ReferencedException referencedException = new ReferencedException();
-        final SampleReport deviceGroupSampleReport = sampleReportRepository.findFirstByDeviceGroupId(event.getId());
+        final SampleReport deviceGroupSampleReport = sampleReportRepository.findFirstByDeviceGroupId(event.getId()).orElse(null);
         if (deviceGroupSampleReport != null) {
             referencedException.setKey("deviceGroup.sampleReport.deviceGroup.referenced");
             referencedException.addParam(deviceGroupSampleReport.getId());

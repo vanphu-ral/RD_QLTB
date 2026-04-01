@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
@@ -52,7 +53,7 @@ public class DeviceGroup {
     @Column
     private Integer status;
 
-    @OneToMany(mappedBy = "deviceGroup")
+    @ManyToMany(mappedBy = "deviceGroups")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Set<SampleReport> deviceGroupSampleReports = new HashSet<>();
 

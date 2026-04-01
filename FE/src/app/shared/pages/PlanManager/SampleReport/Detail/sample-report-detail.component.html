@@ -87,10 +87,10 @@
 
       <div class="col-6">
         <p-floatlabel variant="on">
-          <p-select [(ngModel)]="model.deviceGroup" [options]="listDeviceGroup" optionLabel="name" [fluid]="true"
+          <p-multiSelect [(ngModel)]="model.deviceGroups" [options]="listDeviceGroup" optionLabel="name" [fluid]="true"
             [disabled]="isViewMode || isApprovalMode" [showClear]="true" [appendTo]="'body'" id="deviceGroup" name="deviceGroup"
             dataKey="id">
-          </p-select>
+          </p-multiSelect>
           <label for="deviceGroup">Nhóm thiết bị</label>
         </p-floatlabel>
       </div>
