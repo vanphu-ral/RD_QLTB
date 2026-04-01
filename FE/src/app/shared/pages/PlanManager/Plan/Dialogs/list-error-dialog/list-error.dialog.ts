@@ -3,6 +3,7 @@ import { FormsModule } from "@angular/forms";
 import { SharedModule } from "../../../../../../share.module";
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
 import _ from "lodash";
+import { switchMap } from "rxjs";
 import { Util } from "../../../../../core/utils/utils-function";
 import { PlanResult } from "../../../../../models/PlanManger/plan-result.model";
 import { CheckDeviceDialog } from "../check-device-dialog/check-device.dialog";
@@ -50,10 +51,6 @@ export class ListErrorDialog {
     loadErrorList() {
         this.errorReportService.getAllErrorByPlanDetailId(this.data.id).subscribe((data) => {
             this.listError = data;
-            const allRepaired = data.every(item => item?.isRepaired === true);
-            if(allRepaired && (this.data.device.status == 2 || this.data.device.status == 3)){
-                this.deviceService.updateStatusDevice(this.data.device.id, 1).subscribe();
-            }
             this.cdr.detectChanges();
         });
     }
@@ -81,7 +78,9 @@ export class ListErrorDialog {
             'Bạn có chắc đã hoàn thành sửa chữa lỗi này?',
             () => {
                 row.isRepaired = true;
-                return this.errorReportService.update(row.id as number, row)
+                return this.errorReportService.update(row.id as number, row).pipe(
+                    switchMap(() => this.deviceService.updateStatusDevice(this.data.device.id, 1))
+                );
             },
             'Đã hoàn thành sửa chữa',
             'Lỗi khi hoàn thành',

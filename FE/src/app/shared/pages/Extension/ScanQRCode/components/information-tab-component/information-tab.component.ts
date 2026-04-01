@@ -16,7 +16,7 @@ import { ErrorReport } from '../../../../../models/PlanManger/error-report.model
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { PlanResultService } from '../../../../PlanManager/Plan/Service/plan-result.service';
 import { PLANTYPE } from '../../../../../enums/plan-type.enum';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, switchMap } from 'rxjs';
 import { AccountService } from '../../../../../core/auth/account/account.service';
 import { AddCheckListDialog } from '../../Dialog/add-check-list-dialog/add-check-list.dialog';
 
@@ -43,7 +43,8 @@ export class InformationTabComponent implements OnChanges {
 
   constructor(private cdr: ChangeDetectorRef, private deviceRelocationHistoryService: DeviceRelocationHistoryService, private accountService: AccountService,
     private planDetailService: PlanDetailService, private errorReportService: ErrorReportService, private planResultService: PlanResultService,
-    private dialogService: DialogService, private comfirmService: ConfirmationService, private messageService: MessageService) {
+    private dialogService: DialogService, private comfirmService: ConfirmationService, private messageService: MessageService,
+    private deviceService: DeviceService) {
   }
 
   ngOnInit() { this.activeTabIndex = "0"; }
@@ -300,7 +301,9 @@ export class InformationTabComponent implements OnChanges {
       'Bạn có chắc đã hoàn thành sửa chữa lỗi này?',
       () => {
         row.isRepaired = true;
-        return this.errorReportService.update(row.id as number, row)
+        return this.errorReportService.update(row.id as number, row).pipe(
+          switchMap(() => this.deviceService.updateStatusDevice(this.model.id, 1))
+        );
       },
       'Đã hoàn thành sửa chữa',
       'Lỗi khi hoàn thành',
