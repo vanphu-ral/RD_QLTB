@@ -129,22 +129,8 @@ export class InformationTabComponent implements OnChanges {
       if (plan.planType.code == PLANTYPE.DAILYCHECK) {
         plan.planDetails.forEach((detail: any) => {
           detail.sampleReport = JSON.parse(detail.detail);
-          // Mỗi ngày kiểm tra có nhiều kết quả (planResults)
-          // detail.planResults?.forEach((result: any) => {
-          //   this.listPlanAudit.push({
-          //     stt: this.listPlanAudit.length + 1,
-          //     planName: plan.name,
-          //     deviceCode: detail.device?.code,
-          //     deviceName: detail.device?.name,
-          //     userPerformer: plan.userPerformer || detail.manager || 'N/A',
-          //     dateTest: result.dateTest,
-          //     planResultId: result.id,
-          //     plan: detail,
-          //     status: result.status,
-          //     enabledCheck: this.isEnabledCheckDevice(result)
-          //   });
-          // });
           detail.planResults?.forEach((result: any) => {
+            if (result.status === 15) return; // Bỏ qua ngày nghỉ
             const row = {
               stt: this.listPlanAudit.length + 1,
               planName: plan.name,
@@ -161,7 +147,6 @@ export class InformationTabComponent implements OnChanges {
             this.listPlanAudit.push(row);
           });
         });
-        // this.cdr.detectChanges();
       }
       if (plan.planType.code == PLANTYPE.MAINTENANCE) {
         plan.planDetails.forEach((detail: any) => {
@@ -177,7 +162,6 @@ export class InformationTabComponent implements OnChanges {
               plan: detail,
               status: 1
             });
-            // this.cdr.detectChanges();
           }else {
             detail.planResults?.forEach((result: any) => {
               this.listPlanMaintance.push({
@@ -192,7 +176,6 @@ export class InformationTabComponent implements OnChanges {
                 status: result.status
               });
             });
-            // this.cdr.detectChanges();
           }
         });
       }
