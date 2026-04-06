@@ -57,6 +57,7 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
   public groupedDetails: GroupedCritical[] = [];
   public planInfo: any = {}; // Có thể dùng model.planDetail.createdAt để tính ngày tháng
   public signature: any = {};
+  public activeDays: Set<number> = new Set();
 
   listUserApproval: any[] = [];
   listUserApprReport: any[] = [];
@@ -253,6 +254,7 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
     // 1. Kiểm tra nguồn dữ liệu chính
     const results = this.model.planResultDetail || [];
     const uniqueGroups = new Map<string, Map<string, any[]>>();
+    this.activeDays.clear();
 
     if (results.length > 0) {
       // --- TRƯỜNG HỢP CÓ DỮ LIỆU KIỂM TRA (GIỮ NGUYÊN LOGIC CŨ) ---
@@ -320,6 +322,7 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
 
               if (testDate.getMonth() === planDate.getMonth() && testDate.getFullYear() === planDate.getFullYear()) {
                 const day = testDate.getDate();
+                this.activeDays.add(day);
                 if (!usersByDay.has(day)) usersByDay.set(day, new Set());
                 if (res.createdBy) usersByDay.get(day)?.add(res.createdBy);
                 const dayResult = dailyResults[day - 1];
@@ -427,18 +430,16 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
    */
   getDailyResult(detail: UniqueDetail, day: number, session: string): string {
     const dayResult = detail.dailyResults.find(d => d.day === day);
-    if (!dayResult) return '//';
+    
+    // Nếu ngày này hoàn toàn không có dữ liệu ở bất kỳ tiêu chí nào -> Hiện //
+    if (!this.activeDays.has(day)) return '//';
 
-    // Kiểm tra xem trong ngày này có bất kỳ ca nào có dữ liệu không
-    const anySessionHasData = dayResult.sessionResults.some(s => s.results && s.results.length > 0);
-
-    const sessionResult = dayResult.sessionResults.find(s => s.session === session);
+    const sessionResult = dayResult?.sessionResults.find(s => s.session === session);
     const results = sessionResult ? sessionResult.results : [];
 
     if (!results || results.length === 0) {
-      // Nếu có ít nhất 1 ca khác có dữ liệu trong ngày này → hiển thị trống
-      // Nếu tất cả ca đều không có dữ liệu → hiển thị //
-      return anySessionHasData ? '' : '//';
+      // Nếu ngày này có dữ liệu ở tiêu chí khác hoặc ca khác -> Để trắng
+      return '';
     }
 
     const baseUrl = window.location.origin;
