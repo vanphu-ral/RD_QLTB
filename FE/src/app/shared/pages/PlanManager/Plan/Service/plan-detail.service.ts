@@ -37,4 +37,22 @@ export class PlanDetailService extends BaseApiService<PlanDetail> {
     const params = new HttpParams().set('entityType', entityType);
     return this.http.get<any>(`${this['fullBaseUrl']}/summary/device/${deviceId}`, { params });
   }
+
+  getDailyCheckDevices(filters: any = {}): Observable<any[]> {
+    let params = new HttpParams();
+    Object.keys(filters).forEach(key => {
+      if (filters[key] !== null && filters[key] !== undefined && filters[key] !== '') {
+        params = params.set(key, filters[key]);
+      }
+    });
+    return this.http.get<any[]>(`${this['fullBaseUrl']}/daily-check-devices`, { params });
+  }
+
+  getSummaryCheckDetailByMonth(id: number | string, month: number, year: number): Observable<any> {
+    const params = new HttpParams()
+      .set('entityType', 'PLAN')
+      .set('month', month.toString())
+      .set('year', year.toString());
+    return this.http.get<any>(`${this['fullBaseUrl']}/summary/${id}/monthly`, { params });
+  }
 }

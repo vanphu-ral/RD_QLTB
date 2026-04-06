@@ -23,6 +23,24 @@ public class PlanDetailResource {
     public PlanDetailResource(final PlanDetailService planDetailService) {
         this.planDetailService = planDetailService;
     }
+
+    @GetMapping("/daily-check-devices")
+    public ResponseEntity<List<PlanDetailDTO>> getDailyCheckDevices(
+            @RequestParam(required = false) String branch,
+            @RequestParam(required = false) String team,
+            @RequestParam(required = false) String line) {
+        return ResponseEntity.ok(planDetailService.getDailyCheckDevices(branch, team, line));
+    }
+
+    @GetMapping("/summary/{id}/monthly")
+    public ResponseEntity<PlanCheckDTO> getPlanCheckDetailByMonth(
+            @PathVariable("id") Long id,
+            @RequestParam("entityType") String entityType,
+            @RequestParam("month") int month,
+            @RequestParam("year") int year) {
+        PlanCheckDTO planCheckDTO = planDetailService.getPlanCheckDetailByMonth(id, entityType, month, year);
+        return ResponseEntity.ok(planCheckDTO);
+    }
     @GetMapping("/result/{planId}")
             public ResponseEntity<List<PlanDetailDTO>> getPlanDetailsByPlanId(@PathVariable("planId") Long planId) {
         List<PlanDetailDTO> planDetails = planDetailService.getPlanDetailsByPlanId(planId);

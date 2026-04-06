@@ -63,6 +63,150 @@ public class PlanDetailService {
                 .map(planDetail -> mapToDTO(planDetail, new PlanDetailDTO()))
                 .toList();
     }
+
+    /**
+     * Lấy danh sách thiết bị tham gia kế hoạch kiểm tra hàng ngày (DAILYCHECK).
+     * Group theo deviceId, lấy planDetail mới nhất cho mỗi thiết bị.
+     * Hỗ trợ filter theo tên ngành (branch), tổ (team), dây chuyền (line).
+     */
+    public List<PlanDetailDTO> getDailyCheckDevices(String branch, String team, String line) {
+        List<PlanDetail> allDetails = planDetailRepository.findAllDailyCheckPlanDetails();
+
+        // Group by deviceId, lấy planDetail mới nhất (id lớn nhất)
+        Map<Long, PlanDetail> latestByDevice = allDetails.stream()
+                .filter(pd -> pd.getDevice() != null)
+                .collect(Collectors.toMap(
+                        pd -> pd.getDevice().getId(),
+                        pd -> pd,
+                        (a, b) -> a.getId() > b.getId() ? a : b
+                ));
+
+        // Apply filters theo NAME (LIKE, case-insensitive)
+        return latestByDevice.values().stream()
+                .filter(pd -> branch == null || branch.isEmpty() ||
+                        (pd.getDevice().getBranch() != null && pd.getDevice().getBranch().getName() != null &&
+                                pd.getDevice().getBranch().getName().toLowerCase().contains(branch.toLowerCase())))
+                .filter(pd -> team == null || team.isEmpty() ||
+                        (pd.getDevice().getTeam() != null && pd.getDevice().getTeam().getName() != null &&
+                                pd.getDevice().getTeam().getName().toLowerCase().contains(team.toLowerCase())))
+                .filter(pd -> line == null || line.isEmpty() ||
+                        (pd.getDevice().getLine() != null && pd.getDevice().getLine().getName() != null &&
+                                pd.getDevice().getLine().getName().toLowerCase().contains(line.toLowerCase())))
+                .map(pd -> {
+                    PlanDetailDTO dto = mapToDTO(pd, new PlanDetailDTO());
+                    // Bổ sung thông tin branch, team, line vào device
+                    enrichDeviceInfo(dto, pd);
+                    return dto;
+                })
+                .sorted(Comparator.comparing(PlanDetailDTO::getId).reversed())
+                .toList();
+    }
+
+    /**
+     * Bổ sung thông tin branch, team, line vào device trong PlanDetailDTO
+     */
+    private void enrichDeviceInfo(PlanDetailDTO dto, PlanDetail pd) {
+        if (dto.getDevice() == null) return;
+
+        if (pd.getDevice().getBranch() != null) {
+            Branch branchCopy = new Branch();
+            branchCopy.setId(pd.getDevice().getBranch().getId());
+            branchCopy.setCode(pd.getDevice().getBranch().getCode());
+            branchCopy.setName(pd.getDevice().getBranch().getName());
+            branchCopy.setBranchTeams(null);
+            branchCopy.setBranchDevices(null);
+            branchCopy.setFactory(null);
+            branchCopy.setSampleReports(null);
+            dto.getDevice().setBranch(branchCopy);
+        }
+        if (pd.getDevice().getTeam() != null) {
+            Team teamCopy = new Team();
+            teamCopy.setId(pd.getDevice().getTeam().getId());
+            teamCopy.setCode(pd.getDevice().getTeam().getCode());
+            teamCopy.setName(pd.getDevice().getTeam().getName());
+            teamCopy.setBranch(null);
+            teamCopy.setTeamDevices(null);
+            teamCopy.setTeamLines(null);
+            dto.getDevice().setTeam(teamCopy);
+        }
+        if (pd.getDevice().getLine() != null) {
+            Line lineCopy = new Line();
+            lineCopy.setId(pd.getDevice().getLine().getId());
+            lineCopy.setCode(pd.getDevice().getLine().getCode());
+            lineCopy.setName(pd.getDevice().getLine().getName());
+            lineCopy.setTeam(null);
+            lineCopy.setLineDevices(null);
+            dto.getDevice().setLine(lineCopy);
+        }
+    }
+
+    /**
+     * Lấy PlanCheckDTO cho 1 planDetail, lọc planResultDetail theo tháng/năm.
+     * Trả dữ liệu giống getPlanCheckDetail nhưng filter theo month/year.
+     * Set planDetail.createdAt = ngày 1 tháng đó để ViewEvaluatePage hiển thị đúng.
+     */
+    public PlanCheckDTO getPlanCheckDetailByMonth(Long id, String entityType, int month, int year) {
+        // Lấy thông tin PlanDetail (giống getPlanCheckDetail)
+        final PlanDetail planDetail = planDetailRepository.findById(id)
+                .orElseThrow(NotFoundException::new);
+        PlanDetailDTO planDetailDTO = mapToDTO(planDetail, new PlanDetailDTO());
+
+        // Set thêm thông tin liên quan
+        if (planDetail.getDeviceGroup() != null) {
+            planDetailDTO.setSampleReport(planDetail.getSampleReport());
+            planDetailDTO.getSampleReport().setDeviceGroups(null);
+            planDetailDTO.getSampleReport().setBranch(null);
+            planDetailDTO.getSampleReport().setApprovalWorkflow(null);
+            planDetailDTO.getSampleReport().setSampleReportKeyMappingDeviceSampleReports(null);
+            planDetailDTO.getSampleReport().setSampleReportKeyMappings(null);
+        }
+        if (planDetail.getDevice().getBranch() != null) {
+            planDetailDTO.getDevice().setBranch(planDetail.getDevice().getBranch());
+            planDetailDTO.getDevice().getBranch().getFactory().setFactoryBranches(null);
+            planDetailDTO.getDevice().getBranch().setBranchTeams(null);
+            planDetailDTO.getDevice().getBranch().setBranchDevices(null);
+            planDetailDTO.getDevice().getBranch().setSampleReports(null);
+        }
+        if (planDetail.getDevice().getLine() != null) {
+            planDetailDTO.getDevice().setLine(planDetail.getDevice().getLine());
+            planDetailDTO.getDevice().getLine().setTeam(null);
+            planDetailDTO.getDevice().getLine().setLineDevices(null);
+        }
+        if (planDetail.getDevice().getTeam() != null) {
+            planDetailDTO.getDevice().setTeam(planDetail.getDevice().getTeam());
+            planDetailDTO.getDevice().getTeam().setBranch(null);
+            planDetailDTO.getDevice().getTeam().setTeamDevices(null);
+            planDetailDTO.getDevice().getTeam().setTeamLines(null);
+        }
+
+        // Override createdAt để ViewEvaluatePage hiển thị đúng tháng được chọn
+        java.time.LocalDateTime monthDate = java.time.LocalDateTime.of(year, month, 1, 0, 0, 0);
+        planDetailDTO.setCreatedAt(monthDate);
+
+        PlanCheckDTO planCheckDTO = new PlanCheckDTO();
+        planCheckDTO.setPlanDetail(planDetailDTO);
+
+        // Lấy Approval
+        final List<Approval> approvals = approvalRepository.findByEntityTypeAndEntityId(entityType, id);
+        List<ApprovalDTO> approvalDTOS = approvals.stream()
+                .map(approval -> approvalService.mapToDTO(approval, new ApprovalDTO()))
+                .toList();
+        planCheckDTO.setApprovals(approvalDTOS);
+
+        // Lấy PlanResultDetail LỌC THEO THÁNG/NĂM
+        List<PlanResultDetail> planResultDetails = planResultDetailRepository.getByPlanDetailIdAndMonth(id, month, year);
+        List<PlanResultDetailDTO> planResultDetailDTOS = planResultDetails.stream()
+                .map(planResultDetail -> planResultDetailService.mapToDTO(planResultDetail, new PlanResultDetailDTO()))
+                .toList();
+        planCheckDTO.setPlanResultDetail(planResultDetailDTOS);
+
+        // Lấy ErrorReport
+        List<ErrorReportDTO> errorReportDTOS = errorReportRepository.findByPlanDetailId(id).stream()
+                .map(item -> errorReportService.mapToDTO(item, new ErrorReportDTO())).toList();
+        planCheckDTO.setErrorReport(errorReportDTOS);
+
+        return planCheckDTO;
+    }
     public PlanCheckDTO getPlanCheckDetail(final Long id, String entityType) {
         // Lấy thông tin PlanDetail
         final PlanDetail planDetail = planDetailRepository.findById(id)

@@ -25,4 +25,18 @@ public interface PlanDetailRepository extends JpaRepository<PlanDetail, Long> {
     @Transactional
     @Query("DELETE FROM PlanDetail d WHERE d.plan.id = :planId")
     void deleteAllByPlanId(@Param("planId") Long planId);
+
+    @Query("SELECT pd FROM PlanDetail pd " +
+           "JOIN FETCH pd.plan p " +
+           "JOIN FETCH p.planType pt " +
+           "LEFT JOIN FETCH pd.device d " +
+           "LEFT JOIN FETCH d.branch " +
+           "LEFT JOIN FETCH d.team " +
+           "LEFT JOIN FETCH d.line " +
+           "LEFT JOIN FETCH pd.deviceGroup " +
+           "LEFT JOIN FETCH pd.sampleReport " +
+           "WHERE pt.code = 'DAILYCHECK' " +
+           "AND p.status != 10 " +
+           "AND pd.status != 10")
+    List<PlanDetail> findAllDailyCheckPlanDetails();
 }

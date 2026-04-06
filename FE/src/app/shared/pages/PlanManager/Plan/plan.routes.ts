@@ -8,12 +8,18 @@ import { PlanDetailResolve } from './Resolve/plan-detail-resolve.service';
 import { ViewPlanMaintancePage } from './ViewPlanMaintance/view-plan-maintance.page';
 import { PlanMaintanceResolve } from './Resolve/plan-maintance-resolve.service';
 import { PlanViewHistoryResolver } from './Resolve/view-history-resolve.service';
+import { DailyCheckReportComponent } from './DailyCheckReport/daily-check-report.component';
+import { DailyCheckReportResolve } from './Resolve/daily-check-report-resolve.service';
 
 
 const planRoute: Routes = [
   {
     path: '',
     component: PlanListComponent,
+  },
+  {
+    path: 'daily-check-report',
+    component: DailyCheckReportComponent,
   },
   {
     path: 'add',
@@ -53,6 +59,14 @@ const planRoute: Routes = [
     }
   },
   {
+    path: ':id/summary-monthly',
+    component: ViewEvaluatePage,
+    data: { model: 'view' },
+    resolve: {
+      data: DailyCheckReportResolve
+    }
+  },
+  {
     path: ':id/maintenance-plan',
     component: ViewPlanMaintancePage,
     data: { model: 'view' },
@@ -79,3 +93,4 @@ const planRoute: Routes = [
 ];
 
 export default planRoute;
+

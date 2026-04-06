@@ -1,0 +1,61 @@
+<!-- daily-check-report.component.html -->
+<app-base-table 
+  [apiService]="proxyService"
+  [columns]="columns"
+  [title]="'Báo cáo kiểm tra thiết bị hàng ngày'"
+  [showAddButton]="false"
+  [showEditButton]="false"
+  [showViewButton]="false"
+  [showDeleteButton]="false"
+  [actionTemplate]="customActions"
+  [defaultFilters]="defaultFilters"
+  [isLazy]="false">
+
+  <ng-template appColumnTemplate="createdAt" let-rowData>
+    {{ rowData | date: 'dd/MM/yyyy' }}
+  </ng-template>
+
+  <ng-template appCustomFilter="device.branch.name" let-value="value" let-filter="filter">
+    <p-select [ngModel]="value" (ngModelChange)="onBranchChange($event, filter)" [options]="branchOptions"
+      optionLabel="label" optionValue="value" [showClear]="true" appendTo="body" styleClass="w-100" [filter]="true" [fluid]="true">
+    </p-select>
+  </ng-template>
+
+  <ng-template appCustomFilter="device.team.name" let-value="value" let-filter="filter">
+    <p-select [ngModel]="value" (ngModelChange)="onTeamChange($event, filter)" [options]="teamOptions"
+      optionLabel="label" optionValue="value" [showClear]="true" appendTo="body" styleClass="w-100" [filter]="true" [fluid]="true">
+    </p-select>
+  </ng-template>
+
+  <ng-template appCustomFilter="device.line.name" let-value="value" let-filter="filter">
+    <p-select [ngModel]="value" (ngModelChange)="onLineChange($event, filter)" [options]="lineOptions"
+      optionLabel="label" optionValue="value" [showClear]="true" appendTo="body" styleClass="w-100" [filter]="true" [fluid]="true">
+    </p-select>
+  </ng-template>
+</app-base-table>
+
+<ng-template #customActions let-row>
+  <p-button title="Xem báo cáo" icon="pi pi-file-pdf" styleClass="p-button-sm p-button-rounded p-button-info m-1"
+    (onClick)="openMonthPicker(row)"></p-button>
+</ng-template>
+
+<!-- Month Picker Dialog -->
+<p-dialog header="Chọn tháng xem báo cáo" [(visible)]="showMonthDialog" [modal]="true"
+  [style]="{ width: '400px' }" [closable]="true">
+  <div class="flex flex-column gap-3">
+    <div *ngIf="selectedDevice">
+      <p class="font-semibold">Thiết bị: {{ selectedDevice?.device?.name }}</p>
+    </div>
+    <div>
+      <label class="font-semibold mb-1 block">Chọn tháng/năm</label>
+      <p-datepicker [(ngModel)]="selectedMonth" view="month" dateFormat="mm/yy"
+        [showIcon]="true" appendTo="body" styleClass="w-full" />
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+    <p-button label="Hủy" icon="pi pi-times" styleClass="p-button-text p-button-secondary"
+      (onClick)="onCancelMonth()"></p-button>
+    <p-button label="Xem báo cáo" icon="pi pi-file-pdf" styleClass="p-button-sm"
+      (onClick)="onConfirmMonth()"></p-button>
+  </ng-template>
+</p-dialog>
