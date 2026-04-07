@@ -325,7 +325,8 @@ public class DeviceService {
         final Device device = new Device();
         mapToEntity(deviceDTO, device);
         Device savedDevice = deviceRepository.save(device);
-       savedDevice.setCode(deviceDTO.getCode()+"-"+globalConfig.createNumberPrefix(savedDevice.getId(),6)); // Tạo mã thiết bị theo định dạng
+        Long count = deviceRepository.countByGroupIdAndStatusNot(savedDevice.getGroup().getId(),DELETED);
+       savedDevice.setCode(deviceDTO.getCode()+"-"+globalConfig.createNumberPrefix(count,6)); // Tạo mã thiết bị theo định dạng
         return deviceRepository.save(savedDevice).getId();
     }
     public List<Long> creates(final List<DeviceDTO> deviceDTO) {
@@ -339,7 +340,8 @@ public class DeviceService {
             }
             mapToEntity(dto, entity);
             Device saved = deviceRepository.save(entity);
-            saved.setCode(dto.getCode()+"-"+globalConfig.createNumberPrefix(saved.getId(),6)); // Tạo mã thiết bị theo định dạng
+            Long count = deviceRepository.countByGroupIdAndStatusNot(saved.getGroup().getId(),DELETED);
+            saved.setCode(dto.getCode()+"-"+globalConfig.createNumberPrefix(count,6)); // Tạo mã thiết bị theo định dạng
 
             deviceRepository.save(saved);
             createdIds.add(saved.getId());
