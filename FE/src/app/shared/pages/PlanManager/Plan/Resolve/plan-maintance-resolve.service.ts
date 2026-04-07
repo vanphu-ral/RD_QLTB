@@ -9,17 +9,17 @@ import { PlanService } from '../Service/plan.service';
 export class PlanMaintanceResolve {
   constructor(
     private service: PlanService,
-    private router: Router
-  ) { }
+    private router: Router,
+  ) {}
   resolve(route: ActivatedRouteSnapshot): Observable<any | null> {
     const id = route.params['id'];
     if (id) {
-      return this.service.getScheduleMaintance(id).pipe(
-        tap(plan => {
+      return this.service.getScheduleMaintanceNew(id).pipe(
+        tap((plan) => {
           if (!plan) {
             this.router.navigate(['404']);
           }
-        })
+        }),
       );
     }
 

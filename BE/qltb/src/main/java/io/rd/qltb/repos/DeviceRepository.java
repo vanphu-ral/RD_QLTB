@@ -34,7 +34,8 @@ public interface DeviceRepository extends JpaRepository<Device, Long> {
     List<Long> findDistinctBranchIdsByBranchCode(String branchCode);
     List<Device> findByStatusOrderByIdDesc(Integer status);
 
-
+    @Query(value= "select count(*) from devices d where d.group_id = :groupId and d.status != :status",nativeQuery = true)
+    Long countByGroupIdAndStatusNot(@Param("groupId") Long groupId, @Param("status") Integer status);
 
     @Query("SELECT new io.rd.qltb.model.response.DeviceErrorSummaryDTO(" +
             "f.name, b.name, t.name, dg.name, " +

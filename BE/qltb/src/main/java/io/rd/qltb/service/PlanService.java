@@ -751,7 +751,9 @@ public class PlanService {
     public PlanUpdateResponse updatePlan(Long id, String userName, PlanRequest request) {
 
         PlanUpdateResponse planUpdateResponse = new PlanUpdateResponse();
-        planUpdateResponse.setMessage("Cập nhật kế hoạch thành công");
+        String message = "Cập nhật kế hoạch thành công";
+        String deviceNames ="";
+        planUpdateResponse.setMessage(message);
         planUpdateResponse.setStatus("SUCCESS");
         for (DeviceRequest deviceRequest : request.getDevices()) {
             if(deviceRequest.getPlanDetailId() != null){
@@ -760,10 +762,10 @@ public class PlanService {
                         .orElseThrow(() -> new RuntimeException("PlanDetail not found"));
                 Integer count = planResultDetailRepository.getCountByPlanDetailId(planDetail.getId() );
                 if(count > 0){
+
                     planUpdateResponse.setStatus("FAIL");
-                    planUpdateResponse.setMessage( "Không thể cập nhật kế hoạch do thiết bị " + planDetail.getDevice().getName() + " đã có dữ liệu kiểm tra.");
-                    System.out.println("Không thể cập nhật kế hoạch do thiết bị " + planDetail.getDevice().getName() + " đã có dữ liệu kiểm tra.");
-                    return planUpdateResponse;
+                    deviceNames =  planDetail.getDevice().getName() ;
+                    continue;
                 }else {
                     // Nếu không có dữ liệu kiểm tra nào , ta sẽ tiến hành cập nhật lại PlanDetail
                     for( PLanDetailRequest  pLanDetailRequest :request.getPlanDetails()){
@@ -821,6 +823,11 @@ public class PlanService {
         List<PlanDetail> savedDetails = addDetailToSampleReport(newDetails);// chuyển detail sang JSON
         planDetailRepository.saveAll(savedDetails);
         autoCreatePlanResult(savedDetails);
+        if (planUpdateResponse.getStatus().equals("SUCCESS")) {
+            planUpdateResponse.setMessage("Cập nhật kế hoạch thành công");
+        }else{
+            planUpdateResponse.setMessage("Cập nhật kế hoạch thành công nhưng có một số thiết bị không được cập nhật do đã có dữ liệu kiểm tra. Thiết bị: " + deviceNames);
+        }
         return planUpdateResponse;
     }
     @Transactional
