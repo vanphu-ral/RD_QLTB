@@ -23,7 +23,7 @@ export const MENU_ITEMS: MenuItem[] = [
                         label: 'Báo cáo kiểm tra hàng ngày',
                         icon: 'pi pi-fw pi-chart-bar',
                         routerLink: ['/Plans/daily-check-report'],
-                        roles: ['RD_QLTB_ADMIN', 'RD_QLTB_MANAGER', 'RD_QLTB_OP', 'RD_QLTB_APPROVE']
+                        roles: ['RD_QLTB_ADMIN', 'RD_QLTB_MANAGER', 'RD_QLTB_APPROVE']
                     },
                     {
                         label: 'Danh mục kế hoạch vật tư',

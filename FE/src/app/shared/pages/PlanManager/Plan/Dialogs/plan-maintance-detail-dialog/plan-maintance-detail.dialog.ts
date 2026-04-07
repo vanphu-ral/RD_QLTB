@@ -119,4 +119,72 @@ export class PlanMaintanceDetailDialog {
     close() {
         this.ref.close();
     }
+
+    exportPDF() {
+        const printElement = document.getElementById('print-section-detail');
+        if (!printElement) return;
+
+        const printContents = printElement.innerHTML;
+        
+        // Collect all current styles
+        let styles = '';
+        document.querySelectorAll('link[rel="stylesheet"], style').forEach(node => {
+            styles += node.outerHTML;
+        });
+
+        const popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+        if (!popupWin) return;
+
+        popupWin.document.open();
+        popupWin.document.write(`
+            <html>
+                <head>
+                    <title>LỊCH BẢO DƯỠNG THIẾT BỊ ĐỊNH KỲ</title>
+                    <base href="${window.location.origin}/">
+                    ${styles}
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+                    <style>
+                        @media print {
+                            @page { size: landscape; margin: 10mm; }
+                            body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; font-family: 'Times New Roman', serif; }
+                            
+                            i, .fa-solid, .fa-regular, .fas, .far {
+                                color: #000 !important;
+                                display: inline-block !important;
+                                visibility: visible !important;
+                                -webkit-print-color-adjust: exact !important;
+                            }
+                        }
+                        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+                        th, td { border: 1px solid #000 !important; padding: 8px; font-size: 11px; }
+                        .text-center { text-align: center; }
+                        img { max-width: 120px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="container-fluid">
+                        ${printContents}
+                    </div>
+                    <script>
+                        window.onload = function() {
+                            if (document.fonts) {
+                                document.fonts.ready.then(function() {
+                                    setTimeout(function() {
+                                        window.print();
+                                        window.close();
+                                    }, 800);
+                                });
+                            } else {
+                                setTimeout(function() {
+                                    window.print();
+                                    window.close();
+                                }, 1200);
+                            }
+                        };
+                    </script>
+                </body>
+            </html>
+        `);
+        popupWin.document.close();
+    }
 }

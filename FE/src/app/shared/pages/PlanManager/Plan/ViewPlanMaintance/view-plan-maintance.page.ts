@@ -107,8 +107,16 @@ export class ViewPlanMaintancePage extends BasePageComponent<any> {
   }
 
   exportPDF() {
-    const printContents = document.getElementById('print-section')?.innerHTML;
-    if (!printContents) return;
+    const printElement = document.getElementById('print-section');
+    if (!printElement) return;
+
+    const printContents = printElement.innerHTML;
+    
+    // Collect all current styles
+    let styles = '';
+    document.querySelectorAll('link[rel="stylesheet"], style').forEach(node => {
+      styles += node.outerHTML;
+    });
 
     const popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
     if (!popupWin) return;
@@ -118,27 +126,57 @@ export class ViewPlanMaintancePage extends BasePageComponent<any> {
       <html>
         <head>
           <title>LỊCH BẢO DƯỠNG, SỬA CHỮA THIẾT BỊ ĐỊNH KỲ</title>
+          <base href="${window.location.origin}/">
+          ${styles}
+          <!-- Fallback FontAwesome -->
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
           <style>
             @media print {
               @page { size: landscape; margin: 10mm; }
               .only-print { display: block !important; }
-              body { -webkit-print-color-adjust: exact; font-family: 'Times New Roman', serif; }
+              body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; font-family: 'Times New Roman', serif; }
               .no-print { display: none; }
+              
+              /* Force icons to be visible and black */
+              i, .fa-solid, .fa-regular, .fas, .far {
+                color: #000 !important;
+                display: inline-block !important;
+                visibility: visible !important;
+                -webkit-print-color-adjust: exact !important;
+              }
             }
             table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
             th, td { border: 1px solid #000 !important; padding: 8px; font-size: 12px; }
-            .text-center { text-center: center; }
+            .text-center { text-align: center; }
             .font-semibold { font-weight: bold; }
             img { max-width: 150px; }
-            /* Định dạng bảng chữ ký phía dưới */
             #nghemthu-details-table { margin-top: 30px; border: none !important; }
             #nghemthu-details-table th, #nghemthu-details-table td { border: none !important; }
           </style>
         </head>
-        <body onload="window.print();window.close()">
+        <body>
           <div class="container-fluid">
             ${printContents}
           </div>
+          <script>
+            // Wait for all resources (images, fonts) to load
+            window.onload = function() {
+              // Extra check for fonts
+              if (document.fonts) {
+                document.fonts.ready.then(function() {
+                  setTimeout(function() {
+                    window.print();
+                    window.close();
+                  }, 1000);
+                });
+              } else {
+                setTimeout(function() {
+                  window.print();
+                  window.close();
+                }, 1500);
+              }
+            };
+          </script>
         </body>
       </html>
     `);

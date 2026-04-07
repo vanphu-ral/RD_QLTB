@@ -53,11 +53,11 @@
                                     <i *ngIf="dtMonth === month" class="fa-regular fa-circle-xmark fa-xl"></i>
                                     <ng-container *ngIf="dtMonth !== month">
                                         <ng-container [ngSwitch]="getArrowPosition(getEstimatedMonth(item), dtMonth)">
-                                            <span *ngSwitchCase="'before'">
+                                            <span *ngSwitchCase="'before'" class="d-flex">
                                                 <i class="fa-solid fa-arrow-left"></i>
                                                 <i class="fa-solid fa-xmark"></i>
                                             </span>
-                                            <span *ngSwitchCase="'after'">
+                                            <span *ngSwitchCase="'after'" class="d-flex">
                                                 <i class="fa-solid fa-xmark"></i>
                                                 <i class="fa-solid fa-arrow-right"></i>
                                             </span>

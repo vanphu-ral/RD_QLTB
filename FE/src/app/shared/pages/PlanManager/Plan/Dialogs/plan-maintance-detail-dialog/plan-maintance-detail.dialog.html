@@ -5,7 +5,7 @@
         <div class="card-header d-flex align-items-center">
           <h3 class="card-title "><b>Lập kế hoạch</b></h3>
         </div>
-        <div class="card-body">
+        <div class="card-body" id="print-section-detail">
           <table id="dinhkytheonam-table" class="table table-bordered table-hover">
             <thead>
               <tr>
@@ -82,7 +82,7 @@
                 <td>{{ i + 1 }}</td>
                 <td>{{ item.criticalName }}</td>
                 <td *ngFor="let m of [].constructor(12); let month = index">
-                  {{ getMonthFromEstimatedTime(item.planResult?.dateTest) === (month + 1) ? 'X' : '' }}
+                  <i *ngIf="getMonthFromEstimatedTime(item.planResult?.dateTest) === (month + 1)" class="fa-solid fa-xmark"></i>
                 </td>
                 <td>{{ item.performer }}</td>
                 <td>{{ item.note }}</td>
@@ -98,6 +98,7 @@
     </div>
   </div>
   <div class="d-flex justify-content-end gap-2 mt-4">
+        <p-button label="In PDF" icon="pi pi-file-pdf" severity="success" (onClick)="exportPDF()"></p-button>
         <p-button label="Đóng" (onClick)="close()"></p-button>
     </div>
 </div>
