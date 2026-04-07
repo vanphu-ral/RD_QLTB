@@ -42,6 +42,8 @@ import { TabsModule } from 'primeng/tabs';
 import { ChartModule } from 'primeng/chart';
 import { AccordionModule } from 'primeng/accordion'; 
 import { HasRoleDirective } from './shared/directive/has-role.directive';
+import { TooltipModule } from 'primeng/tooltip';
+
 
 @NgModule({
   imports: [
@@ -86,7 +88,8 @@ import { HasRoleDirective } from './shared/directive/has-role.directive';
     TabsModule,
     ChartModule,
     AccordionModule,
-    HasRoleDirective
+    HasRoleDirective,
+    TooltipModule
   ],
   exports: [
     CommonModule,
@@ -130,7 +133,8 @@ import { HasRoleDirective } from './shared/directive/has-role.directive';
     TabsModule,
     ChartModule,
     AccordionModule,
-    HasRoleDirective
+    HasRoleDirective,
+    TooltipModule
   ],
   providers: [DialogService, MessageService, ConfirmationService]
 })
