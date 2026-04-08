@@ -136,8 +136,8 @@ public class PlanResource {
                                     @AuthenticationPrincipal OidcUser oidcUser,
                                     @RequestBody PlanRequest request) {
         PlanUpdateResponse planUpdateResponse = planService.updatePlan(id, oidcUser.getName(), request);
-        if(planUpdateResponse.getStatus().equals("FAIL")){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(planUpdateResponse);
+        if(planUpdateResponse.getStatus().equals("WARNING")){
+            return ResponseEntity.status(HttpStatus.OK).body(planUpdateResponse);
         }else {
             return ResponseEntity.ok(planUpdateResponse);
         }

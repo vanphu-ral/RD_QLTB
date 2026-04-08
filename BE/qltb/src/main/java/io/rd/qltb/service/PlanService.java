@@ -802,7 +802,7 @@ public class PlanService {
                 for(String mgr : removedManagers){
                     Integer countResultDetail = planResultDetailRepository.countByPlanDetailId(planDetail.getId(), mgr);
                     if(countResultDetail > 0){
-                        planUpdateResponse.setStatus("FAIL");
+                        planUpdateResponse.setStatus("WARNING");
                         planUpdateResponse.setMessage("Không thể cập nhật kế hoạch do người phụ trách : " + mgr + " đã có dữ liệu kiểm tra.");
                         System.out.println("Không thể cập nhật kế hoạch do người phụ trách " + mgr + " đã có dữ liệu kiểm tra.");
                         return planUpdateResponse;
