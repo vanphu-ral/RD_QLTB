@@ -48,6 +48,44 @@ export class PlanDetailService extends BaseApiService<PlanDetail> {
     return this.http.get<any[]>(`${this['fullBaseUrl']}/daily-check-devices`, { params });
   }
 
+  getDailyCheckDevicesPaged(filters: any = {}, page: number = 0, size: number = 10): Observable<any> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+    Object.keys(filters).forEach(key => {
+      let value = filters[key];
+      if (value !== null && value !== undefined && value !== '') {
+        if (value instanceof Date) {
+          const year = value.getFullYear();
+          const month = (value.getMonth() + 1).toString().padStart(2, '0');
+          const day = value.getDate().toString().padStart(2, '0');
+
+          value = `${year}-${month}-${day}`;
+        }
+        params = params.set(key, value);
+      }
+    });
+    return this.http.get<any>(`${this['fullBaseUrl']}/daily-check-devices/paged`, { params });
+  }
+
+  getDailyCheckDevicesExport(filters: any = {}): Observable<any[]> {
+    let params = new HttpParams();
+    Object.keys(filters).forEach(key => {
+      let value = filters[key];
+      if (value !== null && value !== undefined && value !== '') {
+        if (value instanceof Date) {
+          const year = value.getFullYear();
+          const month = (value.getMonth() + 1).toString().padStart(2, '0');
+          const day = value.getDate().toString().padStart(2, '0');
+
+          value = `${year}-${month}-${day}`;
+        }
+        params = params.set(key, value);
+      }
+    });
+    return this.http.get<any[]>(`${this['fullBaseUrl']}/daily-check-devices/all`, { params });
+  }
+
   getSummaryCheckDetailByMonth(id: number | string, month: number, year: number): Observable<any> {
     const params = new HttpParams()
       .set('entityType', 'PLAN')

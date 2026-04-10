@@ -8,8 +8,52 @@
   [showViewButton]="false"
   [showDeleteButton]="false"
   [actionTemplate]="customActions"
+  [headerActionTemplate]="headerActions"
   [defaultFilters]="defaultFilters"
-  [isLazy]="false">
+  [rows]="10"
+  [isLazy]="true">
+
+  <ng-template #headerActions>
+    <div class="flex align-items-center gap-2 ml-4">
+      <span class="font-semibold white-space-nowrap">Từ tháng:</span>
+      <p-datepicker [(ngModel)]="fromMonth" view="month" dateFormat="mm/yy" 
+        [showIcon]="true" (ngModelChange)="onTableMonthChange()" appendTo="body" 
+        styleClass="w-10rem" />
+      
+      <span class="font-semibold white-space-nowrap ml-2">Đến tháng:</span>
+      <p-datepicker [(ngModel)]="toMonth" view="month" dateFormat="mm/yy" 
+        [showIcon]="true" (ngModelChange)="onTableMonthChange()" appendTo="body" 
+        styleClass="w-10rem" />
+
+      <p-button label="Xuất Excel" icon="pi pi-file-excel" (onClick)="exportExcel()" 
+        styleClass="p-button-success p-button-sm ml-2"></p-button>
+    </div>
+  </ng-template>
+
+  <ng-template appColumnTemplate="countOk" let-value>
+    <p-tag severity="success" [value]="value" *ngIf="value > 0" />
+    <span *ngIf="value === 0">0</span>
+  </ng-template>
+
+  <ng-template appColumnTemplate="countAbnormal" let-value>
+    <p-tag severity="danger" [value]="value" *ngIf="value > 0" />
+    <span *ngIf="value === 0">0</span>
+  </ng-template>
+
+  <ng-template appColumnTemplate="countAdjusted" let-value>
+    <p-tag severity="warn" [value]="value" *ngIf="value > 0" />
+    <span *ngIf="value === 0">0</span>
+  </ng-template>
+
+  <ng-template appColumnTemplate="totalErrors" let-value>
+    <span class="font-bold text-red-600" *ngIf="value > 0">{{ value }}</span>
+    <span *ngIf="value === 0">0</span>
+  </ng-template>
+
+  <ng-template appColumnTemplate="fixedErrors" let-value>
+    <span class="font-bold text-green-600" *ngIf="value > 0">{{ value }}</span>
+    <span *ngIf="value === 0">0</span>
+  </ng-template>
 
   <ng-template appColumnTemplate="createdAt" let-rowData>
     {{ rowData | date: 'dd/MM/yyyy' }}

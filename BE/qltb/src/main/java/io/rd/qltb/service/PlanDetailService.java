@@ -10,11 +10,18 @@ import io.rd.qltb.util.NotFoundException;
 import io.rd.qltb.util.ReferencedException;
 
 import java.util.*;
+import java.time.LocalDate;
 import java.util.stream.Collectors;
-
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import jakarta.transaction.Transactional;
 
 import static io.rd.qltb.config.ConstantStatusGlobal.DRAFF;
 import static io.rd.qltb.config.ConstantStatusGlobal.IN_PROGRESS;
@@ -38,10 +45,13 @@ public class PlanDetailService {
     private final ErrorReportRepository errorReportRepository;
     private final ErrorReportService errorReportService;
 
+    @PersistenceContext
+    private final EntityManager entityManager;
+
     public PlanDetailService(final PlanDetailRepository planDetailRepository,
                              final PlanRepository planRepository, final DeviceRepository deviceRepository,
                              final SampleReportRepository sampleReportRepository,
-                             final DeviceGroupRepository deviceGroupRepository, ApprovalRepository approvalRepository, ApprovalService approvalService, PlanResultDetailRepository planResultDetailRepository, PlanResultService planResultService, PlanResultDetailService planResultDetailService, PlanResultRepository planResultRepository, ApprovalWorkflowRepository approvalWorkflowRepository, ErrorReportRepository errorReportRepository, ErrorReportService errorReportService) {
+                             final DeviceGroupRepository deviceGroupRepository, ApprovalRepository approvalRepository, ApprovalService approvalService, PlanResultDetailRepository planResultDetailRepository, PlanResultService planResultService, PlanResultDetailService planResultDetailService, PlanResultRepository planResultRepository, ApprovalWorkflowRepository approvalWorkflowRepository, ErrorReportRepository errorReportRepository, ErrorReportService errorReportService, EntityManager entityManager) {
         this.planDetailRepository = planDetailRepository;
         this.planRepository = planRepository;
         this.deviceRepository = deviceRepository;
@@ -56,6 +66,7 @@ public class PlanDetailService {
         this.approvalWorkflowRepository = approvalWorkflowRepository;
         this.errorReportRepository = errorReportRepository;
         this.errorReportService = errorReportService;
+        this.entityManager = entityManager;
     }
     public List<PlanDetailDTO> getByPlanId (final Long planId) {
         final List<PlanDetail> planDetails = planDetailRepository.findAllByPlanId(planId);
@@ -69,20 +80,248 @@ public class PlanDetailService {
      * Group theo deviceId, lấy planDetail mới nhất cho mỗi thiết bị.
      * Hỗ trợ filter theo tên ngành (branch), tổ (team), dây chuyền (line).
      */
+    /**
+     * Lấy danh sách thiết bị tham gia kế hoạch kiểm tra hàng ngày (DAILYCHECK) có phân trang.
+     */
+    @Transactional
+    public Page<PlanDetailDTO> findDailyCheckDevicesPaged(Map<String, Object> filters, int page, int size) {
+        int pageSize = size > 0 ? size : 10;
+
+        DailyCheckSearchContext context = buildDailyCheckSearchContext(filters);
+
+        var cb = entityManager.getCriteriaBuilder();
+
+        // 1. Khởi tạo Query lấy dữ liệu
+        var cq = cb.createQuery(PlanDetail.class);
+        var root = cq.from(PlanDetail.class);
+
+        // 2. Khởi tạo Query đếm tổng
+        var countQuery = cb.createQuery(Long.class);
+        var countRoot = countQuery.from(PlanDetail.class);
+
+        // 3. Xây dựng Predicates đồng nhất (có lọc theo khoảng thời gian)
+        Predicate[] dataPredicates = buildDailyCheckPredicates(filters, cb, root, context.startDate, context.endDate);
+        Predicate[] countPredicates = buildDailyCheckPredicates(filters, cb, countRoot, context.startDate, context.endDate);
+
+        // 4. Thực thi truy vấn lấy dữ liệu trang
+        cq.where(dataPredicates);
+        cq.orderBy(cb.desc(root.get("id")));
+
+        var query = entityManager.createQuery(cq);
+        query.setFirstResult(page * pageSize);
+        query.setMaxResults(pageSize);
+
+        List<PlanDetailDTO> dtos = query.getResultList().stream()
+                .map(pd -> {
+                    PlanDetailDTO dto = mapToDTO(pd, new PlanDetailDTO());
+                    enrichDeviceInfo(dto, pd);
+                    return dto;
+                })
+                .toList();
+
+        // 5. Bổ sung thống kê tổng hợp (OK, Bất thường, Lỗi...) cho từng thiết bị TRONG KHOẢNG THỜI GIAN
+        enrichDailyCheckSummaryStatsRange(dtos, context.startDate, context.endDate);
+
+        // 6. Thực thi truy vấn đếm tổng số bản ghi
+        countQuery.select(cb.count(countRoot)).where(countPredicates);
+        Long totalRecords = entityManager.createQuery(countQuery).getSingleResult();
+
+        return new PageImpl<>(dtos, PageRequest.of(page, pageSize), totalRecords);
+    }
+
+    /**
+     * Lấy toàn bộ danh sách thiết bị kiểm tra hàng ngày không phân trang (dùng cho export).
+     */
+    @Transactional
+    public List<PlanDetailDTO> findDailyCheckDevicesAll(Map<String, Object> filters) {
+        DailyCheckSearchContext context = buildDailyCheckSearchContext(filters);
+
+        var cb = entityManager.getCriteriaBuilder();
+        var cq = cb.createQuery(PlanDetail.class);
+        var root = cq.from(PlanDetail.class);
+
+        Predicate[] predicates = buildDailyCheckPredicates(filters, cb, root, context.startDate, context.endDate);
+
+        cq.where(predicates);
+        cq.orderBy(cb.desc(root.get("id")));
+
+        List<PlanDetailDTO> dtos = entityManager.createQuery(cq).getResultList().stream()
+                .map(pd -> {
+                    PlanDetailDTO dto = mapToDTO(pd, new PlanDetailDTO());
+                    enrichDeviceInfo(dto, pd);
+                    return dto;
+                })
+                .toList();
+
+        enrichDailyCheckSummaryStatsRange(dtos, context.startDate, context.endDate);
+
+        return dtos;
+    }
+
+    private DailyCheckSearchContext buildDailyCheckSearchContext(Map<String, Object> filters) {
+        Integer fromMonth = filters.get("fromMonth") != null ? Integer.parseInt(filters.get("fromMonth").toString()) : LocalDate.now().getMonthValue();
+        Integer fromYear = filters.get("fromYear") != null ? Integer.parseInt(filters.get("fromYear").toString()) : LocalDate.now().getYear();
+        Integer toMonth = filters.get("toMonth") != null ? Integer.parseInt(filters.get("toMonth").toString()) : fromMonth;
+        Integer toYear = filters.get("toYear") != null ? Integer.parseInt(filters.get("toYear").toString()) : fromYear;
+
+        java.time.LocalDateTime startDate = java.time.LocalDateTime.of(fromYear, fromMonth, 1, 0, 0, 0);
+        java.time.YearMonth toYearMonth = java.time.YearMonth.of(toYear, toMonth);
+        java.time.LocalDateTime endDate = toYearMonth.atEndOfMonth().atTime(23, 59, 59);
+
+        // Xóa các tham số đặc biệt
+        filters.remove("fromMonth");
+        filters.remove("fromYear");
+        filters.remove("toMonth");
+        filters.remove("toYear");
+        filters.remove("month");
+        filters.remove("year");
+
+        return new DailyCheckSearchContext(startDate, endDate);
+    }
+
+    private static class DailyCheckSearchContext {
+        final java.time.LocalDateTime startDate;
+        final java.time.LocalDateTime endDate;
+
+        DailyCheckSearchContext(java.time.LocalDateTime startDate, java.time.LocalDateTime endDate) {
+            this.startDate = startDate;
+            this.endDate = endDate;
+        }
+    }
+
+    /**
+     * Tính toán tổng hợp các chỉ số (OK, Bất thường, Đã điều chỉnh, Lỗi) cho danh sách thiết bị trong khoảng thời gian.
+     */
+    private void enrichDailyCheckSummaryStatsRange(List<PlanDetailDTO> dtos, java.time.LocalDateTime startDate, java.time.LocalDateTime endDate) {
+        if (dtos == null || dtos.isEmpty()) return;
+
+        List<Long> deviceIds = dtos.stream()
+                .filter(dto -> dto.getDevice() != null)
+                .map(dto -> dto.getDevice().getId())
+                .distinct()
+                .toList();
+
+        if (deviceIds.isEmpty()) return;
+
+        // 1. Thống kê kết quả từ PlanResultDetail trong dải ngày
+        String prdQuery = "SELECT pr.planDetail.device.id, prd.result, COUNT(prd.id) " +
+                "FROM PlanResultDetail prd " +
+                "JOIN prd.planResult pr " +
+                "WHERE pr.planDetail.device.id IN :ids " +
+                "AND pr.dateTest >= :startDate AND pr.dateTest <= :endDate " +
+                "AND (prd.result = 'OK' OR prd.result = 'Đã điều chỉnh' OR prd.result = 'Có bất thường') " +
+                "GROUP BY pr.planDetail.device.id, prd.result";
+
+        List<Object[]> prdResults = entityManager.createQuery(prdQuery, Object[].class)
+                .setParameter("ids", deviceIds)
+                .setParameter("startDate", startDate)
+                .setParameter("endDate", endDate)
+                .getResultList();
+
+        // 2. Thống kê số lượng ErrorReport (Lỗi) trong dải ngày
+        String erQuery = "SELECT pr.planDetail.device.id, er.isRepaired, COUNT(er.id) " +
+                "FROM ErrorReport er " +
+                "JOIN er.planResult pr " +
+                "WHERE pr.planDetail.device.id IN :ids " +
+                "AND er.timeReported >= :startDate AND er.timeReported <= :endDate " +
+                "AND (er.status IS NULL OR er.status != 10) " +
+                "GROUP BY pr.planDetail.device.id, er.isRepaired";
+
+        List<Object[]> erResults = entityManager.createQuery(erQuery, Object[].class)
+                .setParameter("ids", deviceIds)
+                .setParameter("startDate", startDate)
+                .setParameter("endDate", endDate)
+                .getResultList();
+
+        // 3. Mapping kết quả vào DTO
+        for (PlanDetailDTO dto : dtos) {
+            dto.setCountOk(0L);
+            dto.setCountAbnormal(0L);
+            dto.setCountAdjusted(0L);
+            dto.setTotalErrors(0L);
+            dto.setFixedErrors(0L);
+
+            if (dto.getDevice() == null) continue;
+            Long deviceId = dto.getDevice().getId();
+
+            for (Object[] res : prdResults) {
+                if (res[0].equals(deviceId)) {
+                    String result = (String) res[1];
+                    Long count = (Long) res[2];
+                    if ("OK".equals(result)) dto.setCountOk(count);
+                    else if ("Có bất thường".equals(result)) dto.setCountAbnormal(count);
+                    else if ("Đã điều chỉnh".equals(result)) dto.setCountAdjusted(count);
+                }
+            }
+
+            for (Object[] res : erResults) {
+                if (res[0].equals(deviceId)) {
+                    Boolean isRepaired = (Boolean) res[1];
+                    Long count = (Long) res[2];
+                    dto.setTotalErrors(dto.getTotalErrors() + count);
+                    if (Boolean.TRUE.equals(isRepaired)) {
+                        dto.setFixedErrors(dto.getFixedErrors() + count);
+                    }
+                }
+            }
+        }
+    }
+
+    private Predicate[] buildDailyCheckPredicates(Map<String, Object> filters, CriteriaBuilder cb, Root<PlanDetail> root, java.time.LocalDateTime startDate, java.time.LocalDateTime endDate) {
+        List<Predicate> predicates = new ArrayList<>();
+
+        // Join các quan hệ cần thiết
+        Join<PlanDetail, Plan> planJoin = root.join("plan", JoinType.INNER);
+        Join<Plan, PlanType> planTypeJoin = planJoin.join("planType", JoinType.INNER);
+        Join<PlanDetail, Device> deviceJoin = root.join("device", JoinType.LEFT);
+
+        // Filter mặc định: DAILYCHECK và không bị xóa
+        predicates.add(cb.equal(planTypeJoin.get("code"), "DAILYCHECK"));
+        predicates.add(cb.notEqual(planJoin.get("status"), 10));
+        predicates.add(cb.notEqual(root.get("status"), 10));
+
+        // Lọc theo khoảng thời gian: Kế hoạch phải gối (overlap) với khoảng thời gian chọn
+        // (plan.fromDate <= :endDate) AND (plan.toDate >= :startDate)
+        if (startDate != null && endDate != null) {
+            predicates.add(cb.lessThanOrEqualTo(planJoin.get("fromDate"), endDate));
+            predicates.add(cb.greaterThanOrEqualTo(planJoin.get("toDate"), startDate));
+        }
+
+        // Filter người dùng
+        filters.forEach((key, value) -> {
+            if (value != null && !value.toString().isEmpty()) {
+                if (key.equals("device.branch.name")) {
+                    Join<Device, Branch> branchJoin = deviceJoin.join("branch", JoinType.LEFT);
+                    predicates.add(cb.like(cb.lower(branchJoin.get("name")), "%" + value.toString().toLowerCase() + "%"));
+                } else if (key.equals("device.team.name")) {
+                    Join<Device, Team> teamJoin = deviceJoin.join("team", JoinType.LEFT);
+                    predicates.add(cb.like(cb.lower(teamJoin.get("name")), "%" + value.toString().toLowerCase() + "%"));
+                } else if (key.equals("device.line.name")) {
+                    Join<Device, Line> lineJoin = deviceJoin.join("line", JoinType.LEFT);
+                    predicates.add(cb.like(cb.lower(lineJoin.get("name")), "%" + value.toString().toLowerCase() + "%"));
+                } else if (key.startsWith("device.")) {
+                    String field = key.replace("device.", "");
+                    predicates.add(cb.like(cb.lower(deviceJoin.get(field)), "%" + value.toString().toLowerCase() + "%"));
+                } else if (key.startsWith("plan.")) {
+                    String field = key.replace("plan.", "");
+                    predicates.add(cb.like(cb.lower(planJoin.get(field)), "%" + value.toString().toLowerCase() + "%"));
+                } else if (key.equals("id")) {
+                    predicates.add(cb.equal(root.get("id"), value));
+                } else {
+                    predicates.add(cb.like(cb.lower(root.get(key).as(String.class)), "%" + value.toString().toLowerCase() + "%"));
+                }
+            }
+        });
+
+        return predicates.toArray(new Predicate[0]);
+    }
+
     public List<PlanDetailDTO> getDailyCheckDevices(String branch, String team, String line) {
         List<PlanDetail> allDetails = planDetailRepository.findAllDailyCheckPlanDetails();
 
-        // Group by deviceId, lấy planDetail mới nhất (id lớn nhất)
-        Map<Long, PlanDetail> latestByDevice = allDetails.stream()
+        // Trả về toàn bộ danh sách, lọc theo NAME (LIKE, case-insensitive)
+        return allDetails.stream()
                 .filter(pd -> pd.getDevice() != null)
-                .collect(Collectors.toMap(
-                        pd -> pd.getDevice().getId(),
-                        pd -> pd,
-                        (a, b) -> a.getId() > b.getId() ? a : b
-                ));
-
-        // Apply filters theo NAME (LIKE, case-insensitive)
-        return latestByDevice.values().stream()
                 .filter(pd -> branch == null || branch.isEmpty() ||
                         (pd.getDevice().getBranch() != null && pd.getDevice().getBranch().getName() != null &&
                                 pd.getDevice().getBranch().getName().toLowerCase().contains(branch.toLowerCase())))
@@ -193,8 +432,8 @@ public class PlanDetailService {
                 .toList();
         planCheckDTO.setApprovals(approvalDTOS);
 
-        // Lấy PlanResultDetail LỌC THEO THÁNG/NĂM
-        List<PlanResultDetail> planResultDetails = planResultDetailRepository.getByPlanDetailIdAndMonth(id, month, year);
+        // Lấy PlanResultDetail LỌC THEO DEVICE ID VÀ THÁNG/NĂM (để xem báo cáo chéo giữa các kế hoạch)
+        List<PlanResultDetail> planResultDetails = planResultDetailRepository.getByDeviceIdAndMonth(planDetail.getDevice().getId(), month, year);
         List<PlanResultDetailDTO> planResultDetailDTOS = planResultDetails.stream()
                 .map(planResultDetail -> planResultDetailService.mapToDTO(planResultDetail, new PlanResultDetailDTO()))
                 .toList();

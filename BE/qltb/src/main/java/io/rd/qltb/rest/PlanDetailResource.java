@@ -5,7 +5,10 @@ import io.rd.qltb.model.*;
 import io.rd.qltb.service.PlanDetailService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +33,32 @@ public class PlanDetailResource {
             @RequestParam(required = false) String team,
             @RequestParam(required = false) String line) {
         return ResponseEntity.ok(planDetailService.getDailyCheckDevices(branch, team, line));
+    }
+
+    @GetMapping("/daily-check-devices/paged")
+    public ResponseEntity<Page<PlanDetailDTO>> getDailyCheckDevicesPaged(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam Map<String, String> params) {
+
+        params.remove("page");
+        params.remove("size");
+        Map<String, Object> filters = new HashMap<>(params);
+
+        Page<PlanDetailDTO> result = planDetailService.findDailyCheckDevicesPaged(filters, page, size);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/daily-check-devices/all")
+    public ResponseEntity<List<PlanDetailDTO>> getDailyCheckDevicesAll(
+            @RequestParam Map<String, String> params) {
+
+        params.remove("page");
+        params.remove("size");
+        Map<String, Object> filters = new HashMap<>(params);
+
+        List<PlanDetailDTO> result = planDetailService.findDailyCheckDevicesAll(filters);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/summary/{id}/monthly")

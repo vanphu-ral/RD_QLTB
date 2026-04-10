@@ -47,5 +47,11 @@ public class PlanDetailDTO {
 
     private SampleReport sampleReport;
     private List<PlanResultDTO> planResults;
-
+    
+    // Aggregation stats for summarizing month reports
+    private Long countOk;
+    private Long countAbnormal;
+    private Long countAdjusted;
+    private Long totalErrors;
+    private Long fixedErrors;
 }

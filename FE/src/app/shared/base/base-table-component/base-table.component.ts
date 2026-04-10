@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ContentChildren, QueryList, TemplateRef, AfterContentInit, ViewChild, ChangeDetectorRef, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, ContentChildren, QueryList, TemplateRef, AfterContentInit, AfterViewInit, ViewChild, ChangeDetectorRef, SimpleChanges } from '@angular/core';
 import { Table, TableLazyLoadEvent } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
@@ -22,7 +22,7 @@ import { Observable } from 'rxjs';
   templateUrl: './base-table.component.html',
   styleUrls: ['./base-table.component.scss'],
 })
-export class BaseTableComponent<T> implements OnInit, AfterContentInit {
+export class BaseTableComponent<T> implements OnInit, AfterContentInit, AfterViewInit {
   @Input() apiService!: BaseApiService<T>;
   @Input() isLazy = false;
   @Input() columns: Column[] = []
@@ -48,7 +48,7 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
   @ViewChild('dt') dt!: Table;
 
   totalRecords = 0;
-  rows = 10;
+  @Input() rows = 10;
 
   data: any[] = [];
   loading = false;
@@ -94,7 +94,7 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
     }
     const service = this.apiService as any;
     if (service.getAllByPaged) {
-      service.getAllByPaged(filters, page).subscribe({
+      service.getAllByPaged(filters, page, rows).subscribe({
         next: (res: any) => {
           this.data = res.content;
           this.totalRecords = res.totalElements;
@@ -139,6 +139,25 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
         this.dt.filter(value, field, 'contains');
       }
     });
+  }
+
+  getFilterValue(): any {
+    const filters: any = {};
+    if (this.dt && this.dt.filters) {
+      Object.keys(this.dt.filters).forEach(key => {
+        const filterMeta = this.dt.filters[key];
+        if (filterMeta) {
+          if (Array.isArray(filterMeta)) {
+            if (filterMeta[0].value !== null && filterMeta[0].value !== undefined && filterMeta[0].value !== '') {
+              filters[key] = filterMeta[0].value;
+            }
+          } else if (filterMeta.value !== null && filterMeta.value !== undefined && filterMeta.value !== '') {
+            filters[key] = filterMeta.value;
+          }
+        }
+      });
+    }
+    return filters;
   }
 
 
@@ -255,6 +274,14 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit {
   getColumnTemplate(field: string): TemplateRef<any> | null {
     const template = this.columnTemplates.find(t => t.field === field);
     return template ? template.template : null;
+  }
+
+  ngAfterViewInit(): void {
+    if (this.isLazy && this.defaultFilters && Object.keys(this.defaultFilters).length > 0) {
+      setTimeout(() => {
+        this.applyDefaultFilters();
+      }, 0);
+    }
   }
 
   getColumnStyle(col: { style?: string }): { [key: string]: string } | null {
