@@ -15,7 +15,7 @@ const DEFAULT_SESSIONS = ['Đầu ca', 'Giữa ca', 'Cuối ca', 'Hằng tuần'
 // Định nghĩa mới: Kết quả cho một Ca kiểm tra cụ thể trong một ngày
 interface DailySessionResult {
   session: string; // Tên Ca kiểm tra (Đầu ca, Giữa ca,...)
-  results: { value: string, time: string, createdBy?: string }[]; // Mảng kết quả (O, A, X, //) cho ca này vào ngày này
+  results: { value: string, time: string, createdBy?: string, createdAt?: string }[]; // Mảng kết quả (O, A, X, //) cho ca này vào ngày này
 }
 
 // Định nghĩa mới: Kết quả cho tất cả các Ca kiểm tra trong một ngày
@@ -332,9 +332,9 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
                   );
                   if (sessionResult) {
                     if (status === 0) {
-                      sessionResult.results.push({ value: 'EMPTY', time: examinationTime || '', createdBy: res.createdBy || '' });
+                      sessionResult.results.push({ value: 'EMPTY', time: examinationTime || '', createdBy: res.createdBy || '', createdAt: res.createdAt });
                     } else if (resultValue && resultValue !== '//') {
-                      sessionResult.results.push({ value: resultValue, time: examinationTime || '', createdBy: res.createdBy || '' });
+                      sessionResult.results.push({ value: resultValue, time: examinationTime || '', createdBy: res.createdBy || '', createdAt: res.createdAt });
                     }
                   }
                 }
@@ -448,7 +448,8 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
       if (res.value === 'EMPTY') return ''; // Hiển thị rỗng nếu status == 0
       const timeKey = (res.time || '').toLowerCase().replace(/\s/g, '');
       const creatorName = this.userMap[res.createdBy] || res.createdBy || 'N/A';
-      const tooltipText = `Người thực hiện: ${creatorName}`;
+      const formattedDate = res.createdAt ? new Date(res.createdAt).toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' }) : '';
+      const tooltipText = `Người thực hiện: ${creatorName} - Thời gian thực hiện: ${formattedDate}`;
       if (timeKey === 'ca1' || timeKey === 'ca2') {
         let statusSlug = '';
         if (res.value === 'O') statusSlug = 'oke';
