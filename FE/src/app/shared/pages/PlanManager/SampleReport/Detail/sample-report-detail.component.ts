@@ -77,7 +77,7 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
       this.listCriterial = result.criterials;
       this.listTypes = result.planTypes;
       this.cdr.detectChanges();
-      if (this.isEditMode || this.isViewMode || this.isApprovalMode || this.isCopyMode) {
+      if ((this.isEditMode || this.isViewMode || this.isApprovalMode || this.isCopyMode) && !this.route.snapshot.data['mode']?.includes('view-history')) {
         this.keyMappingService.getBySampleReport(this.model.id!).subscribe(res => {
           this.listCriterialBySample = res.map(x => {
             const group = x.criterial?.criterialGroup || null;
