@@ -198,9 +198,9 @@ export class SampleReportDetailComponent extends BasePageComponent<SampleReport>
   public override save(): void {
     if (!this.model) return;
     this.prepareModel();
-    this.model.code = `BMBB-${Util.dateToCode()}`
-    this.model.documentNumber = `${this.model.formCode}-${this.model.code}`
     if (this.isAddMode || this.isCopyMode) {
+      this.model.documentNumber = `${this.model.formCode}-${this.model.code}`
+      this.model.code = `BMBB-${Util.dateToCode()}`
       this.apiService.create(this.model).subscribe({
         next: (id) => {
           const keyMappings: keyMapping[] = this.listCriterialBySample.map(item => ({
