@@ -70,8 +70,7 @@ public class DeviceService {
         this.planResultRepository = planResultRepository;
     }
     @Transactional
-    public Page<DeviceDTO> findDevicesPaged(Map<String, Object> filters, int page) {
-        int pageSize = 10;
+    public Page<DeviceDTO> findDevicesPaged(Map<String, Object> filters, int page, int pageSize) {
         var cb = entityManager.getCriteriaBuilder();
 
         // Query chính
@@ -241,6 +240,9 @@ public class DeviceService {
         List<Predicate> predicates = new ArrayList<>();
 
         filters.forEach((key, value) -> {
+            // Bỏ qua các tham số không phải là field của thực thể Device
+            if (List.of("page", "size", "sort").contains(key)) return;
+
             if (value != null && !value.toString().isEmpty()) {
                 Path<?> path;
 

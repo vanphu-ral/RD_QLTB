@@ -77,15 +77,17 @@ public class DeviceResource {
     @GetMapping("/paged")
     public ResponseEntity<Page<DeviceDTO>> getDevices(
             @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
             @RequestParam MultiValueMap<String, String> params) {
 
-        // Loại bỏ param "page"
+        // Loại bỏ các param điều khiển phân trang
         params.remove("page");
+        params.remove("size");
 
         Map<String, Object> filters = new HashMap<>();
         params.forEach((k, v) -> filters.put(k, v.get(0)));
 
-        Page<DeviceDTO> result = deviceService.findDevicesPaged(filters, page);
+        Page<DeviceDTO> result = deviceService.findDevicesPaged(filters, page, size);
         return ResponseEntity.ok(result);
     }
     @GetMapping("/upcoming")
