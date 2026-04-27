@@ -17,7 +17,7 @@
             <br />
             Ngày: <span *ngIf="!isEditMode" id="spanBienBanNgayBB">{{ model.dateRecord | date:'dd/MM/yyyy' }}</span>
             <div *ngIf="isEditMode" class="mt-1">
-              <p-datepicker [(ngModel)]="model.dateRecord" dateFormat="dd/mm/yy" appendTo="body" [showIcon]="true" [fluid]="true"></p-datepicker>
+              <p-datepicker [(ngModel)]="model.dateRecord" dateFormat="dd/mm/yy" appendTo="body" [showIcon]="true" [fluid]="true" [autofocus]="false"></p-datepicker>
             </div>
           </td>
         </tr>
@@ -84,11 +84,11 @@
               <label>Thời gian thực hiện nghiệm thu:</label>
               <div class="d-flex mt-2">
                 <p-floatlabel variant="on" class="mx-1">
-                  <p-datepicker [(ngModel)]="model.fromDateAcceptance" dateFormat="dd-mm-yy" appendTo="body" [showIcon]="true" inputId="fromDateAcceptance"></p-datepicker>
+                  <p-datepicker [autofocus]="false" [(ngModel)]="model.fromDateAcceptance" dateFormat="dd-mm-yy" appendTo="body" [showIcon]="true" inputId="fromDateAcceptance"></p-datepicker>
                   <label for="fromDateAcceptance">Từ ngày</label>
                 </p-floatlabel>
                 <p-floatlabel variant="on" class="mx-1">
-                  <p-datepicker [(ngModel)]="model.toDateAcceptance" dateFormat="dd-mm-yy" appendTo="body" [showIcon]="true" inputId="toDateAcceptance"></p-datepicker>
+                  <p-datepicker [autofocus]="false"[(ngModel)]="model.toDateAcceptance" dateFormat="dd-mm-yy" appendTo="body" [showIcon]="true" inputId="toDateAcceptance"></p-datepicker>
                   <label for="toDateAcceptance">Đến ngày</label>
                 </p-floatlabel>
               </div>
@@ -105,11 +105,11 @@
               <label>Thời gian thực hiện bảo dưỡng:</label>
               <div class="d-flex mt-2">
                 <p-floatlabel variant="on" class="mx-1">
-                  <p-datepicker [(ngModel)]="model.fromDatePerform" dateFormat="dd-mm-yy" appendTo="body" [showIcon]="true" inputId="fromDatePerform"></p-datepicker>
+                  <p-datepicker [autofocus]="false" [(ngModel)]="model.fromDatePerform" dateFormat="dd-mm-yy" appendTo="body" [showIcon]="true" inputId="fromDatePerform"></p-datepicker>
                   <label for="fromDatePerform">Từ ngày</label>
                 </p-floatlabel>
                 <p-floatlabel variant="on" class="mx-1">
-                  <p-datepicker [(ngModel)]="model.toDatePerform" dateFormat="dd-mm-yy" appendTo="body" [showIcon]="true" inputId="toDatePerform"></p-datepicker>
+                  <p-datepicker [autofocus]="false" [(ngModel)]="model.toDatePerform" dateFormat="dd-mm-yy" appendTo="body" [showIcon]="true" inputId="toDatePerform"></p-datepicker>
                   <label for="toDatePerform">Đến ngày</label>
                 </p-floatlabel>
               </div>
