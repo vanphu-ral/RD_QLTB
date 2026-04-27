@@ -392,7 +392,7 @@ public class PlanService {
                         if (planRequest.getPlan().getPlanType().getCode().equals("DAILYCHECK")) {
                             // tạo plan Result cho tháng hiện tại
                             // Lấy tháng hiện tại
-                            YearMonth currentMonth = YearMonth.now();
+                            YearMonth currentMonth = YearMonth.from(plan.getFromDate());
                             Duration duration = Duration.between(plan.getFromDate(), plan.getToDate());
                             Integer startDay = plan.getFromDate().getDayOfMonth();
                             // Duyệt từng ngày trong tháng
@@ -494,7 +494,7 @@ public class PlanService {
                                 if (planRequestData.getPlanType().getCode().equals("DAILYCHECK")) {
                                     // tạo plan Result cho tháng hiện tại
                                     // Lấy tháng hiện tại
-                                    YearMonth currentMonth = YearMonth.now();
+                                    YearMonth currentMonth = YearMonth.from(plan.getFromDate());
                                     Duration duration = Duration.between(plan.getFromDate(), plan.getToDate());
                                     Integer startDay = plan.getFromDate().getDayOfMonth();
                                     // Duyệt từng ngày trong tháng
@@ -866,7 +866,7 @@ public class PlanService {
             if (plan.getPlanType().getCode().equals("DAILYCHECK")) {
                 // tạo plan Result cho tháng hiện tại
                 // Lấy tháng hiện tại
-                YearMonth currentMonth = YearMonth.now();
+                YearMonth currentMonth = YearMonth.from(plan.getFromDate());
                 String manager = deviceRepository.findById(planDetail.getDevice().getId()).orElseThrow().getUserManager();
                 Duration duration = Duration.between(plan.getFromDate(), plan.getToDate());
                 Integer startDay = plan.getFromDate().getDayOfMonth();
