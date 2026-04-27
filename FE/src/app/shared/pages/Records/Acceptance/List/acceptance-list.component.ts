@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { BaseTableComponent } from '../../../../base/base-table-component/base-table.component';
 import { SharedModule } from '../../../../../share.module';
 import { FormsModule } from '@angular/forms';
@@ -6,6 +6,7 @@ import { Column } from '../../../../models/Core/column.model';
 import { AcceptanceService } from '../service/acceptance.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AcceptanceDialog } from '../Dialogs/acceptance-dialog/acceptance.dialog';
+import _ from 'lodash';
 
 @Component({
   selector: 'acceptance-list',
@@ -15,6 +16,7 @@ import { AcceptanceDialog } from '../Dialogs/acceptance-dialog/acceptance.dialog
   styleUrls: ['./acceptance-list.component.scss'],
 })
 export class AcceptanceListComponent {
+  @ViewChild(BaseTableComponent) baseTable!: BaseTableComponent<any>;
   selectedStatus: string | null = null;
 
   ref?: DynamicDialogRef;
@@ -38,5 +40,19 @@ export class AcceptanceListComponent {
       modal: true,
     });
     this.ref = ref;
+  }
+
+  editAcceptance(row: any) {
+    const ref = this.dialogService.open(AcceptanceDialog, {
+      header: 'Sửa biên bản nghiệm thu',
+      width: '70%',
+      data: { data: _.cloneDeep(row), isEditMode: true },
+      modal: true,
+    });
+    ref.onClose.subscribe((res) => {
+      if (res) {
+        this.baseTable.loadData();
+      }
+    });
   }
 }

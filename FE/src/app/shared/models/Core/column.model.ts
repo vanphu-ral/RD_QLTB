@@ -3,6 +3,7 @@ export interface Column {
   Header: string;
   IsSearch?: boolean;
   IsHide?: boolean;
+  IsDefaultHide?: boolean;
   TypeSearch?: 'select' | 'date' | 'text';
   Options?: { label: string; value: any }[];
   style?: { [key: string]: string };

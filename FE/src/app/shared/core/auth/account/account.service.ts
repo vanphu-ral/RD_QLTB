@@ -75,4 +75,8 @@ export class AccountService {
   getBranch() {
     return _.get(this.accountSignal(), 'attributes.branch');
   }
+
+  update(account: Account): Observable<Account> {
+    return this.http.put<Account>(this.appConfig.getEndpointFor('api/auth/user'), account);
+  }
 }

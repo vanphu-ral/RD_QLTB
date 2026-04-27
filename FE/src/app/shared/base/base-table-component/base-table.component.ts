@@ -53,6 +53,7 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit, AfterVie
   data: any[] = [];
   loading = false;
   selectedColumns: any[] = [];
+  toggleableColumns: Column[] = [];
 
   constructor(private router: Router, private route: ActivatedRoute, private cdr: ChangeDetectorRef, private confirmationService: ConfirmationService, private messageService: MessageService) { }
 
@@ -61,16 +62,20 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit, AfterVie
       ...c,
       IsSearch: c.IsSearch ?? false,
       IsHide: c.IsHide ?? false,
+      IsDefaultHide: c.IsDefaultHide ?? false,
     }));
-    this.selectedColumns = [...this.columns];
+    this.toggleableColumns = this.columns.filter(c => !c.IsHide);
+    this.selectedColumns = this.toggleableColumns.filter(c => !c.IsDefaultHide);
     if (!this.isLazy) {
-      this.loadData(); // logic cũ
+      this.loadData(); 
     }
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['columns'] && this.columns) {
-      this.selectedColumns = [...this.columns];
+      this.toggleableColumns = this.columns.filter(c => !c.IsHide);
+      const previouslySelectedFields = new Set(this.selectedColumns.map(c => c.Field));
+      this.selectedColumns = this.toggleableColumns.filter(c => previouslySelectedFields.has(c.Field) || !c.IsDefaultHide);
     }
   }
 
@@ -256,6 +261,12 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit, AfterVie
   // function support template
   trackColumn(index: number, col: Column): string {
     return col.Field;
+  }
+
+  /** Giữ thứ tự cột đúng như khai báo trong columns[] sau mỗi lần toggle */
+  onColumnToggle(): void {
+    const selectedFields = new Set(this.selectedColumns.map(c => c.Field));
+    this.selectedColumns = this.toggleableColumns.filter(c => selectedFields.has(c.Field));
   }
 
   ngAfterContentInit(): void {

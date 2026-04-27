@@ -12,9 +12,13 @@
             <b class="my-2">{{ model.device?.name }}</b>
           </td>
           <td>
-            Số: <span id="spanBienBanPlanNumber">{{ model.docNumber }}</span><br />
+            Số: <span *ngIf="!isEditMode" id="spanBienBanPlanNumber">{{ model.docNumber }}</span>
+            <input *ngIf="isEditMode" pInputText [(ngModel)]="model.docNumber" class="form-control mt-1"><br />
             <br />
-            Ngày: <span id="spanBienBanNgayBB">{{ model.dateRecord | date:'dd/MM/yyyy' }}</span>
+            Ngày: <span *ngIf="!isEditMode" id="spanBienBanNgayBB">{{ model.dateRecord | date:'dd/MM/yyyy' }}</span>
+            <div *ngIf="isEditMode" class="mt-1">
+              <p-datepicker [(ngModel)]="model.dateRecord" dateFormat="dd/mm/yy" appendTo="body" [showIcon]="true" [fluid]="true"></p-datepicker>
+            </div>
           </td>
         </tr>
         <tr>
@@ -25,53 +29,103 @@
           <td>Bộ phận quản lý/sử dụng thiết bị: <span id="spanBienBanTeamName">{{ model.device?.team?.name }}</span>
           </td>
           <td colspan="2">Ngành/Ban: <span id="spanBienBanBranchName">{{ model.device?.branch?.name }}</span></td>
-          <td>Xưởng: <span id="spanBienBanFactoryName">Xưởng LED DT&TBCS</span></td>
+          <td>Xưởng: <span id="spanBienBanFactoryName">{{ model.device?.branch?.factory?.name || "Xưởng LED DT&TBCS" }}</span></td>
         </tr>
         <tr>
           <td>Giao nhận sau: </td>
           <td colspan="3">
             <div class="form-group clearfix">
-              <div class="d-inline mx-2">
-                <label class="me-3">Sửa chữa</label>
-                <i [class]="model.type === 1 ? 'pi pi-check-square text-primary' : 'pi pi-stop text-secondary'"
-                  style="font-size: 1.2rem"></i>
-              </div>
+              <ng-container *ngIf="!isEditMode">
+                <div class="d-inline mx-2">
+                  <label class="me-3">Sửa chữa</label>
+                  <i [class]="model.type === 1 ? 'pi pi-check-square text-primary' : 'pi pi-stop text-secondary'"
+                    style="font-size: 1.2rem"></i>
+                </div>
+                <div class="d-inline mx-2">
+                  <label class="me-3">Bảo dưỡng định kỳ</label>
+                  <i [class]="model.type === 2 ? 'pi pi-check-square text-primary' : 'pi pi-stop text-secondary'"
+                    style="font-size: 1.2rem"></i>
+                </div>
+                <div class="d-inline mx-2">
+                  <label class="me-3">Khác</label>
+                  <i [class]="model.type === 3 ? 'pi pi-check-square text-primary' : 'pi pi-stop text-secondary'"
+                    style="font-size: 1.2rem"></i>
+                </div>
+              </ng-container>
 
-              <div class="d-inline mx-2">
-                <label class="me-3">Bảo dưỡng định kỳ</label>
-                <i [class]="model.type === 2 ? 'pi pi-check-square text-primary' : 'pi pi-stop text-secondary'"
-                  style="font-size: 1.2rem"></i>
-              </div>
-
-              <div class="d-inline mx-2">
-                <label class="me-3">Khác</label>
-                <i [class]="model.type === 3 ? 'pi pi-check-square text-primary' : 'pi pi-stop text-secondary'"
-                  style="font-size: 1.2rem"></i>
+              <ng-container *ngIf="isEditMode">
+                <div class="icheck-primary d-inline mx-2">
+                  <input type="radio" [value]="1" name="type" [(ngModel)]="model.type" id="type1">
+                  <label for="type1" class="mx-2">Sửa chữa</label>
+                </div>
+                <div class="icheck-primary d-inline mx-2">
+                  <input type="radio" [value]="2" name="type" [(ngModel)]="model.type" id="type2">
+                  <label for="type2" class="mx-2">Bảo dưỡng định kỳ</label>
+                </div>
+                <div class="icheck-primary d-inline mx-2">
+                  <input type="radio" [value]="3" name="type" [(ngModel)]="model.type" id="type3">
+                  <label for="type3" class="mx-2">Khác</label>
+                </div>
+                <div class="icheck-primary d-inline mx-2">
+                  <input type="radio" [value]="0" name="type" [(ngModel)]="model.type" id="type0">
+                  <label for="type0" class="mx-2">Bỏ chọn</label>
+                </div>
+              </ng-container>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="4">
+            <div *ngIf="!isEditMode">
+              <label>Thời gian thực hiện nghiệm thu: Từ ngày {{ model.fromDateAcceptance |
+                date:'dd/MM/yyyy' }} - Đến ngày {{ model.toDateAcceptance | date:'dd/MM/yyyy' }}</label>
+            </div>
+            <div *ngIf="isEditMode">
+              <label>Thời gian thực hiện nghiệm thu:</label>
+              <div class="d-flex mt-2">
+                <p-floatlabel variant="on" class="mx-1">
+                  <p-datepicker [(ngModel)]="model.fromDateAcceptance" dateFormat="dd-mm-yy" appendTo="body" [showIcon]="true" inputId="fromDateAcceptance"></p-datepicker>
+                  <label for="fromDateAcceptance">Từ ngày</label>
+                </p-floatlabel>
+                <p-floatlabel variant="on" class="mx-1">
+                  <p-datepicker [(ngModel)]="model.toDateAcceptance" dateFormat="dd-mm-yy" appendTo="body" [showIcon]="true" inputId="toDateAcceptance"></p-datepicker>
+                  <label for="toDateAcceptance">Đến ngày</label>
+                </p-floatlabel>
               </div>
             </div>
           </td>
         </tr>
         <tr>
           <td colspan="4">
-            <label for="rangeActDatetimeStop">Thời gian thực hiện nghiệm thu: Từ ngày {{ model.fromDateAcceptance |
-              date:'dd/MM/yyyy' }} - Đến ngày {{ model.toDateAcceptance | date:'dd/MM/yyyy' }}</label>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            <label for="rangeActDatetimeStop">Thời gian thực hiện bảo dưỡng: Từ ngày {{ model.fromDatePerform |
-              date:'dd/MM/yyyy' }} - Đến ngày {{ model.toDatePerform | date:'dd/MM/yyyy' }}</label>
+            <div *ngIf="!isEditMode">
+              <label>Thời gian thực hiện bảo dưỡng: Từ ngày {{ model.fromDatePerform |
+                date:'dd/MM/yyyy' }} - Đến ngày {{ model.toDatePerform | date:'dd/MM/yyyy' }}</label>
+            </div>
+            <div *ngIf="isEditMode">
+              <label>Thời gian thực hiện bảo dưỡng:</label>
+              <div class="d-flex mt-2">
+                <p-floatlabel variant="on" class="mx-1">
+                  <p-datepicker [(ngModel)]="model.fromDatePerform" dateFormat="dd-mm-yy" appendTo="body" [showIcon]="true" inputId="fromDatePerform"></p-datepicker>
+                  <label for="fromDatePerform">Từ ngày</label>
+                </p-floatlabel>
+                <p-floatlabel variant="on" class="mx-1">
+                  <p-datepicker [(ngModel)]="model.toDatePerform" dateFormat="dd-mm-yy" appendTo="body" [showIcon]="true" inputId="toDatePerform"></p-datepicker>
+                  <label for="toDatePerform">Đến ngày</label>
+                </p-floatlabel>
+              </div>
+            </div>
           </td>
         </tr>
         <tr>
           <td colspan="4">
             <b>Nội dung công việc thực hiện:</b>
             <div class="mt-3">
-              <ul class="pl-3 m-0" style="list-style-type: disc;">
+              <ul *ngIf="!isEditMode" class="pl-3 m-0" style="list-style-type: disc;">
                 <li *ngFor="let line of textForList(model.note!)">
                   {{ line }}
                 </li>
               </ul>
+              <textarea *ngIf="isEditMode" pTextarea [(ngModel)]="model.note" rows="3" class="form-control" placeholder="Enter ..."></textarea>
             </div>
           </td>
         </tr>
@@ -79,11 +133,12 @@
           <td colspan="3" rowspan="3" style="vertical-align: top;">
             <b>Kết quả vận hành thử:</b>
             <div class="mt-3">
-              <ul class="pl-3 m-0" style="list-style-type: disc;">
+              <ul *ngIf="!isEditMode" class="pl-3 m-0" style="list-style-type: disc;">
                 <li *ngFor="let line of textForList(model.result!)">
                   {{ line }}
                 </li>
               </ul>
+              <textarea *ngIf="isEditMode" pTextarea [(ngModel)]="model.result" rows="11" class="form-control" placeholder="Enter ..."></textarea>
             </div>
           </td>
           <td>
@@ -91,16 +146,32 @@
               Yêu cầu về an toàn
             </b>
             <div class="form-group clearfix mt-2">
-              <div class="icheck-primary d-inline mx-2">
-                <label class="me-3">Đạt</label>
-                <i [class]="model.safe === 1 ? 'pi pi-check-square text-primary' : 'pi pi-stop text-secondary'"
-                  style="font-size: 1.2rem"></i>
-              </div>
-              <div class="icheck-primary d-inline mx-2">
-                <label class="me-3">Không đạt</label>
-                <i [class]="model.safe === 2 ? 'pi pi-check-square text-primary' : 'pi pi-stop text-secondary'"
-                  style="font-size: 1.2rem"></i>
-              </div>
+              <ng-container *ngIf="!isEditMode">
+                <div class="icheck-primary d-inline mx-2">
+                  <label class="me-3">Đạt</label>
+                  <i [class]="model.safe === 1 ? 'pi pi-check-square text-primary' : 'pi pi-stop text-secondary'"
+                    style="font-size: 1.2rem"></i>
+                </div>
+                <div class="icheck-primary d-inline mx-2">
+                  <label class="me-3">Không đạt</label>
+                  <i [class]="model.safe === 2 ? 'pi pi-check-square text-primary' : 'pi pi-stop text-secondary'"
+                    style="font-size: 1.2rem"></i>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="isEditMode">
+                <div class="icheck-primary d-inline mx-2">
+                  <input type="radio" [value]="1" name="safe" [(ngModel)]="model.safe" id="safe1">
+                  <label for="safe1" class="mx-2">Đạt</label>
+                </div>
+                <div class="icheck-primary d-inline mx-2">
+                  <input type="radio" [value]="2" name="safe" [(ngModel)]="model.safe" id="safe2">
+                  <label for="safe2" class="mx-2">Không đạt</label>
+                </div>
+                <div class="icheck-primary d-inline mx-2">
+                  <input type="radio" [value]="0" name="safe" [(ngModel)]="model.safe" id="safe0">
+                  <label for="safe0" class="mx-2">Không đánh giá</label>
+                </div>
+              </ng-container>
             </div>
           </td>
         </tr>
@@ -110,16 +181,32 @@
               Yêu cầu về chất lượng
             </b>
             <div class="form-group clearfix mt-2">
-              <div class="icheck-primary d-inline mx-2">
-                <label class="me-3">Đạt</label>
-                <i [class]="model.quality === 1 ? 'pi pi-check-square text-primary' : 'pi pi-stop text-secondary'"
-                  style="font-size: 1.2rem"></i>
-              </div>
-              <div class="icheck-primary d-inline mx-2">
-                <label class="me-3">Không đạt</label>
-                <i [class]="model.quality === 2 ? 'pi pi-check-square text-primary' : 'pi pi-stop text-secondary'"
-                  style="font-size: 1.2rem"></i>
-              </div>
+              <ng-container *ngIf="!isEditMode">
+                <div class="icheck-primary d-inline mx-2">
+                  <label class="me-3">Đạt</label>
+                  <i [class]="model.quality === 1 ? 'pi pi-check-square text-primary' : 'pi pi-stop text-secondary'"
+                    style="font-size: 1.2rem"></i>
+                </div>
+                <div class="icheck-primary d-inline mx-2">
+                  <label class="me-3">Không đạt</label>
+                  <i [class]="model.quality === 2 ? 'pi pi-check-square text-primary' : 'pi pi-stop text-secondary'"
+                    style="font-size: 1.2rem"></i>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="isEditMode">
+                <div class="icheck-primary d-inline mx-2">
+                  <input type="radio" [value]="1" name="quality" [(ngModel)]="model.quality" id="quality1">
+                  <label for="quality1" class="mx-2">Đạt</label>
+                </div>
+                <div class="icheck-primary d-inline mx-2">
+                  <input type="radio" [value]="2" name="quality" [(ngModel)]="model.quality" id="quality2">
+                  <label for="quality2" class="mx-2">Không đạt</label>
+                </div>
+                <div class="icheck-primary d-inline mx-2">
+                  <input type="radio" [value]="0" name="quality" [(ngModel)]="model.quality" id="quality0">
+                  <label for="quality0" class="mx-2">Không đánh giá</label>
+                </div>
+              </ng-container>
             </div>
           </td>
         </tr>
@@ -129,16 +216,32 @@
               Yêu cầu về năng suất
             </b>
             <div class="form-group clearfix mt-2">
-              <div class="icheck-primary d-inline mx-2">
-                <label class="me-3">Đạt</label>
-                <i [class]="model.productivity === 1 ? 'pi pi-check-square text-primary' : 'pi pi-stop text-secondary'"
-                  style="font-size: 1.2rem"></i>
-              </div>
-              <div class="icheck-primary d-inline mx-2">
-                <label class="me-3">Không đạt</label>
-                <i [class]="model.productivity === 2 ? 'pi pi-check-square text-primary' : 'pi pi-stop text-secondary'"
-                  style="font-size: 1.2rem"></i>
-              </div>
+              <ng-container *ngIf="!isEditMode">
+                <div class="icheck-primary d-inline mx-2">
+                  <label class="me-3">Đạt</label>
+                  <i [class]="model.productivity === 1 ? 'pi pi-check-square text-primary' : 'pi pi-stop text-secondary'"
+                    style="font-size: 1.2rem"></i>
+                </div>
+                <div class="icheck-primary d-inline mx-2">
+                  <label class="me-3">Không đạt</label>
+                  <i [class]="model.productivity === 2 ? 'pi pi-check-square text-primary' : 'pi pi-stop text-secondary'"
+                    style="font-size: 1.2rem"></i>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="isEditMode">
+                <div class="icheck-primary d-inline mx-2">
+                  <input type="radio" [value]="1" name="productivity" [(ngModel)]="model.productivity" id="productivity1">
+                  <label for="productivity1" class="mx-2">Đạt</label>
+                </div>
+                <div class="icheck-primary d-inline mx-2">
+                  <input type="radio" [value]="2" name="productivity" [(ngModel)]="model.productivity" id="productivity2">
+                  <label for="productivity2" class="mx-2">Không đạt</label>
+                </div>
+                <div class="icheck-primary d-inline mx-2">
+                  <input type="radio" [value]="0" name="productivity" [(ngModel)]="model.productivity" id="productivity0">
+                  <label for="productivity0" class="mx-2">Không đánh giá</label>
+                </div>
+              </ng-container>
             </div>
           </td>
         </tr>
@@ -149,25 +252,28 @@
         </tr>
         <tr>
           <td colspan="2">
-            <ul class="pl-3 m-0" style="list-style-type: disc;">
+            <ul *ngIf="!isEditMode" class="pl-3 m-0" style="list-style-type: disc;">
               <li *ngFor="let line of textForList(model.actionMore!)">
                 {{ line }}
               </li>
             </ul>
+            <textarea *ngIf="isEditMode" pTextarea [(ngModel)]="model.actionMore" rows="3" class="form-control" placeholder="Enter ..."></textarea>
           </td>
           <td>
-            <ul class="pl-3 m-0" style="list-style-type: disc;">
+            <ul *ngIf="!isEditMode" class="pl-3 m-0" style="list-style-type: disc;">
               <li *ngFor="let line of textForList(model.responsibility!)">
                 {{ line }}
               </li>
             </ul>
+            <textarea *ngIf="isEditMode" pTextarea [(ngModel)]="model.responsibility" rows="3" class="form-control" placeholder="Enter ..."></textarea>
           </td>
           <td>
-            <ul class="pl-3 m-0" style="list-style-type: disc;">
+            <ul *ngIf="!isEditMode" class="pl-3 m-0" style="list-style-type: disc;">
               <li *ngFor="let line of textForList(model.limitation!)">
                 {{ line }}
               </li>
             </ul>
+            <textarea *ngIf="isEditMode" pTextarea [(ngModel)]="model.limitation" rows="3" class="form-control" placeholder="Enter ..."></textarea>
           </td>
         </tr>
       </thead>
@@ -190,6 +296,7 @@
 
 
   <div class="d-flex justify-content-end gap-2 mt-4">
+    <p-button *ngIf="isEditMode" label="Lưu" severity="success" (onClick)="save()"></p-button>
     <p-button label="Đóng" (onClick)="close()"></p-button>
   </div>
 </div>

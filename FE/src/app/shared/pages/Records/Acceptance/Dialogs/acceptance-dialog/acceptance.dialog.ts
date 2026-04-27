@@ -34,15 +34,26 @@ export class AcceptanceDialog {
 
     model: Acceptance = new Acceptance();
     listUserApproval: any[] = [];
+    isEditMode: boolean = false;
 
     constructor(
         public ref: DynamicDialogRef,
         public config: DynamicDialogConfig,
         private approvalService: ApprovalService,
         private signatureService: SignatureService,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private apiService: AcceptanceService,
     ) {
         this.model = config.data.data;
+        this.isEditMode = config.data.isEditMode || false;
+        
+        // Chuyển đổi các trường ngày từ string sang Date object để p-datepicker nhận diện được
+        const dateFields = ['dateRecord', 'fromDateAcceptance', 'toDateAcceptance', 'fromDatePerform', 'toDatePerform', 'timeAcceptance'];
+        dateFields.forEach(field => {
+            if (this.model[field as keyof Acceptance]) {
+                this.model[field as keyof Acceptance] = new Date(this.model[field as keyof Acceptance] as any) as any;
+            }
+        });
     }
 
     ngOnInit() {
@@ -94,7 +105,22 @@ export class AcceptanceDialog {
         return reason.split(/\r?\n/).filter(line => line.trim() !== '');
     }
 
+    save() {
+        if (this.model.id) {
+            const saveModel = Util.simplifyMany(this.model, ['device', 'planResult', 'errorReport', 'approvalWorkflow']);
+            this.apiService.update(this.model.id, saveModel).subscribe({
+                next: () => {
+                    Util.showSuccessMessage("Cập nhật biên bản nghiệm thu thành công");
+                    this.ref.close(true);
+                },
+                error: (err) => {
+                    Util.handleApiError(err);
+                }
+            });
+        }
+    }
+
     close() {
-        this.ref.close();
+        this.ref.close(false);
     }
 }

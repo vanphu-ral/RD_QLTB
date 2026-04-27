@@ -55,7 +55,7 @@ export class DeviceListComponent {
     { Field: 'branch.name', Header: 'Ngành', IsSearch: true, TypeSearch: 'select', Options: [], style: { 'min-width': '200px', 'width': '200px' } },
     { Field: 'team.name', Header: 'Tổ', IsSearch: true, TypeSearch: 'select', Options: [], style: { 'min-width': '200px', 'width': '200px' } },
     { Field: 'line.name', Header: 'Dây chuyền', IsSearch: true, TypeSearch: 'select', Options: [], style: { 'min-width': '200px', 'width': '200px' } },
-    { Field: 'code', Header: 'Mã thiết bị', IsSearch: true, TypeSearch: 'text' },
+    { Field: 'code', Header: 'Mã thiết bị', IsSearch: true, TypeSearch: 'text', IsDefaultHide: true },
     { Field: 'maintenanceCycle', Header: 'Chu kỳ bảo trì', IsSearch: true, TypeSearch: 'select', Options: this.frequencyOptions, style: { 'min-width': '200px', 'width': '200px' } },
     { Field: 'source', Header: 'Nguồn thiết bị', IsSearch: true, TypeSearch: 'text' },
     { Field: 'supplier', Header: 'Nhà cung cấp', IsSearch: true, TypeSearch: 'text' },

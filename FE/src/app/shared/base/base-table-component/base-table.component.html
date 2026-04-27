@@ -11,22 +11,22 @@
   [loading]="loading" [rowsPerPageOptions]="[5, 10, 20, 50]" [lazy]="isLazy" (onLazyLoad)="loadDataLazy($event)"
   [totalRecords]="totalRecords" [showCurrentPageReport]="true" currentPageReportTemplate="Tổng: {totalRecords} bản ghi">
   <ng-template #caption>
-    <p-multiSelect [options]="columns" [(ngModel)]="selectedColumns" optionLabel="Header" display="chip"
-      placeholder="Chọn cột hiển thị" styleClass="p-column-toggler">
+    <p-multiSelect [options]="toggleableColumns" [(ngModel)]="selectedColumns" optionLabel="Header" display="chip"
+      placeholder="Chọn cột hiển thị" styleClass="p-column-toggler" (onChange)="onColumnToggle()">
     </p-multiSelect>
   </ng-template>
   <!-- Header -->
   <ng-template pTemplate="header">
     <tr>
       <th>STT</th>
-      <th *ngFor="let col of selectedColumns; trackBy: trackColumn" [hidden]="col.IsHide" [ngStyle]="col.style">{{ col.Header }}</th>
+      <th *ngFor="let col of selectedColumns; trackBy: trackColumn" [ngStyle]="col.style">{{ col.Header }}</th>
       <th alignFrozen="right" pFrozenColumn [frozen]="true" style="min-width: 150px;">Chức năng</th>
     </tr>
 
     <!-- Filter -->
     <tr>
       <th></th>
-      <th *ngFor="let col of selectedColumns; trackBy: trackColumn" [hidden]="col.IsHide">
+      <th *ngFor="let col of selectedColumns; trackBy: trackColumn">
         <ng-container *ngIf="getFilterTemplate(col.Field) as tpl; else defaultFilter">
           <!-- Custom filter từ cha -->
           <p-columnFilter [field]="col.Field" matchMode="equals" [showMenu]="false">
@@ -70,7 +70,7 @@
   <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
     <tr>
       <td>{{ rowIndex + 1 }}</td>
-      <td *ngFor="let col of selectedColumns; trackBy: trackColumn" [hidden]="col.IsHide" [ngStyle]="col.style">
+      <td *ngFor="let col of selectedColumns; trackBy: trackColumn" [ngStyle]="col.style">
         <ng-container *ngIf="getColumnTemplate(col.Field) as tpl; else defaultValue">
           <ng-container *ngTemplateOutlet="tpl; context: { $implicit: getValueByPath(row, col.Field) }"></ng-container>
         </ng-container>
