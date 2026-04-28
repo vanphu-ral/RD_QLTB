@@ -44,6 +44,7 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
   listParameter: DeviceParameterUse[] = [];
   listUsers: any[] = [];
   override listStatus: any[] = Util.statusDevice();
+  listState: any[] = Util.stateDevice();
   ref?: DynamicDialogRef;
 
   filteredLines: any[] = [];
@@ -181,6 +182,12 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
       this.filteredLines = [];
     }
     this.cdr.detectChanges();
+  }
+
+  onStateChange() {
+    if (this.isAddMode && this.model.state !== 1) {
+      this.model.status = undefined;
+    }
   }
 
 

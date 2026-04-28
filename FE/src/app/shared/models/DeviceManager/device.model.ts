@@ -16,6 +16,7 @@ export class Device {
     unit?: string;
     price?: number; 
     status?: number;
+    state?: number;
     qrCodeImg?: string;
     qrCode?: string;
     isMappingScada?: boolean;

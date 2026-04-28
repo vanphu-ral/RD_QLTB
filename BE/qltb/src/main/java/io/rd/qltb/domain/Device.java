@@ -72,8 +72,11 @@ public class Device {
     @Column(precision = 12, scale = 2)
     private BigDecimal price;
 
-    @Column(nullable = false)
+    @Column
     private Integer status;
+
+    @Column
+    private Integer state;
 
     @Column(length = 100)
     private String qrCode;

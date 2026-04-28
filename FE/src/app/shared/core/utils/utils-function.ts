@@ -495,12 +495,21 @@ export class Util {
 
   static statusDevice() {
     return [
-      { label: 'Vô hiệu hóa', value: 0 },
+      { label: 'Dừng hoạt động', value: 0 },
       { label: 'Đang hoạt động', value: 1 },
       { label: 'Có sự cố', value: 2 },
       { label: 'Sự cố nghiêm trọng', value: 3 },
       { label: 'Đang bảo dưỡng', value: 4 },
-      { label: 'Đã thanh lý', value: 5 },
+    ];
+  }
+
+  static stateDevice() {
+    return [
+      { label: 'Nhập chưa sử dụng', value: 0 },
+      { label: 'Đang sử dụng', value: 1 },
+      { label: 'Đã thanh lý', value: 2 },
+      { label: 'Hỏng hoàn toàn', value: 3 },
+      { label: 'Vô hiệu hóa', value: 10 }
     ];
   }
 

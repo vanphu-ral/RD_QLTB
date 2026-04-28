@@ -395,6 +395,7 @@ public class DeviceService {
         deviceDTO.setUnit(device.getUnit());
         deviceDTO.setPrice(device.getPrice());
         deviceDTO.setStatus(device.getStatus());
+        deviceDTO.setState(device.getState());
         deviceDTO.setQrCode(device.getQrCode());
         deviceDTO.setQrCodeImg(device.getQrCodeImg());
         deviceDTO.setIsMappingScada(device.getIsMappingScada());
@@ -522,6 +523,7 @@ public class DeviceService {
         device.setUnit(deviceDTO.getUnit());
         device.setPrice(deviceDTO.getPrice());
         device.setStatus(deviceDTO.getStatus());
+        device.setState(deviceDTO.getState());
         device.setQrCode(deviceDTO.getQrCode());
         device.setQrCodeImg(deviceDTO.getQrCodeImg());
         device.setIsMappingScada(deviceDTO.getIsMappingScada());

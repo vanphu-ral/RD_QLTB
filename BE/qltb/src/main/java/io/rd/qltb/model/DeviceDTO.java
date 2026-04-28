@@ -53,6 +53,8 @@ public class DeviceDTO {
 
     private Integer status;
 
+    private Integer state;
+
     private String qrCode;
 
     private String qrCodeImg;
