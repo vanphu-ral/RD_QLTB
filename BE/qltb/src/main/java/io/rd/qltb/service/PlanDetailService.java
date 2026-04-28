@@ -68,11 +68,50 @@ public class PlanDetailService {
         this.errorReportService = errorReportService;
         this.entityManager = entityManager;
     }
-    public List<PlanDetailDTO> getByPlanId (final Long planId) {
+
+
+    public List<PlanDetailDTO> getByPlanId(final Long planId) {
         final List<PlanDetail> planDetails = planDetailRepository.findAllByPlanId(planId);
+
         return planDetails.stream()
-                .map(planDetail -> mapToDTO(planDetail, new PlanDetailDTO()))
+                .map(planDetail -> {
+                    PlanDetailDTO dto = mapToDTO(planDetail, new PlanDetailDTO());
+
+                    // Khởi tạo mặc định các trường là 0 nếu chúng đang null sau khi mapToDTO
+                    dto.setTotalDayCreated(Objects.requireNonNullElse(dto.getTotalDayCreated(), 0));
+                    dto.setTotalDayWorking(Objects.requireNonNullElse(dto.getTotalDayWorking(), 0));
+                    dto.setTotalDayComplete(Objects.requireNonNullElse(dto.getTotalDayComplete(), 0));
+                    dto.setTotalDayOff(Objects.requireNonNullElse(dto.getTotalDayOff(), 0));
+
+                    if (planDetail.getPlanResults() != null) {
+                        for (PlanResult planResult : planDetail.getPlanResults()) {
+                            switch (planResult.getStatus()) {
+                                case 1 -> dto.setTotalDayCreated(dto.getTotalDayCreated() + 1);
+                                case 4 -> dto.setTotalDayWorking(dto.getTotalDayWorking() + 1);
+                                case 5 -> dto.setTotalDayComplete(dto.getTotalDayComplete() + 1);
+                                case 15 -> dto.setTotalDayOff(dto.getTotalDayOff() + 1);
+                            }
+                        }
+                    }
+
+                    // In kết quả kiểm tra
+                    System.out.println("--- Kết quả Mapping ---");
+                    System.out.println("ID: " + planId);
+                    System.out.println("Created: " + dto.getTotalDayCreated());
+                    System.out.println("Working: " + dto.getTotalDayWorking());
+                    System.out.println("Complete: " + dto.getTotalDayComplete());
+                    System.out.println("Off: " + dto.getTotalDayOff());
+
+                    return dto;
+                })
                 .toList();
+    }
+
+    /**
+     * Hàm bổ trợ để xử lý null khi cộng dồn (null-safe)
+     */
+    private Integer coalesce(Integer value) {
+        return value == null ? 0 : value;
     }
 
     /**

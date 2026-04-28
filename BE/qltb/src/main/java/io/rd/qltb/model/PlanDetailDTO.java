@@ -54,4 +54,8 @@ public class PlanDetailDTO {
     private Long countAdjusted;
     private Long totalErrors;
     private Long fixedErrors;
+    private Integer totalDayOff; // Số ngày nghỉ status = 15
+    private Integer totalDayComplete; // Số ngày hoàn thành status = 5
+    private Integer totalDayWorking; // Số ngày  đang khai báo status = 4
+    private Integer totalDayCreated; // Số ngày mơi tạo status = 1
 }
