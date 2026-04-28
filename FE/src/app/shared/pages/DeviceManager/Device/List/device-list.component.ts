@@ -49,33 +49,33 @@ export class DeviceListComponent {
 
   columns: Column[] = [
     { Field: 'id', Header: 'ID', IsHide: true },
-    { Field: 'qrCode', Header: 'Qr Code thiết bị', IsSearch: true, TypeSearch: 'text' },
-    { Field: 'name', Header: 'Tên thiết bị', IsSearch: true, TypeSearch: 'text' },
-    { Field: 'group.name', Header: 'Nhóm thiết bị', IsSearch: true, TypeSearch: 'select', Options: [], style: { 'min-width': '200px', 'width': '200px' } },
-    { Field: 'branch.name', Header: 'Ngành', IsSearch: true, TypeSearch: 'select', Options: [], style: { 'min-width': '200px', 'width': '200px' } },
-    { Field: 'team.name', Header: 'Tổ', IsSearch: true, TypeSearch: 'select', Options: [], style: { 'min-width': '200px', 'width': '200px' } },
-    { Field: 'line.name', Header: 'Dây chuyền', IsSearch: true, TypeSearch: 'select', Options: [], style: { 'min-width': '200px', 'width': '200px' } },
+    { Field: 'qrCode', Header: 'QR code', IsSearch: true, TypeSearch: 'text' },
+    { Field: 'name', Header: 'Tên thiết bị *', IsSearch: true, TypeSearch: 'text' },
+    { Field: 'group.name', Header: 'Tên nhóm thiết bị *', IsSearch: true, TypeSearch: 'select', Options: [], style: { 'min-width': '200px', 'width': '200px' } },
+    { Field: 'branch.name', Header: 'Tên ngành sản xuất *', IsSearch: true, TypeSearch: 'select', Options: [], style: { 'min-width': '200px', 'width': '200px' } },
+    { Field: 'team.name', Header: 'Tên tổ sản xuất', IsSearch: true, TypeSearch: 'select', Options: [], style: { 'min-width': '200px', 'width': '200px' } },
+    { Field: 'line.name', Header: 'Tên dây truyền sản xuất', IsSearch: true, TypeSearch: 'select', Options: [], style: { 'min-width': '200px', 'width': '200px' } },
     { Field: 'code', Header: 'Mã thiết bị', IsSearch: true, TypeSearch: 'text', IsDefaultHide: true },
     { Field: 'maintenanceCycle', Header: 'Chu kỳ bảo trì', IsSearch: true, TypeSearch: 'select', Options: this.frequencyOptions, style: { 'min-width': '200px', 'width': '200px' } },
-    { Field: 'source', Header: 'Nguồn thiết bị', IsSearch: true, TypeSearch: 'text' },
-    { Field: 'supplier', Header: 'Nhà cung cấp', IsSearch: true, TypeSearch: 'text' },
+    { Field: 'source', Header: 'Hãng', IsSearch: true, TypeSearch: 'text' },
+    { Field: 'supplier', Header: 'Xuất xứ *', IsSearch: true, TypeSearch: 'text' },
     { Field: 'timeRecieve', Header: 'Thời gian tiếp nhận', IsSearch: true, TypeSearch: 'date', style: { 'min-width': '150px' } },
-    { Field: 'installationDate', Header: 'Thời gian lắp đặt', IsSearch: true, TypeSearch: 'date', style: { 'min-width': '150px' } },
+    { Field: 'installationDate', Header: 'Năm sử dụng', IsSearch: true, TypeSearch: 'date', style: { 'min-width': '150px' } },
     { Field: 'dateManufacture', Header: 'Thời gian đưa vào sản xuất', IsSearch: true, TypeSearch: 'date', style: { 'min-width': '150px' } },
     { Field: 'maintenanceTime', Header: 'Thời gian bảo trì', IsSearch: true, TypeSearch: 'text' },
     { Field: 'depreciationPeriod', Header: 'Thời gian khấu hao', IsSearch: true, TypeSearch: 'text' },
     { Field: 'depreciationPercentage', Header: '% khấu hao', IsSearch: true, TypeSearch: 'text' },
     { Field: 'price', Header: 'Giá tiền', IsSearch: true, TypeSearch: 'text' },
-    { Field: 'unit', Header: 'Đơn vị tiền', IsSearch: true, TypeSearch: 'text' },
+    { Field: 'unit', Header: 'Đơn vị tính', IsSearch: true, TypeSearch: 'text' },
     { Field: 'userManager', Header: 'Người quản lý', IsSearch: true, TypeSearch: 'text' },
-    { Field: 'serialNumber', Header: 'Serial', IsSearch: true, TypeSearch: 'text' },
-    { Field: 'isMappingScada', Header: 'Có mapping với SCADA', IsSearch: true, TypeSearch: 'text' },
-    { Field: 'isImportant', Header: 'Là thiết bị trọng yếu', IsSearch: true, TypeSearch: 'text' },
+    { Field: 'serialNumber', Header: 'Số serial', IsSearch: true, TypeSearch: 'text' },
+    { Field: 'isMappingScada', Header: 'Mapping với SCADA', IsSearch: true, TypeSearch: 'text' },
+    { Field: 'isImportant', Header: 'Là thiết bị quan trọng', IsSearch: true, TypeSearch: 'text' },
     { Field: 'createdBy', Header: 'Người tạo', IsSearch: true, TypeSearch: 'text' },
     { Field: 'createdAt', Header: 'Ngày tạo', IsSearch: true, TypeSearch: 'date', style: { 'min-width': '150px' } },
     { Field: 'updatedAt', Header: 'Ngày cập nhật', IsSearch: true, TypeSearch: 'date', style: { 'min-width': '150px' } },
     { Field: 'description', Header: 'Mô tả', style: { 'max-width': '300px', 'white-space': 'nowrap', 'overflow': 'hidden', 'text-overflow': 'ellipsis' } },
-    { Field: 'status', Header: 'Trạng thái', IsSearch: true, TypeSearch: 'select', Options: this.statusOptions, style: { 'min-width': '200px', 'width': '200px' } },
+    { Field: 'status', Header: 'Trạng thái *', IsSearch: true, TypeSearch: 'select', Options: this.statusOptions, style: { 'min-width': '200px', 'width': '200px' } },
   ];
 
   constructor(public apiService: DeviceService, private dialogService: DialogService, private deviceGroupService: DeviceGroupService,
@@ -234,7 +234,8 @@ export class DeviceListComponent {
                 let val = c.Field.split('.').reduce((acc, part) => acc && acc[part], row);
                 if (c.Field === 'status') val = this.statusToString(row.status);
                 if (c.Field === 'isImportant') val = row.isImportant == 1 ? 'Có' : 'Không';
-                if (c.TypeSearch === 'date' && val) val = new Date(val).toLocaleDateString('vi-VN');
+                if (c.Field === 'installationDate' && val) val = new Date(val).getFullYear().toString();
+                else if (c.TypeSearch === 'date' && val) val = new Date(val).toLocaleDateString('vi-VN');
                 rowData[c.Field] = val;
               });
               worksheet.addRow(rowData);

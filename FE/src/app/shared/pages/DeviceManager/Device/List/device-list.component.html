@@ -19,6 +19,9 @@
   <ng-template appColumnTemplate="updatedAt" let-rowData>
     {{ rowData | date: 'dd/MM/yyyy' }}
   </ng-template>
+  <ng-template appColumnTemplate="installationDate" let-rowData>
+    {{ rowData | date: 'yyyy' }}
+  </ng-template>
 
   <ng-template appCustomFilter="branch.name" let-value="value" let-filter="filter">
     <p-select [ngModel]="value" (ngModelChange)="onBranchChange($event, filter)" [options]="branchOptions"
@@ -45,5 +48,5 @@
 </ng-template>
 
 <ng-template #headerActionTemplate>
-  <p-button label="Xuất Excel" icon="pi pi-file-excel" styleClass="p-button-sm p-button-success" (onClick)="exportExcel()"></p-button>
+  <p-button label="Xuất Excel" icon="pi pi-file-excel" class="p-button-sm" (onClick)="exportExcel()"></p-button>
 </ng-template>
