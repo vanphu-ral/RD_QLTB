@@ -4,7 +4,7 @@
             <table class="table table-bordered table-hover" style="margin: 0;">
                 <thead>
                     <tr>
-                        <th colspan="3"><img src="/assets/imgs/logo-rang-dong.png" style="width:150px;" /></th>
+                        <th colspan="4"><img src="/assets/imgs/logo-rang-dong.png" style="width:150px;" /></th>
                         <th colspan="17"><b>BẢNG KIỂM TRA, BẢO DƯỠNG MÁY HÀNG NGÀY, HÀNG TUẦN</b></th>
                         <th colspan="6">Số hiệu:<span id="spanPlanNumber"></span><span id="SpanDieuChinh">{{
                                 sampleReport.documentNumber }}</span></th>
@@ -13,7 +13,7 @@
                         </ng-container>
                     </tr>
                     <tr>
-                        <th colspan="6">Tên đơn vị: <span id="SpanPlanDonVi">{{
+                        <th colspan="7">Tên đơn vị: <span id="SpanPlanDonVi">{{
                                 model.planDetail.device.branch.factory.name }} - {{ model.planDetail.device.branch.name
                                 }}</span></th>
                         <th colspan="9">Số hiệu máy: <span id="spanDeviceCode">{{ model.planDetail.device.code }}</span>
@@ -35,18 +35,18 @@
                         </ng-container>
                     </tr>
                     <tr>
-                        <th colspan="6">Tên máy: <span id="spanDeviceName">{{ model.planDetail.device.name }}</span>
+                        <th colspan="7" rowspan="2">Tên máy: <span id="spanDeviceName">{{ model.planDetail.device.name }}</span>
                         </th>
                         <th colspan="9">Dây chuyền: <span id="spanLineName"> {{ model?.planDetail?.device?.line?.name }}
                             </span></th>
                     </tr>
                     <tr>
-                        <th colspan="6">
+                        <!-- <th colspan="7">
                             Cách thức kiểm tra:
                             <i class="fa-solid fa-circle-half-stroke"></i>Đầu giờ
                             <i class="fa-solid fa-circle-half-stroke fa-rotate-180"></i>Cuối giờ
                             <i class="fa-solid fa-circle"></i>Hàng tuần
-                        </th>
+                        </th> -->
                         <th colspan="9">Tổ: <span id="spanTeamName">{{ model?.planDetail?.device?.team?.name }}</span>
                         </th>
                         <th colspan="6"><span id="spanLanbanhanh_1">Ban hành lần {{ sampleReport.numberOfIssuances
@@ -57,12 +57,13 @@
                         <th rowspan="2" colspan="2">Hạng mục chính</th>
                         <th rowspan="2">Nội dung thực hiện</th>
                         <th rowspan="2">Người thực hiện</th>
-                        <th rowspan="2">Thời gian yêu cầu</th>
-                        <th rowspan="2">Ca yêu cầu</th>
+                        <th colspan="2">Tần suất</th>
                         <th rowspan="2">Ca kiểm tra</th>
                         <th colspan="31" class="text-center">Ngày trong tháng</th>
                     </tr>
                     <tr>
+                        <th>Thời gian yêu cầu</th>
+                        <th>Ca yêu cầu</th>
                         <th *ngFor="let day of getDaysArray()">{{ day }}</th>
                         <ng-container *ngIf="getDaysArray().length < 31">
                             <th *ngFor="let i of [].constructor(31 - getDaysArray().length)"></th>
@@ -72,9 +73,9 @@
                 <tbody>
                     <ng-container *ngFor="let group of groupedDetails; let groupIndex = index">
                         <ng-container *ngFor="let detail of group.details; let detailIndex = index">
-                            <ng-container *ngFor="let session of DEFAULT_SESSIONS; let sessionIndex = index">
+                            <ng-container *ngFor="let session of detail.activeSessions; let sessionIndex = index">
                                 <tr>
-                                    <td *ngIf="sessionIndex === 0" [attr.rowspan]="DEFAULT_SESSIONS.length">{{ detail.tt
+                                    <td *ngIf="sessionIndex === 0 && detail.isFirstShift" [attr.rowspan]="detail.criteriaRowspan">{{ detail.tt
                                         }}</td>
 
                                     <td *ngIf="detailIndex === 0 && sessionIndex === 0" [attr.rowspan]="group.rowspan"
@@ -82,17 +83,17 @@
                                         {{ group.criticalGroup }}
                                     </td>
 
-                                    <td *ngIf="sessionIndex === 0" [attr.rowspan]="DEFAULT_SESSIONS.length">
+                                    <td *ngIf="sessionIndex === 0 && detail.isFirstShift" [attr.rowspan]="detail.criteriaRowspan">
                                         {{ detail.criticalName }}
                                     </td>
 
-                                    <td *ngIf="sessionIndex === 0" [attr.rowspan]="DEFAULT_SESSIONS.length">{{
+                                    <td *ngIf="sessionIndex === 0 && detail.isFirstShift" [attr.rowspan]="detail.criteriaRowspan">{{
                                         detail.performer }}</td>
 
-                                    <td *ngIf="sessionIndex === 0" [attr.rowspan]="DEFAULT_SESSIONS.length">{{
+                                    <td *ngIf="sessionIndex === 0 && detail.isFirstShift" [attr.rowspan]="detail.criteriaRowspan">{{
                                         detail.frequency }}</td>
 
-                                    <td *ngIf="sessionIndex === 0" [attr.rowspan]="DEFAULT_SESSIONS.length">{{
+                                    <td *ngIf="sessionIndex === 0" [attr.rowspan]="detail.activeSessions.length">{{
                                         detail.shiftRequired }}</td>
 
                                     <td>{{ session }}</td>
@@ -107,11 +108,21 @@
                             </ng-container>
                         </ng-container>
                     </ng-container>
-                    <tr class="repair-log-row" style="background-color: #f8f9fa; font-weight: bold;">
-                        <td colspan="8" class="text-center">NHẬT KÝ SỬA CHỮA (Hiển thị các ngày đã xử lý xong sự cố)
+                    <tr class="repair-log-row" style="background-color: #fff9db; font-weight: bold;">
+                        <td colspan="8" class="text-center">NHẬT KÝ BÁO CÁO LỖI (Phát sinh sự cố)
                         </td>
                         <td *ngFor="let day of getDaysArray()" class="text-center">
-                            <span [innerHTML]="getRepairStatusForDay(day)"></span>
+                            <span [innerHTML]="getErrorReportStatusForDay(day)"></span>
+                        </td>
+                        <ng-container *ngIf="getDaysArray().length < 31">
+                            <td *ngFor="let i of [].constructor(31 - getDaysArray().length)"></td>
+                        </ng-container>
+                    </tr>
+                    <tr class="repair-log-row" style="background-color: #e6fcf5; font-weight: bold;">
+                        <td colspan="8" class="text-center">NHẬT KÝ SỬA CHỮA (Đã xử lý xong sự cố)
+                        </td>
+                        <td *ngFor="let day of getDaysArray()" class="text-center">
+                            <span [innerHTML]="getRepairLogStatusForDay(day)"></span>
                         </td>
                         <ng-container *ngIf="getDaysArray().length < 31">
                             <td *ngFor="let i of [].constructor(31 - getDaysArray().length)"></td>
@@ -124,7 +135,7 @@
                             <div class="mb-2">
                                 <strong>1. Ý nghĩa các ký hiệu:</strong>
                                 <div class="row mt-1 ms-1">
-                                    <div class="col-6">
+                                    <div class="col-4">
                                         <div class="d-flex align-items-center mb-1">
                                             <img src="assets/icon/ca1-oke.jpg" class="me-2" style="height: 18px;"> : Ca 1 kiểm tra Đạt
                                         </div>
@@ -135,7 +146,7 @@
                                             <img src="assets/icon/ca1-error.jpg" class="me-2" style="height: 18px;"> : Ca 1 có bất thường
                                         </div>
                                     </div>
-                                    <div class="col-6">
+                                    <div class="col-4">
                                         <div class="d-flex align-items-center mb-1">
                                             <img src="assets/icon/ca2-oke.jpg" class="me-2" style="height: 18px;"> : Ca 2 kiểm tra Đạt
                                         </div>
@@ -144,6 +155,17 @@
                                         </div>
                                         <div class="d-flex align-items-center mb-1">
                                             <img src="assets/icon/ca2-error.jpg" class="me-2" style="height: 18px;"> : Ca 2 có bất thường
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="d-flex align-items-center mb-1">
+                                            <i class="far fa-circle me-2" style="font-size: 18px; width: 18px; text-align: center;"></i> : Ca ngày kiểm tra Đạt
+                                        </div>
+                                        <div class="d-flex align-items-center mb-1">
+                                            <i class="fa-solid fa-circle-play fa-rotate-270 me-2" style="font-size: 18px; width: 18px; text-align: center;"></i> : Ca ngày có điều chỉnh
+                                        </div>
+                                        <div class="d-flex align-items-center mb-1">
+                                            <i class="fas fa-times me-2" style="font-size: 18px; width: 18px; text-align: center;"></i> : Ca ngày có bất thường
                                         </div>
                                     </div>
                                 </div>
@@ -157,7 +179,6 @@
                             <p>5. Mục hàng tuần: Ghi rõ ngày thực hiện.</p>
                             <p>6. Các mục để trống là các mục không kiểm tra ngày hôm đó.</p>
                             <p>(*) Ghi chú: Các đơn vị có thể bổ sung tùy theo đặc điểm từng máy móc công nghệ.</p>
-                            <p>{{ sampleReport.formCode }}. Ban hành lần {{ sampleReport.numberOfIssuances }}</p>
                         </td>
                         <td>Người thực hiện ký</td>
                         <td *ngFor="let day of getDaysArray()" style="padding:0px !important;">
@@ -211,6 +232,45 @@
                     </tr>
                 </tfoot>
             </table>
+            <table class="table table-bordered table-hover m-0" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th colspan="39" class="text-left">
+                            Ghi chép xử lý khi có bất thường, sự cố
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+            <table class="table table-bordered table-hover" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th colspan="2" class="text-center">TT</th>
+                        <th colspan="7" class="text-center">Mô tả hỏng hóc</th>
+                        <th colspan="6" class="text-center">Ngày</th>
+                        <th colspan="8" class="text-center">Nội dung kết quả xử lý</th>
+                        <th colspan="5" class="text-center">Người kiểm tra/xác nhận</th>
+                        <th colspan="6" class="text-center">Ngày</th>
+                        <th colspan="5" class="text-center">Kết luận</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of model.errorReport; let i = index">
+                        <td colspan="2">{{ i + 1 }}</td>
+                        <td colspan="7">{{ item.errorDescription }}</td>
+                        <td colspan="6">{{ item.timeReported | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+                        <td colspan="8">{{ item.repairDescription }}</td>
+                        <td colspan="5">{{ item.repairedBy }}</td>
+                        <td colspan="6">{{ item.timeRepaired | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+                        <td colspan="5">{{ item.result }}</td>
+                    </tr>
+                    <tr *ngIf="!model.errorReport || model.errorReport.length === 0">
+                        <td colspan="39" class="text-center text-muted">Không có ghi chép bất thường</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="text-align: left; margin-top: 10px; font-size: 12px;">
+                {{ sampleReport.formCode }}. Ban hành lần {{ sampleReport.numberOfIssuances }}
+            </p>
         </div>
         <!-- <table id="nghemthu-details-table" class="table table-bordered table-hover" style="width: 100%;">
             <thead>

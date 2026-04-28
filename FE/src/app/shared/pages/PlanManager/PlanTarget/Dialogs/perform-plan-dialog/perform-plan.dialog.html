@@ -1,4 +1,4 @@
-<div class="p-1">
+<div class="p-1" id="print-section">
     <div class="row my-3">
         <p-table #dt [value]="data.result!">
             <ng-template pTemplate="header">
@@ -71,6 +71,7 @@
     </div>
 
     <div class="d-flex justify-content-end gap-2 mt-4">
+        <p-button label="Xuất dữ liệu" (onClick)="export()" icon="pi pi-download" severity="info"></p-button>
         <p-button label="Lưu" (onClick)="submit()" severity="success" *ngIf="!isViewMode"></p-button>
         <p-button label="Đóng" (onClick)="close()"></p-button>
     </div>

@@ -297,9 +297,14 @@ export class CheckDeviceDialog {
                 Util.ConfirmMessage('Lưu kết quả kiểm tra thất bại', 'error');
             }
         });
+        const logModel = _.cloneDeep(submitModel) as any;
+        if (logModel.planResult && logModel.planResult.plan) {
+            logModel.planResult.plan = { id: logModel.planResult.plan.id };
+        }
+
         const planResultCheckLog = {
             inspection: this.selectedShift,
-            content: JSON.stringify(submitModel),
+            content: JSON.stringify(logModel),
             status: 1,
             planResult: {id: this.data.planResult.id},
         }

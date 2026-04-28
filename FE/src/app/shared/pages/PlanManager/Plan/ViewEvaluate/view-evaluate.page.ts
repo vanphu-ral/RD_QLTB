@@ -34,6 +34,9 @@ interface UniqueDetail {
   shiftRequired: string; // Ca yêu cầu
   performer: string; // Người thực hiện
   dailyResults: DayResults[]; // Thay đổi: Mảng kết quả cho 31 ngày (chứa các ca)
+  activeSessions: string[]; // Các ca kiểm tra có dữ liệu hoặc là ca bắt buộc
+  isFirstShift?: boolean; // Đánh dấu ca đầu tiên của tiêu chí để gộp cell
+  criteriaRowspan?: number; // Tổng số dòng (phiên) của tất cả các ca thuộc tiêu chí này
 }
 
 // Định nghĩa lại Interface cho nhóm công việc
@@ -262,10 +265,13 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
       results.forEach((item: any) => {
         const groupName = (item.criticalGroup || '').replace(/"/g, '');
         const criticalName = item.criticalName || '';
+        const shift = item.examinationTimeRequired || item.examinationTime || '';
+        const key = `${criticalName}|${shift}`; // Tách theo tiêu chí và Ca
+
         if (!uniqueGroups.has(groupName)) uniqueGroups.set(groupName, new Map<string, any[]>());
         const nameMap = uniqueGroups.get(groupName)!;
-        if (!nameMap.has(criticalName)) nameMap.set(criticalName, []);
-        nameMap.get(criticalName)?.push(item);
+        if (!nameMap.has(key)) nameMap.set(key, []);
+        nameMap.get(key)?.push(item);
       });
     } else {
       // --- TRƯỜNG HỢP CHƯA CÓ DỮ LIỆU (LẤY TỪ SAMPLE REPORT) ---
@@ -277,30 +283,39 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
         const frequency = mapping?.frequency || 'Ngày';
         const performer = mapping?.performer || null;
 
+        // Tách các ca từ template mapping
+        const times = mapping.examinationTime 
+            ? mapping.examinationTime.split(',').map((t: string) => t.trim()).filter((t: string) => t !== "") 
+            : [null];
+
         if (!uniqueGroups.has(groupName)) {
           uniqueGroups.set(groupName, new Map<string, any[]>());
         }
         const nameMap = uniqueGroups.get(groupName)!;
 
-        if (!nameMap.has(criticalName)) {
-          // Tạo một object giả lập cấu trúc của ResultDetail để hàm map bên dưới không lỗi
-          nameMap.set(criticalName, [{
-            criticalGroup: groupName,
-            criticalName: criticalName,
-            criticalCode: criteria?.code,
-            frequency: frequency || '', // Bạn có thể thêm field frequency vào criteria nếu có
-            examinationTimeRequired: mapping?.examinationTime || '',
-            performer: performer,
-            isPlaceholder: true // Đánh dấu đây là dữ liệu mẫu
-          }]);
-        }
+        times.forEach((time: string | null) => {
+            const shift = time || '';
+            const key = `${criticalName}|${shift}`;
+            if (!nameMap.has(key)) {
+                nameMap.set(key, [{
+                    criticalGroup: groupName,
+                    criticalName: criticalName,
+                    criticalCode: criteria?.code,
+                    frequency: frequency || '',
+                    examinationTimeRequired: shift,
+                    performer: performer,
+                    isPlaceholder: true
+                }]);
+            }
+        });
       });
     }
 
     // 2. Chuyển Map thành mảng GroupedCritical (Phần này giữ nguyên cấu trúc nhưng tinh chỉnh xử lý items)
     let runningTT = 1;
     this.groupedDetails = Array.from(uniqueGroups.entries()).map(([groupName, nameMap]) => {
-      const groupDetails: UniqueDetail[] = Array.from(nameMap.entries()).map(([criticalName, items]) => {
+
+      const tempDetails: UniqueDetail[] = Array.from(nameMap.entries()).map(([key, items]) => {
 
         const dailyResults: DayResults[] = Array.from({ length: 31 }, (_, i) => ({
           day: i + 1,
@@ -355,24 +370,64 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
         });
 
         const latestResult = items[0] || {};
-        const shiftSet = new Set(items.map((x: any) => x.examinationTimeRequired || x.examinationTime).filter(Boolean));
-        const combinedShifts = Array.from(shiftSet).join(', ');
+        const shift = latestResult.examinationTimeRequired || latestResult.examinationTime || '';
+
+
+        const requiredSession = (latestResult.frequency || '').toLowerCase().trim();
+        let activeSessions = DEFAULT_SESSIONS.filter(session => {
+          const sessLower = session.toLowerCase();
+          // Match exactly or handle Hàng tuần / Hằng tuần typo
+          if (sessLower === requiredSession || (sessLower === 'hằng tuần' && requiredSession === 'hàng tuần')) return true;
+          
+          const hasData = dailyResults.some(dayResult => {
+            const sResult = dayResult.sessionResults.find(s => s.session === session);
+            return sResult && sResult.results.length > 0;
+          });
+          return hasData;
+        });
+
+        if (activeSessions.length === 0) {
+          // Nếu không khớp cái nào trong DEFAULT_SESSIONS và không có dữ liệu, lấy ca đầu tiên làm mặc định
+          activeSessions = [latestResult.frequency || DEFAULT_SESSIONS[0]];
+        }
 
         return {
-          tt: runningTT++,
-          criticalName: criticalName,
+          tt: 0, // Sẽ gán lại ở bước sau
+          criticalName: latestResult.criticalName,
           criticalCode: latestResult.criticalCode || '',
           frequency: latestResult.frequency || '',
-          shiftRequired: combinedShifts || latestResult.examinationTime || '',
+          shiftRequired: shift,
           performer: latestResult.performer || '',
           dailyResults: dailyResults,
+          activeSessions: activeSessions,
         } as UniqueDetail;
       });
 
+      // Bước gộp cell: Tính toán isFirstShift và criteriaRowspan cho các ca cùng tiêu chí
+      for (let i = 0; i < tempDetails.length; i++) {
+        const current = tempDetails[i];
+        if (i === 0 || tempDetails[i - 1].criticalName !== current.criticalName) {
+          current.isFirstShift = true;
+          current.tt = runningTT++;
+          let totalRS = 0;
+          let j = i;
+          while (j < tempDetails.length && tempDetails[j].criticalName === current.criticalName) {
+            totalRS += tempDetails[j].activeSessions.length;
+            j++;
+          }
+          current.criteriaRowspan = totalRS;
+        } else {
+          current.isFirstShift = false;
+          current.tt = tempDetails[i - 1].tt;
+        }
+      }
+
+      const rowspan = tempDetails.reduce((sum, detail) => sum + detail.activeSessions.length, 0);
+
       return {
         criticalGroup: groupName,
-        details: groupDetails,
-        rowspan: groupDetails.length * DEFAULT_SESSIONS.length,
+        details: tempDetails,
+        rowspan: rowspan,
       } as GroupedCritical;
     });
 
@@ -503,32 +558,56 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
   }
 
   /**
- * Kiểm tra xem ngày cụ thể có phát sinh sửa chữa (isRepaired = true) không
- * Dựa trên mảng errorReport trong sampleReport
- */
-  getRepairStatusForDay(day: number): SafeHtml | string {
+   * Kiểm tra ngày phát sinh sự cố (Dựa trên timeReported)
+   */
+  getErrorReportStatusForDay(day: number): SafeHtml | string {
     if (!this.model.errorReport || !Array.isArray(this.model.errorReport)) {
       return '';
     }
 
-    // Lấy tháng/năm hiện tại từ model
     const planDate = new Date(this.model.planDetail.createdAt);
     const month = planDate.getMonth();
     const year = planDate.getFullYear();
 
-    // Tìm trong danh sách lỗi xem có mục nào ngày đó đã sửa xong không
-    const repaired = this.model.errorReport.find((err: any) => {
+    const reported = this.model.errorReport.find((err: any) => {
+      if (!err.timeReported) return false;
       const errorDate = new Date(err.timeReported);
       return errorDate.getDate() === day &&
         errorDate.getMonth() === month &&
-        errorDate.getFullYear() === year &&
-        err.isRepaired === true;
+        errorDate.getFullYear() === year;
+    });
+
+    if (reported) {
+      return this.sanitizer.bypassSecurityTrustHtml(
+        '<i class="fa-solid fa-circle-exclamation" style="color: #ffc107;" title="Phát sinh sự cố"></i>'
+      );
+    }
+    return '';
+  }
+
+  /**
+   * Kiểm tra ngày đã xử lý xong sự cố (Dựa trên timeRepaired)
+   */
+  getRepairLogStatusForDay(day: number): SafeHtml | string {
+    if (!this.model.errorReport || !Array.isArray(this.model.errorReport)) {
+      return '';
+    }
+
+    const planDate = new Date(this.model.planDetail.createdAt);
+    const month = planDate.getMonth();
+    const year = planDate.getFullYear();
+
+    const repaired = this.model.errorReport.find((err: any) => {
+      if (!err.timeRepaired || !err.isRepaired) return false;
+      const repairDate = new Date(err.timeRepaired);
+      return repairDate.getDate() === day &&
+        repairDate.getMonth() === month &&
+        repairDate.getFullYear() === year;
     });
 
     if (repaired) {
-      // Trả về icon màu xanh báo hiệu đã sửa xong
       return this.sanitizer.bypassSecurityTrustHtml(
-        '<i class="fa-solid fa-wrench" style="color: red;" title="Đã sửa chữa"></i>'
+        '<i class="fa-solid fa-wrench" style="color: #28a745;" title="Đã xử lý xong"></i>'
       );
     }
     return '';
