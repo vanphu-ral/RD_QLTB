@@ -185,7 +185,7 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
   }
 
   onStateChange() {
-    if (this.isAddMode && this.model.state !== 1) {
+    if (this.model.state !== 1) {
       this.model.status = undefined;
     }
   }
@@ -193,6 +193,9 @@ export class DeviceDetailComponent extends BasePageComponent<Device> {
 
   public override save(): void {
     if (!this.model) return;
+    if (this.model.state !== 1) {
+      this.model.status = undefined;
+    }
     const code = this.model.group.code;
     this.model = Util.simplifyMany(this.model, ['team', 'branch', 'line', 'group']);
     this.model.userManager = Util.arrayToString(this.model.userManager);

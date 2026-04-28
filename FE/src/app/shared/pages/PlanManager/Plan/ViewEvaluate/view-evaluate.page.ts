@@ -31,6 +31,7 @@ interface UniqueDetail {
   criticalName: string;
   criticalCode: string;
   frequency: string;
+  shiftRequired: string; // Ca yêu cầu
   performer: string; // Người thực hiện
   dailyResults: DayResults[]; // Thay đổi: Mảng kết quả cho 31 ngày (chứa các ca)
 }
@@ -288,6 +289,7 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
             criticalName: criticalName,
             criticalCode: criteria?.code,
             frequency: frequency || '', // Bạn có thể thêm field frequency vào criteria nếu có
+            examinationTimeRequired: mapping?.examinationTime || '',
             performer: performer,
             isPlaceholder: true // Đánh dấu đây là dữ liệu mẫu
           }]);
@@ -353,12 +355,15 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
         });
 
         const latestResult = items[0] || {};
+        const shiftSet = new Set(items.map((x: any) => x.examinationTimeRequired || x.examinationTime).filter(Boolean));
+        const combinedShifts = Array.from(shiftSet).join(', ');
 
         return {
           tt: runningTT++,
           criticalName: criticalName,
           criticalCode: latestResult.criticalCode || '',
           frequency: latestResult.frequency || '',
+          shiftRequired: combinedShifts || latestResult.examinationTime || '',
           performer: latestResult.performer || '',
           dailyResults: dailyResults,
         } as UniqueDetail;

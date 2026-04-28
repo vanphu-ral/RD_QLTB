@@ -57,7 +57,8 @@
                         <th rowspan="2" colspan="2">Hạng mục chính</th>
                         <th rowspan="2">Nội dung thực hiện</th>
                         <th rowspan="2">Người thực hiện</th>
-                        <th rowspan="2">Tần suất</th>
+                        <th rowspan="2">Thời gian yêu cầu</th>
+                        <th rowspan="2">Ca yêu cầu</th>
                         <th rowspan="2">Ca kiểm tra</th>
                         <th colspan="31" class="text-center">Ngày trong tháng</th>
                     </tr>
@@ -91,6 +92,9 @@
                                     <td *ngIf="sessionIndex === 0" [attr.rowspan]="DEFAULT_SESSIONS.length">{{
                                         detail.frequency }}</td>
 
+                                    <td *ngIf="sessionIndex === 0" [attr.rowspan]="DEFAULT_SESSIONS.length">{{
+                                        detail.shiftRequired }}</td>
+
                                     <td>{{ session }}</td>
 
                                     <td *ngFor="let day of getDaysArray()">
@@ -104,7 +108,7 @@
                         </ng-container>
                     </ng-container>
                     <tr class="repair-log-row" style="background-color: #f8f9fa; font-weight: bold;">
-                        <td colspan="7" class="text-center">NHẬT KÝ SỬA CHỮA (Hiển thị các ngày đã xử lý xong sự cố)
+                        <td colspan="8" class="text-center">NHẬT KÝ SỬA CHỮA (Hiển thị các ngày đã xử lý xong sự cố)
                         </td>
                         <td *ngFor="let day of getDaysArray()" class="text-center">
                             <span [innerHTML]="getRepairStatusForDay(day)"></span>
@@ -116,7 +120,7 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td rowspan="2" colspan="6">
+                        <td rowspan="2" colspan="7">
                             <div class="mb-2">
                                 <strong>1. Ý nghĩa các ký hiệu:</strong>
                                 <div class="row mt-1 ms-1">
