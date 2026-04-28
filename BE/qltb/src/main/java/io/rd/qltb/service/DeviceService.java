@@ -328,7 +328,9 @@ public class DeviceService {
         mapToEntity(deviceDTO, device);
         Device savedDevice = deviceRepository.save(device);
         Long count = deviceRepository.countByGroupIdAndStatusNot(savedDevice.getGroup().getId(),DELETED);
-       savedDevice.setCode(deviceDTO.getCode()+"-"+globalConfig.createNumberPrefix(count,6)); // Tạo mã thiết bị theo định dạng
+        savedDevice.setCode(deviceDTO.getCode()+"-"+globalConfig.createNumberPrefix(count,6)); // Tạo mã thiết bị theo định dạng
+        savedDevice.setQrCode(deviceDTO.getCode()+"-"+globalConfig.createNumberPrefix(count,6)); // Tạo mã thiết bị theo định dạng
+        System.out.println("Generated Code: " + savedDevice.getQrCode());
         return deviceRepository.save(savedDevice).getId();
     }
     public List<Long> creates(final List<DeviceDTO> deviceDTO) {
