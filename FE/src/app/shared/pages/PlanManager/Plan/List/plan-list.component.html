@@ -214,6 +214,7 @@
         <th>QR code</th>
         <th>Tổng số ngày đã kiểm tra</th>
         <th>Tổng số ngày chưa kiểm tra</th>
+        <th>Tổng số ngày nghỉ</th>
         <th>Người thực hiện</th>
         <th>Người tạo</th>
         <th>Người cập nhật</th>
@@ -233,6 +234,7 @@
         <td>{{ detail.qrCode }}</td>
         <td>{{ detail.totalDayComplete + detail.totalDayWorking }}</td>
         <td>{{ detail.totalDayCreated }}</td>
+        <td>{{ detail.totalDayOff }}</td>
         <td>{{ detail.manager }}</td>
         <td>{{ detail.createdBy }}</td>
         <td>{{ detail.updatedBy }}</td>
