@@ -220,7 +220,7 @@ export class DeviceListComponent {
             const workbook = new ExcelJS.Workbook();
             const worksheet = workbook.addWorksheet('Danh sách thiết bị');
 
-            const excelColumns = this.columns.filter(c => !c.IsHide).map(c => ({
+            const excelColumns = this.columns.filter(c => !c.IsHide || c.Field === 'code').map(c => ({
               header: c.Header,
               key: c.Field,
               width: 25
@@ -230,7 +230,7 @@ export class DeviceListComponent {
             data.forEach((row) => {
               const rowData: any = {};
               this.columns.forEach(c => {
-                if (c.IsHide) return;
+                if (c.IsHide && c.Field !== 'code') return;
                 let val = c.Field.split('.').reduce((acc, part) => acc && acc[part], row);
                 if (c.Field === 'status') val = this.statusToString(row.status);
                 if (c.Field === 'isImportant') val = row.isImportant == 1 ? 'Có' : 'Không';
@@ -239,6 +239,17 @@ export class DeviceListComponent {
                 rowData[c.Field] = val;
               });
               worksheet.addRow(rowData);
+            });
+
+            worksheet.addRow([]);
+            const noteRow1 = worksheet.addRow(['Yêu cầu về dữ liệu cho danh mục thiết bị:.']);
+            const noteRow2 = worksheet.addRow(['Bổ sung đầy đủ các trường thông tin: Xuất xứ, Năm sử dụng, Chu kỳ bảo dưỡng']);
+
+            [noteRow1, noteRow2].forEach(row => {
+              row.getCell(1).font = {
+                italic: true,
+                color: { argb: 'FFFF0000' }
+              };
             });
 
             const buffer = await workbook.xlsx.writeBuffer();

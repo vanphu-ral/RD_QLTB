@@ -48,6 +48,7 @@ export class PlanListComponent {
   totalItems = 0;
   currentPage = 0;
   filters: any = {};
+  selectedMonth: Date | null = null;
 
   frequencyOptions: any[] = Util.listFrequency();
   listBranchs: any[] = [];
@@ -64,6 +65,14 @@ export class PlanListComponent {
     if (userBranch) {
       this.filters.branch = userBranch;
     }
+
+    // Mặc định tháng hiện tại
+    this.selectedMonth = new Date();
+    const year = this.selectedMonth.getFullYear();
+    const month = this.selectedMonth.getMonth();
+    this.filters.fromDate = this.formatDate(new Date(year, month, 1));
+    this.filters.toDate = this.formatDate(new Date(year, month + 1, 0));
+
     this.loadData();
     this.loadDataFilter();
     console.log(this.accountService.getBranch());
@@ -96,6 +105,29 @@ export class PlanListComponent {
   onSearch() {
     this.page = 0; // reset về trang đầu
     this.loadData();
+  }
+
+  onMonthChange(date: any) {
+    if (date) {
+      const year = date.getFullYear();
+      const month = date.getMonth();
+      const firstDay = new Date(year, month, 1);
+      const lastDay = new Date(year, month + 1, 0);
+
+      this.filters.fromDate = this.formatDate(firstDay);
+      this.filters.toDate = this.formatDate(lastDay);
+    } else {
+      delete this.filters.fromDate;
+      delete this.filters.toDate;
+    }
+    this.onSearch();
+  }
+
+  private formatDate(date: Date): string {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
   }
 
   onRowExpand(event: TableRowExpandEvent) {

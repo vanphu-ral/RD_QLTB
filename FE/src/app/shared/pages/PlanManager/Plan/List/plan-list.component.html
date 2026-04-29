@@ -10,6 +10,15 @@
     [rowsPerPageOptions]="[5, 10, 20, 50]" dataKey="id" [tableStyle]="{ 'min-width': '60rem' }"
     [expandedRowKeys]="expandedRows" (onRowExpand)="onRowExpand($event)" (onRowCollapse)="onRowCollapse($event)"
     [responsiveLayout]="'scroll'" [scrollable]="true" class="p-datatable-gridlines text-sm table-parent">
+    <ng-template #caption>
+      <div class="flex align-items-center gap-2">
+        <p-floatlabel variant="on">
+          <p-datepicker [(ngModel)]="selectedMonth" view="month" dateFormat="mm/yy" [showIcon]="true"
+            placeholder="Chọn tháng" (ngModelChange)="onMonthChange($event)" appendTo="body" [showClear]="true" />
+          <label for="selectedMonth">Lọc kế hoạch theo tháng</label>
+        </p-floatlabel>
+      </div>
+    </ng-template>
     <ng-template #header>
       <tr>
         <th></th>
@@ -203,6 +212,8 @@
         <th>Tên thiết bị</th>
         <th>Mẫu biên bản</th>
         <th>QR code</th>
+        <th>Tổng số ngày đã kiểm tra</th>
+        <th>Tổng số ngày chưa kiểm tra</th>
         <th>Người thực hiện</th>
         <th>Người tạo</th>
         <th>Người cập nhật</th>
@@ -220,6 +231,8 @@
         <td>{{ detail.device.name }}</td>
         <td>{{ detail.sampleReport.name }}</td>
         <td>{{ detail.qrCode }}</td>
+        <td>{{ detail.totalDayComplete + detail.totalDayWorking }}</td>
+        <td>{{ detail.totalDayCreated }}</td>
         <td>{{ detail.manager }}</td>
         <td>{{ detail.createdBy }}</td>
         <td>{{ detail.updatedBy }}</td>

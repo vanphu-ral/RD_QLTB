@@ -1,12 +1,6 @@
 <!-- device-list.component.html -->
-<app-base-table 
-  [apiService]="apiService"
-  [columns]="columns"
-  [title]="'Danh sách thiết bị'"
-  [showAddButton]="true"
-  [actionTemplate]="customActions"
-  [headerActionTemplate]="headerActionTemplate"
-  [isLazy]="true">
+<app-base-table [apiService]="apiService" [columns]="columns" [title]="'Danh sách thiết bị'" [showAddButton]="true"
+  [actionTemplate]="customActions" [headerActionTemplate]="headerActionTemplate" [isLazy]="true">
   <ng-template appColumnTemplate="status" let-rowData>
     <p-tag [value]="statusToString(rowData)" [severity]="statusToSeverity(rowData)"></p-tag>
   </ng-template>
@@ -25,28 +19,40 @@
 
   <ng-template appCustomFilter="branch.name" let-value="value" let-filter="filter">
     <p-select [ngModel]="value" (ngModelChange)="onBranchChange($event, filter)" [options]="branchOptions"
-      optionLabel="label" optionValue="value" [showClear]="true" appendTo="body" styleClass="w-100" [filter]="true" [fluid]="true">
+      optionLabel="label" optionValue="value" [showClear]="true" appendTo="body" styleClass="w-100" [filter]="true"
+      [fluid]="true">
     </p-select>
   </ng-template>
 
   <ng-template appCustomFilter="team.name" let-value="value" let-filter="filter">
     <p-select [ngModel]="value" (ngModelChange)="onTeamChange($event, filter)" [options]="teamOptions"
-      optionLabel="label" optionValue="value" [showClear]="true" appendTo="body" styleClass="w-100" [filter]="true" [fluid]="true">
+      optionLabel="label" optionValue="value" [showClear]="true" appendTo="body" styleClass="w-100" [filter]="true"
+      [fluid]="true">
     </p-select>
   </ng-template>
 
   <ng-template appCustomFilter="line.name" let-value="value" let-filter="filter">
     <p-select [ngModel]="value" (ngModelChange)="onLineChange($event, filter)" [options]="lineOptions"
-      optionLabel="label" optionValue="value" [showClear]="true" appendTo="body" styleClass="w-100" [filter]="true" [fluid]="true">
+      optionLabel="label" optionValue="value" [showClear]="true" appendTo="body" styleClass="w-100" [filter]="true"
+      [fluid]="true">
     </p-select>
   </ng-template>
 </app-base-table>
 <ng-template #customActions let-row>
-  <p-button title="Đánh giá thiết bị" icon="pi pi-check" styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="evaluateDevice(row)"></p-button>
-  <p-button title="Xem lịch sử di chuyển" icon="pi pi-history" styleClass="p-button-sm p-button-rounded p-button-warn m-1" (onClick)="historyMoveDialog(row)"></p-button>
-  <p-button title="Di chuyển thiết bị" icon="pi pi-arrows-h" styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="moveDeviceDialog(row)"></p-button>
+  <p-button title="Đánh giá thiết bị" icon="pi pi-check" styleClass="p-button-sm p-button-rounded p-button-success m-1"
+    (onClick)="evaluateDevice(row)"></p-button>
+  <p-button title="Xem lịch sử di chuyển" icon="pi pi-history"
+    styleClass="p-button-sm p-button-rounded p-button-warn m-1" (onClick)="historyMoveDialog(row)"></p-button>
+  <p-button title="Di chuyển thiết bị" icon="pi pi-arrows-h"
+    styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="moveDeviceDialog(row)"></p-button>
 </ng-template>
 
 <ng-template #headerActionTemplate>
   <p-button label="Xuất Excel" icon="pi pi-file-excel" class="p-button-sm" (onClick)="exportExcel()"></p-button>
 </ng-template>
+<div class="row my-2">
+  <div class="col-12 text-danger">
+    <p class="mb-1"><i>Yêu cầu về dữ liệu cho danh mục thiết bị:.</i></p>
+    <p class="mb-1"><i>Bổ sung đầy đủ các trường thông tin: Xuất xứ, Năm sử dụng, Chu kỳ bảo dưỡng</i></p>
+  </div>
+</div>

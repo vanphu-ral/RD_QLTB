@@ -172,11 +172,20 @@ public class PlanService {
                 // PHÂN LOẠI KIỂU DỮ LIỆU ĐỂ TẠO ĐIỀU KIỆN LỌC (Predicate)
                 if (path.getJavaType().equals(LocalDateTime.class)) {
                     String v = value.toString();
-                    LocalDateTime startOfDay = (v.length() == 10)
+                    LocalDateTime dateTime = (v.length() == 10)
                             ? LocalDate.parse(v).atStartOfDay()
                             : LocalDateTime.parse(v);
-                    LocalDateTime endOfDay = startOfDay.toLocalDate().atTime(LocalTime.MAX);
-                    predicates.add(cb.between((Expression<LocalDateTime>) path, startOfDay, endOfDay));
+
+                    if (key.equals("fromDate")) {
+                        predicates.add(cb.greaterThanOrEqualTo((Expression<LocalDateTime>) path, dateTime));
+                    } else if (key.equals("toDate")) {
+                        LocalDateTime endOfDay = dateTime.toLocalDate().atTime(LocalTime.MAX);
+                        predicates.add(cb.lessThanOrEqualTo((Expression<LocalDateTime>) path, endOfDay));
+                    } else {
+                        LocalDateTime startOfDay = dateTime;
+                        LocalDateTime endOfDay = startOfDay.toLocalDate().atTime(LocalTime.MAX);
+                        predicates.add(cb.between((Expression<LocalDateTime>) path, startOfDay, endOfDay));
+                    }
                 }
                 else if (path.getJavaType().equals(Integer.class) || path.getJavaType().equals(Long.class)) {
                     // Nếu là số (ví dụ status), dùng so sánh bằng thay vì LIKE
