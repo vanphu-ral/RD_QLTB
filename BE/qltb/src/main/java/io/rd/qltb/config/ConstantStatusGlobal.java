@@ -8,4 +8,5 @@ public class ConstantStatusGlobal {
     public static final int APPROVED = 3;
     public static final int REJECTED = 6;
     public static final int DELETED = 10;
+    public static final int DAY_OFF = 15;
 }

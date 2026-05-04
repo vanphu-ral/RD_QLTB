@@ -23,8 +23,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
-import static io.rd.qltb.config.ConstantStatusGlobal.DRAFF;
-import static io.rd.qltb.config.ConstantStatusGlobal.IN_PROGRESS;
+import static io.rd.qltb.config.ConstantStatusGlobal.*;
 
 
 @Service
@@ -568,7 +567,7 @@ public class PlanDetailService {
             return Collections.emptyList();
         }
 
-        List<Integer> statuses = Arrays.asList(DRAFF, IN_PROGRESS);
+        List<Integer> statuses = Arrays.asList(DRAFF, IN_PROGRESS,DAY_OFF);
 
         List<PlanDetailDTO> planDetails = planDetailRepository
                 .findAllByDeviceIdAndStatusIn(device.getId(), statuses)
@@ -634,6 +633,8 @@ public class PlanDetailService {
         planDTO.setUpdatedBy(planInner.getUpdatedBy());
         planDTO.setStatus(planInner.getStatus());
         planDTO.setPlanType(planInner.getPlanType());
+        planDTO.setFromDate(planInner.getFromDate());
+        planDTO.setToDate(planInner.getToDate());
         planDTO.setPlanDetails(new ArrayList<>());
         return planDTO;
     }
