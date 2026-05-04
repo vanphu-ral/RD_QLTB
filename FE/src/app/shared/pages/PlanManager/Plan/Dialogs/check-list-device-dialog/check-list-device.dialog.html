@@ -1,7 +1,9 @@
 <div class="p-1">
-    <div class="d-flex justify-content-end mt-2 mb-4">
-        <p-button label="Thêm ngày kiểm tra" icon="pi pi-plus" (onClick)="addNewRow()"></p-button>
-    </div>
+    <ng-container *appHasRole="['RD_QLTB_ADMIN', 'RD_QLTB_MANAGER']">
+        <div class="d-flex justify-content-end mt-2 mb-4">
+            <p-button label="Thêm ngày kiểm tra" icon="pi pi-plus" (onClick)="addNewRow()"></p-button>
+        </div>
+    </ng-container>
 
     <div class="table-responsive">
         <p-table [value]="checkList" responsiveLayout="scroll">

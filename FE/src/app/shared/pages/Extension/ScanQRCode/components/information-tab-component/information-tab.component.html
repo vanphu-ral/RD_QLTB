@@ -117,9 +117,11 @@
       </p-tabpanel>
       <!-- Các ngày kiểm tra chưa thực hiện -->
       <p-tabpanel value="3">
-        <div class="d-flex justify-content-end mb-2">
-          <p-button styleClass="m-1 w-100" severity="info" (onClick)="addDayCheck()">Thêm ngày kiểm tra</p-button>
-        </div>
+        <ng-container *appHasRole="['RD_QLTB_ADMIN', 'RD_QLTB_MANAGER']">
+          <div class="d-flex justify-content-end mb-2">
+            <p-button styleClass="m-1 w-100" severity="info" (onClick)="addDayCheck()">Thêm ngày kiểm tra</p-button>
+          </div>
+        </ng-container>
         <p-table [value]="listPlanAudit" dataKey="stt" [resizableColumns]="true"
           [scrollable]="true" scrollHeight="500px">
           <ng-template pTemplate="header">
@@ -249,9 +251,11 @@
     <p-accordion-panel value="3">
       <p-accordion-header>Kiểm tra thiết bị</p-accordion-header>
       <p-accordion-content>
-        <div class="d-flex justify-content-center align-items-center mb-2">
-          <p-button styleClass="m-1 w-100" severity="info" (onClick)="addDayCheck()">Thêm ngày kiểm tra</p-button>
-        </div>
+        <ng-container *appHasRole="['RD_QLTB_ADMIN', 'RD_QLTB_MANAGER']">
+          <div class="d-flex justify-content-center align-items-center mb-2">
+            <p-button styleClass="m-1 w-100" severity="info" (onClick)="addDayCheck()">Thêm ngày kiểm tra</p-button>
+          </div>
+        </ng-container>
         <p-table [value]="listPlanAudit" dataKey="stt" [scrollable]="true"
           scrollHeight="500px">
           <ng-template pTemplate="header">
