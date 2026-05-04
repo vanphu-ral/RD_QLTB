@@ -714,6 +714,8 @@ public class PlanDetailService {
             planCopy.setUpdatedBy(planDetail.getPlan().getUpdatedBy());
             planCopy.setStatus(planDetail.getPlan().getStatus());
             planCopy.setPlanType(planDetail.getPlan().getPlanType());
+            planCopy.setFromDate(planDetail.getPlan().getFromDate());
+            planCopy.setToDate(planDetail.getPlan().getToDate());
             // Xóa các quan hệ con
             planCopy.getPlanType().setPlanTypePlans(null);
             planCopy.setPlanPlanDetails(null);
