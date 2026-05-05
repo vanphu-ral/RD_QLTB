@@ -1,14 +1,82 @@
-.scan-qr-device {
-    padding: 10px;
-    border: 1px solid;
-    border-radius: 5px;
-}
-.device-task {
-    padding: 10px;
-    border: 1px solid;
-    border-radius: 5px;
-}
+.device-details-container {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #edf2f7;
+    margin-bottom: 1.5rem;
 
-::ng-deep .p-floatlabel {
-    width: 100% !important;
-}
+    .section-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 1.25rem;
+        display: flex;
+        align-items: center;
+        border-bottom: 2px solid #4299e1;
+        padding-bottom: 0.6rem;
+        
+        i {
+            color: #4299e1;
+        }
+    }
+
+    .info-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f7fafc;
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-size: 0.85rem;
+            color: #718096;
+            font-weight: 600;
+            flex: 0 0 40%;
+        }
+
+        .info-value {
+            font-size: 0.9rem;
+            color: #1a202c;
+            font-weight: 500;
+            text-align: right;
+            word-break: break-word;
+        }
+    }
+
+    .info-textarea-group {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #edf2f7;
+
+        .info-label {
+            display: block;
+            font-size: 0.85rem;
+            color: #718096;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .info-description {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0.85rem;
+            font-size: 0.9rem;
+            color: #2d3748;
+            min-height: 100px;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+    }
+}
