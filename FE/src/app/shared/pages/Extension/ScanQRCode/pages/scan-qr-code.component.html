@@ -1,8 +1,8 @@
 <div class="qr-code-page mt-3">
   <div class="row">
     <div class="col-12 col-lg-3">
-      <div class="device-info">
-        <div class="scan-qr-device">
+      <div class="device-info card">
+        <div>
           <div class="d-flex my-4"  style="flex-direction: column;">
             <div class="d-flex justify-content-between">
               <label class="mb-2">
@@ -23,55 +23,71 @@
               <p-button label="Tìm kiếm" icon="pi pi-search" severity="success" [fluid]="true" (onClick)="getDeviceInfo(qrCode)"></p-button>
             </div>
           </div>
-          <div style="border: 1px solid;"></div>
-          <div class="d-flex my-4">
-            <p-floatlabel variant="on">
-              <input pInputText id="code" name="code" autocomplete="off" fluid  [(ngModel)]="device.name" [disabled]="true" />
-              <label for="code">Tên thiết bị</label>
-            </p-floatlabel>
+
+          <div class="device-details-container mt-4" *ngIf="device.name">
+            <div class="section-title">
+              <i class="pi pi-info-circle mr-2"></i>
+              Thông tin thiết bị
+            </div>
+            
+            <div class="info-grid">
+              <div class="info-row">
+                <span class="info-label">Tên thiết bị</span>
+                <span class="info-value">{{ device.name }}</span>
+              </div>
+              
+              <div class="info-row">
+                <span class="info-label">Mã QR Code</span>
+                <span class="info-value">{{ device.qrCode }}</span>
+              </div>
+
+              <div class="info-row">
+                <span class="info-label">Ngành</span>
+                <span class="info-value">{{ device.branch?.name }}</span>
+              </div>
+
+              <div class="info-row">
+                <span class="info-label">Tổ</span>
+                <span class="info-value">{{ device.team?.name }}</span>
+              </div>
+
+              <div class="info-row">
+                <span class="info-label">Dây chuyền</span>
+                <span class="info-value">{{ device.line?.name }}</span>
+              </div>
+              
+              <div class="info-row">
+                <span class="info-label">Vị trí lắp đặt</span>
+                <span class="info-value">{{ device.displayLocation }}</span>
+              </div>
+              
+              <div class="info-row">
+                <span class="info-label">Xuất xứ</span>
+                <span class="info-value">{{ device.source }}</span>
+              </div>
+              
+              <div class="info-row">
+                <span class="info-label">Nhà cung cấp</span>
+                <span class="info-value">{{ device.supplier }}</span>
+              </div>
+              
+              <div class="info-row">
+                <span class="info-label">Chu kỳ bảo dưỡng</span>
+                <span class="info-value">{{ device.maintenanceCycle }}</span>
+              </div>
+              
+              <div class="info-row">
+                <span class="info-label">Năm SX - Năm sử dụng</span>
+                <span class="info-value">{{ device.DateUseAndInstall }}</span>
+              </div>
+            </div>
+
+            <div class="info-textarea-group mt-3" *ngIf="device.description">
+              <span class="info-label">Thông tin khác</span>
+              <div class="info-description">{{ device.description }}</div>
+            </div>
           </div>
-          <div class="d-flex my-4">
-            <p-floatlabel variant="on">
-              <input pInputText id="code" name="code" autocomplete="off" fluid  [(ngModel)]="device.qrCode" [disabled]="true" />
-              <label for="code">Mã Qr Code</label>
-            </p-floatlabel>
-          </div>
-          <div class="d-flex my-4">
-            <p-floatlabel variant="on">
-              <input pInputText id="code" name="code" autocomplete="off" [fluid]="true" [(ngModel)]="device.displayLocation"  [disabled]="true"  />
-              <label for="code">Vị trí lắp đặt</label>
-            </p-floatlabel>
-          </div>
-          <div class="d-flex my-4">
-            <p-floatlabel variant="on">
-              <input pInputText id="code" name="code" autocomplete="off" [fluid]="true" [(ngModel)]="device.source" [disabled]="true" />
-              <label for="code">Xuất xứ</label>
-            </p-floatlabel>
-          </div>
-          <div class="d-flex my-4">
-            <p-floatlabel variant="on">
-              <input pInputText id="code" name="code" autocomplete="off" [fluid]="true" [(ngModel)]="device.supplier" [disabled]="true" />
-              <label for="code">Nhà cung cấp</label>
-            </p-floatlabel>
-          </div>
-          <div class="d-flex my-4">
-            <p-floatlabel variant="on">
-              <input pInputText id="code" name="code" autocomplete="off" [fluid]="true" [(ngModel)]="device.maintenanceCycle" [disabled]="true" />
-              <label for="code">Chu kỳ bảo dưỡng</label>
-            </p-floatlabel>
-          </div>
-          <div class="d-flex my-4">
-            <p-floatlabel variant="on">
-              <input pInputText id="code" name="code" autocomplete="off" [fluid]="true" [(ngModel)]="device.DateUseAndInstall" [disabled]="true" />
-              <label for="code">Năm sản xuất - Năm đưa vào sử dụng</label>
-            </p-floatlabel>
-          </div>
-          <div class="d-flex my-4">
-            <p-floatlabel variant="on">
-              <textarea pTextarea class="form-control" rows="3" [disabled]="true" cols="45" [(ngModel)]="device.description" placeholder="Thông tin khác" id="WorkArising"
-                name="WorkArising"></textarea>
-            </p-floatlabel>
-          </div>
+
         </div>
       </div>
     </div>
