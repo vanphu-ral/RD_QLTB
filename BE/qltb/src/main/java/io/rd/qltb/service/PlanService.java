@@ -574,6 +574,19 @@ public class PlanService {
 //        publisher.publishEvent(new BeforeDeletePlan(id));
         plan.setStatus(DELETED);// đánh dấu đã xóa
         planRepository.save(plan);
+        // Xóa mềm các PlanDetail liên quan
+        List<PlanDetail> plans = planDetailRepository.findAllByPlanId(id);
+        for (PlanDetail planDetail : plans) {
+            planDetail.setStatus(DELETED);
+            planDetailRepository.save(planDetail);
+            // Xóa mềm các PlanResult liên quan đến PlanDetail
+            List<PlanResult> planResults = planResultRepository.findByPlanDetailId(planDetail.getId());
+            planResults.forEach(planResult -> {
+                planResult.setStatus(DELETED);
+                planResultRepository.save(planResult);
+            });
+        }
+
     }
 
     public void deleteByPlanId(final Long planId) {
