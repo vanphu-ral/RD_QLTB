@@ -4,7 +4,8 @@
         <div class="col-12">
             <p-floatlabel variant="on">
                 <p-datepicker [(ngModel)]="dateTest" appDateConvert [iconDisplay]="'input'" [showIcon]="true"
-                    name="dateTest" inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body" [inputSize]="100"/>
+                    name="dateTest" inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body" [inputSize]="100"
+                    [minDate]="minDate" [maxDate]="maxDate"/>
                 <label for="dateTest">Ngày kiểm tra</label>
             </p-floatlabel>
         </div>

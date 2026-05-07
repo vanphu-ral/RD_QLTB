@@ -20,12 +20,17 @@ export class AddCheckListDialog {
     data: any;
     dateTest: Date | null = null;
     listCheckList: any[] = [];
+    minDate: Date | null = null;
+    maxDate: Date | null = null;
 
     constructor(
         public ref: DynamicDialogRef,
         public config: DynamicDialogConfig,
     ) {
-        this.listCheckList = config.data || [];
+        const dialogData = config.data || {};
+        this.listCheckList = dialogData.listPlanAudit || [];
+        this.minDate = dialogData.minDate || null;
+        this.maxDate = dialogData.maxDate || null;
     }
 
     ngOnInit() {
@@ -36,6 +41,15 @@ export class AddCheckListDialog {
     submit() {
         if(Util.isEmptyArray(this.listCheckList)) {
             Util.ConfirmMessage('Thiết bị này chưa có kế hoạch kiểm tra', 'error');
+            return;
+        }
+        // Validate ngày kiểm tra phải nằm trong khoảng fromDate - toDate của kế hoạch mới nhất
+        if (this.minDate && this.dateTest && this.dateTest < this.minDate) {
+            Util.ConfirmMessage('Ngày kiểm tra không được trước ngày bắt đầu kế hoạch', 'error');
+            return;
+        }
+        if (this.maxDate && this.dateTest && this.dateTest > this.maxDate) {
+            Util.ConfirmMessage('Ngày kiểm tra không được sau ngày kết thúc kế hoạch', 'error');
             return;
         }
         const filtered = this.listCheckList.filter(

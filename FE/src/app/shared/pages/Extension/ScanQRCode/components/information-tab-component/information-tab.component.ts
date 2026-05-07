@@ -38,6 +38,7 @@ export class InformationTabComponent implements OnChanges {
   listPlanAudit: any[] = []
   listPlanMaintance: any[] = []
   listDeviceStops: any[] = []
+  latestDailyCheckPlan: any = null;
 
   PLANTYPE = PLANTYPE;
 
@@ -122,9 +123,17 @@ export class InformationTabComponent implements OnChanges {
   async loadPlan(qrCode: string) {
     this.listPlanAudit = [];
     this.listPlanMaintance = [];
+    this.latestDailyCheckPlan = null;
     const res = await firstValueFrom(
       this.planDetailService.getPlansBySerial(qrCode)
     );
+    // Tìm kế hoạch DAILYCHECK mới nhất theo toDate
+    const dailyCheckPlans = res.filter((p: any) => p.planType?.code === PLANTYPE.DAILYCHECK);
+    if (dailyCheckPlans.length) {
+      this.latestDailyCheckPlan = dailyCheckPlans.reduce((prev: any, curr: any) =>
+        new Date(curr.toDate) > new Date(prev.toDate) ? curr : prev
+      );
+    }
     res.forEach((plan, i) => {
       if (plan.planType.code == PLANTYPE.DAILYCHECK) {
         plan.planDetails.forEach((detail: any) => {
@@ -317,7 +326,11 @@ export class InformationTabComponent implements OnChanges {
         width: 'auto',
         modal: true,
         closable: true,
-        data: this.listPlanAudit || [],
+        data: {
+          listPlanAudit: this.listPlanAudit || [],
+          minDate: this.latestDailyCheckPlan ? new Date(this.latestDailyCheckPlan.fromDate) : null,
+          maxDate: this.latestDailyCheckPlan ? new Date(this.latestDailyCheckPlan.toDate) : null,
+        },
       });
       ref.onClose.subscribe(async (result) => {
         if (result) {
