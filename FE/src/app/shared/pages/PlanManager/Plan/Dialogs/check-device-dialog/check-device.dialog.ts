@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component } from "@angular/core";
+import { finalize } from "rxjs";
 import { FormsModule } from "@angular/forms";
 import { SharedModule } from "../../../../../../share.module";
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
@@ -42,6 +43,9 @@ export class CheckDeviceDialog {
     groupedData: any[] = [];
 
     isMobile: boolean = false;
+
+    /** Chặn bấm Lưu liên tục khi mạng chậm; chỉ tắt khi mọi request của lần lưu đó đã kết thúc. */
+    isSaving: boolean = false;
 
     selectedShift: any = null;
     selectedSession: any = null;
@@ -256,6 +260,9 @@ export class CheckDeviceDialog {
             Util.toastMessage("Vui lòng chọn ca kiểm tra trước khi lưu", "error");
             return;
         }
+        if (this.isSaving) {
+            return;
+        }
 
         const submitModel = _.cloneDeep(this.model);
         submitModel.planResult = this.data.planResult;
@@ -288,7 +295,25 @@ export class CheckDeviceDialog {
                 deviceId: this.data.device.device.id
             }
         });
-        this.planResultService.saveEvaluation(submitModel).subscribe({
+
+        let pending =
+            3 +
+            this.listSupplyReplaceHistory.length +
+            (_.find(this.model.errorReport, x => x.severity === 0) ? 1 : 0) +
+            (_.find(this.model.errorReport, x => (x.severity === 1) || (x.severity === 2)) ? 1 : 0);
+
+        const releaseSave = () => {
+            pending--;
+            if (pending <= 0) {
+                this.isSaving = false;
+                this.cdr.markForCheck();
+            }
+        };
+
+        this.isSaving = true;
+        this.cdr.markForCheck();
+
+        this.planResultService.saveEvaluation(submitModel).pipe(finalize(releaseSave)).subscribe({
             next: (res) => {
                 Util.showSuccessMessage("Lưu kết quả kiểm tra thành công");
                 this.ref.close(true);
@@ -308,24 +333,24 @@ export class CheckDeviceDialog {
             status: 1,
             planResult: {id: this.data.planResult.id},
         }
-        this.planResultCheckLogService.create(planResultCheckLog).subscribe({
+        this.planResultCheckLogService.create(planResultCheckLog).pipe(finalize(releaseSave)).subscribe({
             next: (res) => {
                 Util.showSuccessMessage("Lưu lịch sử kiểm tra thành công");
             }
         });
-        this.supplyReplaceHistoryService.createList(this.listSupplyReplaceHistory).subscribe({
+        this.supplyReplaceHistoryService.createList(this.listSupplyReplaceHistory).pipe(finalize(releaseSave)).subscribe({
             next: (res) => {
                 Util.showSuccessMessage("Lưu lịch sử thay thế vật tư thành công");
             }
         });
         this.listSupplyReplaceHistory.forEach(item => {
-            this.supplyDetailService.update(item.oldSupplyDetail.id as number, item.oldSupplyDetail).subscribe();
+            this.supplyDetailService.update(item.oldSupplyDetail.id as number, item.oldSupplyDetail).pipe(finalize(releaseSave)).subscribe();
         })
         if(_.find(this.model.errorReport, x => x.severity === 0)) {
-            this.deviceService.updateStatusDevice(this.data.device.device.id, 3).subscribe();
+            this.deviceService.updateStatusDevice(this.data.device.device.id, 3).pipe(finalize(releaseSave)).subscribe();
         }
         if(_.find(this.model.errorReport, x => (x.severity === 1) || (x.severity === 2))) {
-            this.deviceService.updateStatusDevice(this.data.device.device.id, 2).subscribe();
+            this.deviceService.updateStatusDevice(this.data.device.device.id, 2).pipe(finalize(releaseSave)).subscribe();
         }
     }
 
