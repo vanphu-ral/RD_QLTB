@@ -106,6 +106,33 @@ export class ScanQrCodeComponent {
     }
   }
 
+  private safeFullYear(value: string | Date | null | undefined): number | null {
+    if (value == null || value === '') {
+      return null;
+    }
+    const d = new Date(value as string);
+    return Number.isNaN(d.getTime()) ? null : d.getFullYear();
+  }
+
+  private formatManufactureInstallLabel(device: {
+    dateManufacture?: string | null;
+    installationDate?: string | null;
+  }): string {
+    const missing = '—';
+    const yM = this.safeFullYear(device.dateManufacture);
+    const yI = this.safeFullYear(device.installationDate);
+    if (yM != null && yI != null) {
+      return `${yM} - ${yI}`;
+    }
+    if (yM != null) {
+      return `${yM} - ${missing}`;
+    }
+    if (yI != null) {
+      return `${missing} - ${yI}`;
+    }
+    return missing;
+  }
+
   getDeviceInfo(qrCode: any) {
     if (!qrCode) {
       Util.ConfirmMessage('Vui lòng nhập mã QR Code', 'error');
@@ -114,8 +141,8 @@ export class ScanQrCodeComponent {
     this.deviceService.getBySerialNumber(qrCode).subscribe({
       next: (device) => {
         this.device = device;
-        this.device.DateUseAndInstall = `${new Date(this.device.dateManufacture).getFullYear()} - ${new Date(this.device.installationDate).getFullYear()}`;
-        this.device.displayLocation = device.line?.name || device.team?.name || device.branch?.name || ''
+        this.device.DateUseAndInstall = this.formatManufactureInstallLabel(this.device);
+        this.device.displayLocation = device.line?.name || device.team?.name || device.branch?.name || '';
         this.qrCode = '';
         this.cdr.detectChanges();
       },
@@ -137,7 +164,7 @@ export class ScanQrCodeComponent {
     ref.onClose.subscribe((device: any) => {
       if (device) {
         this.device = device;
-        this.device.DateUseAndInstall = `${new Date(this.device.dateManufacture).getFullYear()} - ${new Date(this.device.installationDate).getFullYear()}`;
+        this.device.DateUseAndInstall = this.formatManufactureInstallLabel(this.device);
         this.device.displayLocation = device.line?.name || device.team?.name || device.branch?.name || '';
         this.cdr.detectChanges();
       }
