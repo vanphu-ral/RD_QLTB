@@ -88,8 +88,8 @@ export class CheckDeviceDialog {
                 examinationTime: time,
                 step: x.step,
                 performer: x.performer,
-                result: x.frequency === 'Hằng tuần' ? null : "OK",
-                status: x.frequency === 'Hằng tuần' ? 0 : 1
+                result: (x.frequency === 'Hằng tuần' || x.frequency === 'Hằng Tháng') ? null : "OK",
+                status: (x.frequency === 'Hằng tuần' || x.frequency === 'Hằng Tháng') ? 0 : 1
             }));
         });
 
