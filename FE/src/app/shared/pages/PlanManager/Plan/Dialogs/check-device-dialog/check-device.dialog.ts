@@ -99,20 +99,20 @@ export class CheckDeviceDialog {
                 this.model = res;
                 
                 this.model.planResultDetail = fullTemplate.map((templateItem: any) => {
-                    // Match đủ 3 trường: criticalCode + ca yêu cầu + phiên kiểm tra (frequency)
-                    // để không nhầm tiêu chí cùng mã nhưng khác phiên (VD: Đầu ca vs Cuối ca)
+                    // Match bằng: criticalCode + ca yêu cầu + frequency (giá trị gốc, không đổi)
+                    // frequency phân biệt cùng tiêu chí nhưng khác phiên (VD: Đầu ca vs Cuối ca)
                     const savedItem = savedDetails.find((s: any) =>
                         s.criticalCode === templateItem.criticalCode &&
-                        s.examinationTimeRequired === templateItem.examinationTimeRequired &&
-                        s.inspectionSession === templateItem.inspectionSession
+                        (s.examinationTimeRequired === templateItem.examinationTimeRequired ||
+                         s.examinationTime === templateItem.examinationTimeRequired) &&
+                        s.frequency === templateItem.frequency
                     );
 
                     if (savedItem) {
-                        // Giữ nguyên các trường gốc từ template (không để savedItem ghi đè)
-                        // Chỉ lấy các trường "kết quả" từ savedItem
                         return {
                             ...templateItem,
                             id: savedItem.id,
+                            planResult: savedItem.planResult,
                             result: savedItem.result,
                             note: savedItem.note,
                             comment: savedItem.comment,
