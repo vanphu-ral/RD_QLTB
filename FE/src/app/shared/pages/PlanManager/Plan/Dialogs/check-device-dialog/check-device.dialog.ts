@@ -95,22 +95,40 @@ export class CheckDeviceDialog {
 
         this.planResultService.getEvaluationByPlanDetailId(this.data.planResult.id).subscribe(res => {
             if (res && !Util.isEmptyArray(res.planResultDetail)) {
-                // 2. Nếu đã có dữ liệu từ server (có thể là của ca khác đã lưu)
                 const savedDetails = res.planResultDetail;
                 this.model = res;
                 
-                // Merge: Duyệt qua template gốc, nếu tiêu chí nào đã có kết quả lưu thì lấy kết quả đó
                 this.model.planResultDetail = fullTemplate.map((templateItem: any) => {
-                    // Tìm kiếm dựa trên cả mã tiêu chí VÀ ca yêu cầu (examinationTimeRequired)
-                    const savedItem = savedDetails.find((s: any) => 
-                        s.criticalCode === templateItem.criticalCode && 
-                        (s.examinationTimeRequired === templateItem.examinationTimeRequired || s.examinationTime === templateItem.examinationTimeRequired)
+                    // Match đủ 3 trường: criticalCode + ca yêu cầu + phiên kiểm tra (frequency)
+                    // để không nhầm tiêu chí cùng mã nhưng khác phiên (VD: Đầu ca vs Cuối ca)
+                    const savedItem = savedDetails.find((s: any) =>
+                        s.criticalCode === templateItem.criticalCode &&
+                        s.examinationTimeRequired === templateItem.examinationTimeRequired &&
+                        s.inspectionSession === templateItem.inspectionSession
                     );
-                    // Nếu có savedItem và có id thì đánh dấu là đã lưu (isCheck = true)
-                    return savedItem ? { ...templateItem, ...savedItem, isCheck: !!savedItem.id } : { ...templateItem, isCheck: false };
+
+                    if (savedItem) {
+                        // Giữ nguyên các trường gốc từ template (không để savedItem ghi đè)
+                        // Chỉ lấy các trường "kết quả" từ savedItem
+                        return {
+                            ...templateItem,
+                            id: savedItem.id,
+                            result: savedItem.result,
+                            note: savedItem.note,
+                            comment: savedItem.comment,
+                            status: savedItem.status,
+                            examinationTime: savedItem.examinationTime,
+                            inspectionSession: savedItem.inspectionSession,
+                            createdBy: savedItem.createdBy,
+                            createdAt: savedItem.createdAt,
+                            updatedBy: savedItem.updatedBy,
+                            updatedAt: savedItem.updatedAt,
+                            isCheck: !!savedItem.id
+                        };
+                    }
+                    return { ...templateItem, isCheck: false };
                 });
             } else {
-                // 3. Nếu chưa có dữ liệu thì dùng toàn bộ template gốc
                 this.model.planResultDetail = fullTemplate.map((x: any) => ({ ...x, isCheck: false }));
             }
             
@@ -182,7 +200,7 @@ export class CheckDeviceDialog {
         
         const filteredDetails = this.model.planResultDetail.filter((item: any) => {
             const matchesShift = item.examinationTimeRequired === this.selectedShift;
-            const matchesSession = !this.selectedSession || item.inspectionSession === this.selectedSession;
+            const matchesSession = !this.selectedSession || item.frequency === this.selectedSession;
             return matchesShift && matchesSession;
         });
         
@@ -271,10 +289,10 @@ export class CheckDeviceDialog {
             submitModel.planResult.userTest = JSON.stringify(submitModel.planResult.userTest);
         }
 
-        // Chỉ gửi đi các tiêu chí đang hiển thị trên màn hình (để tránh lưu rác các tiêu chí đang bị ẩn bởi bộ lọc Thời gian)
+        // Chỉ gửi đi các tiêu chí đang hiển thị trên màn hình
         submitModel.planResultDetail = this.model.planResultDetail.filter((item: any) => {
             const matchesShift = item.examinationTimeRequired === this.selectedShift;
-            const matchesSession = !this.selectedSession || item.inspectionSession === this.selectedSession;
+            const matchesSession = !this.selectedSession || item.frequency === this.selectedSession;
             return matchesShift && matchesSession;
         });
 

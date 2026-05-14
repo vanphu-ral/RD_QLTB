@@ -59,16 +59,16 @@ export class AccountService {
     return this.accountSignal() !== null;
   }
 
-  /** 📌 Kiểm tra quyền */
+  /** 📌 Kiểm tra quyền — lấy từ attributes.roles (Keycloak custom attribute) */
   hasAnyAuthority(authorities: string[] | string): boolean {
-    const userAuthorities = this.accountSignal()?.authorities ?? [];
+    const userRoles: string[] = _.get(this.accountSignal(), 'attributes.roles') || [];
     if (!authorities) {
       return true;
     }
     if (Array.isArray(authorities)) {
-      return authorities.some(auth => userAuthorities.includes(auth));
+      return authorities.some(auth => userRoles.includes(auth));
     }
-    return userAuthorities.includes(authorities);
+    return userRoles.includes(authorities);
   }
 
   // Lấy ngành theo tài khoản
