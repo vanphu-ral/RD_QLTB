@@ -8,9 +8,10 @@ import { SignatureService } from '../../../SystemManager/Signature/Service/signa
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { BaseApprovalComponent } from "../../../../base/base-approval-component/base-approval.component";
 import { catchError, of } from 'rxjs';
+import { Util } from '../../../../core/utils/utils-function';
 
 // Danh sách các Ca kiểm tra mặc định
-const DEFAULT_SESSIONS = ['Đầu ca', 'Giữa ca', 'Cuối ca', 'Hằng tuần', 'Ngày'];
+const DEFAULT_SESSIONS = Util.listInspectionSession();;
 
 // Định nghĩa mới: Kết quả cho một Ca kiểm tra cụ thể trong một ngày
 interface DailySessionResult {
