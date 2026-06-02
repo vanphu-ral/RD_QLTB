@@ -26,13 +26,16 @@ import jakarta.persistence.criteria.*;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
+import org.apache.catalina.filters.ExpiresFilter;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import static io.rd.qltb.config.ConstantStatusGlobal.*;
@@ -324,14 +327,19 @@ public class DeviceService {
     }
 
     public Long create(final DeviceDTO deviceDTO) {
-        final Device device = new Device();
-        mapToEntity(deviceDTO, device);
-        Device savedDevice = deviceRepository.save(device);
-        Long count = deviceRepository.countByGroupIdAndStatusNot(savedDevice.getGroup().getId(),DELETED);
-        savedDevice.setCode(deviceDTO.getCode()+"-"+globalConfig.createNumberPrefix(count,6)); // Tạo mã thiết bị theo định dạng
-        savedDevice.setQrCode(deviceDTO.getCode()+"-"+globalConfig.createNumberPrefix(count,6)); // Tạo mã thiết bị theo định dạng
-        System.out.println("Generated Code: " + savedDevice.getQrCode());
-        return deviceRepository.save(savedDevice).getId();
+        Device item = deviceRepository.findByQrCode(deviceDTO.getCode()).orElse(null);
+        if(item != null){
+            return (long) HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+        }else {
+            final Device device = new Device();
+            mapToEntity(deviceDTO, device);
+            Device savedDevice = deviceRepository.save(device);
+            Long count = deviceRepository.countByGroupIdAndStatusNot(savedDevice.getGroup().getId(),DELETED);
+            savedDevice.setCode(deviceDTO.getCode()+"-"+globalConfig.createNumberPrefix(count,6)); // Tạo mã thiết bị theo định dạng
+            savedDevice.setQrCode(deviceDTO.getCode()+"-"+globalConfig.createNumberPrefix(count,6)); // Tạo mã thiết bị theo định dạng
+            System.out.println("Generated Code: " + savedDevice.getQrCode());
+            return deviceRepository.save(savedDevice).getId();
+        }
     }
     public List<Long> creates(final List<DeviceDTO> deviceDTO) {
         List<Long> createdIds = new ArrayList<>();
@@ -352,11 +360,17 @@ public class DeviceService {
         }
         return createdIds;
     }
-    public void update(final Long id, final DeviceDTO deviceDTO) {
-        final Device device = deviceRepository.findById(id)
-                .orElseThrow(NotFoundException::new);
-        mapToEntity(deviceDTO, device);
-        deviceRepository.save(device);
+    public ResponseEntity<?> update(final Long id, final DeviceDTO deviceDTO) {
+        Device existingDevice = deviceRepository.findByQrCode(deviceDTO.getQrCode()).orElse(null);
+        if(existingDevice != null && !existingDevice.getId().equals(id)){
+            return ResponseEntity.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).body("QR Code đã tồn tại trên thiết bị khác");
+        }else {
+            final Device device = deviceRepository.findById(id)
+                    .orElseThrow(NotFoundException::new);
+            mapToEntity(deviceDTO, device);
+            deviceRepository.save(device);
+            return ResponseEntity.ok(id);
+        }
     }
 
     public void delete(final Long id) {

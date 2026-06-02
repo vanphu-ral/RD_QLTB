@@ -150,10 +150,10 @@ public class DeviceResource {
         return new ResponseEntity<>(createdIds, HttpStatus.CREATED);
     }
     @PutMapping("/{id}")
-    public ResponseEntity<Long> updateDevice(@PathVariable(name = "id") final Long id,
+    public ResponseEntity<?> updateDevice(@PathVariable(name = "id") final Long id,
             @RequestBody @Valid final DeviceDTO deviceDTO) {
-        deviceService.update(id, deviceDTO);
-        return ResponseEntity.ok(id);
+
+        return deviceService.update(id, deviceDTO);
     }
 
     @DeleteMapping("/{id}")
