@@ -1,10 +1,14 @@
 <div class="p-1">
-  <div class="row my-3 ms-2">
-    <h6>Nội dung sự cố</h6>
-    <div [innerHTML]="data.errorDescription"></div>
+  <div class="row my-3">
+    <div class="col-12">
+      <label for="errorDescription" class="form-label mb-2 block">Nội dung sự cố</label>
+      <textarea pTextarea class="form-control" rows="3" placeholder="Nội dung sự cố ..." id="errorDescription" name="errorDescription"
+          [(ngModel)]="data.errorDescription"></textarea>
+    </div>
   </div>
   <div class="row my-3">
     <div class="col-12">
+      <label for="repairDescription" class="form-label mb-2 block">Nội dung và kết quả xử lý</label>
       <textarea pTextarea class="form-control" rows="5" placeholder="Nội dung và kết quả xử lý ..." id="repairDescription" name="repairDescription"
           [(ngModel)]="data.repairDescription"></textarea>
     </div>
@@ -12,6 +16,7 @@
 
   <div class="row my-3">
     <div class="col-12">
+      <label for="result" class="form-label mb-2 block">Kết luận</label>
       <textarea pTextarea class="form-control" rows="5" placeholder="Kết luận ..." id="result" name="result"
           [(ngModel)]="data.result"></textarea>
     </div>
@@ -19,12 +24,10 @@
 
   <div class="row my-3">
     <div class="col-12">
-      <p-floatlabel variant="on">
-        <p-datepicker [(ngModel)]="data.timeRepaired" appDateConvert [iconDisplay]="'input'" [withTime]="true" [showIcon]="true" [showTime]="true" hourFormat="24"
-          name="timeRepaired" [dateFormat]="'dd-mm-yy'" appendTo="body" [inputSize]="100" [autofocus]="false">
-        </p-datepicker>
-        <label for="timeRepaired">Ngày sửa chữa</label>
-      </p-floatlabel>
+      <label for="timeRepaired" class="form-label mb-2 block">Ngày sửa chữa</label>
+      <p-datepicker [(ngModel)]="data.timeRepaired" appDateConvert [iconDisplay]="'input'" [withTime]="true" [showIcon]="true" [showTime]="true" hourFormat="24"
+        inputId="timeRepaired" name="timeRepaired" [dateFormat]="'dd-mm-yy'" appendTo="body" [inputSize]="100" [autofocus]="false" [fluid]="true">
+      </p-datepicker>
     </div>
   </div>
 
