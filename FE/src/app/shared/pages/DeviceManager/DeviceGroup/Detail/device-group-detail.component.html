@@ -5,8 +5,12 @@
     <div class="row my-3">
       <div class="col-6" *ngIf="!isAddMode">
         <p-floatlabel variant="on">
-          <input pInputText id="code" name="code" [(ngModel)]="model.code" autocomplete="off" [disabled]="true" [fluid]="true"/>
-          <label for="code">Mã nhóm thiết bị</label>
+          <p-inputgroup>
+            <input pInputText id="codePrefix" name="codePrefix" [(ngModel)]="codePrefix" autocomplete="off"
+              [disabled]="isViewMode" required [invalid]="!codePrefix" [fluid]="true"/>
+            <p-inputgroup-addon *ngIf="codeSuffix">-{{ codeSuffix }}</p-inputgroup-addon>
+          </p-inputgroup>
+          <label for="codePrefix">Mã nhóm thiết bị</label>
         </p-floatlabel>
       </div>
       <div [ngClass]="isAddMode ? 'col-12' : 'col-6'">

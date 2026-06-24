@@ -92,6 +92,26 @@ export class Util {
     return model;
   }
 
+  /** Tách mã dạng PREFIX-STT (BE nối STT sau dấu - cuối cùng) */
+  static splitParentCode(fullCode: string): { prefix: string; suffix: string } {
+    const lastDash = fullCode.lastIndexOf('-');
+    if (lastDash === -1) {
+      return { prefix: fullCode, suffix: '' };
+    }
+    const suffix = fullCode.substring(lastDash + 1);
+    if (/^\d+$/.test(suffix)) {
+      return { prefix: fullCode.substring(0, lastDash), suffix };
+    }
+    return { prefix: fullCode, suffix: '' };
+  }
+
+  static joinParentCode(prefix: string, suffix: string): string {
+    if (!suffix) {
+      return prefix;
+    }
+    return `${prefix}-${suffix}`;
+  }
+
   static ConfirmMessage(message: string, type: 'success' | 'error'): void {
     Swal.fire({
       icon: type,

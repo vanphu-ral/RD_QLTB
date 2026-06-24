@@ -92,7 +92,7 @@ export const MENU_ITEMS: MenuItem[] = [
                 label: 'Quản lý thiết bị',
                 icon: 'pi pi-fw pi-cog',
                 items: [
-                    { label: 'Danh mục nhóm thiết bị', icon: 'fa-solid fa-layer-group', routerLink: ['/DeviceGroups'], roles: ['RD_QLTB_ADMIN'] },
+                    { label: 'Danh mục nhóm thiết bị', icon: 'fa-solid fa-layer-group', routerLink: ['/DeviceGroups'], roles: ['RD_QLTB_ADMIN', 'RD_QLTB_MANAGER'] },
                     { label: 'Danh mục thiết bị', icon: 'fa-solid fa-tablet', routerLink: ['/Devices'], roles: ['RD_QLTB_ADMIN', 'RD_QLTB_MANAGER'] },
                     { label: 'Danh mục nhóm vật tư', icon: 'fa-solid fa-layer-group', routerLink: ['/SupplyGroups'], roles: ['RD_QLTB_ADMIN', 'RD_QLTB_MANAGER'] },
                     { label: 'Danh mục vật tư, phụ tùng', icon: 'fa-solid fa-wrench', routerLink: ['/Supplies'], roles: ['RD_QLTB_ADMIN', 'RD_QLTB_MANAGER'] },

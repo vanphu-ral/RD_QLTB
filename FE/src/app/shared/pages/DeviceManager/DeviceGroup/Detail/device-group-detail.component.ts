@@ -1,14 +1,10 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
 import { SharedModule } from '../../../../../share.module';
 import { CommonModule } from '@angular/common';
 import { BasePageComponent } from '../../../../base/base-page-component/base-page.component';
 import { DeviceGroupService } from '../Service/device-group.service';
 import { Util } from '../../../../core/utils/utils-function';
-import { AccountService } from '../../../../core/auth/account/account.service';
-import { NavigationService } from '../../../../service/navigation.service';
 import { DeviceGroup } from '../../../../models/DeviceManager/device-group.model';
-import { Device } from '../../../../models/DeviceManager/device.model';
 
 @Component({
   selector: 'app-device-group-detail',
@@ -17,9 +13,11 @@ import { Device } from '../../../../models/DeviceManager/device.model';
   templateUrl: './device-group-detail.component.html',
   styleUrls: ['./device-group-detail.component.scss']
 })
-export class DeviceGroupDetailComponent extends BasePageComponent<DeviceGroup> {
+export class DeviceGroupDetailComponent extends BasePageComponent<DeviceGroup> implements OnInit {
 
   listFactories: any[] = [];
+  codePrefix = '';
+  codeSuffix = '';
 
   constructor(
     protected override apiService: DeviceGroupService,
@@ -27,10 +25,22 @@ export class DeviceGroupDetailComponent extends BasePageComponent<DeviceGroup> {
     super(apiService);
   }
 
+  override ngOnInit(): void {
+    super.ngOnInit();
+    if (!this.isAddMode && this.model?.code) {
+      const parsed = Util.splitParentCode(this.model.code);
+      this.codePrefix = parsed.prefix;
+      this.codeSuffix = parsed.suffix;
+    }
+  }
 
   public override save(): void {
     if (this.model) {
-      this.model = Util.prepareParentCoedModel(this.model);
+      if (this.isAddMode) {
+        this.model = Util.prepareParentCoedModel(this.model);
+      } else if (this.codePrefix) {
+        this.model.code = Util.joinParentCode(this.codePrefix, this.codeSuffix);
+      }
 
       if (this.isAddMode) {
         this.apiService.create(this.model).subscribe({
