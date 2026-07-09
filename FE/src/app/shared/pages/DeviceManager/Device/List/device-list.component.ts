@@ -9,7 +9,8 @@ import { MoveDeviceDialog } from '../Dialog/move-device-dialog/move-device.dialo
 import { ListHistoryMoveDeviceDialog } from '../Dialog/list-history-move-device-dialog/list-history-move-device.dialog';
 import { Util } from '../../../../core/utils/utils-function';
 import { DeviceGroupService } from '../../DeviceGroup/Service/device-group.service';
-import { forkJoin } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { LineService } from '../../../Categories/Line/Service/line.service';
 import { TeamService } from '../../../Categories/Team/Service/team.service';
 import { BranchService } from '../../../Categories/Branch/Service/branch.service';
@@ -201,18 +202,38 @@ export class DeviceListComponent {
 
     dialogRef.onClose.subscribe((filter: any) => {
       if (filter) {
-        const queryFilter: any = { size: 100 };
+        const pageSize = 1000;
+        const queryFilter: any = { size: pageSize };
         Object.keys(filter).forEach(k => {
           if (filter[k]) queryFilter[k] = filter[k];
         });
 
-        this.apiService.getAllByPaged(queryFilter, 0).subscribe({
-          next: async (res: any) => {
-            let data: any[] = [];
-            if (Array.isArray(res)) data = res;
-            else if (res && Array.isArray(res.content)) data = res.content;
+        this.apiService.getAllByPaged(queryFilter, 0).pipe(
+          switchMap((firstPage: any) => {
+            const firstContent = Array.isArray(firstPage)
+              ? firstPage
+              : (firstPage?.content ?? []);
+            const totalPages = firstPage?.totalPages ?? 1;
 
-            if (data.length === 0) {
+            if (totalPages <= 1) {
+              return of(firstContent);
+            }
+
+            const requests = [];
+            for (let page = 1; page < totalPages; page++) {
+              requests.push(this.apiService.getAllByPaged(queryFilter, page));
+            }
+
+            return forkJoin(requests).pipe(
+              map((pages: any[]) => [
+                ...firstContent,
+                ...pages.flatMap(p => (Array.isArray(p) ? p : (p?.content ?? [])))
+              ])
+            );
+          })
+        ).subscribe({
+          next: async (data: any[]) => {
+            if (!data || data.length === 0) {
               Util.ConfirmMessage('Không có dữ liệu', 'error');
               return;
             }
