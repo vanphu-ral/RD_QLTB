@@ -46,6 +46,12 @@ public class AcceptanceDTO {
 
     private Long planDetailId;
 
+    private String formCode;
+
+    private Integer numberOfIssuances;
+
+    private String incurredWork;
+
 
     private LocalDateTime createdAt;
 

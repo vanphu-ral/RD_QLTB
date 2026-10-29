@@ -30,4 +30,8 @@ export class PlanResultService extends BaseApiService<PlanResult> {
   updateStatus(id: number, status: number) {
     return this.http.post(`${this['fullBaseUrl']}/update-status/${id}?status=${status}`, {});
   }
+
+  getMyCheckedToday(): Observable<any[]> {
+    return this.http.get<any[]>(`${this['fullBaseUrl']}/my-checked-today`);
+  }
 }

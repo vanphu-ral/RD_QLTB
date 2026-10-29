@@ -1,0 +1,99 @@
+<div class="quick-select-dialog-container">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="text-muted small">
+      Danh sách các sự cố nghiêm trọng đã hoàn thành sửa chữa chưa lập biên bản sự cố.
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <span class="p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input
+          pInputText
+          type="text"
+          placeholder="Tìm kiếm nhanh..."
+          class="p-inputtext-sm"
+          (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+        />
+      </span>
+    </div>
+  </div>
+
+  <p-table
+    #dt
+    [value]="listErrors"
+    [loading]="loading"
+    [paginator]="true"
+    [rows]="8"
+    [rowsPerPageOptions]="[8, 15, 30]"
+    [globalFilterFields]="['code', 'device.code', 'device.name', 'errorDescription', 'repairedBy']"
+    [scrollable]="true"
+    scrollHeight="420px"
+    styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 50px; text-align: center">STT</th>
+        <th style="min-width: 130px">Mã sự cố</th>
+        <th style="min-width: 180px">Thiết bị</th>
+        <th style="min-width: 140px">Xưởng / Ngành</th>
+        <th style="min-width: 200px">Mô tả sự cố</th>
+        <th style="min-width: 130px">Người sửa</th>
+        <th style="min-width: 140px; text-align: center">Ngày hoàn thành</th>
+        <th style="width: 110px; text-align: center">Thao tác</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
+      <tr>
+        <td style="text-align: center">{{ rowIndex + 1 }}</td>
+        <td>
+          <span class="fw-semibold text-primary">{{ row.code || '---' }}</span>
+        </td>
+        <td>
+          <div class="fw-bold">{{ row.device?.name || '---' }}</div>
+          <small class="text-muted">{{ row.device?.code }}</small>
+        </td>
+        <td>
+          <div>{{ row.device?.workshop?.name || row.device?.branch?.name || '---' }}</div>
+          <small class="text-muted" *ngIf="row.device?.line?.name">{{ row.device?.line?.name }}</small>
+        </td>
+        <td>
+          <div class="text-truncate-2" [title]="row.errorDescription || ''">
+            {{ row.errorDescription || '---' }}
+          </div>
+        </td>
+        <td>{{ row.repairedBy || '---' }}</td>
+        <td style="text-align: center">
+          {{ row.timeRepaired ? (row.timeRepaired | date: 'dd/MM/yyyy HH:mm') : '---' }}
+        </td>
+        <td style="text-align: center">
+          <p-button
+            icon="pi pi-file-edit"
+            label="Khai báo"
+            styleClass="p-button-sm p-button-success"
+            (onClick)="selectIncident(row)"
+            title="Khai báo biên bản sự cố cho thiết bị này"
+          ></p-button>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="8" class="text-center p-4 text-muted">
+          <i class="pi pi-info-circle me-1"></i>
+          Không có sự cố nghiêm trọng nào đã sửa chữa cần lập biên bản.
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <div class="d-flex justify-content-end gap-2 mt-3 w-100">
+    <p-button
+      label="Đóng"
+      icon="pi pi-times"
+      styleClass="p-button-text p-button-secondary"
+      (onClick)="close()"
+    ></p-button>
+  </div>
+</div>
+

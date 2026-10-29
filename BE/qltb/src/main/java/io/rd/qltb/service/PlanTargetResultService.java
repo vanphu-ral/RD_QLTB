@@ -93,6 +93,17 @@ public class PlanTargetResultService {
             targetCopy.setCreatedBy(planTargetResult.getPlanTargetDevice().getCreatedBy());
             targetCopy.setUpdatedBy(planTargetResult.getPlanTargetDevice().getUpdatedBy());
             targetCopy.setStatus(planTargetResult.getPlanTargetDevice().getStatus());
+            targetCopy.setPlanCode(planTargetResult.getPlanTargetDevice().getPlanCode());
+            targetCopy.setPlanNumber(planTargetResult.getPlanTargetDevice().getPlanNumber());
+            targetCopy.setNumberOfIssuances(planTargetResult.getPlanTargetDevice().getNumberOfIssuances());
+
+            if (planTargetResult.getPlanTargetDevice().getBranch() != null) {
+                io.rd.qltb.domain.Branch branchCopy = new io.rd.qltb.domain.Branch();
+                branchCopy.setId(planTargetResult.getPlanTargetDevice().getBranch().getId());
+                branchCopy.setName(planTargetResult.getPlanTargetDevice().getBranch().getName());
+                branchCopy.setCode(planTargetResult.getPlanTargetDevice().getBranch().getCode());
+                targetCopy.setBranch(branchCopy);
+            }
 
             // Xóa các quan hệ con để tránh vòng lặp
             targetCopy.setPlanTargetDevicePlanTargetResults(null);

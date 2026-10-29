@@ -1,9 +1,10 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { SharedModule } from '../../../../share.module';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { NavigationService } from '../../../service/navigation.service';
 import { BranchService } from '../../Categories/Branch/Service/branch.service';
+import { DeviceService } from '../../DeviceManager/Device/Service/device.service';
 import { ReportService } from '../service/report.service';
 import { Util } from '../../../core/utils/utils-function';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -21,91 +22,153 @@ import { AccountService } from '../../../core/auth/account/account.service';
   templateUrl: './report-2.page.html',
   styleUrls: ['./report-2.page.scss'],
 })
-export class Report2Page {
+export class Report2Page implements OnInit {
 
+  // Dữ liệu hiển thị
   data: any[] = [];
+  allItems: any[] = [];
+  deviceInfo: any = null;
 
+  // Danh mục lọc
   listBranchs: any[] = [];
+  listDevices: any[] = [];
+  allDevices: any[] = [];
+  years: number[] = [];
 
-  // Page
+  // Giá trị lọc được chọn
+  selectedBranchId?: number;
+  selectedDeviceId?: number;
+  selectedYear: number = new Date().getFullYear();
+
+  // Phân trang
   loading: boolean = false;
   page: number = 0;
   size: number = 10;
   totalRecords: number = 0;
-  selectedPageSize: number = 10;
-  pageSizeOptions: number[] = [5, 10, 20, 30, 50, 100];
-  totalItems = 0;
-  currentPage = 0;
-  filter: any = {};
 
-  ref?: DynamicDialogRef
+  ref?: DynamicDialogRef;
 
-  constructor(private navigationService: NavigationService, private branchService: BranchService, private reportService: ReportService,
-    private cdr: ChangeDetectorRef, private dialogService: DialogService, private accountService: AccountService) { }
+  constructor(
+    private navigationService: NavigationService,
+    private branchService: BranchService,
+    private deviceService: DeviceService,
+    private reportService: ReportService,
+    private cdr: ChangeDetectorRef,
+    private dialogService: DialogService,
+    private accountService: AccountService
+  ) { }
 
   ngOnInit(): void {
-    this.branchService.getAll().subscribe(res => {
-      this.listBranchs = res;
-      const userBranch = _.find(res, item => item.name === this.accountService.getBranch());
-      this.filter.branchIds = [_.get(userBranch, 'id', null)];
-      Util.setCurrentMonthRange(this.filter, 'startDate', 'endDate');
-      this.loadData()
-    })
+    this.initYears();
+    this.loadBranchesAndDevices();
   }
 
-  loadData() {
+  private initYears(): void {
+    const currentYear = new Date().getFullYear();
+    this.years = [];
+    for (let y = currentYear + 1; y >= currentYear - 5; y--) {
+      this.years.push(y);
+    }
+  }
+
+  private loadBranchesAndDevices(): void {
     this.loading = true;
-    this.reportService.getMaintenanceReport(this.filter, this.page, this.size).subscribe({
+    this.branchService.getAll().subscribe({
+      next: (branches) => {
+        this.listBranchs = branches || [];
+        const userBranchName = this.accountService.getBranch();
+        const userBranch = _.find(this.listBranchs, item => item.name === userBranchName);
+        if (userBranch) {
+          this.selectedBranchId = userBranch.id;
+        }
+
+        // Tải danh sách thiết bị
+        this.deviceService.getAll().subscribe({
+          next: (devices) => {
+            this.allDevices = devices || [];
+            this.filterDevicesByBranch();
+
+            // Tự động chọn thiết bị đầu tiên nếu có
+            if (this.listDevices.length > 0) {
+              this.selectedDeviceId = this.listDevices[0].id;
+              this.search();
+            } else {
+              this.loading = false;
+              this.cdr.detectChanges();
+            }
+          },
+          error: (err) => {
+            this.loading = false;
+            Util.handleApiError(err);
+          }
+        });
+      },
+      error: (err) => {
+        this.loading = false;
+        Util.handleApiError(err);
+      }
+    });
+  }
+
+  onBranchChange(): void {
+    this.filterDevicesByBranch();
+    if (this.listDevices.length > 0) {
+      this.selectedDeviceId = this.listDevices[0].id;
+      this.search();
+    } else {
+      this.selectedDeviceId = undefined;
+      this.deviceInfo = null;
+      this.allItems = [];
+      this.data = [];
+      this.totalRecords = 0;
+      this.cdr.detectChanges();
+    }
+  }
+
+  private filterDevicesByBranch(): void {
+    if (!this.selectedBranchId) {
+      this.listDevices = [...this.allDevices];
+    } else {
+      this.listDevices = this.allDevices.filter(d => d.branch?.id === this.selectedBranchId);
+    }
+  }
+
+  search(): void {
+    if (!this.selectedDeviceId) {
+      Util.toastMessage('Vui lòng chọn thiết bị cần xem sổ theo dõi!', 'info');
+      return;
+    }
+
+    this.loading = true;
+    this.reportService.getDeviceMaintenanceLog(this.selectedDeviceId, this.selectedYear).subscribe({
       next: (res) => {
-        this.data = this.formatData(res.content)
-        this.totalRecords = res.totalElements;
+        this.deviceInfo = res?.deviceInfo || null;
+        this.allItems = res?.items || [];
+        this.totalRecords = this.allItems.length;
+        this.page = 0;
+        this.updatePagedData();
         this.loading = false;
         this.cdr.detectChanges();
       },
-      error: () => {
+      error: (err) => {
         this.loading = false;
+        Util.handleApiError(err);
       }
-    })
+    });
   }
 
-  onPageChange(event: any) {
-    this.page = event.first / event.rows;
+  onPageChange(event: any): void {
+    this.page = Math.floor(event.first / event.rows);
     this.size = event.rows;
-    this.loadData();
+    this.updatePagedData();
   }
 
-  search() {
-    this.loadData()
+  private updatePagedData(): void {
+    const start = this.page * this.size;
+    this.data = this.allItems.slice(start, start + this.size);
   }
 
-  formatData(data: any[]): any[] {
-    const map = new Map<string, any[]>();
-    data.forEach(item => {
-      const key = [
-        item.branchName,
-        item.deviceCode,
-        item.deviceName,
-        item.planCode,
-        item.dateTest
-      ].join('|');
-      if (!map.has(key)) {
-        map.set(key, []);
-      }
-      map.get(key)!.push(item);
-    });
-    const result: any[] = [];
-    map.forEach(group => {
-      group.forEach((item, index) => {
-        item._isFirst = index === 0;
-        item._rowspan = index === 0 ? group.length : 0;
-        result.push(item);
-      });
-    });
-
-    return result;
-  }
-
-  export() {
+  export(): void {
     const ref = this.dialogService.open(ExportTypeDialog, {
       header: 'Chọn kiểu xuất dữ liệu',
       width: 'auto',
@@ -114,55 +177,78 @@ export class Report2Page {
     });
     ref.onClose.subscribe((result) => {
       if (result) {
-        if (result == 1) {
-          this.exportXLSX()
+        if (result === 1) {
+          this.exportXLSX();
         } else {
-          this.exportPDF()
+          this.exportPDF();
         }
       }
     });
   }
 
-  exportXLSX() {
+  exportXLSX(): void {
+    if (!this.deviceInfo) {
+      Util.toastMessage('Không có dữ liệu để xuất file Excel!', 'info');
+      return;
+    }
+
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet('Báo cáo');
+    const worksheet = workbook.addWorksheet('BM08_SoTheoDoi');
 
     worksheet.pageSetup = {
-      paperSize: 9,
+      paperSize: 9, // A4
       orientation: 'landscape',
       fitToPage: true,
-      fitToHeight: 1,
+      fitToHeight: 0,
       fitToWidth: 1
     };
+
+    // Header 1: Tiêu đề biểu mẫu
     worksheet.mergeCells('A1:I1');
-    worksheet.getCell('A1').value = 'SỔ THEO DÕI BẢO DƯỠNG THIẾT BỊ';
-    worksheet.getCell('A1').font = { bold: true, size: 14 };
-    worksheet.getCell('A1').alignment = { horizontal: 'center' };
+    worksheet.getCell('A1').value = 'SỔ THEO DÕI SỬA CHỮA, BẢO DƯỠNG THIẾT BỊ';
+    worksheet.getCell('A1').font = { bold: true, size: 15, name: 'Times New Roman' };
+    worksheet.getCell('A1').alignment = { horizontal: 'center', vertical: 'middle' };
 
+    // Header 2: Năm theo dõi
     worksheet.mergeCells('A2:I2');
-    worksheet.getCell('A2').value = 'Đơn vị: LED; Xưởng LED - Điện tử & TBCS';
-    worksheet.getCell('A2').alignment = { horizontal: 'center' };
+    worksheet.getCell('A2').value = `Năm ${this.selectedYear}`;
+    worksheet.getCell('A2').font = { bold: true, italic: true, size: 12, name: 'Times New Roman' };
+    worksheet.getCell('A2').alignment = { horizontal: 'center', vertical: 'middle' };
 
-    worksheet.mergeCells('A3:I3');
-    worksheet.getCell('A3').value = `Thời gian: từ ngày ${this.filter.startDate ? (new Date(this.filter.startDate)).toLocaleDateString() : ''} đến ngày ${this.filter.endDate ? (new Date(this.filter.endDate)).toLocaleDateString() : ''}`;
-    worksheet.getCell('A3').alignment = { horizontal: 'center' };
+    // Header 3: Thông tin Đơn vị và Thiết bị
+    worksheet.mergeCells('A3:E3');
+    worksheet.getCell('A3').value = `Đơn vị: ${this.deviceInfo?.branchName ? 'LED; Xưởng LED - Điện tử & TBCS; ' + this.deviceInfo.branchName : '---'}`;
+    worksheet.getCell('A3').font = { bold: true, size: 11, name: 'Times New Roman' };
+    worksheet.getCell('A3').alignment = { horizontal: 'left', vertical: 'middle' };
 
-    worksheet.addRow([]);
+    worksheet.mergeCells('F3:I3');
+    worksheet.getCell('F3').value = `Thiết bị: ${this.deviceInfo?.qrCode || this.deviceInfo?.deviceCode || ''}; ${this.deviceInfo?.deviceName || ''}`;
+    worksheet.getCell('F3').font = { bold: true, size: 11, name: 'Times New Roman' };
+    worksheet.getCell('F3').alignment = { horizontal: 'right', vertical: 'middle' };
+
+    worksheet.addRow([]); // Dòng trống cách biệt
+
+    // Header 9 cột chuẩn BM08
     const headerRow = worksheet.addRow([
       'STT',
-      'Ngành',
-      'Mã thiết bị',
-      'Tên thiết bị',
-      'Mã KH',
-      'Đợt bảo trì',
-      'Nội dung thực hiện',
-      'Người kiểm tra',
-      'Trạng thái'
+      'Ngày tháng',
+      'Thiết bị',
+      'Dây chuyền',
+      'Nội dung sửa chữa / bảo dưỡng',
+      'Thời gian dừng máy (h)',
+      'Người thực hiện',
+      'Vật tư sử dụng',
+      'Ghi chú'
     ]);
 
     headerRow.eachCell(cell => {
-      cell.font = { bold: true };
-      cell.alignment = { horizontal: 'center', vertical: 'middle' };
+      cell.font = { bold: true, size: 11, name: 'Times New Roman' };
+      cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFEFEFEF' }
+      };
       cell.border = {
         top: { style: 'thin' },
         left: { style: 'thin' },
@@ -170,137 +256,269 @@ export class Report2Page {
         right: { style: 'thin' }
       };
     });
-    this.data.forEach((item, index) => {
+
+    // Dữ liệu
+    this.allItems.forEach((item) => {
+      const sttDisplay = `${item.stt}${item.isMaintenance ? '[*]' : ''}`;
       const row = worksheet.addRow([
-        index + 1,
-        item.branchName,
-        item.deviceCode,
+        sttDisplay,
+        item.date,
         item.deviceName,
-        item.planCode,
-        this.formatDate(item.dateTest),
-        item.criticalName,
-        item.committee,
-        item.result
+        item.lineName || '---',
+        item.content,
+        item.downtimeStr || '---',
+        item.performer || '---',
+        item.supplies || '---',
+        item.note || '---'
       ]);
 
-      row.eachCell(cell => {
-        cell.alignment = { vertical: 'middle', wrapText: true };
+      row.eachCell((cell, colNumber) => {
+        cell.font = { size: 11, name: 'Times New Roman' };
         cell.border = {
           top: { style: 'thin' },
           left: { style: 'thin' },
           bottom: { style: 'thin' },
           right: { style: 'thin' }
         };
+        // Canh lề từng cột
+        if (colNumber === 1 || colNumber === 2 || colNumber === 4 || colNumber === 6) {
+          cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+        } else if (colNumber === 5 || colNumber === 8 || colNumber === 9) {
+          cell.alignment = { horizontal: 'left', vertical: 'middle', wrapText: true };
+        } else {
+          cell.alignment = { horizontal: 'left', vertical: 'middle', wrapText: true };
+        }
       });
     });
+
+    // Cấu hình chiều rộng cột
     worksheet.columns = [
-      { width: 6 },
-      { width: 25 },
-      { width: 18 },
-      { width: 40 },
-      { width: 35 },
-      { width: 18 },
-      { width: 60 },
-      { width: 25 },
-      { width: 15 }
+      { width: 8 },  // STT
+      { width: 15 }, // Ngày tháng
+      { width: 30 }, // Thiết bị
+      { width: 18 }, // Dây chuyền
+      { width: 50 }, // Nội dung
+      { width: 18 }, // Dừng máy
+      { width: 22 }, // Người thực hiện
+      { width: 25 }, // Vật tư
+      { width: 18 }  // Ghi chú
     ];
+
+    // Chân trang BM08
     worksheet.addRow([]);
     const footerIndex = worksheet.rowCount + 1;
-    worksheet.addRow(['RĐ.QT15.BM02a. Ban hành lần 2']);
-    worksheet.mergeCells(`A${footerIndex}:H${footerIndex}`);
+    worksheet.addRow(['RĐ.QT15.BM08 Ban hành lần 1']);
+    worksheet.mergeCells(`A${footerIndex}:E${footerIndex}`);
     const footerCell = worksheet.getCell(`A${footerIndex}`);
-    footerCell.font = { italic: true };
+    footerCell.font = { italic: true, size: 10, name: 'Times New Roman' };
     footerCell.alignment = { horizontal: 'left' };
+
     workbook.xlsx.writeBuffer().then(buffer => {
       saveAs(
         new Blob([buffer], {
           type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         }),
-        'bao-cao-bao-duong-thiet-bi.xlsx'
+        `So-theo-doi-SC-BD-${this.deviceInfo?.deviceCode || 'BM08'}-${this.selectedYear}.xlsx`
       );
+      Util.showSuccessMessage('Xuất file Excel thành công!');
     });
   }
 
-  exportPDF() {
-    const printContents = document.getElementById('print-section')?.innerHTML;
-    if (!printContents) return;
+  exportPDF(): void {
+    if (!this.deviceInfo) {
+      Util.toastMessage('Không có dữ liệu để in!', 'info');
+      return;
+    }
 
-    const popupWin = window.open('', '_blank', 'width=1200,height=800');
+    const origin = window.location.origin;
+    const logoUrl = `${origin}/assets/imgs/logo-rang-dong.png`;
+
+    const branchName = this.deviceInfo?.branchName
+      ? `LED; Xưởng LED - Điện tử & TBCS; ${this.deviceInfo.branchName}`
+      : '---';
+    const deviceName = `${this.deviceInfo?.qrCode || this.deviceInfo?.deviceCode || ''}; ${this.deviceInfo?.deviceName || ''}`;
+
+    let rowsHtml = '';
+    if (this.allItems && this.allItems.length > 0) {
+      this.allItems.forEach((item) => {
+        const sttDisplay = `${item.stt}${item.isMaintenance ? '[*]' : ''}`;
+        rowsHtml += `
+          <tr>
+            <td style="text-align: center; font-weight: bold;">${sttDisplay}</td>
+            <td style="text-align: center;">${item.date || ''}</td>
+            <td>${item.deviceName || ''}</td>
+            <td style="text-align: center;">${item.lineName || '---'}</td>
+            <td style="white-space: pre-line; text-align: left;">${item.content || ''}</td>
+            <td style="text-align: center; font-weight: bold;">${item.downtimeStr || '---'}</td>
+            <td>${item.performer || '---'}</td>
+            <td>${item.supplies || '---'}</td>
+            <td>${item.note || '---'}</td>
+          </tr>
+        `;
+      });
+    } else {
+      rowsHtml = `
+        <tr>
+          <td colspan="9" style="text-align: center; padding: 20px; font-style: italic;">
+            Chưa có dữ liệu sửa chữa hoặc bảo dưỡng nào cho thiết bị trong năm ${this.selectedYear}.
+          </td>
+        </tr>
+      `;
+    }
+
+    const popupWin = window.open('', '_blank', 'width=1300,height=850');
     if (!popupWin) return;
 
     popupWin.document.open();
     popupWin.document.write(`
+    <!DOCTYPE html>
     <html>
       <head>
-        <title>In báo cáo bảo dưỡng thiết bị</title>
+        <meta charset="utf-8">
+        <title>SỔ THEO DÕI SỬA CHỮA, BẢO DƯỠNG THIẾT BỊ - ${this.deviceInfo?.deviceCode || 'BM08'}</title>
         <style>
           @page {
             size: A4 landscape;
-            margin: 10mm 10mm 15mm 10mm; /* Tăng margin bottom của trang lên 15mm */
+            margin: 10mm 12mm 12mm 12mm;
+          }
+
+          * {
+            box-sizing: border-box;
+          }
+
+          body {
+            font-family: "Times New Roman", Times, serif;
+            margin: 0;
+            padding: 0;
+            color: #000;
+            background: #fff;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+          }
+
+          .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: none;
+            margin-bottom: 12px;
+          }
+
+          .header-table td {
+            border: none;
+            padding: 2px 4px;
+            vertical-align: middle;
+          }
+
+          .title-main {
+            font-size: 14pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+
+          .title-sub {
+            font-size: 11pt;
+            font-weight: bold;
+            font-style: italic;
+            margin-top: 3px;
+          }
+
+          .info-box {
+            font-size: 9.5pt;
+            line-height: 1.4;
+          }
+
+          table.data-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            margin-bottom: 8px;
+          }
+
+          table.data-table th,
+          table.data-table td {
+            border: 1px solid #000;
+            padding: 5px 6px;
+            font-size: 9pt;
+            vertical-align: middle;
+            word-wrap: break-word;
+          }
+
+          table.data-table th {
+            background-color: #f2f2f2 !important;
+            font-weight: bold;
+            text-align: center;
+          }
+
+          .print-footer {
+            margin-top: 8px;
+            font-size: 8.5pt;
+            font-style: italic;
+            text-align: left;
           }
 
           @media print {
             body {
-              font-family: Arial, sans-serif;
-              margin: 0;
-              padding-bottom: 30px; /* Tạo khoảng cách an toàn ở cuối body */
-            }
-
-            table {
               width: 100%;
-              border-collapse: collapse;
-              table-layout: auto;
-              margin-bottom: 10px;
-            }
-
-            th, td {
-              border: 1px solid #000;
-              padding: 4px;
-              font-size: 11px; /* Giảm nhẹ font size để bảng gọn hơn */
-              text-align: center;
-              vertical-align: middle;
-              word-wrap: break-word;
-            }
-
-            /* Ẩn các thành phần thừa của PrimeNG */
-            .p-paginator,
-            .p-paginator-bottom,
-            .p-datatable-footer,
-            .p-paginator-current {
-              display: none !important;
-            }
-
-            .print-footer {
-              position: fixed;
-              bottom: 0; /* Đặt sát mép dưới của lề trang */
-              right: 0;
-              width: 100%;
-              text-align: right;
-              font-size: 10px;
-              font-style: italic;
-              background: white; /* Đảm bảo nền trắng để che nội dung nếu bị đè */
-              padding-top: 5px;
             }
           }
         </style>
       </head>
-      <body onload="window.print(); window.close();">
-        <div class="content-wrapper">
-          ${printContents}
-        </div>
+      <body>
+        <!-- Header 3 khối chuẩn BM08 -->
+        <table class="header-table">
+          <tr>
+            <td style="width: 22%; text-align: left;">
+              <img src="${logoUrl}" style="max-height: 44px; object-fit: contain;" />
+            </td>
+            <td style="width: 48%; text-align: center;">
+              <div class="title-main">SỔ THEO DÕI SỬA CHỮA, BẢO DƯỠNG THIẾT BỊ</div>
+              <div class="title-sub">Năm ${this.selectedYear}</div>
+            </td>
+            <td style="width: 30%; text-align: right;" class="info-box">
+              <div><strong>Đơn vị:</strong> ${branchName}</div>
+              <div style="margin-top: 3px;"><strong>Thiết bị:</strong> <b>${deviceName}</b></div>
+            </td>
+          </tr>
+        </table>
+
+        <!-- Bảng 9 cột chuẩn BM08 fit 100% không cuộn -->
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width: 5%;">STT</th>
+              <th style="width: 9%;">Ngày tháng</th>
+              <th style="width: 18%;">Thiết bị</th>
+              <th style="width: 10%;">Dây chuyền</th>
+              <th style="width: 30%;">Nội dung sửa chữa / bảo dưỡng</th>
+              <th style="width: 8%;">Thời gian dừng máy (h)</th>
+              <th style="width: 9%;">Người thực hiện</th>
+              <th style="width: 6%;">Vật tư sử dụng</th>
+              <th style="width: 5%;">Ghi chú</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml}
+          </tbody>
+        </table>
+
+        <!-- Chân trang BM08 -->
         <div class="print-footer">
-          RĐ.QT15.BM02a. Ban hành lần 2
+          RĐ.QT15.BM08 Ban hành lần 1
         </div>
+
+        <script>
+          window.onload = function() {
+            setTimeout(function() {
+              window.print();
+              window.close();
+            }, 300);
+          };
+        </script>
       </body>
     </html>
-  `);
+    `);
     popupWin.document.close();
-  }
-
-  formatDate(date: string | Date): string {
-    if (!date) return '';
-    const d = new Date(date);
-    return d.toLocaleDateString('vi-VN');
   }
 
   public onBack(): void {

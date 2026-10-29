@@ -17,6 +17,7 @@ import * as ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import { Util } from '../../../../core/utils/utils-function';
 import dayjs from 'dayjs';
+import { CheckListDeviceDialog } from '../Dialogs/check-list-device-dialog/check-list-device.dialog';
 
 @Component({
   selector: 'daily-check-report',
@@ -166,6 +167,23 @@ export class DailyCheckReportComponent {
     if (this.baseTable && this.fromMonth && this.toMonth) {
       this.baseTable.loadDataLazy({ first: 0, rows: 50 });
     }
+  }
+
+  get isPlanScope(): boolean {
+    return this.router.url.includes('/Plans');
+  }
+
+  openCheckListDialog(row: any) {
+    this.ref = this.dialogService.open(CheckListDeviceDialog, {
+      header: `Lịch kiểm tra thiết bị: ${row.device?.name ?? ''} (${row.device?.code ?? ''})`,
+      width: '80vw',
+      modal: true,
+      closable: true,
+      data: {
+        planDetail: row,
+        plan: row.plan
+      }
+    });
   }
 
   // Open month picker dialog

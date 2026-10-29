@@ -1,82 +1,105 @@
-<div class="p-1">
+<div class="error-report-container p-1">
 
-  <div class="row my-3">
+  <div class="row my-2">
     <div class="col-12">
       <p-floatlabel variant="on">
         <input pInputText id="name" name="name" [(ngModel)]="data.name" autocomplete="off" [fluid]="true" autofocus />
-        <label for="name">Tên lỗi</label>
+        <label for="name">{{ data.severity === 3 ? 'Lý do dừng / Sản phẩm đổi sang' : 'Tên lỗi' }}</label>
       </p-floatlabel>
     </div>
   </div>
 
-  <div class="row my-3">
+  <div class="row my-2">
     <div class="col-12">
-      <textarea pTextarea class="form-control" rows="5" placeholder="Mô tả ..." id="errorDescription" name="errorDescription"
+      <textarea pTextarea class="form-control" rows="3" placeholder="Mô tả chi tiết..." id="errorDescription" name="errorDescription"
           [(ngModel)]="data.errorDescription"></textarea>
     </div>
   </div>
 
-  <div class="row my-3">
-    <div class="col-6">
+  <div class="row my-2">
+    <div class="col-12 col-md-6 mb-2 mb-md-0">
       <p-floatlabel variant="on">
         <p-datepicker [(ngModel)]="data.timeReported" appDateConvert [withTime]="true" [iconDisplay]="'input'" [showIcon]="true"
           name="timeReported" [dateFormat]="'dd-mm-yy'" appendTo="body" [inputSize]="100" [showTime]="true" hourFormat="24"/>
-        <label for="timeReported">Ngày gặp sự cố</label>
+        <label for="timeReported">{{ data.severity === 3 ? 'Thời gian bắt đầu dừng' : 'Ngày gặp sự cố' }}</label>
       </p-floatlabel>
     </div>
 
-    <div class="col-6">
+    <div class="col-12 col-md-6">
       <p-floatlabel variant="on">
         <p-select [(ngModel)]="data.severity" [options]="listSeverity" optionLabel="label" [fluid]="true"
           optionValue="value" [showClear]="true" [appendTo]="'body'" id="severity" name="severity" required>
         </p-select>
-        <label for="severity">Loại sự cố</label>
+        <label for="severity">Loại sự cố / Dừng máy</label>
       </p-floatlabel>
     </div>
   </div>
 
-  
-  <div class="table-responsive">
-    <p-table [value]="listError" responsiveLayout="scroll">
+  <!-- Bổ sung trường chọn thời gian bắt đầu chạy lại khi là Dừng máy đổi sản phẩm -->
+  <div class="row my-2" *ngIf="data.severity === 3">
+    <div class="col-12 col-md-6">
+      <p-floatlabel variant="on">
+        <p-datepicker [(ngModel)]="data.timeRepaired" appDateConvert [withTime]="true" [iconDisplay]="'input'" [showIcon]="true"
+          name="timeRepaired" [dateFormat]="'dd-mm-yy'" appendTo="body" [inputSize]="100" [showTime]="true" hourFormat="24"/>
+        <label for="timeRepaired">Thời gian bắt đầu chạy lại (nếu đã xong)</label>
+      </p-floatlabel>
+      <small class="text-muted d-block mt-1">Để trống nếu máy đang dừng và chưa chạy lại</small>
+    </div>
+  </div>
+
+  <div class="table-container my-3">
+    <p-table [value]="listError" styleClass="p-datatable-sm error-table" [scrollable]="true">
       <ng-template #caption>
-        <div class="flex items-center justify-between">
-          <span class="text-xl font-bold">Danh sách lỗi</span>
+        <div class="d-flex align-items-center justify-content-between">
+          <span class="fw-bold">Danh sách sự cố / Dừng máy</span>
+          <span class="badge bg-secondary" *ngIf="listError.length">{{ listError.length }}</span>
         </div>
       </ng-template>
       <ng-template pTemplate="header">
         <tr>
-          <th>STT</th>
-          <th>Tên sự cố</th>
-          <th>Thời gian gặp sự cố</th>
-          <th>Loại sự cố</th>
-          <th>Thao tác</th>
+          <th style="width: 35px" class="text-center">#</th>
+          <th>Tên sự cố / Lý do</th>
+          <th style="width: 125px">Thời gian</th>
+          <th style="width: 110px">Loại</th>
+          <th style="width: 75px" class="text-center">Thao tác</th>
         </tr>
       </ng-template>
 
       <ng-template pTemplate="body" let-row let-i="rowIndex">
         <tr>
-          <td>{{ i + 1 }}</td>
-          <td>{{ row.name }}</td>
-          <td>{{ row.timeReported | date: 'dd/MM/yyyy' }}</td>
-          <td>{{ sevirityStatus(row.severity) }}</td>
-          <td class="text-center">
-            <p-button icon="pi pi-pencil" severity="warn" (onClick)="editRow(i)" styleClass="mx-2">
+          <td class="text-center text-muted">{{ i + 1 }}</td>
+          <td>
+            <div class="fw-semibold text-break lh-sm">{{ row.name }}</div>
+          </td>
+          <td>
+            <div class="small fw-medium">{{ row.timeReported | date: 'dd/MM/yyyy HH:mm' }}</div>
+            <small *ngIf="row.timeRepaired" class="text-success d-block fw-semibold">
+              <i class="pi pi-check me-1"></i>Chạy lại: {{ row.timeRepaired | date: 'HH:mm' }}
+            </small>
+          </td>
+          <td>
+            <span class="badge badge-severity" [ngClass]="row.severity === 0 ? 'text-bg-danger' : (row.severity === 3 ? 'text-bg-success' : 'text-bg-warning')">
+              {{ sevirityStatus(row.severity) }}
+            </span>
+          </td>
+          <td class="text-center text-nowrap">
+            <p-button icon="pi pi-pencil" severity="warn" [text]="true" size="small" (onClick)="editRow(i)" pTooltip="Sửa">
             </p-button>
-            <p-button icon="pi pi-trash" severity="danger" (onClick)="deleteRow(i)" styleClass="mx-2">
+            <p-button icon="pi pi-trash" severity="danger" [text]="true" size="small" (onClick)="deleteRow(i)" pTooltip="Xóa">
             </p-button>
           </td>
         </tr>
       </ng-template>
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="99" class="text-center">Chưa có đợt kiểm tra nào</td>
+          <td colspan="5" class="text-center text-muted py-3">Chưa có sự cố nào</td>
         </tr>
       </ng-template>
     </p-table>
   </div>
 
-  <div class="d-flex justify-content-end gap-2 mt-4">
+  <div class="d-flex justify-content-end gap-2 mt-3">
     <p-button label="Lưu" severity="success" (onClick)="submit()"></p-button>
-    <p-button label="Đóng" (onClick)="close()"></p-button>
+    <p-button label="Đóng" severity="secondary" [text]="true" (onClick)="close()"></p-button>
   </div>
 </div>

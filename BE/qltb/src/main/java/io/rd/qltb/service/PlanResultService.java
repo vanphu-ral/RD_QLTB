@@ -313,4 +313,46 @@ public class PlanResultService {
         return planResult;
     }
 
+    public List<io.rd.qltb.model.response.CheckedDeviceTodayDTO> getMyCheckedToday(String username) {
+        String today = java.time.LocalDate.now().toString();
+        List<Object[]> rawList = planResultRepository.findCheckedDevicesToday(username, today);
+        List<io.rd.qltb.model.response.CheckedDeviceTodayDTO> result = new java.util.ArrayList<>();
+        if (rawList == null || rawList.isEmpty()) {
+            return result;
+        }
+
+        for (Object[] row : rawList) {
+            Long deviceId = row[0] != null ? ((Number) row[0]).longValue() : null;
+            String deviceCode = row[1] != null ? row[1].toString() : "";
+            String deviceName = row[2] != null ? row[2].toString() : "";
+            String qrCode = row[3] != null ? row[3].toString() : "";
+            String lineName = row[4] != null ? row[4].toString() : "";
+            String teamName = row[5] != null ? row[5].toString() : "";
+            String branchName = row[6] != null ? row[6].toString() : "";
+            Long planResultId = row[7] != null ? ((Number) row[7]).longValue() : null;
+            Integer status = row[8] != null ? ((Number) row[8]).intValue() : null;
+
+            LocalDateTime lastCheckedTime = null;
+            if (row[9] instanceof java.sql.Timestamp) {
+                lastCheckedTime = ((java.sql.Timestamp) row[9]).toLocalDateTime();
+            } else if (row[9] instanceof LocalDateTime) {
+                lastCheckedTime = (LocalDateTime) row[9];
+            }
+
+            result.add(io.rd.qltb.model.response.CheckedDeviceTodayDTO.builder()
+                    .deviceId(deviceId)
+                    .deviceCode(deviceCode)
+                    .deviceName(deviceName)
+                    .qrCode(qrCode)
+                    .lineName(lineName)
+                    .teamName(teamName)
+                    .branchName(branchName)
+                    .planResultId(planResultId)
+                    .status(status)
+                    .lastCheckedTime(lastCheckedTime)
+                    .build());
+        }
+        return result;
+    }
+
 }

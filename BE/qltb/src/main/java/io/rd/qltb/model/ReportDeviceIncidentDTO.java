@@ -23,6 +23,8 @@ public class ReportDeviceIncidentDTO {
     private String docNumber;
     private String listUser;
     private String division;
+    private String formCode;
+    private Integer numberOfIssuances;
     private LocalDateTime createdAt;
     private String createdBy;
     private LocalDateTime updatedAt;

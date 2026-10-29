@@ -11,6 +11,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { CheckDeviceDialog } from '../../../../PlanManager/Plan/Dialogs/check-device-dialog/check-device.dialog';
 import _ from 'lodash';
 import { RepairErrorDialog } from '../../../../PlanManager/Plan/Dialogs/repair-error-dialog/repair-error.dialog';
+import { ErrorReportDialog } from '../../../../PlanManager/Plan/Dialogs/error-report-dialog/error-report.dialog';
 import { Util } from '../../../../../core/utils/utils-function';
 import { ErrorReport } from '../../../../../models/PlanManger/error-report.model';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -109,13 +110,14 @@ export class InformationTabComponent implements OnChanges {
     this.errorReportService.findByPlanResultId(deviceId).subscribe(res => {
       this.listError = res;
       this.listRepaired = res.filter((item: any) => item.isRepaired);
-      this.listDeviceStops = res.filter((item: any) => item.isRepaired && item.severity == 0).map((error: any) => ({
-        ...error,
-        totalStopTime: this.calculateStopTime(
-          error.timeReported!,
-          error.timeRepaired
-        )
-      }));
+      this.listDeviceStops = res
+        .filter((item: any) => item.severity === 0 || item.severity === 3)
+        .map((error: any) => ({
+          ...error,
+          totalStopTime: error.timeRepaired
+            ? this.calculateStopTime(error.timeReported!, error.timeRepaired)
+            : 'Đang dừng máy'
+        }));
       this.cdr.detectChanges();
     });
   }
@@ -201,9 +203,102 @@ export class InformationTabComponent implements OnChanges {
         return 'Bất thường';
       case 2:
         return 'Nhẹ';
+      case 3:
+        return 'Dừng máy đổi sản phẩm';
       default:
         return '';
     }
+  }
+
+  async openCreateStopDialog() {
+    if (!this.listPlanAudit || this.listPlanAudit.length === 0) {
+      await this.loadPlan(this.model.qrCode);
+    }
+    let targetPlanResultId: any = null;
+    if (this.listPlanAudit && this.listPlanAudit.length > 0) {
+      const todayAudit = this.listPlanAudit.find((x: any) => x.planResultId) || this.listPlanAudit[0];
+      targetPlanResultId = todayAudit.planResultId;
+      if (!targetPlanResultId && todayAudit.plan) {
+        try {
+          const payload = {
+            dateTest: new Date(),
+            userTest: this.accountService.getUser()?.fullName || '',
+            status: 1,
+            planDetail: todayAudit.plan,
+            statusRepair: 1
+          };
+          const res = await firstValueFrom(this.planResultService.create(payload));
+          todayAudit.planResultId = res;
+          targetPlanResultId = res;
+        } catch (e) {
+          console.error('Error creating planResult:', e);
+        }
+      }
+    }
+
+    const initReport: any = new ErrorReport();
+    initReport.severity = 3;
+    initReport.name = 'Dừng máy đổi sản phẩm sản xuất';
+    initReport.timeReported = new Date();
+    if (targetPlanResultId) {
+      initReport.planResult = { id: targetPlanResultId };
+    }
+
+    const ref = this.dialogService.open(ErrorReportDialog, {
+      header: `Khai báo dừng máy / Đổi sản phẩm`,
+      width: '560px',
+      breakpoints: {
+        '960px': '75vw',
+        '768px': '95vw'
+      },
+      modal: true,
+      closable: true,
+      data: {
+        listError: [],
+        initialData: {
+          severity: 3,
+          name: 'Dừng máy đổi sản phẩm sản xuất',
+          timeReported: new Date(),
+          planResult: targetPlanResultId ? { id: targetPlanResultId } : null
+        }
+      }
+    });
+
+    ref.onClose.subscribe((result) => {
+      if (result && result.length > 0) {
+        const savedItem = result[result.length - 1];
+        if (targetPlanResultId) {
+          savedItem.planResult = { id: targetPlanResultId };
+        }
+        this.errorReportService.create(savedItem).subscribe({
+          next: () => {
+            Util.showSuccessMessage('Khai báo dừng máy thành công');
+            this.loadHistoryError(this.model.id);
+          },
+          error: () => {
+            Util.ConfirmMessage('Lưu khai báo dừng máy thất bại', 'error');
+          }
+        });
+      }
+    });
+  }
+
+  confirmResumeDevice(event: any, row: any) {
+    Util.confirmAndExecute(
+      event,
+      'Xác nhận thiết bị đã bắt đầu chạy lại?',
+      () => {
+        row.isRepaired = true;
+        row.timeRepaired = new Date();
+        row.repairedBy = this.accountService.getUser()?.fullName || '';
+        return this.errorReportService.update(row.id as number, row);
+      },
+      'Đã cập nhật thời gian chạy lại máy',
+      'Lỗi khi cập nhật thời gian chạy lại',
+      this.comfirmService,
+      this.messageService,
+      () => this.loadHistoryError(this.model.id)
+    );
   }
 
   statusToString(status: number) {

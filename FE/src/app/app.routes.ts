@@ -190,6 +190,12 @@ export const routes: Routes = [
         component: AppLayout,
         loadChildren: () => import('./shared/pages/Records/ReportDeviceIncident/report-device-incident.routes').then(m => m.default)
     },
+    // Forms Manager (Biểu mẫu tập trung)
+    {
+        path: 'Forms',
+        component: AppLayout,
+        loadChildren: () => import('./shared/pages/FormsManager/forms-manager.routes').then(m => m.default)
+    },
     // Report Manager
     {
         path: 'Report',

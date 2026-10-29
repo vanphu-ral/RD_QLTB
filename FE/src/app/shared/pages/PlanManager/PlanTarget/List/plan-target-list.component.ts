@@ -31,6 +31,7 @@ export class PlanTargetListComponent {
     { Field: 'code', Header: 'Mã kế hoạch mục tiêu', IsSearch: true, TypeSearch: 'text' },
     { Field: 'name', Header: 'Tên kế hoạch mục tiêu', IsSearch: true, TypeSearch: 'text' },
     { Field: 'branch.name', Header: 'Ngành áp dụng', IsSearch: true, TypeSearch: 'select', Options: [], style: { 'min-width': '200px', 'width': '200px' } },
+    { Field: 'numberOfIssuances', Header: 'Lần ban hành', IsSearch: true, TypeSearch: 'text', style: { 'width': '120px', 'text-align': 'center' } },
     { Field: 'createdBy', Header: 'Người tạo', IsSearch: true, TypeSearch: 'text' },
     { Field: 'createdAt', Header: 'Ngày tạo', IsSearch: true, TypeSearch: 'date' },
     { Field: 'updatedAt', Header: 'Ngày cập nhật', IsSearch: true, TypeSearch: 'date', style: { 'min-width': '150px' } },

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { BaseTableComponent } from '../../../../base/base-table-component/base-table.component';
 import { SharedModule } from '../../../../../share.module';
 import { FormsModule } from '@angular/forms';
@@ -6,6 +6,8 @@ import { Column } from '../../../../models/Core/column.model';
 import { ReportDeviceIncidentService } from '../service/report-device-incident.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ErrorReportSeriousDialog } from '../Dialogs/error-report-serious-dialog/error-report-serious.dialog';
+import { QuickSelectIncidentDialog } from '../Dialogs/quick-select-incident-dialog/quick-select-incident.dialog';
+import _ from 'lodash';
 
 @Component({
   selector: 'report-device-incident-list',
@@ -15,6 +17,7 @@ import { ErrorReportSeriousDialog } from '../Dialogs/error-report-serious-dialog
   styleUrls: ['./report-device-incident-list.component.scss'],
 })
 export class ReportDeviceIncidentListComponent {
+  @ViewChild(BaseTableComponent) baseTable!: BaseTableComponent<any>;
   selectedStatus: string | null = null;
 
   ref?: DynamicDialogRef;
@@ -30,13 +33,36 @@ export class ReportDeviceIncidentListComponent {
 
   constructor(public reportDeviceIncidentService: ReportDeviceIncidentService, private dialogService: DialogService) {}
 
+  openQuickSelect() {
+    this.dialogService.open(QuickSelectIncidentDialog, {
+      header: 'Khai báo nhanh biên bản sự cố thiết bị',
+      width: '85vw',
+      modal: true,
+      closable: true,
+    });
+  }
+
   viewReport(row: any) {
     const ref = this.dialogService.open(ErrorReportSeriousDialog, {
-      header: 'Xem biên bản thiết bị sự cố',
-      width: '70%',
-      data: { data: row },
+      header: 'Biên bản sự cố thiết bị (RĐ.QT15.BM06)',
+      width: '75%',
+      data: { data: row, isEditMode: false },
       modal: true,
     });
     this.ref = ref;
+  }
+
+  editReport(row: any) {
+    const ref = this.dialogService.open(ErrorReportSeriousDialog, {
+      header: 'Sửa biên bản sự cố thiết bị (RĐ.QT15.BM06)',
+      width: '75%',
+      data: { data: _.cloneDeep(row), isEditMode: true },
+      modal: true,
+    });
+    ref.onClose.subscribe((res) => {
+      if (res) {
+        this.baseTable.loadData();
+      }
+    });
   }
 }

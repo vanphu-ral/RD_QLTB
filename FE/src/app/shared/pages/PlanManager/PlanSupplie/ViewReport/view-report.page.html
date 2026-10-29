@@ -4,47 +4,52 @@
             <p-table [value]="model.planSupplieDetails" dataKey="id" class="p-datatable-gridlines text-sm">
                 <ng-template pTemplate="header">
                     <tr>
-                        <th colspan="2" class="text-left">
-                            <img src="/assets/imgs/logo-rang-dong.png" style="width:150px;" />
-                            <div class="flex items-center mt-1">
-                                <label class="font-semibold">Đơn vị:&nbsp; {{ model.factory?.name }}</label>
+                        <th colspan="2" class="text-left" style="vertical-align: top;">
+                            <img src="/assets/imgs/logo-rang-dong.png" style="width:140px;" />
+                            <div class="flex items-center mt-2">
+                                <label class="font-semibold">Đơn vị:&nbsp; {{ model.branch?.name ? ('Ngành ' + model.branch.name) : (model.factory?.name || '') }}</label>
                             </div>
                         </th>
-                        <th colspan="6" class="text-center">
+                        <th colspan="6" class="text-center" style="vertical-align: middle;">
                             <div>
-                                <div><strong>KẾ HOẠCH VẬT TƯ, PHỤ TÙNG THAY THẾ</strong></div>
+                                <div style="font-size: 16px;"><strong>KẾ HOẠCH VẬT TƯ, PHỤ TÙNG THAY THẾ</strong></div>
                             </div>
-                            <div class="mt-2 flex justify-content-center gap-4">
+                            <div class="mt-2 flex justify-content-center gap-4 flex-wrap">
                                 <div class="flex align-items-center">
-                                    <span style="font-size: 1.2rem; font-family: sans-serif;">
+                                    <span style="font-size: 1.1rem; font-family: sans-serif;">
                                         {{ model.type === 'ANNUAL' ? '☑' : '☐' }}
                                     </span>
-                                    <span class="ml-1">Hàng năm / Năm: {{ model.fromDate | date: 'yyyy' }}</span>
+                                    <span class="ml-1">Hạng mục: {{ model.type === 'ANNUAL' ? (model.name || 'Hàng năm') : '................................................' }}</span>
                                 </div>
-                                <div class="flex align-items-center">
-                                    <span style="font-size: 1.2rem; font-family: sans-serif;">
-                                        {{ model.type != 'ANNUAL' ? '☑' : '☐' }}
-                                    </span>
-                                    <span class="ml-1">Phục vụ sửa chữa lớn, đại tu, cải tạo thiết bị</span>
+                                <div class="flex flex-col align-items-center">
+                                    <div class="flex align-items-center">
+                                        <span style="font-size: 1.1rem; font-family: sans-serif;">
+                                            {{ model.type !== 'ANNUAL' ? '☑' : '☐' }}
+                                        </span>
+                                        <span class="ml-1">Phục vụ sửa chữa lớn, đại tu, cải tạo thiết bị</span>
+                                    </div>
+                                    <div class="text-xs italic" style="font-size: 11px; margin-top: 2px;">
+                                        (theo mục tiêu kế hoạch số {{ model.targetPlanNumber || '.......' }} / {{ (model.fromDate || model.createdAt) | date: 'yyyy' }})
+                                    </div>
                                 </div>
                             </div>
                         </th>
-                        <th colspan="1">
-                            <div class="flex flex-col">
+                        <th colspan="1" style="vertical-align: top;">
+                            <div class="flex flex-col text-right">
                                 <label class="font-semibold">Số:&nbsp; {{ model.planNumber }}</label>
                             </div>
                         </th>
                     </tr>
 
-                    <tr class="text-center">
-                        <th style="width: 50px;">TT</th>
+                    <tr class="text-center font-bold">
+                        <th style="width: 45px;">Stt</th>
                         <th>Tên vật tư, phụ tùng</th>
-                        <th style="width: 80px;">SL</th>
-                        <th>Thuộc nhóm máy/ dây chuyền</th>
-                        <th>Ký mã hiệu, bản vẽ</th>
+                        <th style="width: 85px;">Số lượng</th>
+                        <th>Thuộc máy/ dây chuyền</th>
+                        <th>Ký mã hiệu, nhãn hiệu</th>
                         <th>Yêu cầu kỹ thuật</th>
                         <th>Nhà cung cấp/ nhà chế tạo</th>
-                        <th>Thời hạn cung cấp</th>
+                        <th style="width: 110px;">Thời hạn cung cấp</th>
                         <th>Ghi chú</th>
                     </tr>
                 </ng-template>
@@ -71,33 +76,38 @@
                     </tr>
                 </ng-template>
             </p-table>
-            <table id="nghemthu-details-table" class="table table-bordered table-hover" style="width: 100%;">
-                <thead>
-                    <tr>
-                        <th *ngFor="let g of listUserApproval" class="text-center">
-                            <div class="only-print italic"
-                                style="display: none; font-weight: normal; font-size: 11px; margin-bottom: 5px;">
-                                Ngày ...... tháng ...... năm 20....
-                            </div>
-                            {{ g.groupName }}
-                        </th>
-                    </tr>
-                    <tr>
-                        <td *ngFor="let g of listUserApproval" class="">
-                            <div *ngFor="let sig of g.signatures" style="margin-bottom: 10px;text-align: center;">
-                                <img *ngIf="sig" [src]="sig"
-                                    style="width: 120px; height: 60px; display: block; margin: 0 auto;">
-                                <span *ngIf="!sig" style="font-weight: bold;">Đã ký</span>
-                            </div>
-                        </td>
-                    </tr>
-                </thead>
-            </table>
+
+            <!-- Bảng chữ ký 4 bên có viền đóng khung chuẩn theo mẫu in -->
+            <div class="signature-section mt-4">
+                <table class="signature-table" style="width: 100%; border-collapse: collapse; border: 1px solid #000 !important;">
+                    <tbody>
+                        <tr>
+                            <td *ngFor="let g of displayApprovals" 
+                                class="text-center" 
+                                style="border: 1px solid #000 !important; vertical-align: top; padding: 8px 10px; width: 25%;">
+                                <div class="italic mb-1" style="font-weight: normal; font-size: 11px;">
+                                    Ngày {{ (model.createdAt || model.updatedAt) | date: 'dd' }} tháng {{ (model.createdAt || model.updatedAt) | date: 'MM' }} năm {{ (model.createdAt || model.updatedAt) | date: 'yyyy' }}
+                                </div>
+                                <div style="font-size: 13px; font-weight: bold; margin-bottom: 8px;">
+                                    {{ g.groupName }}
+                                </div>
+                                <div style="min-height: 70px; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                                    <ng-container *ngIf="g.signatures && g.signatures.length > 0">
+                                        <div *ngFor="let sig of g.signatures" style="margin-bottom: 4px;">
+                                            <img *ngIf="sig" [src]="sig" style="width: 110px; height: 55px; object-fit: contain; display: block; margin: 0 auto;">
+                                            <span *ngIf="!sig" style="font-weight: bold;">Đã ký</span>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <div class="mt-3 d-flex flex-column">
-            <span>(*) Ghi chú: Các đơn vị có thể bổ sung tùy theo đặc điểm từng máy móc công nghệ.</span>
-            <span class="mt-2">
-                {{ model.planNumber }}. Ban hành lần {{ model.numberOfIssuances }}
+        <div class="mt-2">
+            <span style="font-size: 11px; font-style: italic;">
+                (*) Ghi chú: các đơn vị có thể bổ sung nội dung tùy theo đặc điểm máy móc công nghệ.
             </span>
         </div>
     </div>

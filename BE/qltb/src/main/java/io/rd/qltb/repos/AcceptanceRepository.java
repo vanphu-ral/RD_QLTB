@@ -16,4 +16,5 @@ public interface AcceptanceRepository extends JpaRepository<Acceptance, Long> {
 
     Integer countByErrorReportId(Long id);
     List<Acceptance> findAllByStatusNotOrderByIdDesc(Integer status);
+    java.util.Optional<Acceptance> findFirstByStatusAndFormCodeIsNotNullOrderByIdDesc(Integer status);
 }

@@ -9,6 +9,8 @@ import { Device } from '../../../../models/DeviceManager/device.model';
 import { DialogService } from 'primeng/dynamicdialog';
 import { SearchDeviceDialog } from '../Dialog/search-device-dialog/search-device.dialog';
 import { Util } from '../../../../core/utils/utils-function';
+import { ActivatedRoute } from '@angular/router';
+import { PlanResultService } from '../../../PlanManager/Plan/Service/plan-result.service';
 
 @Component({
   selector: 'app-scan-qr-code',
@@ -32,11 +34,20 @@ export class ScanQrCodeComponent {
   scanType: number = 1;
 
   device: any = { line: {} };
+  checkedDevicesToday: any[] = [];
+  showHistoryDrawer: boolean = false;
 
-  constructor(private cdr: ChangeDetectorRef, private deviceService: DeviceService, private dialogService: DialogService) {
+  constructor(private cdr: ChangeDetectorRef, private deviceService: DeviceService, private dialogService: DialogService, private planResultService: PlanResultService, private route: ActivatedRoute) {
   }
 
   ngOnInit(): void {
+    this.loadCheckedDevicesToday();
+    this.route.queryParams.subscribe(params => {
+      if (params['qrCode']) {
+        this.getDeviceInfo(params['qrCode']);
+      }
+    });
+
     this.hints.set(DecodeHintType.POSSIBLE_FORMATS, [
       BarcodeFormat.QR_CODE,
       BarcodeFormat.CODE_128,
@@ -169,6 +180,33 @@ export class ScanQrCodeComponent {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  loadCheckedDevicesToday() {
+    this.planResultService.getMyCheckedToday().subscribe({
+      next: (res) => {
+        this.checkedDevicesToday = res || [];
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error loading checked devices today:', err);
+      }
+    });
+  }
+
+  selectDeviceFromHistory(item: any) {
+    if (item?.qrCode) {
+      this.getDeviceInfo(item.qrCode);
+      this.showHistoryDrawer = false;
+    }
+  }
+
+  statusToString(status: number) {
+    return Util.statusToString(status);
+  }
+
+  getSeverity(status: number): string {
+    return Util.statusToSeverity(status);
   }
 
 }

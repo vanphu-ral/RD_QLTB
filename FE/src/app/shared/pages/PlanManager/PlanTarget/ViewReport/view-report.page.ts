@@ -144,12 +144,10 @@ export class ViewReportPage extends BasePageComponent<any> {
     // 1. Định dạng độ rộng cột cho phù hợp với nội dung thiết bị
     worksheet.columns = [
       { width: 5 },   // TT
-      { width: 25 },  // Nội dung
+      { width: 35 },  // Nội dung
       { width: 25 },  // Mục tiêu
-      { width: 40 },  // Biện pháp thực hiện
+      { width: 35 },  // Biện pháp thực hiện
       { width: 15 },  // Thời hạn
-      { width: 20 },  // Mục tiêu thực hiện
-      { width: 15 },  // Giá trị đối chiếu
       { width: 20 },  // Người thực hiện
       { width: 20 },  // Đơn vị phối hợp
       { width: 15 }   // Ghi chú
@@ -159,7 +157,7 @@ export class ViewReportPage extends BasePageComponent<any> {
     // Dòng 1: Logo (Bạn cần xử lý thêm nếu muốn chèn logo thật, tạm thời để trống dòng này)
     worksheet.mergeCells('B2:I2');
     const titleCell = worksheet.getCell('B2');
-    titleCell.value = 'KẾ HOẠCH THỰC HIỆN MỤC TIÊU THIẾT BỊ';
+    titleCell.value = 'MỤC TIÊU QUẢN LÝ THIẾT BỊ';
     titleCell.font = { bold: true, size: 16 };
     titleCell.alignment = { horizontal: 'center' };
 
@@ -172,7 +170,7 @@ export class ViewReportPage extends BasePageComponent<any> {
 
     // Dòng 4: Thông tin đơn vị và mã kế hoạch
     const factoryCell = worksheet.getCell('A4');
-    factoryCell.value = 'Đơn vị: LED; Xưởng LED - Điện tử & TBCS'; // Fix cứng theo HTML của bạn hoặc dùng this.model.factory
+    factoryCell.value = 'Đơn vị: Ngành ' + (this.model.branch?.name || '');
     factoryCell.font = { italic: true };
 
     const codeCell = worksheet.getCell('J4');
@@ -182,8 +180,7 @@ export class ViewReportPage extends BasePageComponent<any> {
     // 3. TABLE HEADER (Khớp với HTML)
     const headerRow = worksheet.addRow([
       'TT', 'Nội dung', 'Mục tiêu', 'Biện pháp thực hiện',
-      'Thời hạn', 'Mục tiêu thực hiện', 'Giá trị đối chiếu',
-      'Người thực hiện', 'Đơn vị phối hợp', 'Ghi chú'
+      'Thời hạn', 'Người thực hiện', 'Đơn vị phối hợp', 'Ghi chú'
     ]);
 
     headerRow.eachCell((cell) => {
@@ -205,8 +202,6 @@ export class ViewReportPage extends BasePageComponent<any> {
         item.target,
         item.solution,
         this.frequencyToText(item.duaration),
-        this.targetTypeToText(item.targetType),
-        item.minValue,
         item.userAct,
         item.coordinationUnit,
         item.note
@@ -274,31 +269,130 @@ export class ViewReportPage extends BasePageComponent<any> {
     const popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
     if (!popupWin) return;
 
+    const planYear = this.model.year ? new Date(this.model.year).getFullYear() : '';
+
     popupWin.document.open();
     popupWin.document.write(`
+      <!DOCTYPE html>
       <html>
         <head>
-          <title>KẾ HOẠCH THỰC HIỆN MỤC TIÊU THIẾT BỊ - ${this.model.year}</title>
+          <title>MỤC TIÊU QUẢN LÝ THIẾT BỊ - ${planYear}</title>
           <style>
-            @media print {
-              @page { size: landscape; margin: 10mm; }
-              .only-print { display: block !important; }
-              body { -webkit-print-color-adjust: exact; font-family: 'Times New Roman', serif; }
-              .no-print { display: none; }
+            @page {
+              size: landscape;
+              margin: 8mm 10mm 14mm 10mm;
             }
-            table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-            th, td { border: 1px solid #000 !important; padding: 8px; font-size: 12px; }
-            .text-center { text-center: center; }
-            .font-semibold { font-weight: bold; }
-            img { max-width: 150px; }
-            /* Định dạng bảng chữ ký phía dưới */
-            #nghemthu-details-table { margin-top: 30px; border: none !important; }
-            #nghemthu-details-table th, #nghemthu-details-table td { border: none !important; }
+            * {
+              box-sizing: border-box;
+            }
+            body {
+              font-family: 'Times New Roman', Times, serif;
+              color: #000;
+              background: #fff;
+              margin: 0;
+              padding: 0;
+              padding-bottom: 10mm;
+              -webkit-print-color-adjust: exact;
+              print-color-adjust: exact;
+            }
+            .card, .table-responsive, .p-datatable-wrapper, .p-datatable, .p-datatable-table {
+              border: none !important;
+              box-shadow: none !important;
+              padding: 0 !important;
+              margin: 0 !important;
+              overflow: visible !important;
+              width: 100% !important;
+              max-width: 100% !important;
+            }
+            table {
+              width: 100% !important;
+              table-layout: fixed !important;
+              border-collapse: collapse !important;
+              margin-bottom: 15px;
+            }
+            thead {
+              display: table-header-group !important;
+            }
+            tr {
+              page-break-inside: avoid !important;
+              break-inside: avoid !important;
+            }
+            th, td {
+              border: 1px solid #000 !important;
+              padding: 6px 5px !important;
+              font-size: 12px !important;
+              line-height: 1.35 !important;
+              vertical-align: middle !important;
+              min-width: unset !important;
+              max-width: unset !important;
+              word-wrap: break-word !important;
+              word-break: break-word !important;
+              white-space: normal !important;
+              overflow: hidden !important;
+            }
+            /* Phân bổ tỷ lệ cột header hàng 1 */
+            table:first-of-type thead tr:first-child th:nth-child(1) { width: 24% !important; }
+            table:first-of-type thead tr:first-child th:nth-child(2) { width: 51% !important; }
+            table:first-of-type thead tr:first-child th:nth-child(3) { width: 25% !important; }
+
+            /* Phân bổ tỷ lệ % chuẩn 8 cột dữ liệu bảng BM02a */
+            table:first-of-type thead tr:nth-child(2) th:nth-child(1),
+            table:first-of-type tbody td:nth-child(1) { width: 4% !important; text-align: center !important; }
+            table:first-of-type thead tr:nth-child(2) th:nth-child(2),
+            table:first-of-type tbody td:nth-child(2) { width: 20% !important; }
+            table:first-of-type thead tr:nth-child(2) th:nth-child(3),
+            table:first-of-type tbody td:nth-child(3) { width: 17% !important; }
+            table:first-of-type thead tr:nth-child(2) th:nth-child(4),
+            table:first-of-type tbody td:nth-child(4) { width: 22% !important; }
+            table:first-of-type thead tr:nth-child(2) th:nth-child(5),
+            table:first-of-type tbody td:nth-child(5) { width: 8% !important; text-align: center !important; }
+            table:first-of-type thead tr:nth-child(2) th:nth-child(6),
+            table:first-of-type tbody td:nth-child(6) { width: 11% !important; }
+            table:first-of-type thead tr:nth-child(2) th:nth-child(7),
+            table:first-of-type tbody td:nth-child(7) { width: 10% !important; }
+            table:first-of-type thead tr:nth-child(2) th:nth-child(8),
+            table:first-of-type tbody td:nth-child(8) { width: 8% !important; }
+
+            .text-center { text-align: center !important; }
+            .text-right { text-align: right !important; }
+            .font-semibold { font-weight: bold !important; }
+            img { max-width: 140px; }
+
+            /* Bảng chữ ký */
+            #nghemthu-details-table {
+              margin-top: 25px !important;
+              border: none !important;
+              page-break-inside: avoid !important;
+              break-inside: avoid !important;
+            }
+            #nghemthu-details-table th, #nghemthu-details-table td {
+              border: none !important;
+              padding: 4px !important;
+              vertical-align: top !important;
+            }
+
+            /* Footer xuất hiện ở cuối mỗi trang in */
+            .print-page-footer {
+              position: fixed !important;
+              bottom: 0 !important;
+              left: 0 !important;
+              width: 100% !important;
+              font-size: 11px !important;
+              font-style: italic !important;
+              font-family: 'Times New Roman', serif !important;
+              background: transparent !important;
+            }
+            .no-print, .p-button, p-button, .d-flex.justify-content-end {
+              display: none !important;
+            }
           </style>
         </head>
         <body onload="window.print();window.close()">
-          <div class="container-fluid">
+          <div class="print-container">
             ${printContents}
+          </div>
+          <div class="print-page-footer">
+            RD.QT15 BM02a Ban hành lần 2
           </div>
         </body>
       </html>

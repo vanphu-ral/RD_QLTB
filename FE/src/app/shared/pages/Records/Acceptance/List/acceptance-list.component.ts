@@ -6,6 +6,7 @@ import { Column } from '../../../../models/Core/column.model';
 import { AcceptanceService } from '../service/acceptance.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AcceptanceDialog } from '../Dialogs/acceptance-dialog/acceptance.dialog';
+import { QuickSelectAcceptanceDialog } from '../Dialogs/quick-select-acceptance-dialog/quick-select-acceptance.dialog';
 import _ from 'lodash';
 
 @Component({
@@ -32,11 +33,20 @@ export class AcceptanceListComponent {
 
   constructor(public acceptanceService: AcceptanceService, private dialogService: DialogService) {}
 
+  openQuickSelect() {
+    this.dialogService.open(QuickSelectAcceptanceDialog, {
+      header: 'Khai báo nhanh biên bản nghiệm thu thiết bị',
+      width: '85vw',
+      modal: true,
+      closable: true,
+    });
+  }
+
   viewAcceptance(row: any) {
     const ref = this.dialogService.open(AcceptanceDialog, {
       header: 'Xem biên bản nghiệm thu',
-      width: '70%',
-      data: { data: row, IsAddModel: false },
+      width: '80%',
+      data: { data: row, isEditMode: false },
       modal: true,
     });
     this.ref = ref;
@@ -45,7 +55,7 @@ export class AcceptanceListComponent {
   editAcceptance(row: any) {
     const ref = this.dialogService.open(AcceptanceDialog, {
       header: 'Sửa biên bản nghiệm thu',
-      width: '70%',
+      width: '80%',
       data: { data: _.cloneDeep(row), isEditMode: true },
       modal: true,
     });

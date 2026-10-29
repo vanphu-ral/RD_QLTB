@@ -11,3 +11,53 @@ legend {
 div:where(.swal2-container) {
   z-index: 9999 !important;
 }
+
+/* Responsive DynamicDialog on Mobile */
+@media screen and (max-width: 768px) {
+  .p-dialog-mask {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 8px !important;
+  }
+
+  .p-dialog,
+  .p-dynamicdialog,
+  .p-dynamicdialog .p-dialog {
+    max-width: 95vw !important;
+    width: 95vw !important;
+    min-width: 0 !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+  }
+
+  .p-dialog .p-dialog-header {
+    padding: 0.75rem 1rem !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .p-dialog .p-dialog-header .p-dialog-title {
+    font-size: 1rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: calc(100% - 2.5rem) !important;
+  }
+
+  .p-dialog .p-dialog-content {
+    max-width: 100% !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    padding: 0.75rem !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+
+  .p-dialog .p-dialog-footer {
+    padding: 0.75rem 1rem !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}

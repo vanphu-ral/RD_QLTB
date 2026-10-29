@@ -825,4 +825,40 @@ export class Util {
     return value;
   }
 
+/**
+   * Chuyển đổi mã mức độ sự cố sang chuỗi hiển thị
+   * 0: Nghiêm trọng, 1: Bất thường, 2: Nhẹ, 3: Dừng máy đổi sản phẩm
+   */
+  static severityErrorToString(severity: number | undefined | null): string {
+    switch (severity) {
+      case 0:
+        return 'Nghiêm trọng';
+      case 1:
+        return 'Bất thường';
+      case 2:
+        return 'Nhẹ';
+      case 3:
+        return 'Dừng máy đổi sản phẩm';
+      default:
+        return '';
+    }
+  }
+
+  /**
+   * Severity tag cho PrimeNG p-tag / badge
+   */
+  static severityErrorToTag(severity: number | undefined | null): string {
+    switch (severity) {
+      case 0:
+        return 'danger';
+      case 1:
+        return 'warn';
+      case 2:
+        return 'info';
+      case 3:
+        return 'success';
+      default:
+        return 'secondary';
+    }
+  }
 }

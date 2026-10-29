@@ -6,6 +6,9 @@
   [actionTemplate]="customActions"
   [actionCondition]="actionCondition"
   [defaultFilters]="defaultFilters">
+  <ng-template appColumnTemplate="numberOfIssuances" let-rowData>
+    <div class="text-center font-semibold">{{ rowData || 1 }}</div>
+  </ng-template>
   <ng-template appColumnTemplate="status" let-rowData>
     <p-tag [value]="statusToString(rowData)" [severity]="statusToSeverity(rowData)"></p-tag>
   </ng-template>
@@ -21,7 +24,7 @@
     styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="approval(row, $event)"></p-button>
   <p-button icon="pi pi-check-square" title="Thực hiện mục tiêu" *ngIf="row.status == 3"
     styleClass="p-button-sm p-button-rounded p-button-warn m-1" (onClick)="checkList(row)"></p-button>
-  <p-button icon="pi pi-file-pdf" title="Xem báo cáo"
+  <p-button icon="pi pi-file-pdf" title="Xem mục tiêu"
     styleClass="p-button-sm p-button-rounded p-button-info m-1" (onClick)="viewPlanReport(row)"></p-button>
 </ng-template>
 <p-confirmDialog></p-confirmDialog>

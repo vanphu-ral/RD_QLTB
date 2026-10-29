@@ -3,102 +3,122 @@
     <div class="col-12">
       <div class="card card-gray">
         <div class="card-header d-flex align-items-center">
-          <h3 class="card-title "><b>Lập kế hoạch</b></h3>
+          <h3 class="card-title"><b>Kế hoạch bảo dưỡng thiết bị định kỳ</b></h3>
         </div>
         <div class="card-body" id="print-section-detail">
           <table id="dinhkytheonam-table" class="table table-bordered table-hover">
             <thead>
               <tr>
-                <th><img src="/assets/imgs/logo-rang-dong.png" style="width:150px;" /></th>
-                <th rowspan="3" style="text-align:center;">
-                  <b>
-                    KẾ HOẠCH BẢO DƯỠNG THIẾT BỊ ĐỊNH KỲ
-                  </b>
-                  <br /><span id="spanCurentYear">{{ plan?.createdAt | date:'yyyy' }}</span>
+                <th style="width: 22%; vertical-align: middle;">
+                  <img src="/assets/imgs/logo-rang-dong.png" style="width: 140px;" />
                 </th>
-                <ng-container *ngFor="let appr of listUserApprReport">
-                  <th class="text-center">{{ appr.groupName }}</th>
+                <th rowspan="3" style="text-align: center; vertical-align: middle; width: 44%;">
+                  <div style="font-size: 16px; font-weight: bold;">KẾ HOẠCH BẢO DƯỠNG THIẾT BỊ ĐỊNH KỲ</div>
+                  <div style="font-size: 14px; font-weight: bold; margin-top: 4px;">Năm {{ plan?.year ? (plan?.year | date:'yyyy') : (plan?.createdAt | date:'yyyy') }}</div>
+                </th>
+                <ng-container *ngIf="listUserApprReport && listUserApprReport.length > 0; else defaultSignaturesHeader">
+                  <th *ngFor="let appr of listUserApprReport" class="text-center" style="font-size: 12px; font-weight: bold; vertical-align: middle;">
+                    {{ appr.groupName }}
+                  </th>
                 </ng-container>
+                <ng-template #defaultSignaturesHeader>
+                  <th class="text-center" style="font-size: 12px; font-weight: bold; width: 11%; vertical-align: middle;">Người lập kế hoạch</th>
+                  <th class="text-center" style="font-size: 12px; font-weight: bold; width: 11%; vertical-align: middle;">Trưởng ngành</th>
+                  <th class="text-center" style="font-size: 12px; font-weight: bold; width: 12%; vertical-align: middle;">TGĐ/UQ</th>
+                </ng-template>
               </tr>
               <tr>
-                <th>
-                  <div class="form-group">
-                    <label for="selectFactory">Xưởng:</label><span id="spanCurentFactoryName">{{ plan?.factory?.name }}</span>
+                <th style="vertical-align: middle;">
+                  <div class="form-group mb-0">
+                    <label class="font-bold">Xưởng:</label>&nbsp;<span class="font-normal">{{ plan?.factory?.name }}</span>
                   </div>
                 </th>
-                <ng-container *ngFor="let appr of listUserApprReport">
-                  <td rowspan="2" style="text-align:center;" id="idBranch">
-                    <div *ngFor="let sig of appr.signatures" style="margin-bottom: 10px;">
-                      <img *ngIf="sig" [src]="sig" style="width: 120px; height: 60px; display: block; margin: 0 auto;">
+                <ng-container *ngIf="listUserApprReport && listUserApprReport.length > 0; else defaultSignaturesBody">
+                  <td *ngFor="let appr of listUserApprReport" rowspan="2" class="text-center align-middle" style="vertical-align: middle;">
+                    <div *ngFor="let sig of appr.signatures" style="margin-bottom: 6px;">
+                      <img *ngIf="sig" [src]="sig" style="width: 100px; height: 50px; display: block; margin: 0 auto;">
+                      <span *ngIf="!sig" class="font-bold">Đã ký</span>
                     </div>
                   </td>
                 </ng-container>
+                <ng-template #defaultSignaturesBody>
+                  <td rowspan="2" class="text-center align-middle" style="height: 60px; vertical-align: middle;">
+                    <span style="font-style: italic; font-size: 11px;">(họ tên và chữ ký)</span>
+                  </td>
+                  <td rowspan="2" class="text-center align-middle" style="height: 60px; vertical-align: middle;">
+                    <span style="font-style: italic; font-size: 11px;">(họ tên và chữ ký)</span>
+                  </td>
+                  <td rowspan="2" class="text-center align-middle" style="height: 60px; vertical-align: middle;">
+                    <span style="font-style: italic; font-size: 11px;">(họ tên và chữ ký)</span>
+                  </td>
+                </ng-template>
               </tr>
               <tr>
-                <th>
-                  <div class="form-group">
-                    <label for="Name">Ngành:</label><span id="spanCurentBranchName">{{ plan?.branch?.name }}</span>
+                <th style="vertical-align: middle;">
+                  <div class="form-group mb-0">
+                    <label class="font-bold">Ngành:</label>&nbsp;<span class="font-normal">{{ plan?.branch?.name }}</span>
                   </div>
                 </th>
               </tr>
               <tr>
-                <th>Số: <span id="spanCurentPlanDeviceNumber">{{ data.nameDetail }}</span></th>
-                <th>
-                  <div class="form-group">
-                    <label for="Name">Thiết bị: <span id="spanCurentDeviceName"> {{ data.device.name }}</span></label>
+                <th style="vertical-align: middle;">
+                  <span class="font-bold">Số:</span>&nbsp;<span class="font-normal">{{ data.nameDetail }}</span>
+                </th>
+                <th style="vertical-align: middle;">
+                  <div class="form-group mb-0">
+                    <label class="font-bold">Thiết bị:</label>&nbsp;<span class="font-normal">{{ data.device?.name }}</span>
                   </div>
                 </th>
-                <th [attr.colspan]="listUserApprReport.length + 2"><span id="spanCurentDatePlan">Ngày {{ model?.planDetail?.sampleReport?.updatedAt | date:'dd' }} tháng {{ model?.planDetail?.sampleReport?.updatedAt | date:'M' }}  năm {{ model?.planDetail?.sampleReport?.updatedAt | date:'yyyy' }}</span></th>
+                <th [attr.colspan]="listUserApprReport.length ? listUserApprReport.length : 3" class="text-center font-normal italic" style="font-size: 11px; vertical-align: middle;">
+                  Ngày {{ (model?.planDetail?.sampleReport?.updatedAt || plan?.updatedAt || plan?.createdAt) | date:'dd' }} tháng {{ (model?.planDetail?.sampleReport?.updatedAt || plan?.updatedAt || plan?.createdAt) | date:'MM' }}  năm {{ (model?.planDetail?.sampleReport?.updatedAt || plan?.updatedAt || plan?.createdAt) | date:'yyyy' }}
+                </th>
               </tr>
             </thead>
           </table>
-          <table id="noidung-details-table" class="table table-bordered table-hover">
+          <table id="noidung-details-table" class="table table-bordered table-hover mt-3">
             <thead>
               <tr>
-                <th rowspan="2">STT</th>
-                <th rowspan="2">Nội dung sửa chữa, bảo dưỡng</th>
-                <th colspan="12" class="text-center">Tháng</th>
-                <th rowspan="2">Bộ phận thực hiện</th>
-                <th rowspan="2">Hưỡng dẫn, Quy trình (nếu có)</th>
-                <th rowspan="2" colspan="2">Ghi chú</th>
+                <th rowspan="2" class="text-center" style="width: 45px; vertical-align: middle;">STT</th>
+                <th rowspan="2" style="min-width: 220px; vertical-align: middle;">Nội dung sửa chữa, bảo dưỡng</th>
+                <th colspan="12" class="text-center" style="vertical-align: middle;">Tháng</th>
+                <th rowspan="2" style="min-width: 140px; vertical-align: middle;">Bộ phận thực hiện</th>
+                <th rowspan="2" style="min-width: 150px; vertical-align: middle;">Hướng dẫn, Quy trình (nếu có)</th>
+                <th rowspan="2" style="min-width: 100px; vertical-align: middle;">Ghi chú</th>
               </tr>
               <tr>
-                <th>1</th>
-                <th>2</th>
-                <th>3</th>
-                <th>4</th>
-                <th>5</th>
-                <th>6</th>
-                <th>7</th>
-                <th>8</th>
-                <th>9</th>
-                <th>10</th>
-                <th>11</th>
-                <th>12</th>
+                <th *ngFor="let m of [1,2,3,4,5,6,7,8,9,10,11,12]" class="text-center" style="width: 32px;">{{ m }}</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let item of model.planResultDetail; index as i">
-                <td>{{ i + 1 }}</td>
+                <td class="text-center">{{ i + 1 }}</td>
                 <td>{{ item.criticalName }}</td>
-                <td *ngFor="let m of [].constructor(12); let month = index">
-                  <i *ngIf="getMonthFromEstimatedTime(item.planResult?.dateTest) === (month + 1)" class="fa-solid fa-xmark"></i>
+                <td *ngFor="let m of [1,2,3,4,5,6,7,8,9,10,11,12]" class="text-center">
+                  <i *ngIf="getMonthFromEstimatedTime(item.planResult?.dateTest) === m" class="fa-solid fa-xmark"></i>
                 </td>
                 <td>{{ item.performer }}</td>
                 <td>{{ item.note }}</td>
                 <td>{{ item.comment }}</td>
               </tr>
+              <tr *ngIf="!model.planResultDetail || model.planResultDetail.length === 0">
+                <td colspan="17" class="text-center">Chưa có nội dung bảo dưỡng chi tiết</td>
+              </tr>
             </tbody>
           </table>
+          <div class="mt-3 d-flex flex-column no-print">
+            <span style="font-size: 12px; font-style: italic;">
+              (*) Ghi chú: Các đơn vị có thể bổ sung nội dung tùy theo đặc điểm máy móc công nghệ.
+            </span>
+            <span style="font-size: 12px; font-style: italic; font-weight: bold; margin-top: 2px;">
+              RĐ.QT15.BM04b  Ban hành lần 1
+            </span>
+          </div>
         </div>
-        <div>
-        </div>
-        <p><span>* Ghi chú: Các đơn vị có thể bổ sung nội dung tùy theo đặc điểm máy móc công nghệ</span></p>
       </div>
     </div>
   </div>
   <div class="d-flex justify-content-end gap-2 mt-4">
-        <p-button label="In PDF" icon="pi pi-file-pdf" severity="success" (onClick)="exportPDF()"></p-button>
-        <p-button label="Đóng" (onClick)="close()"></p-button>
-    </div>
+    <p-button label="In PDF" icon="pi pi-file-pdf" severity="success" (onClick)="exportPDF()"></p-button>
+    <p-button label="Đóng" (onClick)="close()"></p-button>
+  </div>
 </div>

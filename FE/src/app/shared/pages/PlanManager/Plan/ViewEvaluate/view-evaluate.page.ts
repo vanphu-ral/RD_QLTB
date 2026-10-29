@@ -78,6 +78,34 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
   // Dùng để lặp qua 5 ca kiểm tra trong HTML
   public readonly DEFAULT_SESSIONS = DEFAULT_SESSIONS;
 
+  get seriousErrors(): any[] {
+    return (this.model?.errorReport || []).filter((x: any) => x.severity === 0);
+  }
+
+  get normalErrors(): any[] {
+    return (this.model?.errorReport || []).filter((x: any) => x.severity !== 0);
+  }
+
+  calculateDowntime(start?: string | Date, end?: string | Date, isRepaired?: boolean): string {
+    if (!start || !end) {
+      return isRepaired === false ? 'Đang xử lý' : '--';
+    }
+
+    const startTime = new Date(start).getTime();
+    const endTime = new Date(end).getTime();
+    if (isNaN(startTime) || isNaN(endTime)) return '--';
+
+    const diffMinutes = Math.floor((endTime - startTime) / (1000 * 60));
+    if (diffMinutes <= 0) return '--';
+
+    const hours = diffMinutes / 60.0;
+    if (hours === Math.floor(hours)) {
+      return hours + ' h';
+    }
+    const formatted = hours.toFixed(3).replace(/\.?0+$/, '');
+    return formatted + ' h';
+  }
+
   constructor(
     protected override apiService: PlanDetailService,
     private signatureService: SignatureService,
@@ -639,6 +667,7 @@ export class ViewEvaluatePage extends BasePageComponent<any> {
             print-color-adjust: exact !important;
           }
           th, td { border: 1px solid black !important; }
+          table { border-collapse: collapse !important; width: 100% !important; margin-bottom: 8px !important; }
           img {
             max-width: 100%;
             -webkit-print-color-adjust: exact; /* Ép trình duyệt in màu/ảnh nền */

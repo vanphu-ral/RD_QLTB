@@ -37,6 +37,10 @@ public class ReportDeviceIncident {
     @Column
     private String division;
     @Column
+    private String formCode;
+    @Column
+    private Integer numberOfIssuances;
+    @Column
     private LocalDateTime createdAt;
     @Column
     private String createdBy;

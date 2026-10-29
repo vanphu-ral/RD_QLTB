@@ -75,6 +75,15 @@ public class Acceptance {
     @Column
     private Long planDetailId;
 
+    @Column
+    private String formCode;
+
+    @Column
+    private Integer numberOfIssuances;
+
+    @Column
+    private String incurredWork;
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
 

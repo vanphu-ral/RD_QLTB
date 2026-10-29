@@ -219,22 +219,48 @@
 
       <!-- Thống kê thời gian dừng máy -->
       <p-tabpanel value="6">
+        <div class="d-flex justify-content-end mb-2">
+          <p-button label="Khai báo dừng máy / Đổi SP" icon="pi pi-plus" severity="warn" (onClick)="openCreateStopDialog()"></p-button>
+        </div>
         <p-table [value]="listDeviceStops" dataKey="stt" [paginator]="true" [rows]="10" [resizableColumns]="true"
           [scrollable]="true" scrollHeight="500px">
           <ng-template pTemplate="header">
             <tr>
-              <th style="width: 80px">STT</th>
+              <th style="width: 60px">STT</th>
+              <th>Lý do / Tên sự cố</th>
+              <th>Phân loại</th>
               <th>Thời gian dừng máy</th>
-              <th>Thời gian bắt đầu chạy lại</th>
+              <th>Thời gian chạy lại</th>
               <th>Tổng thời gian dừng</th>
+              <th style="width: 100px" class="text-center">Thao tác</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
             <tr>
-              <td>{{ rowIndex +1 }}</td>
+              <td>{{ rowIndex + 1 }}</td>
+              <td>{{ row.name }}</td>
+              <td>
+                <span class="badge" [ngClass]="row.severity === 0 ? 'text-bg-danger' : (row.severity === 3 ? 'text-bg-success' : 'text-bg-warning')">
+                  {{ getSeverity(row.severity) }}
+                </span>
+              </td>
               <td>{{ row.timeReported | date:'dd/MM/yyyy HH:mm' }}</td>
-              <td>{{ row.timeRepaired | date:'dd/MM/yyyy HH:mm' }}</td>
-              <td>{{ row.totalStopTime }}</td>
+              <td>{{ row.timeRepaired ? (row.timeRepaired | date:'dd/MM/yyyy HH:mm') : 'Chưa chạy lại' }}</td>
+              <td>
+                <span [class.text-danger]="!row.isRepaired" [class.fw-bold]="!row.isRepaired">
+                  {{ row.totalStopTime }}
+                </span>
+              </td>
+              <td class="text-center">
+                <p-button *ngIf="!row.isRepaired" icon="pi pi-play" severity="success" size="small"
+                          pTooltip="Xác nhận chạy lại máy" tooltipPosition="left"
+                          (onClick)="confirmResumeDevice($event, row)"></p-button>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="99" class="text-center">Chưa có bản ghi dừng máy nào</td>
             </tr>
           </ng-template>
         </p-table>
@@ -411,31 +437,42 @@
     <p-accordion-panel value="6">
       <p-accordion-header>Thời gian dừng máy</p-accordion-header>
       <p-accordion-content>
+        <div class="d-flex justify-content-center mb-2">
+          <p-button label="Khai báo dừng máy / Đổi SP" icon="pi pi-plus" severity="warn" styleClass="w-100" (onClick)="openCreateStopDialog()"></p-button>
+        </div>
         <p-table [value]="listDeviceStops" dataKey="stt" [paginator]="true" [rows]="10" [resizableColumns]="true"
           [scrollable]="true" scrollHeight="500px">
           <ng-template pTemplate="header">
             <tr>
-              <th>Thông tin chung</th>
+              <th>Thông tin dừng máy</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-row>
             <tr>
               <td>
-                <b>Thời gian dừng máy:</b>
-                {{ row.timeReported | date:'dd/MM/yyyy HH:mm' }} <br />
-
-                <b>Thời gian bắt đầu chạy lại:</b>
-                {{ row.timeRepaired | date:'dd/MM/yyyy HH:mm' }} <br />
-
-                <b>Tổng thời gian dừng:</b>
-                {{ row.totalStopTime }} <br />
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <b>{{ row.name }}</b>
+                  <span class="badge" [ngClass]="row.severity === 0 ? 'text-bg-danger' : (row.severity === 3 ? 'text-bg-success' : 'text-bg-warning')">
+                    {{ getSeverity(row.severity) }}
+                  </span>
+                </div>
+                <b>Thời gian dừng:</b> {{ row.timeReported | date:'dd/MM/yyyy HH:mm' }} <br />
+                <b>Thời gian chạy lại:</b> {{ row.timeRepaired ? (row.timeRepaired | date:'dd/MM/yyyy HH:mm') : 'Chưa chạy lại' }} <br />
+                <b>Tổng thời gian dừng:</b> 
+                <span [class.text-danger]="!row.isRepaired" [class.fw-bold]="!row.isRepaired">
+                  {{ row.totalStopTime }}
+                </span>
+                <div *ngIf="!row.isRepaired" class="mt-2 text-end">
+                  <p-button label="Xác nhận chạy lại" icon="pi pi-play" severity="success" size="small"
+                            (onClick)="confirmResumeDevice($event, row)"></p-button>
+                </div>
               </td>
             </tr>
           </ng-template>
           <ng-template pTemplate="emptymessage">
             <tr>
               <td [attr.colspan]="999" class="text-center">
-                <p>Không có dữ liệu</p>
+                <p>Không có dữ liệu dừng máy</p>
               </td>
             </tr>
           </ng-template>

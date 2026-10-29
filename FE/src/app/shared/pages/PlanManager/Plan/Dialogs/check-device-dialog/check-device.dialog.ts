@@ -159,7 +159,11 @@ export class CheckDeviceDialog {
     declareIssue() {
         const reportDialog = this.dialogService.open(ErrorReportDialog, {
             header: `Khai báo sự cố`,
-            width: 'auto',
+            width: '560px',
+            breakpoints: {
+                '960px': '75vw',
+                '768px': '95vw'
+            },
             modal: true,
             closable: true,
             data: this.model.errorReport,

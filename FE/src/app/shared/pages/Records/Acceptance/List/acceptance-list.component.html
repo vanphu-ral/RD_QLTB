@@ -6,6 +6,7 @@
   [showAddButton]="false"
   [showEditButton]="false"
   [showViewButton]="false"
+  [headerActionTemplate]="headerActions"
   [actionTemplate]="customActions">
   <ng-template appColumnTemplate="createdAt" let-rowData>
     {{ rowData | date: 'dd/MM/yyyy' }}
@@ -14,6 +15,16 @@
     {{ rowData | date: 'dd/MM/yyyy' }}
   </ng-template>
 </app-base-table>
+
+<ng-template #headerActions>
+  <p-button
+    icon="pi pi-plus"
+    label="Khai báo biên bản"
+    styleClass="p-button-sm p-button-success"
+    (onClick)="openQuickSelect()"
+  ></p-button>
+</ng-template>
+
 <ng-template #customActions let-row>
   <p-button icon="pi pi-eye" styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="viewAcceptance(row)"></p-button>
   <p-button icon="pi pi-pencil" title="sửa" styleClass="p-button-sm p-button-rounded p-button-warn m-1" (onClick)="editAcceptance(row)"></p-button>

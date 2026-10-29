@@ -15,9 +15,11 @@ import { ConfirmationService, MessageService } from "primeng/api";
 import { ErrorReportSeriousDialog } from "../../../../Records/ReportDeviceIncident/Dialogs/error-report-serious-dialog/error-report-serious.dialog";
 import { Router } from "@angular/router";
 import { DeviceService } from "../../../../DeviceManager/Device/Service/device.service";
+import { ReportDeviceIncidentService } from "../../../../Records/ReportDeviceIncident/service/report-device-incident.service";
 
 @Component({
     selector: 'app-list-error-dialog',
+    standalone: true,
     imports: [SharedModule, FormsModule],
     templateUrl: './list-error.dialog.html',
     styleUrls: ['./list-error.dialog.scss'],
@@ -36,16 +38,15 @@ export class ListErrorDialog {
         private comfirmService: ConfirmationService,
         private messageService: MessageService,
         private router: Router,
-        private deviceService: DeviceService
+        private deviceService: DeviceService,
+        private reportDeviceIncidentService: ReportDeviceIncidentService
     ) {
         this.data = config.data;
         console.log(this.data);
-        
     }
 
     ngOnInit() {
         this.loadErrorList();
-
     }
 
     loadErrorList() {
@@ -87,7 +88,7 @@ export class ListErrorDialog {
             this.comfirmService,
             this.messageService,
             () => this.loadErrorList()
-        )
+        );
     }
 
     repairError(row: any) {
@@ -100,28 +101,25 @@ export class ListErrorDialog {
         });
     }
 
-
     acceptanceError(row: any) {
-        // const ref = this.dialogService.open(ErrorReportSeriousDialog, {
-        //     header: `Tiếp nhận lỗi nghiêm trọng - ${row.name}`,
-        //     width: '50%',
-        //     data: {error: row, planDetail: this.data, IsAddMode: true},
-        //     closable: true
-        // });
-        this.ref.close();
-        this.router.navigate(
-            ['/ReportDeviceIncident/add'],
-            {
-                state: {
-                    error: row,
-                    planDetail: this.data,
-                    IsAddMode: true
-                }
+        this.reportDeviceIncidentService.checkExistByErrorReportId(row.id).subscribe((res: any) => {
+            if (res && res.exists === 1) {
+                Util.ConfirmMessage('Biên bản sự cố đã tồn tại cho sự cố này! Để chỉnh sửa, vui lòng vào Quản lý biên bản -> Biên bản sự cố thiết bị.', 'error');
+                return;
             }
-        );
-
+            this.ref.close();
+            this.router.navigate(
+                ['/ReportDeviceIncident/add'],
+                {
+                    state: {
+                        error: row,
+                        planDetail: this.data,
+                        IsAddMode: true
+                    }
+                }
+            );
+        });
     }
-
 
     close() {
         this.ref.close();

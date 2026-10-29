@@ -3,6 +3,7 @@ package io.rd.qltb.rest;
 import io.rd.qltb.model.ReportFilter;
 import io.rd.qltb.model.response.DeviceComprehensiveReportDTO;
 import io.rd.qltb.model.response.DeviceErrorSummaryDTO;
+import io.rd.qltb.model.response.DeviceMaintenanceLogDTO;
 import io.rd.qltb.model.response.Report2Response;
 import io.rd.qltb.model.response.ReportResponse;
 import io.rd.qltb.service.ReportService;
@@ -22,12 +23,14 @@ import java.util.List;
 public class ReportResource {
     @Autowired
     private ReportService reportService;
+
     @PostMapping
     public List<ReportResponse> getReports(
             @RequestBody ReportFilter filter
     ) {
         return reportService.getSupplyReport(filter);
     }
+
     /** * API lấy báo cáo bảo trì theo filter và phân trang */
     @PostMapping("/maintenance")
     public ResponseEntity<Page<Report2Response>> getMaintenanceReport(
@@ -36,6 +39,13 @@ public class ReportResource {
         return ResponseEntity.ok(page);
     }
 
+    /** * API lấy Sổ theo dõi sửa chữa, bảo dưỡng thiết bị (Biểu mẫu chuẩn BM08) */
+    @GetMapping("/device-maintenance-log")
+    public ResponseEntity<DeviceMaintenanceLogDTO> getDeviceMaintenanceLog(
+            @RequestParam(name = "deviceId") Long deviceId,
+            @RequestParam(name = "year", required = false) Integer year) {
+        return ResponseEntity.ok(reportService.getDeviceMaintenanceLog(deviceId, year));
+    }
 
     @GetMapping("/error-summary")
     public ResponseEntity<Page<DeviceErrorSummaryDTO>> getErrorSummary(

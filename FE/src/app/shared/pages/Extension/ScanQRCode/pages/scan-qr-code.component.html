@@ -95,4 +95,60 @@
       <app-information-tab [model]="device"></app-information-tab>
     </div>
   </div>
+
+  <!-- Nút ghim xem nhanh thiết bị đã kiểm tra hôm nay trên Mobile -->
+  <div class="d-block d-lg-none position-fixed start-0 end-0 bottom-0 p-3" style="z-index: 1050; background: linear-gradient(transparent, rgba(255, 255, 255, 0.95) 25%);">
+    <button pButton type="button" 
+      class="w-100 p-button-rounded p-button-primary shadow-lg d-flex justify-content-between align-items-center px-4 py-3 border-none"
+      (click)="showHistoryDrawer = true">
+      <div class="d-flex align-items-center gap-2">
+        <i class="pi pi-history fs-5"></i>
+        <span class="font-semibold text-sm">Đã kiểm tra hôm nay</span>
+      </div>
+      <p-tag [value]="checkedDevicesToday.length + ' máy'" severity="warn" [rounded]="true" />
+    </button>
+  </div>
+
+  <!-- Bottom Sheet Drawer hiển thị danh sách thiết bị đã kiểm tra hôm nay -->
+  <p-drawer [(visible)]="showHistoryDrawer" position="bottom" [style]="{ height: '70vh', 'border-top-left-radius': '20px', 'border-top-right-radius': '20px' }">
+    <ng-template pTemplate="header">
+      <div class="d-flex align-items-center gap-2">
+        <i class="pi pi-calendar-check text-primary fs-5"></i>
+        <span class="font-bold text-gray-800">Thiết bị đã kiểm tra hôm nay</span>
+        <p-tag [value]="checkedDevicesToday.length + ''" severity="info" [rounded]="true" styleClass="ms-1" />
+      </div>
+    </ng-template>
+
+    <div class="p-1">
+      <div *ngIf="checkedDevicesToday.length > 0; else noCheckedDrawer" class="d-flex flex-column gap-2 pb-5">
+        <div *ngFor="let item of checkedDevicesToday"
+             class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm cursor-pointer hover:border-primary transition-all"
+             (click)="selectDeviceFromHistory(item)">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-1 pe-2">
+              <div class="font-bold text-gray-900 text-sm mb-1">{{ item.deviceName }}</div>
+              <div class="text-xs text-gray-500 d-flex flex-wrap gap-2">
+                <span><i class="pi pi-tag me-1 text-primary"></i>{{ item.deviceCode }}</span>
+                <span *ngIf="item.lineName"><i class="pi pi-map-marker me-1 text-danger"></i>{{ item.lineName }}</span>
+              </div>
+            </div>
+            <div class="text-end">
+              <div class="text-xs text-primary font-semibold mb-1" *ngIf="item.lastCheckedTime">
+                <i class="pi pi-clock me-1"></i>{{ item.lastCheckedTime | date:'HH:mm' }}
+              </div>
+              <p-tag [value]="statusToString(item.status)" [severity]="getSeverity(item.status)" styleClass="text-xs" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #noCheckedDrawer>
+        <div class="text-center py-5 text-muted">
+          <i class="pi pi-inbox fs-1 text-gray-300 d-block mb-3"></i>
+          <div class="font-semibold text-gray-700 mb-1">Chưa có thiết bị nào</div>
+          <div class="text-xs text-gray-500">Hôm nay bạn chưa thực hiện kiểm tra thiết bị nào.</div>
+        </div>
+      </ng-template>
+    </div>
+  </p-drawer>
 </div>

@@ -9,6 +9,8 @@ export class ReportDeviceIncident {
     executingDepartment?: any;
     timeComplete?: Date;
     docNumber?: string;
+    formCode?: string;
+    numberOfIssuances?: number;
     listUser?: any;
     division?: any;
     createdBy?: string;
@@ -19,4 +21,9 @@ export class ReportDeviceIncident {
     workflow?: any;
     errorReport?: any;
     device?: any;
+    incidentTime?: Date | string;
+    location?: string;
+    department?: any;
+    workshop?: any;
+    expectedCompletionDate?: Date | string;
 }

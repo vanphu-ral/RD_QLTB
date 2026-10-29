@@ -11,6 +11,7 @@ import { catchError, of } from 'rxjs';
 import { ExportTypeDialog } from '../../../Reports/dialog/select-export-type/select-export-type.dialog';
 import * as ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
+
 @Component({
   selector: 'view-report',
   standalone: true,
@@ -24,6 +25,14 @@ export class ViewReportPage extends BasePageComponent<any> {
   listUserStatusAppr: any[] = [];
   listUserApproval: any[] = [];
 
+  defaultApprovals = [
+    { groupName: 'Người lập kế hoạch', signatures: [] },
+    { groupName: 'Trưởng ngành', signatures: [] },
+    { groupName: 'Quản đốc xưởng', signatures: [] },
+    { groupName: 'TGĐ/UQ/Phụ trách kỹ thuật', signatures: [] }
+  ];
+  displayApprovals: any[] = [];
+
   constructor(
     protected override apiService: PlanSupplieService,
     private signatureService: SignatureService,
@@ -34,27 +43,32 @@ export class ViewReportPage extends BasePageComponent<any> {
 
   override ngOnInit(): void {
     super.ngOnInit();
+    this.displayApprovals = this.defaultApprovals.map(a => ({ ...a }));
+
     this.approvalService
       .findApprovalsByEntityIdAndEntityType(this.model.id, 'plan_supplies')
       .subscribe((data) => {
         this.listUserStatusAppr = data;
-        const usernames = data.map(x => x.userApproval?.username);
+        const usernames = (data || []).map(x => x.userApproval?.username).filter(Boolean);
         this.signatureService.getByListUsernames(usernames).pipe(
           catchError(err => {
             console.error('Lỗi lấy danh sách chữ ký:', err);
             return of([]); // Trả về mảng rỗng nếu lỗi
           })
         ).subscribe(signatures => {
-          this.listUserApproval = Object.values(
-            data.reduce((acc: any, item: any) => {
+          const approvalGroups = Object.values(
+            (data || []).reduce((acc: any, item: any) => {
               const groupId = item.group?.groupApprovalName?.id;
+              if (!groupId) return acc;
               acc[groupId] ??= {
                 groupApprovalName: item.group.groupApprovalName,
                 items: [],
                 userApprovals: []
               };
               acc[groupId].items.push(item);
-              acc[groupId].userApprovals.push(item.userApproval);
+              if (item.userApproval) {
+                acc[groupId].userApprovals.push(item.userApproval);
+              }
               return acc;
             }, {})
           ).map((group: any) => ({
@@ -64,11 +78,17 @@ export class ViewReportPage extends BasePageComponent<any> {
               imageLink: signatures.find((s: any) => s.username === u.username)?.imageLink || null
             }))
           }));
-          this.listUserApproval = this.listUserApproval.map(g => ({
+
+          this.listUserApproval = approvalGroups.map(g => ({
             groupName: g.groupApprovalName.name,
             signatures: g.userApprovals.map((u: any) => u.imageLink)
           }));
-          console.log(this.listUserApproval);
+
+          if (this.listUserApproval && this.listUserApproval.length > 0) {
+            this.displayApprovals = this.listUserApproval;
+          } else {
+            this.displayApprovals = this.defaultApprovals.map(a => ({ ...a }));
+          }
 
           this.cdr.detectChanges();
         });
@@ -86,9 +106,9 @@ export class ViewReportPage extends BasePageComponent<any> {
     ref.onClose.subscribe((result) => {
       if (result) {
         if (result == 1) {
-          this.exportXLSX()
+          this.exportXLSX();
         } else {
-          this.exportPDF()
+          this.exportPDF();
         }
       }
     });
@@ -98,10 +118,17 @@ export class ViewReportPage extends BasePageComponent<any> {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Ke Hoach Vat Tu');
 
-    // 1. Định dạng cột (Width)
+    // 1. Định dạng cột (Width) cho 9 cột chuẩn
     worksheet.columns = [
-      { width: 5 }, { width: 30 }, { width: 10 }, { width: 25 },
-      { width: 20 }, { width: 20 }, { width: 25 }, { width: 15 }, { width: 20 }
+      { width: 6 },  // Stt
+      { width: 32 }, // Tên vật tư, phụ tùng
+      { width: 12 }, // Số lượng
+      { width: 28 }, // Thuộc máy/ dây chuyền
+      { width: 22 }, // Ký mã hiệu, nhãn hiệu
+      { width: 25 }, // Yêu cầu kỹ thuật
+      { width: 26 }, // Nhà cung cấp/ nhà chế tạo
+      { width: 18 }, // Thời hạn cung cấp
+      { width: 22 }  // Ghi chú
     ];
 
     // 2. HEADER: Logo và Tiêu đề
@@ -113,23 +140,25 @@ export class ViewReportPage extends BasePageComponent<any> {
     titleCell.alignment = { horizontal: 'center' };
 
     // Dòng 3: Đơn vị | Loại kế hoạch | Số
-    // Căn lề trái cho Đơn vị
+    // Căn lề trái cho Đơn vị (Ngành)
     worksheet.mergeCells('A3:B3');
     const factoryCell = worksheet.getCell('A3');
-    factoryCell.value = 'Đơn vị: ' + (this.model.factory?.name || '');
+    const branchOrFactory = this.model.branch?.name ? ('Ngành ' + this.model.branch.name) : (this.model.factory?.name || '');
+    factoryCell.value = 'Đơn vị: ' + branchOrFactory;
     factoryCell.font = { bold: true };
 
-    // Căn lề giữa cho Loại kế hoạch (Phần bạn yêu cầu thêm)
+    // Căn lề giữa cho Loại kế hoạch
     worksheet.mergeCells('C3:H3');
     const typeCell = worksheet.getCell('C3');
     if (this.model.type === 'ANNUAL') {
       const year = this.model.fromDate ? new Date(this.model.fromDate).getFullYear() : '';
-      typeCell.value = `Hàng năm / Năm: ${year}`;
+      typeCell.value = `Hạng mục: ${this.model.name || 'Hàng năm'} / Năm: ${year}`;
     } else {
-      typeCell.value = 'Phục vụ sửa chữa lớn, đại tu, cải tạo thiết bị';
+      const year = this.model.fromDate ? new Date(this.model.fromDate).getFullYear() : '';
+      typeCell.value = `Phục vụ sửa chữa lớn, đại tu, cải tạo thiết bị (theo mục tiêu kế hoạch số ${this.model.targetPlanNumber || '.......'} / ${year})`;
     }
     typeCell.alignment = { horizontal: 'center' };
-    typeCell.font = { italic: true }; // Để font nghiêng cho đẹp hoặc bold tùy bạn
+    typeCell.font = { italic: true };
 
     // Căn lề phải cho Số
     const numberCell = worksheet.getCell('I3');
@@ -137,10 +166,10 @@ export class ViewReportPage extends BasePageComponent<any> {
     numberCell.font = { bold: true };
     numberCell.alignment = { horizontal: 'right' };
 
-    // 3. TABLE HEADER
+    // 3. TABLE HEADER (9 cột chuẩn theo mẫu)
     const headerRow = worksheet.addRow([
-      'TT', 'Tên vật tư, phụ tùng', 'SL', 'Thuộc nhóm máy/dây chuyền',
-      'Ký mã hiệu', 'Yêu cầu KT', 'Nhà cung cấp', 'Thời hạn', 'Ghi chú'
+      'Stt', 'Tên vật tư, phụ tùng', 'Số lượng', 'Thuộc máy/ dây chuyền',
+      'Ký mã hiệu, nhãn hiệu', 'Yêu cầu kỹ thuật', 'Nhà cung cấp/ nhà chế tạo', 'Thời hạn cung cấp', 'Ghi chú'
     ]);
 
     headerRow.eachCell((cell) => {
@@ -154,7 +183,7 @@ export class ViewReportPage extends BasePageComponent<any> {
     });
 
     // 4. DATA ROWS
-    this.model.planSupplieDetails.forEach((item: any, index: number) => {
+    (this.model.planSupplieDetails || []).forEach((item: any, index: number) => {
       const row = worksheet.addRow([
         index + 1,
         item.supply?.name,
@@ -176,13 +205,13 @@ export class ViewReportPage extends BasePageComponent<any> {
       });
     });
 
-    // 5. CHỮ KÝ (Signatures)
+    // 5. CHỮ KÝ (Signatures 4 bên có viền)
     let lastRowNumber = worksheet.lastRow!.number + 2;
     const signatureRow = worksheet.getRow(lastRowNumber);
 
-    // Vẽ Header các nhóm duyệt
-    this.listUserApproval.forEach((g, idx) => {
-      const colIndex = idx * 2 + 2; // Cách khoảng các cột chữ ký
+    const listSignatures = this.displayApprovals;
+    listSignatures.forEach((g, idx) => {
+      const colIndex = idx * 2 + 1;
       const cell = signatureRow.getCell(colIndex);
       cell.value = g.groupName;
       cell.font = { bold: true };
@@ -194,7 +223,7 @@ export class ViewReportPage extends BasePageComponent<any> {
           if (sigUrl) {
             try {
               const imageId = workbook.addImage({
-                base64: sigUrl, // Nếu sigUrl là base64. Nếu là link URL, bạn cần fetch về base64 trước
+                base64: sigUrl,
                 extension: 'png',
               });
               worksheet.addImage(imageId, {
@@ -213,7 +242,7 @@ export class ViewReportPage extends BasePageComponent<any> {
 
     // 6. Xuất file
     const buffer = await workbook.xlsx.writeBuffer();
-    saveAs(new Blob([buffer]), `KeHoachVatTu_${this.model.planNumber}.xlsx`);
+    saveAs(new Blob([buffer]), `KeHoachVatTu_${this.model.planNumber || ''}.xlsx`);
   }
 
   exportPDF() {
@@ -227,22 +256,26 @@ export class ViewReportPage extends BasePageComponent<any> {
     popupWin.document.write(`
       <html>
         <head>
-          <title>In kế hoạch vật tư - ${this.model.planNumber}</title>
+          <title>In kế hoạch vật tư - ${this.model.planNumber || ''}</title>
           <style>
             @media print {
               @page { size: landscape; margin: 10mm; }
               .only-print { display: block !important; }
-              body { -webkit-print-color-adjust: exact; font-family: 'Times New Roman', serif; }
-              .no-print { display: none; }
+              body { -webkit-print-color-adjust: exact; font-family: 'Times New Roman', serif; margin: 0; }
+              .no-print { display: none !important; }
+              .signature-section { page-break-inside: avoid !important; break-inside: avoid !important; margin-top: 25px; }
             }
-            table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-            th, td { border: 1px solid #000 !important; padding: 8px; font-size: 12px; }
-            .text-center { text-center: center; }
+            body { font-family: 'Times New Roman', serif; color: #000; }
+            table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
+            th, td { border: 1px solid #000 !important; padding: 6px 8px; font-size: 12px; }
+            .text-center { text-align: center; }
+            .text-right { text-align: right; }
             .font-semibold { font-weight: bold; }
-            img { max-width: 150px; }
-            /* Định dạng bảng chữ ký phía dưới */
-            #nghemthu-details-table { margin-top: 30px; border: none !important; }
-            #nghemthu-details-table th, #nghemthu-details-table td { border: none !important; }
+            .font-bold { font-weight: bold; }
+            .italic { font-style: italic; }
+            img { max-width: 140px; }
+            .signature-table { width: 100%; border-collapse: collapse; border: 1px solid #000 !important; margin-top: 15px; }
+            .signature-table td { border: 1px solid #000 !important; vertical-align: top; padding: 8px 10px; }
           </style>
         </head>
         <body onload="window.print();window.close()">

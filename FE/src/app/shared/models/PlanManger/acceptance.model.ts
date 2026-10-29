@@ -3,6 +3,9 @@ export class Acceptance {
     code?: string;
     name?: string;
     docNumber?: string;
+    formCode?: string;
+    numberOfIssuances?: number;
+    incurredWork?: string;
     implementingUnit?: string;
     dateRecord?: Date;
     type?: number;

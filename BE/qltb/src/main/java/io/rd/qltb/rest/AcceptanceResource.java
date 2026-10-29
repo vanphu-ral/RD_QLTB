@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -58,6 +59,17 @@ public class AcceptanceResource {
         Integer exists = acceptanceService.checkIfExistByIdPlanDetail(id);
         return ResponseEntity.ok(exists);
     }
+    @GetMapping("/latest-form-config")
+    public ResponseEntity<Map<String, Object>> getLatestFormConfig() {
+        return ResponseEntity.ok(acceptanceService.getLatestApprovedFormConfig());
+    }
+
+    @GetMapping("/unrecorded-plans")
+    public ResponseEntity<List<Map<String, Object>>> getUnrecordedPlans(
+            @RequestParam(name = "branch", required = false) final String branch) {
+        return ResponseEntity.ok(acceptanceService.getUnrecordedCompletedPlanDetails(branch));
+    }
+
     @PostMapping
     @ApiResponse(responseCode = "201")
     public ResponseEntity<Long> createAcceptance(

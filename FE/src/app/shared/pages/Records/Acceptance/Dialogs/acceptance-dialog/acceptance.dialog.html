@@ -1,302 +1,278 @@
 <div class="p-1">
+  <div id="print-section-acceptance">
+    <table class="table table-bordered" style="width: 100%; margin: 0; border: 1px solid #000 !important; border-collapse: collapse !important;">
+      <tbody>
+        <!-- 1. Header 3 cột -->
+        <tr>
+          <td style="width: 25%; text-align: center; vertical-align: middle; border: 1px solid #000 !important; padding: 6px;">
+            <img src="/assets/imgs/logo-rang-dong.png" style="width: 120px; display: block; margin: 0 auto;" />
+          </td>
+          <td style="width: 48%; text-align: center; vertical-align: middle; border: 1px solid #000 !important; padding: 6px;">
+            <div style="font-size: 14px; font-weight: bold;">BIÊN BẢN NGHIỆM THU THIẾT BỊ</div>
+            <div style="font-size: 13px; font-weight: bold; margin-top: 3px;">
+              {{ (model.device?.name || '') | uppercase }}
+            </div>
+            <div style="font-size: 13px; font-weight: bold; margin-top: 3px;">
+              {{ (model.device?.line?.name || 'LINE SỐ 1') | uppercase }}
+            </div>
+          </td>
+          <td style="width: 27%; vertical-align: middle; border: 1px solid #000 !important; padding: 6px 10px;">
+            <div class="mb-1">
+              <strong>Số:</strong> 
+              <span *ngIf="!isEditMode">{{ model.docNumber }}</span>
+              <input *ngIf="isEditMode" pInputText [(ngModel)]="model.docNumber" class="p-inputtext-sm w-100 mt-1">
+            </div>
+            <div>
+              <strong>Ngày:</strong> 
+              <span *ngIf="!isEditMode">{{ model.dateRecord | date:'dd/MM/yyyy' }}</span>
+              <p-datepicker *ngIf="isEditMode" [(ngModel)]="model.dateRecord" dateFormat="dd/mm/yy" appendTo="body" [showIcon]="true" [fluid]="true" [autofocus]="false" class="mt-1 block"></p-datepicker>
+            </div>
+          </td>
+        </tr>
 
-  <div class="card-body">
-    <table id="nghemthu-details-table" class="table table-bordered table-hover" style="margin: 0;">
-      <thead>
+        <!-- 2. Đơn vị thực hiện SC/BD -->
         <tr>
-          <td><img src="/assets/imgs/logo-rang-dong.png" style="width:150px;" /></td>
-          <td colspan="2" style="text-align:center;">
-            <b>BIÊN BẢN NGHIỆM THU THIẾT BỊ</b>
-            <br />
-            <br />
-            <b class="my-2">{{ model.device?.name }}</b>
-          </td>
-          <td>
-            Số: <span *ngIf="!isEditMode" id="spanBienBanPlanNumber">{{ model.docNumber }}</span>
-            <input *ngIf="isEditMode" pInputText [(ngModel)]="model.docNumber" class="form-control mt-1"><br />
-            <br />
-            Ngày: <span *ngIf="!isEditMode" id="spanBienBanNgayBB">{{ model.dateRecord | date:'dd/MM/yyyy' }}</span>
-            <div *ngIf="isEditMode" class="mt-1">
-              <p-datepicker [(ngModel)]="model.dateRecord" dateFormat="dd/mm/yy" appendTo="body" [showIcon]="true" [fluid]="true" [autofocus]="false"></p-datepicker>
+          <td colspan="3" style="border: 1px solid #000 !important; padding: 6px 10px;">
+            <div>
+              Đơn vị thực hiện SC/BD (bảo dưỡng năm):
+            </div>
+            <div class="mt-1" style="font-weight: bold;">
+              <span *ngIf="!isEditMode">Ngành {{ model.implementingUnit || model.device?.branch?.name || '' }}</span>
+              <input *ngIf="isEditMode" pInputText [(ngModel)]="model.implementingUnit" placeholder="Nhập đơn vị thực hiện..." class="p-inputtext-sm w-100">
             </div>
           </td>
         </tr>
-        <tr>
-          <td colspan="3">Đợn vị thực hiện: <span id="spanBienBanDepartmentAct">LED2, TBCD</span></td>
-          <td>Tên thiết bị: <span id="spanBienBanDeviceName">{{ model.device?.name }}</span></td>
-        </tr>
-        <tr>
-          <td>Bộ phận quản lý/sử dụng thiết bị: <span id="spanBienBanTeamName">{{ model.device?.team?.name }}</span>
-          </td>
-          <td colspan="2">Ngành/Ban: <span id="spanBienBanBranchName">{{ model.device?.branch?.name }}</span></td>
-          <td>Xưởng: <span id="spanBienBanFactoryName">{{ model.device?.branch?.factory?.name || "Xưởng LED DT&TBCS" }}</span></td>
-        </tr>
-        <tr>
-          <td>Giao nhận sau: </td>
-          <td colspan="3">
-            <div class="form-group clearfix">
-              <ng-container *ngIf="!isEditMode">
-                <div class="d-inline mx-2">
-                  <label class="me-3">Sửa chữa</label>
-                  <i [class]="model.type === 1 ? 'pi pi-check-square text-primary' : 'pi pi-stop text-secondary'"
-                    style="font-size: 1.2rem"></i>
-                </div>
-                <div class="d-inline mx-2">
-                  <label class="me-3">Bảo dưỡng định kỳ</label>
-                  <i [class]="model.type === 2 ? 'pi pi-check-square text-primary' : 'pi pi-stop text-secondary'"
-                    style="font-size: 1.2rem"></i>
-                </div>
-                <div class="d-inline mx-2">
-                  <label class="me-3">Khác</label>
-                  <i [class]="model.type === 3 ? 'pi pi-check-square text-primary' : 'pi pi-stop text-secondary'"
-                    style="font-size: 1.2rem"></i>
-                </div>
-              </ng-container>
 
-              <ng-container *ngIf="isEditMode">
-                <div class="icheck-primary d-inline mx-2">
-                  <input type="radio" [value]="1" name="type" [(ngModel)]="model.type" id="type1">
-                  <label for="type1" class="mx-2">Sửa chữa</label>
-                </div>
-                <div class="icheck-primary d-inline mx-2">
-                  <input type="radio" [value]="2" name="type" [(ngModel)]="model.type" id="type2">
-                  <label for="type2" class="mx-2">Bảo dưỡng định kỳ</label>
-                </div>
-                <div class="icheck-primary d-inline mx-2">
-                  <input type="radio" [value]="3" name="type" [(ngModel)]="model.type" id="type3">
-                  <label for="type3" class="mx-2">Khác</label>
-                </div>
-                <div class="icheck-primary d-inline mx-2">
-                  <input type="radio" [value]="0" name="type" [(ngModel)]="model.type" id="type0">
-                  <label for="type0" class="mx-2">Bỏ chọn</label>
-                </div>
-              </ng-container>
-            </div>
-          </td>
-        </tr>
+        <!-- 3. Bộ phận quản lý/sử dụng thiết bị (3 cột 2 tầng) -->
         <tr>
-          <td colspan="4">
-            <div *ngIf="!isEditMode">
-              <label>Thời gian thực hiện nghiệm thu: Từ ngày {{ model.fromDateAcceptance |
-                date:'dd/MM/yyyy' }} - Đến ngày {{ model.toDateAcceptance | date:'dd/MM/yyyy' }}</label>
-            </div>
-            <div *ngIf="isEditMode">
-              <label>Thời gian thực hiện nghiệm thu:</label>
-              <div class="d-flex mt-2">
-                <p-floatlabel variant="on" class="mx-1">
-                  <p-datepicker [autofocus]="false" [(ngModel)]="model.fromDateAcceptance" dateFormat="dd-mm-yy" appendTo="body" [showIcon]="true" inputId="fromDateAcceptance"></p-datepicker>
-                  <label for="fromDateAcceptance">Từ ngày</label>
-                </p-floatlabel>
-                <p-floatlabel variant="on" class="mx-1">
-                  <p-datepicker [autofocus]="false"[(ngModel)]="model.toDateAcceptance" dateFormat="dd-mm-yy" appendTo="body" [showIcon]="true" inputId="toDateAcceptance"></p-datepicker>
-                  <label for="toDateAcceptance">Đến ngày</label>
-                </p-floatlabel>
-              </div>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            <div *ngIf="!isEditMode">
-              <label>Thời gian thực hiện bảo dưỡng: Từ ngày {{ model.fromDatePerform |
-                date:'dd/MM/yyyy' }} - Đến ngày {{ model.toDatePerform | date:'dd/MM/yyyy' }}</label>
-            </div>
-            <div *ngIf="isEditMode">
-              <label>Thời gian thực hiện bảo dưỡng:</label>
-              <div class="d-flex mt-2">
-                <p-floatlabel variant="on" class="mx-1">
-                  <p-datepicker [autofocus]="false" [(ngModel)]="model.fromDatePerform" dateFormat="dd-mm-yy" appendTo="body" [showIcon]="true" inputId="fromDatePerform"></p-datepicker>
-                  <label for="fromDatePerform">Từ ngày</label>
-                </p-floatlabel>
-                <p-floatlabel variant="on" class="mx-1">
-                  <p-datepicker [autofocus]="false" [(ngModel)]="model.toDatePerform" dateFormat="dd-mm-yy" appendTo="body" [showIcon]="true" inputId="toDatePerform"></p-datepicker>
-                  <label for="toDatePerform">Đến ngày</label>
-                </p-floatlabel>
-              </div>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            <b>Nội dung công việc thực hiện:</b>
-            <div class="mt-3">
-              <ul *ngIf="!isEditMode" class="pl-3 m-0" style="list-style-type: disc;">
-                <li *ngFor="let line of textForList(model.note!)">
-                  {{ line }}
-                </li>
-              </ul>
-              <textarea *ngIf="isEditMode" pTextarea [(ngModel)]="model.note" rows="3" class="form-control" placeholder="Enter ..."></textarea>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="3" rowspan="3" style="vertical-align: top;">
-            <b>Kết quả vận hành thử:</b>
-            <div class="mt-3">
-              <ul *ngIf="!isEditMode" class="pl-3 m-0" style="list-style-type: disc;">
-                <li *ngFor="let line of textForList(model.result!)">
-                  {{ line }}
-                </li>
-              </ul>
-              <textarea *ngIf="isEditMode" pTextarea [(ngModel)]="model.result" rows="11" class="form-control" placeholder="Enter ..."></textarea>
-            </div>
-          </td>
-          <td>
-            <b>
-              Yêu cầu về an toàn
-            </b>
-            <div class="form-group clearfix mt-2">
-              <ng-container *ngIf="!isEditMode">
-                <div class="icheck-primary d-inline mx-2">
-                  <label class="me-3">Đạt</label>
-                  <i [class]="model.safe === 1 ? 'pi pi-check-square text-primary' : 'pi pi-stop text-secondary'"
-                    style="font-size: 1.2rem"></i>
-                </div>
-                <div class="icheck-primary d-inline mx-2">
-                  <label class="me-3">Không đạt</label>
-                  <i [class]="model.safe === 2 ? 'pi pi-check-square text-primary' : 'pi pi-stop text-secondary'"
-                    style="font-size: 1.2rem"></i>
-                </div>
-              </ng-container>
-              <ng-container *ngIf="isEditMode">
-                <div class="icheck-primary d-inline mx-2">
-                  <input type="radio" [value]="1" name="safe" [(ngModel)]="model.safe" id="safe1">
-                  <label for="safe1" class="mx-2">Đạt</label>
-                </div>
-                <div class="icheck-primary d-inline mx-2">
-                  <input type="radio" [value]="2" name="safe" [(ngModel)]="model.safe" id="safe2">
-                  <label for="safe2" class="mx-2">Không đạt</label>
-                </div>
-                <div class="icheck-primary d-inline mx-2">
-                  <input type="radio" [value]="0" name="safe" [(ngModel)]="model.safe" id="safe0">
-                  <label for="safe0" class="mx-2">Không đánh giá</label>
-                </div>
-              </ng-container>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <b>
-              Yêu cầu về chất lượng
-            </b>
-            <div class="form-group clearfix mt-2">
-              <ng-container *ngIf="!isEditMode">
-                <div class="icheck-primary d-inline mx-2">
-                  <label class="me-3">Đạt</label>
-                  <i [class]="model.quality === 1 ? 'pi pi-check-square text-primary' : 'pi pi-stop text-secondary'"
-                    style="font-size: 1.2rem"></i>
-                </div>
-                <div class="icheck-primary d-inline mx-2">
-                  <label class="me-3">Không đạt</label>
-                  <i [class]="model.quality === 2 ? 'pi pi-check-square text-primary' : 'pi pi-stop text-secondary'"
-                    style="font-size: 1.2rem"></i>
-                </div>
-              </ng-container>
-              <ng-container *ngIf="isEditMode">
-                <div class="icheck-primary d-inline mx-2">
-                  <input type="radio" [value]="1" name="quality" [(ngModel)]="model.quality" id="quality1">
-                  <label for="quality1" class="mx-2">Đạt</label>
-                </div>
-                <div class="icheck-primary d-inline mx-2">
-                  <input type="radio" [value]="2" name="quality" [(ngModel)]="model.quality" id="quality2">
-                  <label for="quality2" class="mx-2">Không đạt</label>
-                </div>
-                <div class="icheck-primary d-inline mx-2">
-                  <input type="radio" [value]="0" name="quality" [(ngModel)]="model.quality" id="quality0">
-                  <label for="quality0" class="mx-2">Không đánh giá</label>
-                </div>
-              </ng-container>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <b>
-              Yêu cầu về năng suất
-            </b>
-            <div class="form-group clearfix mt-2">
-              <ng-container *ngIf="!isEditMode">
-                <div class="icheck-primary d-inline mx-2">
-                  <label class="me-3">Đạt</label>
-                  <i [class]="model.productivity === 1 ? 'pi pi-check-square text-primary' : 'pi pi-stop text-secondary'"
-                    style="font-size: 1.2rem"></i>
-                </div>
-                <div class="icheck-primary d-inline mx-2">
-                  <label class="me-3">Không đạt</label>
-                  <i [class]="model.productivity === 2 ? 'pi pi-check-square text-primary' : 'pi pi-stop text-secondary'"
-                    style="font-size: 1.2rem"></i>
-                </div>
-              </ng-container>
-              <ng-container *ngIf="isEditMode">
-                <div class="icheck-primary d-inline mx-2">
-                  <input type="radio" [value]="1" name="productivity" [(ngModel)]="model.productivity" id="productivity1">
-                  <label for="productivity1" class="mx-2">Đạt</label>
-                </div>
-                <div class="icheck-primary d-inline mx-2">
-                  <input type="radio" [value]="2" name="productivity" [(ngModel)]="model.productivity" id="productivity2">
-                  <label for="productivity2" class="mx-2">Không đạt</label>
-                </div>
-                <div class="icheck-primary d-inline mx-2">
-                  <input type="radio" [value]="0" name="productivity" [(ngModel)]="model.productivity" id="productivity0">
-                  <label for="productivity0" class="mx-2">Không đánh giá</label>
-                </div>
-              </ng-container>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="2"><b>Hành động phải thực hiện thêm</b></td>
-          <td><b>Trách nhiệm</b></td>
-          <td><b>Thời hạn</b></td>
-        </tr>
-        <tr>
-          <td colspan="2">
-            <ul *ngIf="!isEditMode" class="pl-3 m-0" style="list-style-type: disc;">
-              <li *ngFor="let line of textForList(model.actionMore!)">
-                {{ line }}
-              </li>
-            </ul>
-            <textarea *ngIf="isEditMode" pTextarea [(ngModel)]="model.actionMore" rows="3" class="form-control" placeholder="Enter ..."></textarea>
-          </td>
-          <td>
-            <ul *ngIf="!isEditMode" class="pl-3 m-0" style="list-style-type: disc;">
-              <li *ngFor="let line of textForList(model.responsibility!)">
-                {{ line }}
-              </li>
-            </ul>
-            <textarea *ngIf="isEditMode" pTextarea [(ngModel)]="model.responsibility" rows="3" class="form-control" placeholder="Enter ..."></textarea>
-          </td>
-          <td>
-            <ul *ngIf="!isEditMode" class="pl-3 m-0" style="list-style-type: disc;">
-              <li *ngFor="let line of textForList(model.limitation!)">
-                {{ line }}
-              </li>
-            </ul>
-            <textarea *ngIf="isEditMode" pTextarea [(ngModel)]="model.limitation" rows="3" class="form-control" placeholder="Enter ..."></textarea>
-          </td>
-        </tr>
-      </thead>
-    </table>
-    <table id="nghemthu-details-table" class="table table-bordered table-hover" style="width: 100%;">
-        <thead>
-            <tr>
-                <th *ngFor="let g of listUserApproval" class="text-center">
-                    {{ g.groupName }}
-                </th>
-            </tr>
-            <tr>
-                <td *ngFor="let g of listUserApproval" style="height: 100px;">
+          <td colspan="3" style="padding: 0; border: 1px solid #000 !important;">
+            <table style="width: 100%; margin: 0; border-collapse: collapse; border: none;">
+              <tr>
+                <td style="width: 34%; border: none !important; border-right: 1px solid #000 !important; padding: 6px 10px; vertical-align: top;">
+                  <div style="font-size: 11.5px;">Bộ phận quản lý/sử dụng thiết bị:</div>
+                  <div class="mt-1" style="font-weight: bold; font-size: 12px;">
+                    {{ model.device?.team?.name || 'Tổ SMT2' }}
+                  </div>
                 </td>
-            </tr>
-        </thead>
+                <td style="width: 33%; border: none !important; border-right: 1px solid #000 !important; padding: 6px 10px; vertical-align: top;">
+                  <div style="font-size: 11.5px;">Ngành/ban:</div>
+                  <div class="mt-1" style="font-weight: bold; font-size: 12px;">
+                    {{ model.device?.branch?.name || '' }}
+                  </div>
+                </td>
+                <td style="width: 33%; border: none !important; padding: 6px 10px; vertical-align: top;">
+                  <div style="font-size: 11.5px;">Xưởng:</div>
+                  <div class="mt-1" style="font-weight: bold; font-size: 12px;">
+                    {{ model.device?.branch?.factory?.name || '' }}
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- 4. Giao nhận sau -->
+        <tr>
+          <td colspan="3" style="border: 1px solid #000 !important; padding: 6px 10px;">
+            <div class="d-flex align-items-center gap-4 flex-wrap">
+              <span style="font-weight: 500;">Giao nhận sau:</span>
+              <div class="d-flex align-items-center gap-3">
+                <div class="d-flex align-items-center gap-1">
+                  <span>Sửa chữa</span>
+                  <span *ngIf="!isEditMode" style="font-size: 1.1rem; font-family: sans-serif;">{{ model.type === 1 ? '☑' : '☐' }}</span>
+                  <input *ngIf="isEditMode" type="radio" [value]="1" name="accType" [(ngModel)]="model.type">
+                </div>
+                <div class="d-flex align-items-center gap-1">
+                  <span>Bảo dưỡng định kỳ</span>
+                  <span *ngIf="!isEditMode" style="font-size: 1.1rem; font-family: sans-serif;">{{ model.type === 2 ? '☑' : '☐' }}</span>
+                  <input *ngIf="isEditMode" type="radio" [value]="2" name="accType" [(ngModel)]="model.type">
+                </div>
+                <div class="d-flex align-items-center gap-1">
+                  <span>Khác</span>
+                  <span *ngIf="!isEditMode" style="font-size: 1.1rem; font-family: sans-serif;">{{ model.type === 3 ? '☑' : '☐' }}</span>
+                  <input *ngIf="isEditMode" type="radio" [value]="3" name="accType" [(ngModel)]="model.type">
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+
+        <!-- 5. Thời gian bắt đầu - hoàn thành (1 dòng 2 cột) -->
+        <tr>
+          <td colspan="3" style="padding: 0; border: 1px solid #000 !important;">
+            <table style="width: 100%; margin: 0; border-collapse: collapse; border: none;">
+              <tr>
+                <td style="width: 50%; border: none !important; border-right: 1px solid #000 !important; padding: 6px 10px;">
+                  <span *ngIf="!isEditMode">
+                    Thời gian bắt đầu: <strong>{{ (model.fromDatePerform || model.fromDateAcceptance) ? ((model.fromDatePerform || model.fromDateAcceptance) | date:'HH\'h\' ngày dd/MM/yyyy') : '07h ngày 16/07/2025' }}</strong>
+                  </span>
+                  <div *ngIf="isEditMode" class="d-flex flex-column gap-1">
+                    <label class="text-xs">Thời gian bắt đầu:</label>
+                    <p-datepicker [(ngModel)]="model.fromDatePerform" dateFormat="dd/mm/yy" [showTime]="true" appendTo="body" [showIcon]="true" [fluid]="true" [autofocus]="false"></p-datepicker>
+                  </div>
+                </td>
+                <td style="width: 50%; border: none !important; padding: 6px 10px;">
+                  <span *ngIf="!isEditMode">
+                    Thời gian hoàn thành: <strong>{{ (model.toDatePerform || model.toDateAcceptance) ? ((model.toDatePerform || model.toDateAcceptance) | date:'HH\'h\' ngày dd/MM/yyyy') : '11h ngày 16/07/2025' }}</strong>
+                  </span>
+                  <div *ngIf="isEditMode" class="d-flex flex-column gap-1">
+                    <label class="text-xs">Thời gian hoàn thành:</label>
+                    <p-datepicker [(ngModel)]="model.toDatePerform" dateFormat="dd/mm/yy" [showTime]="true" appendTo="body" [showIcon]="true" [fluid]="true" [autofocus]="false"></p-datepicker>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- 6. Nội dung công việc thực hiện & Công việc phát sinh -->
+        <tr>
+          <td colspan="3" style="border: 1px solid #000 !important; padding: 6px 10px;">
+            <div class="mb-2">
+              <span>- Nội dung công việc thực hiện:&nbsp;</span>
+              <span *ngIf="!isEditMode">{{ model.note || 'Kiểm tra, vệ sinh bảo dưỡng theo quy định.' }}</span>
+              <textarea *ngIf="isEditMode" pTextarea [(ngModel)]="model.note" rows="2" class="form-control mt-1" placeholder="Nhập nội dung công việc thực hiện..."></textarea>
+            </div>
+            <div>
+              <span>- Công việc phát sinh:&nbsp;</span>
+              <span *ngIf="!isEditMode">{{ model.incurredWork || 'không' }}</span>
+              <input *ngIf="isEditMode" pInputText [(ngModel)]="model.incurredWork" class="p-inputtext-sm w-100 mt-1" placeholder="Nhập công việc phát sinh (mặc định: không)...">
+            </div>
+          </td>
+        </tr>
+
+        <!-- 7. Kết quả vận hành thử & 3 Tiêu chí đánh giá -->
+        <tr>
+          <!-- Cột trái: Kết quả vận hành thử -->
+          <td colspan="2" style="border: 1px solid #000 !important; padding: 6px 10px; vertical-align: top; width: 60%;">
+            <div style="font-weight: bold; margin-bottom: 4px;">Kết quả vận hành thử</div>
+            <div *ngIf="!isEditMode">
+              <ul *ngIf="textForList(model.result!).length > 0" class="pl-3 m-0" style="list-style-type: decimal;">
+                <li *ngFor="let line of textForList(model.result!)" style="margin-bottom: 3px;">
+                  {{ line }}
+                </li>
+              </ul>
+              <div *ngIf="textForList(model.result!).length === 0">
+                <div>1. Trước SC/BD: Máy hoạt động ổn định</div>
+                <div>2. Sau SC/BD: Máy vận hành ổn định, chất lượng đạt yêu cầu kỹ thuật</div>
+                <div>3. Hệ thống điện an toàn khi sản xuất</div>
+              </div>
+            </div>
+            <textarea *ngIf="isEditMode" pTextarea [(ngModel)]="model.result" rows="5" class="form-control" placeholder="1. Trước SC/BD...&#10;2. Sau SC/BD...&#10;3. Hệ thống điện an toàn..."></textarea>
+          </td>
+
+          <!-- Cột phải: 3 Yêu cầu đánh giá (mở rộng 40%) -->
+          <td style="border: 1px solid #000 !important; padding: 6px 12px; vertical-align: top; width: 40%;">
+            <!-- An toàn -->
+            <div class="mb-2">
+              <div style="font-weight: bold; font-size: 11.5px;">Yêu cầu về an toàn</div>
+              <div class="d-flex align-items-center gap-4 mt-1">
+                <span>Đạt <span style="font-size: 1.1rem; font-family: sans-serif;">{{ model.safe === 1 ? '☑' : '☐' }}</span></span>
+                <span>Không <span style="font-size: 1.1rem; font-family: sans-serif;">{{ model.safe === 2 ? '☑' : '☐' }}</span></span>
+              </div>
+              <div *ngIf="isEditMode" class="d-flex gap-3 mt-1">
+                <label><input type="radio" [value]="1" name="safeGroup" [(ngModel)]="model.safe"> Đạt</label>
+                <label><input type="radio" [value]="2" name="safeGroup" [(ngModel)]="model.safe"> Không</label>
+              </div>
+            </div>
+
+            <!-- Chất lượng -->
+            <div class="mb-2">
+              <div style="font-weight: bold; font-size: 11.5px;">Yêu cầu về chất lượng</div>
+              <div class="d-flex align-items-center gap-4 mt-1">
+                <span>Đạt <span style="font-size: 1.1rem; font-family: sans-serif;">{{ model.quality === 1 ? '☑' : '☐' }}</span></span>
+                <span>Không <span style="font-size: 1.1rem; font-family: sans-serif;">{{ model.quality === 2 ? '☑' : '☐' }}</span></span>
+              </div>
+              <div *ngIf="isEditMode" class="d-flex gap-3 mt-1">
+                <label><input type="radio" [value]="1" name="qualGroup" [(ngModel)]="model.quality"> Đạt</label>
+                <label><input type="radio" [value]="2" name="qualGroup" [(ngModel)]="model.quality"> Không</label>
+              </div>
+            </div>
+
+            <!-- Năng suất -->
+            <div>
+              <div style="font-weight: bold; font-size: 11.5px;">Yêu cầu về năng suất</div>
+              <div class="d-flex align-items-center gap-4 mt-1">
+                <span>Đạt <span style="font-size: 1.1rem; font-family: sans-serif;">{{ model.productivity === 1 ? '☑' : '☐' }}</span></span>
+                <span>Không <span style="font-size: 1.1rem; font-family: sans-serif;">{{ model.productivity === 2 ? '☑' : '☐' }}</span></span>
+              </div>
+              <div *ngIf="isEditMode" class="d-flex gap-3 mt-1">
+                <label><input type="radio" [value]="1" name="prodGroup" [(ngModel)]="model.productivity"> Đạt</label>
+                <label><input type="radio" [value]="2" name="prodGroup" [(ngModel)]="model.productivity"> Không</label>
+              </div>
+            </div>
+          </td>
+        </tr>
+
+        <!-- 8. Hành động phải thực hiện thêm (3 cột chia đều 33.33%) -->
+        <tr>
+          <td style="font-weight: bold; border: 1px solid #000 !important; padding: 4px 6px; width: 33.33%;">Hành động phải thực hiện thêm</td>
+          <td style="font-weight: bold; border: 1px solid #000 !important; padding: 4px 6px; width: 33.33%;">Trách nhiệm</td>
+          <td style="font-weight: bold; border: 1px solid #000 !important; padding: 4px 6px; width: 33.34%;">Thời hạn</td>
+        </tr>
+        <tr>
+          <td style="border: 1px solid #000 !important; padding: 6px; vertical-align: top; width: 33.33%;">
+            <span *ngIf="!isEditMode">{{ model.actionMore || 'không' }}</span>
+            <textarea *ngIf="isEditMode" pTextarea [(ngModel)]="model.actionMore" rows="2" class="form-control" placeholder="Hành động thêm..."></textarea>
+          </td>
+          <td style="border: 1px solid #000 !important; padding: 6px; vertical-align: top; width: 33.33%;">
+            <span *ngIf="!isEditMode">{{ model.responsibility }}</span>
+            <textarea *ngIf="isEditMode" pTextarea [(ngModel)]="model.responsibility" rows="2" class="form-control" placeholder="Trách nhiệm..."></textarea>
+          </td>
+          <td style="border: 1px solid #000 !important; padding: 6px; vertical-align: top; width: 33.34%;">
+            <span *ngIf="!isEditMode">{{ model.limitation }}</span>
+            <textarea *ngIf="isEditMode" pTextarea [(ngModel)]="model.limitation" rows="2" class="form-control" placeholder="Thời hạn..."></textarea>
+          </td>
+        </tr>
+      </tbody>
     </table>
+
+    <!-- 9. Bảng chữ ký phê duyệt (Hiển thị khi có kịch bản phê duyệt) -->
+    <div class="signature-section" style="margin-top: 0;" *ngIf="displayApprovals && displayApprovals.length > 0">
+      <table class="signature-table" style="width: 100%; border-collapse: collapse; border: 1px solid #000 !important; border-top: none !important;">
+        <tbody>
+          <tr>
+            <td *ngFor="let g of displayApprovals" 
+                class="text-center" 
+                style="border: 1px solid #000 !important; vertical-align: top; padding: 6px 4px; width: 25%;">
+              <div style="font-weight: bold; font-size: 11.5px; line-height: 1.3;">
+                {{ g.groupName }}
+              </div>
+              <div *ngIf="g.subTitle" class="italic" style="font-size: 10.5px; font-weight: normal; margin-top: 2px;">
+                {{ g.subTitle }}
+              </div>
+              <div style="min-height: 65px; display: flex; align-items: center; justify-content: center; flex-direction: column; margin-top: 4px;">
+                <ng-container *ngIf="g.signatures && g.signatures.length > 0">
+                  <div *ngFor="let sig of g.signatures">
+                    <img *ngIf="sig" [src]="sig" style="width: 100px; height: 50px; object-fit: contain; display: block; margin: 0 auto;">
+                    <span *ngIf="!sig" style="font-weight: bold;">Đã ký</span>
+                  </div>
+                </ng-container>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 10. Chân trang (Footer) linh động 2 trường -->
+    <div class="mt-2 d-flex justify-content-between align-items-center">
+      <div *ngIf="!isEditMode" class="footer-bm07">
+        {{ model.formCode || 'RĐ.QT15.BM07' }}&nbsp;&nbsp;&nbsp;&nbsp;Ban hành lần {{ model.numberOfIssuances || 1 }}
+      </div>
+      <div *ngIf="isEditMode" class="d-flex align-items-center gap-2">
+        <label class="text-xs text-muted mb-0">Mã biểu mẫu:</label>
+        <input pInputText [(ngModel)]="model.formCode" placeholder="RĐ.QT15.BM07" class="p-inputtext-sm" style="width: 140px;">
+        <label class="text-xs text-muted mb-0 ml-2">Lần ban hành:</label>
+        <input pInputText type="number" [(ngModel)]="model.numberOfIssuances" placeholder="1" class="p-inputtext-sm" style="width: 70px;">
+      </div>
+    </div>
   </div>
 
-
-
-  <div class="d-flex justify-content-end gap-2 mt-4">
-    <p-button *ngIf="isEditMode" label="Lưu" severity="success" (onClick)="save()"></p-button>
-    <p-button label="Đóng" (onClick)="close()"></p-button>
+  <!-- Nút bấm hành động của Dialog -->
+  <div class="d-flex justify-content-end gap-2 mt-3 no-print">
+    <p-button label="Đóng" severity="secondary" (click)="close()"></p-button>
+    <p-button label="In biên bản" icon="pi pi-print" severity="info" (click)="exportPDF()"></p-button>
+    <p-button *ngIf="isEditMode" label="Lưu" icon="pi pi-check" severity="success" (click)="save()"></p-button>
   </div>
 </div>

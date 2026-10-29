@@ -17,4 +17,13 @@ export class AcceptanceService extends BaseApiService<Acceptance> {
   checkExistByErrorReportId(id: number): Observable<any> {
     return this.http.get<any>(`${this['fullBaseUrl']}/exist/error-report/${id}`);
   }
+
+  getLatestFormConfig(): Observable<{ formCode: string; numberOfIssuances: number }> {
+    return this.http.get<{ formCode: string; numberOfIssuances: number }>(`${this['fullBaseUrl']}/latest-form-config`);
+  }
+
+  getUnrecordedPlans(branch?: string): Observable<any[]> {
+    const options = (branch && branch.trim()) ? { params: { branch: branch.trim() } } : {};
+    return this.http.get<any[]>(`${this['fullBaseUrl']}/unrecorded-plans`, options);
+  }
 }

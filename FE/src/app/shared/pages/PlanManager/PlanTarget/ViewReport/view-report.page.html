@@ -4,66 +4,64 @@
             <p-table #dt [value]="model.listItems!">
                 <ng-template pTemplate="header">
                     <tr *ngIf="isViewMode">
-                        <th colspan="1">
+                        <th colspan="2" style="vertical-align: middle;">
                             <img src="/assets/imgs/logo-rang-dong.png" style="width:150px;" />
                         </th>
-                        <th colspan="6" class="text-center">
+                        <th colspan="4" class="text-center" style="vertical-align: middle;">
                             <div>
-                                <div><strong>KẾ HOẠCH THỰC HIỆN MỤC TIÊU THIẾT BỊ</strong></div>
-                                <div><span id="SpanPlanYear">{{ model.year | date:'yyyy' }}</span></div>
+                                <div style="font-size: 16px; font-weight: bold;">MỤC TIÊU QUẢN LÝ THIẾT BỊ</div>
+                                <div><span id="SpanPlanYear" style="font-size: 14px; font-weight: bold;">Năm {{ model.year | date:'yyyy' }}</span></div>
                             </div>
                         </th>
-                        <th colspan="2">
-                            <label class="font-semibold">Đơn vị:&nbsp; Đơn vị: LED; Xưởng LED - Điện tử & TBCS</label>
-                            <div><span id="planCode">{{ model.planCode }}</span></div>
+                        <th colspan="2" class="text-right" style="vertical-align: middle; text-align: right;">
+                            <label class="font-semibold">Đơn vị: Ngành {{ model.branch?.name }}</label>
                         </th>
                     </tr>
                     <tr>
-                        <th>Nội dung</th>
-                        <th>Mục tiêu</th>
-                        <th>Biện pháp thực hiện</th>
-                        <th>Thời hạn</th>
-                        <th>Mục tiêu thực hiện</th>
-                        <th>Giá trị đối chiếu</th>
-                        <th>Người thực hiện</th>
-                        <th>Đơn vị phối hợp</th>
-                        <th>Ghi chú</th>
+                        <th style="width: 50px;" class="text-center">TT</th>
+                        <th style="min-width: 250px;">Nội dung</th>
+                        <th style="min-width: 200px;">Mục tiêu</th>
+                        <th style="min-width: 250px;">Biện pháp thực hiện</th>
+                        <th style="width: 110px; text-align: center;">Thời hạn</th>
+                        <th style="min-width: 150px;">Người thực hiện</th>
+                        <th style="min-width: 150px;">Đơn vị phối hợp</th>
+                        <th style="min-width: 100px;">Ghi chú</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-row let-i="rowIndex">
                     <tr>
-                        <td>{{ row.measurement }}</td>
-                        <td>{{ row.target }}</td>
-                        <td>{{ row.solution }}</td>
-                        <td>{{ frequencyToText(row.duaration) }}</td>
-                        <td>{{ targetTypeToText(row.targetType) }}</td>
-                        <td>{{ row.minValue }}</td>
-                        <td>{{ row.userAct }}</td>
-                        <td>{{ row.coordinationUnit }}</td>
-                        <td>{{ row.note }}</td>
+                        <td class="text-center">{{ i + 1 }}</td>
+                        <td style="white-space: pre-line;">{{ row.measurement }}</td>
+                        <td style="white-space: pre-line;">{{ row.target }}</td>
+                        <td style="white-space: pre-line;">{{ row.solution }}</td>
+                        <td class="text-center">{{ frequencyToText(row.duaration) }}</td>
+                        <td style="white-space: pre-line;">{{ row.userAct }}</td>
+                        <td style="white-space: pre-line;">{{ row.coordinationUnit }}</td>
+                        <td style="white-space: pre-line;">{{ row.note }}</td>
                     </tr>
                 </ng-template>
 
                 <ng-template pTemplate="emptymessage">
                     <tr>
-                        <td colspan="99" class="text-center">Không có dữ liệu</td>
+                        <td colspan="8" class="text-center">Không có dữ liệu</td>
                     </tr>
                 </ng-template>
             </p-table>
-            <table id="nghemthu-details-table" class="table table-bordered table-hover" style="width: 100%;">
+            <table id="nghemthu-details-table" class="table table-bordered table-hover mt-4" style="width: 100%;">
                 <thead>
                     <tr>
-                        <th *ngFor="let g of listUserApproval" class="text-center">
-                            <div class="only-print italic"
-                                style="display: none; font-weight: normal; font-size: 11px; margin-bottom: 5px;">
-                                Ngày ...... tháng ...... năm 20....
+                        <th *ngFor="let g of listUserApproval" class="text-center" style="border: none !important;">
+                            <div class="italic mb-2" style="font-weight: normal; font-size: 13px;">
+                                Ngày {{ (model.createdAt || model.updatedAt) | date: 'dd' }} tháng {{ (model.createdAt || model.updatedAt) | date: 'MM' }} năm {{ (model.createdAt || model.updatedAt) | date: 'yyyy' }}
                             </div>
-                            {{ g.groupName }}
+                            <div style="font-size: 14px; font-weight: bold;">
+                                {{ g.groupName }}
+                            </div>
                         </th>
                     </tr>
                     <tr>
-                        <td *ngFor="let g of listUserApproval" class="">
-                            <div *ngFor="let sig of g.signatures" style="margin-bottom: 10px;text-align: center;">
+                        <td *ngFor="let g of listUserApproval" class="text-center" style="border: none !important;">
+                            <div *ngFor="let sig of g.signatures" style="margin-bottom: 10px; text-align: center;">
                                 <img *ngIf="sig" [src]="sig"
                                     style="width: 120px; height: 60px; display: block; margin: 0 auto;">
                                 <span *ngIf="!sig" style="font-weight: bold;">Đã ký</span>
@@ -73,9 +71,9 @@
                 </thead>
             </table>
         </div>
-        <div class="mt-3 d-flex flex-column">
-            <span>
-                {{ model.planNumber }}. Ban hành lần {{ model.numberOfIssuances }}
+        <div class="mt-3 d-flex flex-column no-print">
+            <span style="font-size: 12px; font-style: italic;">
+                RD.QT15 BM02a Ban hành lần 2
             </span>
         </div>
     </div>
@@ -85,3 +83,4 @@
         <p-button label="In" icon="pi pi-file-export" severity="success" (click)="export()" class="me-2"></p-button>
     </div>
 </div>
+

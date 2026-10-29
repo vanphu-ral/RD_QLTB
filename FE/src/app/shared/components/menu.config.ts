@@ -99,12 +99,27 @@ export const MENU_ITEMS: MenuItem[] = [
                 ]
             },
             {
+                label: 'Biểu mẫu',
+                icon: 'fa-solid fa-file-lines',
+                roles: ['RD_QLTB_ADMIN', 'RD_QLTB_MANAGER', 'RD_QLTB_OP', 'RD_QLTB_APPROVE'],
+                items: [
+                    { label: 'Bảng kiểm tra máy hàng ngày', icon: 'pi pi-fw pi-list-check', routerLink: ['/Forms/daily-check'] },
+                    { label: 'Lịch bảo dưỡng định kỳ', icon: 'pi pi-fw pi-calendar', routerLink: ['/Forms/maintenance-schedule'] },
+                    { label: 'Mục tiêu quản lý thiết bị', icon: 'pi pi-fw pi-file', routerLink: ['/Forms/target-plan'] },
+                    { label: 'Báo cáo KQ mục tiêu thiết bị', icon: 'pi pi-fw pi-file-check', routerLink: ['/Forms/target-result'] },
+                    { label: 'Kế hoạch vật tư, phụ tùng', icon: 'pi pi-fw pi-box', routerLink: ['/Forms/supply-plan'] },
+                    { label: 'Biên bản sự cố thiết bị', icon: 'pi pi-fw pi-exclamation-triangle', routerLink: ['/Forms/incident-report'] },
+                    { label: 'Biên bản nghiệm thu thiết bị', icon: 'pi pi-fw pi-check-circle', routerLink: ['/Forms/acceptance-record'] },
+                    { label: 'Sổ theo dõi SC, BD thiết bị', icon: 'pi pi-fw pi-book', routerLink: ['/Forms/maintenance-log'] },
+                ]
+            },
+            {
                 label: 'Quản lý biên bản',
                 icon: 'fa-solid fa-file-signature',
                 roles: ['RD_QLTB_ADMIN', 'RD_QLTB_MANAGER', 'RD_QLTB_APPROVE'],
                 items: [
                     { label: 'Biên bản nghiệm thu thiết bị', icon: 'fa-solid fa-file-invoice', routerLink: ['/Acceptance'] },
-                    { label: 'Biên bản sự cố nghiêm trọng', icon: 'fa-solid fa-file-excel', routerLink: ['/ReportDeviceIncident'] }
+                    { label: 'Biên bản sự cố thiết bị', icon: 'fa-solid fa-file-excel', routerLink: ['/ReportDeviceIncident'] }
                 ]
             },
             {

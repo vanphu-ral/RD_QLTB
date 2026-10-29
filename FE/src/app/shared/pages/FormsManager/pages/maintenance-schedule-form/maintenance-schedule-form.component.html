@@ -1,0 +1,218 @@
+<div class="tree-table-header my-3">
+  <h2>Biểu mẫu: Lịch bảo dưỡng, sửa chữa thiết bị định kỳ (RĐ.QT15.BM04a)</h2>
+</div>
+
+<div class="card">
+  <p-table 
+    [value]="plans" 
+    [paginator]="true" 
+    [rows]="size" 
+    [totalRecords]="totalRecords" 
+    [lazy]="true"
+    [loading]="loading" 
+    (onLazyLoad)="onPageChange($event)" 
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Từ {first} đến {last} trong {totalRecords} bản ghi"
+    [rowsPerPageOptions]="[5, 10, 20, 50]" 
+    dataKey="id" 
+    [tableStyle]="{ 'min-width': '60rem' }"
+    [expandedRowKeys]="expandedRows" 
+    (onRowExpand)="onRowExpand($event)" 
+    (onRowCollapse)="onRowCollapse($event)"
+    [responsiveLayout]="'scroll'" 
+    [scrollable]="true" 
+    class="p-datatable-gridlines text-sm table-parent">
+    
+    <ng-template #header>
+      <tr>
+        <th style="width: 3rem;"></th>
+        <th style="width: 4rem;">STT</th>
+        <th style="min-width: 170px;">Mã kế hoạch</th>
+        <th style="min-width: 200px;">Tên kế hoạch</th>
+        <th style="min-width: 120px;">Tần suất</th>
+        <th style="min-width: 150px;">Số hiệu</th>
+        <th style="min-width: 150px;">Người thực hiện</th>
+        <th style="min-width: 160px;">Xưởng</th>
+        <th style="min-width: 160px;">Ngành</th>
+        <th style="min-width: 150px;">Người tạo</th>
+        <th style="min-width: 140px;">Ngày tạo</th>
+        <th style="min-width: 140px;">Trạng thái</th>
+        <th style="min-width: 120px;" pFrozenColumn alignFrozen="right" [frozen]="true">Thao tác</th>
+      </tr>
+      <tr>
+        <th></th>
+        <th></th>
+        <th>
+          <p-columnFilter [showMenu]="false" type="text">
+            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+              <input pInputText [(ngModel)]="filters.code" (keyup.enter)="filter($event)">
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter [showMenu]="false" type="text">
+            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+              <input pInputText [(ngModel)]="filters.name" (keyup.enter)="filter($event)">
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter [showMenu]="false" type="text">
+            <ng-template pTemplate="filter">
+              <p-select [options]="frequencyOptions" [(ngModel)]="filters.frequency" placeholder="Chọn tần suất"
+                [showClear]="true" appendTo="body" styleClass="w-full" (onChange)="onSearch()">
+              </p-select>
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter [showMenu]="false" type="text">
+            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+              <input pInputText [(ngModel)]="filters.planNumber" (keyup.enter)="filter($event)">
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter [showMenu]="false" type="text">
+            <ng-template pTemplate="filter">
+              <p-select [options]="listUser" [(ngModel)]="filters.userPerformer" placeholder="Chọn người thực hiện" optionLabel="username" optionValue="username" [showClear]="true"
+                appendTo="body" styleClass="w-full" (onChange)="onSearch()" [filter]="true">
+              </p-select>
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter [showMenu]="false" type="text">
+            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+              <input pInputText [(ngModel)]="filters.factory" (keyup.enter)="filter($event)">
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter [showMenu]="false" type="text">
+            <ng-template pTemplate="filter">
+              <p-select [options]="listBranchs" [(ngModel)]="filters.branch" placeholder="Chọn ngành" optionLabel="name" optionValue="name" [showClear]="true"
+                appendTo="body" styleClass="w-full" (onChange)="onSearch()" [filter]="true">
+              </p-select>
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter [showMenu]="false" type="text">
+            <ng-template pTemplate="filter">
+              <p-select [options]="listUser" [(ngModel)]="filters.createdBy" placeholder="Chọn người tạo" optionLabel="name" optionValue="name" [showClear]="true"
+                appendTo="body" styleClass="w-full" (onChange)="onSearch()" [filter]="true">
+              </p-select>
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter [showMenu]="false" type="date">
+            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+              <p-datepicker appDateConvert [(ngModel)]="filters.createdAt" dateFormat="dd-mm-yy"
+                (ngModelChange)="filter($event)" [ngModelOptions]="{ standalone: true }" appendTo="body"
+                [inputSize]="100" />
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter [showMenu]="false" type="text">
+            <ng-template pTemplate="filter">
+              <p-select [options]="listStatus" [(ngModel)]="filters.status" placeholder="Chọn trạng thái" optionLabel="label" optionValue="code" [showClear]="true"
+                appendTo="body" styleClass="w-full" (onChange)="onSearch()" [filter]="true">
+                <ng-template let-option pTemplate="item">
+                  <p-tag [value]="getStatus(option.code)" [severity]="getSeverity(option.code)" />
+                </ng-template>
+              </p-select>
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th pFrozenColumn alignFrozen="right" [frozen]="true"></th>
+      </tr>
+    </ng-template>
+
+    <ng-template #body let-row let-expanded="expanded" let-index="rowIndex">
+      <tr>
+        <td>
+          <p-button type="button" pRipple [pRowToggler]="row" [text]="true" severity="secondary" [rounded]="true"
+            [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" />
+        </td>
+        <td class="text-center">{{ index + 1 }}</td>
+        <td>{{ row.code }}</td>
+        <td>{{ row.name }}</td>
+        <td>{{ row.frequency }}</td>
+        <td>{{ row.planNumber }}</td>
+        <td>{{ row.userPerformer }}</td>
+        <td>{{ row.factory?.name }}</td>
+        <td>{{ row.branch?.name }}</td>
+        <td>{{ row.createdBy }}</td>
+        <td>{{ row.createdAt | date: 'dd/MM/yyyy' }}</td>
+        <td>
+          <p-tag [value]="getStatus(row.status)" [severity]="getSeverity(row.status)" />
+        </td>
+        <td pFrozenColumn alignFrozen="right" [frozen]="true">
+          <p-button icon="pi pi-file-pdf" styleClass="p-button-sm p-button-rounded p-button-info m-1"
+            title="Xem & In lịch bảo dưỡng (BM04a)"
+            (onClick)="viewPlanMaintance(row)">
+          </p-button>
+          <p-button icon="pi pi-eye" styleClass="p-button-sm p-button-rounded p-button-secondary m-1" 
+            title="Xem chi tiết kế hoạch"
+            (onClick)="viewItem(row)">
+          </p-button>
+        </td>
+      </tr>
+    </ng-template>
+
+    <!-- Hàng con mở rộng hiển thị các thiết bị của kế hoạch -->
+    <ng-template let-row pTemplate="rowexpansion">
+      <tr>
+        <td colspan="13">
+          <div class="p-2">
+            <h5 class="mb-2 font-bold text-gray-700">Danh sách thiết bị thuộc kế hoạch</h5>
+            <p-table [value]="row.details" dataKey="id" class="p-datatable-sm p-datatable-gridlines">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th style="width: 45px;" class="text-center">STT</th>
+                  <th>Mã thiết bị</th>
+                  <th>Tên thiết bị</th>
+                  <th>Nhóm thiết bị</th>
+                  <th>Thời gian dự kiến</th>
+                  <th>Bản kế hoạch kèm theo</th>
+                  <th>Ghi chú</th>
+                  <th>Trạng thái</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-detail let-dIndex="rowIndex">
+                <tr>
+                  <td class="text-center">{{ dIndex + 1 }}</td>
+                  <td>{{ detail.device?.code }}</td>
+                  <td>{{ detail.device?.name }}</td>
+                  <td>{{ detail.deviceGroup?.name }}</td>
+                  <td>{{ detail.estimatedTime | date: 'MM/yyyy' }}</td>
+                  <td>{{ detail.nameDetail }}</td>
+                  <td>{{ detail.note }}</td>
+                  <td>
+                    <p-tag [value]="getStatus(detail.status)" [severity]="getSeverity(detail.status)" />
+                  </td>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td colspan="8" class="text-center text-gray-500 py-2">Chưa có thiết bị chi tiết</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="13" class="text-center py-4 text-gray-500">
+          Không có dữ liệu kế hoạch bảo dưỡng
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

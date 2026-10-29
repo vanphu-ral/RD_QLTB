@@ -1,9 +1,28 @@
 img.signature_img > img {
   transform: rotate(90deg);
 }
+
 .table-responsive {
   overflow: hidden !important;
 }
+
 .table-hover:hover {
   background-color: #00000013 !important;
+}
+
+.signature-section {
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+}
+
+.signature-table {
+  width: 100%;
+  border-collapse: collapse !important;
+  border: 1px solid #000 !important;
+
+  td {
+    border: 1px solid #000 !important;
+    vertical-align: top;
+    background-color: #fff;
+  }
 }

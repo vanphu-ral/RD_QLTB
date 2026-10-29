@@ -20,14 +20,26 @@ import { AccountService } from "../../../../../core/auth/account/account.service
 export class ErrorReportDialog {
 
     data: ErrorReport = new ErrorReport();
-    listSeverity: any[] = [ { label: 'Nghiêm trọng', value: 0 }, { label: 'Bất thường', value: 1 }, { label: 'Nhẹ', value: 2 } ];
+    listSeverity: any[] = [
+        { label: 'Nghiêm trọng', value: 0 },
+        { label: 'Bất thường', value: 1 },
+        { label: 'Nhẹ', value: 2 },
+        { label: 'Dừng máy đổi sản phẩm', value: 3 }
+    ];
     listError: ErrorReport[] = []
     constructor(
         public ref: DynamicDialogRef,
         public config: DynamicDialogConfig,
         private accountService: AccountService,
     ) {
-        this.listError = config.data || [];
+        if (Array.isArray(config.data)) {
+            this.listError = config.data;
+        } else if (config.data) {
+            this.listError = config.data.listError || [];
+            if (config.data.initialData) {
+                Object.assign(this.data, config.data.initialData);
+            }
+        }
     }
 
     ngOnInit() {
@@ -35,16 +47,7 @@ export class ErrorReportDialog {
     }
 
     sevirityStatus(status: number) {
-        switch (status) {
-            case 0:
-                return 'Nghiêm trọng';
-            case 1:
-                return 'Bất thường';
-            case 2:
-                return 'Nhẹ';
-            default:
-                return '';
-        }
+        return Util.severityErrorToString(status);
     }
 
     editRow(index: number) {
@@ -57,7 +60,31 @@ export class ErrorReportDialog {
     }
 
     submit() {
-        this.data.isRepaired = false;
+        if (!this.data.name || this.data.name.trim() === '') {
+            Util.toastMessage('Vui lòng nhập tên lỗi / lý do dừng máy', 'error');
+            return;
+        }
+
+        if (this.data.severity === undefined || this.data.severity === null) {
+            Util.toastMessage('Vui lòng chọn loại sự cố / lý do dừng', 'error');
+            return;
+        }
+
+        if (this.data.severity === 3) {
+            if (this.data.timeRepaired) {
+                if (new Date(this.data.timeRepaired) < new Date(this.data.timeReported!)) {
+                    Util.toastMessage('Thời gian bắt đầu chạy lại không được nhỏ hơn thời gian bắt đầu dừng máy', 'error');
+                    return;
+                }
+                this.data.isRepaired = true;
+                this.data.repairedBy = this.accountService.getUser()?.fullName || '';
+            } else {
+                this.data.isRepaired = false;
+            }
+        } else {
+            this.data.isRepaired = false;
+        }
+
         this.data.reportedBy = this.accountService.getUser()?.fullName || '';
         this.listError.push(this.data);
         this.ref.close(this.listError);

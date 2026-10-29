@@ -42,6 +42,7 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit, AfterVie
   };
   @Input() headerActionTemplate?: TemplateRef<any>;
   @Input() defaultFilters: { [field: string]: any } = {};
+  @Input() allowedStatuses?: number[];
   @ContentChildren(CustomFilterDirective) customFilters!: QueryList<CustomFilterDirective>;
   @ContentChildren(CustomColumnDirective) columnTemplates!: QueryList<CustomColumnDirective>;
   private filterTpls = new Map<string, TemplateRef<any>>();
@@ -86,6 +87,9 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit, AfterVie
     const rows = event.rows || 10;
     const page = first / rows;
     const filters: any = {};
+    if (this.defaultFilters) {
+      Object.assign(filters, this.defaultFilters);
+    }
     if (event.filters) {
       Object.keys(event.filters).forEach(key => {
         const filterMeta = event.filters![key];
@@ -101,8 +105,12 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit, AfterVie
     if (service.getAllByPaged) {
       service.getAllByPaged(filters, page, rows).subscribe({
         next: (res: any) => {
-          this.data = res.content;
-          this.totalRecords = res.totalElements;
+          let content = res?.content || [];
+          if (this.allowedStatuses && this.allowedStatuses.length > 0) {
+            content = content.filter((item: any) => this.allowedStatuses!.includes(Number(item.status)));
+          }
+          this.data = content;
+          this.totalRecords = this.allowedStatuses && this.allowedStatuses.length > 0 ? content.length : (res?.totalElements || content.length);
           this.loading = false;
           this.cdr.detectChanges();
         },
@@ -148,6 +156,9 @@ export class BaseTableComponent<T> implements OnInit, AfterContentInit, AfterVie
 
   getFilterValue(): any {
     const filters: any = {};
+    if (this.defaultFilters) {
+      Object.assign(filters, this.defaultFilters);
+    }
     if (this.dt && this.dt.filters) {
       Object.keys(this.dt.filters).forEach(key => {
         const filterMeta = this.dt.filters[key];

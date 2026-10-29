@@ -3,78 +3,119 @@
         <p-table #dt [value]="data.result!">
             <ng-template pTemplate="header">
                 <tr>
-                    <th colspan="2">
+                    <th colspan="2" style="vertical-align: middle;">
                         <img src="/assets/imgs/logo-rang-dong.png" style="width:150px;" />
                     </th>
-                    <th colspan="3" class="text-center">
+                    <th colspan="3" class="text-center" style="vertical-align: middle;">
                         <div>
-                            <div><strong>KẾT QUẢ THỰC HIỆN MỤC TIÊU QUẢN LÝ THIẾT BỊ</strong></div>
-                            <div><span id="SpanPlanYear">{{ data.executionTime | date:'MM/yyyy' }}</span></div>
+                            <div style="font-size: 16px; font-weight: bold;">BÁO CÁO KẾT QUẢ THỰC HIỆN MỤC TIÊU QUẢN LÝ THIẾT BỊ</div>
+                            <div><span id="SpanPlanYear" style="font-size: 14px; font-weight: bold;">Tháng {{ data.executionTime | date:'MM/yyyy' }}</span></div>
                         </div>
                     </th>
-                    <th colspan="2">
-                        <label class="font-semibold">Đơn vị:&nbsp; Đơn vị: LED; Xưởng LED - Điện tử & TBCS</label>
+                    <th [attr.colspan]="isViewMode ? 2 : 3" class="text-right" style="vertical-align: middle; text-align: right;">
+                        <label class="font-semibold">Đơn vị: Ngành {{ plan?.branch?.name || data.planTargetDevice?.branch?.name || '' }}</label>
                     </th>
                 </tr>
                 <tr>
-                    <th style="width: 200px !important;">Nội dung</th>
-                    <th>Mục tiêu</th>
-                    <th>Kết quả thực hiện</th>
-                    <th>Đánh giá</th>
-                    <th>Kế hoạch tiếp theo</th>
-                    <th>Ghi chú</th>
-                    <th *ngIf="!isViewMode">Thao tác</th>
+                    <th style="width: 50px;" class="text-center">TT</th>
+                    <th style="min-width: 200px;">Nội dung</th>
+                    <th style="min-width: 180px;">Mục tiêu</th>
+                    <th style="min-width: 180px;">Kết quả thực hiện</th>
+                    <th style="width: 140px;">Đánh giá</th>
+                    <th style="min-width: 160px;">Kế hoạch tiếp theo</th>
+                    <th style="min-width: 120px;">Ghi chú</th>
+                    <th *ngIf="!isViewMode" style="width: 80px;">Thao tác</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-row let-i="rowIndex">
                 <tr>
-                    <td>{{ row.measurement }}</td>
-                    <td>{{ row.target }}</td>
+                    <td class="text-center">{{ i + 1 }}</td>
+                    <td style="white-space: pre-line;">{{ row.measurement }}</td>
+                    <td style="white-space: pre-line;">{{ row.target }}</td>
                     <ng-container *ngIf="!isViewMode">
                         <td>
-                            <textarea rows="5" cols="30" fluid pTextarea class="form-control" placeholder="Enter ..." id="result"
+                            <textarea rows="4" fluid pTextarea class="form-control" placeholder="Nhập kết quả..." id="result"
                                 name="result-{{ i }}" [(ngModel)]="row.result"></textarea>
                         </td>
                         <td>
-                            <p-select [(ngModel)]="row.evaluate"  [options]="listEvaluate"
-                                [fluid]="true"[showClear]="true" [appendTo]="'body'" id="evaluate"
+                            <p-select [(ngModel)]="row.evaluate" [options]="listEvaluate"
+                                [fluid]="true" [showClear]="true" [appendTo]="'body'" id="evaluate"
                                 name="evaluate-{{ i }}" optionLabel="name" optionValue="value" dataKey="id">
                             </p-select>
                         </td>
                         <td>
-                            <textarea rows="5" cols="30" fluid pTextarea class="form-control" placeholder="Enter ..." id="nextTarget"
+                            <textarea rows="4" fluid pTextarea class="form-control" placeholder="Kế hoạch tiếp theo..." id="nextTarget"
                                 name="nextTarget-{{ i }}" [(ngModel)]="row.nextTarget"></textarea>
                         </td>
                         <td>
-                            <textarea rows="5" cols="30" fluid pTextarea class="form-control" placeholder="Enter ..." id="note"
+                            <textarea rows="4" fluid pTextarea class="form-control" placeholder="Ghi chú..." id="note"
                                 name="note-{{ i }}" [(ngModel)]="row.note"></textarea>
                         </td>
                     </ng-container>
                     <ng-container *ngIf="isViewMode">
-                        <td>{{ row.result }}</td>
-                        <td>{{ evaluateToString(row.evaluate) }}</td>
-                        <td>{{ row.nextTarget }}</td>
-                        <td>{{ row.note }}</td>
+                        <td style="white-space: pre-line;">{{ row.result }}</td>
+                        <td>
+                            <p-tag [value]="evaluateToString(row.evaluate)" [severity]="row.evaluate === 1 ? 'success' : (row.evaluate === 2 ? 'danger' : 'info')"></p-tag>
+                        </td>
+                        <td style="white-space: pre-line;">{{ row.nextTarget }}</td>
+                        <td style="white-space: pre-line;">{{ row.note }}</td>
                     </ng-container>
-                    <td *ngIf="!isViewMode">
-                        <p-button icon="pi pi-trash" severity="danger" (onClick)="deleteRow(i)" styleClass="mx-2"></p-button>
+                    <td *ngIf="!isViewMode" class="text-center">
+                        <p-button icon="pi pi-trash" severity="danger" (onClick)="deleteRow(i)" styleClass="p-button-sm p-button-rounded"></p-button>
                     </td>
                 </tr>
             </ng-template>
 
             <ng-template pTemplate="emptymessage">
                 <tr>
-                    <td colspan="99" class="text-center">Không có dữ liệu</td>
+                    <td [attr.colspan]="isViewMode ? 7 : 8" class="text-center">Không có dữ liệu</td>
                 </tr>
             </ng-template>
         </p-table>
+
+        <table id="signature-table" class="table table-bordered mt-4" style="width: 100%; border: none !important;">
+            <thead>
+                <tr>
+                    <th class="text-center" style="border: none !important; width: 33.3%;">
+                        <div class="italic mb-2" style="font-weight: normal; font-size: 13px;">
+                            Ngày {{ (data.updatedAt || data.createdAt) | date: 'dd' }} tháng {{ (data.updatedAt || data.createdAt) | date: 'MM' }} năm {{ (data.updatedAt || data.createdAt) | date: 'yyyy' }}
+                        </div>
+                        <div style="font-size: 14px; font-weight: bold;">Trưởng đơn vị</div>
+                    </th>
+                    <th class="text-center" style="border: none !important; width: 33.3%;">
+                        <div class="italic mb-2" style="font-weight: normal; font-size: 13px;">
+                            Ngày {{ (data.updatedAt || data.createdAt) | date: 'dd' }} tháng {{ (data.updatedAt || data.createdAt) | date: 'MM' }} năm {{ (data.updatedAt || data.createdAt) | date: 'yyyy' }}
+                        </div>
+                        <div style="font-size: 14px; font-weight: bold;">Ngành sản xuất</div>
+                    </th>
+                    <th class="text-center" style="border: none !important; width: 33.3%;">
+                        <div class="italic mb-2" style="font-weight: normal; font-size: 13px;">
+                            Ngày {{ (data.updatedAt || data.createdAt) | date: 'dd' }} tháng {{ (data.updatedAt || data.createdAt) | date: 'MM' }} năm {{ (data.updatedAt || data.createdAt) | date: 'yyyy' }}
+                        </div>
+                        <div style="font-size: 14px; font-weight: bold;">Người lập biểu</div>
+                    </th>
+                </tr>
+                <tr>
+                    <td style="border: none !important; height: 70px;"></td>
+                    <td style="border: none !important; height: 70px;"></td>
+                    <td style="border: none !important; height: 70px;"></td>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+    <div class="mt-2 d-flex flex-column no-print">
+        <span style="font-size: 12px; font-style: italic;">
+            RĐ.QT15.BM02b Ban hành lần 1
+        </span>
     </div>
 
     <div class="d-flex justify-content-end gap-2 mt-4">
-        <p-button label="Xuất dữ liệu" (onClick)="export()" icon="pi pi-download" severity="info"></p-button>
-        <p-button label="Lưu" (onClick)="submit()" severity="success" *ngIf="!isViewMode"></p-button>
-        <p-button label="Đóng" (onClick)="close()"></p-button>
+        <p-button label="Xuất dữ liệu" (onClick)="export()" icon="pi pi-download" severity="info" styleClass="p-button-sm"></p-button>
+        <p-button label="Lưu" (onClick)="submit()" severity="success" *ngIf="!isViewMode" styleClass="p-button-sm"></p-button>
+        <p-button label="Đóng" (onClick)="close()" severity="secondary" styleClass="p-button-sm"></p-button>
     </div>
 </div>
 <p-confirmDialog></p-confirmDialog>
 <p-toast></p-toast>
+

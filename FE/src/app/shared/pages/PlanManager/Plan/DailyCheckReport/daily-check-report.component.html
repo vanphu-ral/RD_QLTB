@@ -81,6 +81,9 @@
 <ng-template #customActions let-row>
   <p-button title="Xem báo cáo" icon="pi pi-file-pdf" styleClass="p-button-sm p-button-rounded p-button-info m-1"
     (onClick)="openMonthPicker(row)"></p-button>
+  <p-button *ngIf="isPlanScope" title="Lịch kiểm tra thiết bị" icon="pi pi-calendar-clock"
+    styleClass="p-button-sm p-button-rounded p-button-warning m-1"
+    (onClick)="openCheckListDialog(row)"></p-button>
 </ng-template>
 
 <!-- Month Picker Dialog -->

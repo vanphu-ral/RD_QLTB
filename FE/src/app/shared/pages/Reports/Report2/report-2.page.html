@@ -1,112 +1,196 @@
 <div class="maintance-table">
-    <div class="card mt-3">
-        <div class="filter-box row my-3">
-            <div class="col">
+    <!-- Thanh bộ lọc Tra cứu -->
+    <div class="card mt-2 mb-3 p-3">
+        <div class="row g-3 align-items-center">
+            <!-- Chọn Ngành -->
+            <div class="col-12 col-md-3">
                 <p-floatlabel variant="on">
-                    <p-multiselect [options]="listBranchs" [(ngModel)]="filter.branchIds" optionValue="id" [showClear]="true"
-                        [fluid]="true" [maxSelectedLabels]="2" optionLabel="name" appendTo="body" dataKey="id" />
-                    <label for="branchIds">Ngành</label>
+                    <p-select 
+                        [options]="listBranchs" 
+                        [(ngModel)]="selectedBranchId" 
+                        (onChange)="onBranchChange()"
+                        optionValue="id" 
+                        optionLabel="name" 
+                        [showClear]="true"
+                        [filter]="true"
+                        [fluid]="true" 
+                        styleClass="w-100"
+                        appendTo="body" 
+                        inputId="branchSelect" />
+                    <label for="branchSelect">Ngành</label>
                 </p-floatlabel>
             </div>
-            <div class="col">
+
+            <!-- Chọn Thiết bị -->
+            <div class="col-12 col-md-5">
                 <p-floatlabel variant="on">
-                    <p-datepicker [(ngModel)]="filter.startDate" [iconDisplay]="'input'" [showIcon]="true"
-                        name="startDate" inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body"
-                        [inputSize]="100" />
-                    <label for="startDate">Thời gian bắt đầu</label>
+                    <p-select 
+                        [options]="listDevices" 
+                        [(ngModel)]="selectedDeviceId" 
+                        (onChange)="search()"
+                        optionValue="id" 
+                        [filter]="true"
+                        filterBy="code,name"
+                        [fluid]="true" 
+                        styleClass="w-100"
+                        appendTo="body" 
+                        inputId="deviceSelect">
+                        <ng-template pTemplate="selectedItem" let-selected>
+                            <span *ngIf="selected">{{ selected.code }} - {{ selected.name }}</span>
+                        </ng-template>
+                        <ng-template pTemplate="item" let-item>
+                            <span>{{ item.code }} - {{ item.name }}</span>
+                        </ng-template>
+                    </p-select>
+                    <label for="deviceSelect">Thiết bị (*)</label>
                 </p-floatlabel>
             </div>
-            <div class="col">
+
+            <!-- Chọn Năm theo dõi -->
+            <div class="col-12 col-md-2">
                 <p-floatlabel variant="on">
-                    <p-datepicker [(ngModel)]="filter.endDate" [iconDisplay]="'input'" [showIcon]="true" name="endDate"
-                        inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body" [inputSize]="100" />
-                    <label for="endDate">Thời gian kết thúc</label>
+                    <p-select 
+                        [options]="years" 
+                        [(ngModel)]="selectedYear" 
+                        (onChange)="search()"
+                        [fluid]="true" 
+                        styleClass="w-100"
+                        appendTo="body" 
+                        inputId="yearSelect" />
+                    <label for="yearSelect">Năm</label>
                 </p-floatlabel>
             </div>
-            <div class="col-1">
-                <p-button icon="pi pi-search" label="search" (click)="search()"></p-button>
+
+            <!-- Nút Tra cứu -->
+            <div class="col-12 col-md-2 d-flex gap-2">
+                <p-button icon="pi pi-search" label="Tra cứu" (click)="search()"></p-button>
             </div>
         </div>
-        <div class="table-responsive">
-            <div id="print-section">
-                <p-table #dt [value]="data" [paginator]="true" [paginator]="true" [rows]="size"
-                    [totalRecords]="totalRecords" [lazy]="true" [loading]="loading" (onLazyLoad)="onPageChange($event)"
+    </div>
+
+    <!-- Khung Báo Cáo Sổ theo dõi BM08 -->
+    <div class="card p-3 shadow-sm">
+        <div id="print-section">
+            <!-- Header 3 khối chuẩn BM08 -->
+            <div class="row align-items-center mb-3 pb-2 border-bottom">
+                <!-- Khối Trái: Logo Rạng Đông -->
+                <div class="col-12 col-md-3 text-start">
+                    <img src="/assets/imgs/logo-rang-dong.png" alt="Rạng Đông" style="max-height: 48px; object-fit: contain;" />
+                </div>
+
+                <!-- Khối Giữa: Tiêu đề in hoa + Năm -->
+                <div class="col-12 col-md-5 text-center">
+                    <h5 class="fw-bold mb-1 text-uppercase text-dark" style="letter-spacing: 0.5px;">SỔ THEO DÕI SỬA CHỮA, BẢO DƯỠNG THIẾT BỊ</h5>
+                    <div class="fw-semibold text-secondary">Năm {{ selectedYear }}</div>
+                </div>
+
+                <!-- Khối Phải: Hộp thông tin Đơn vị và Thiết bị -->
+                <div class="col-12 col-md-4 text-end" style="font-size: 13px; line-height: 1.5;">
+                    <div>
+                        <strong class="text-secondary">Đơn vị:</strong> 
+                        <span>{{ deviceInfo?.branchName ? 'LED; Xưởng LED - Điện tử & TBCS; ' + deviceInfo?.branchName : '---' }}</span>
+                    </div>
+                    <div class="mt-1">
+                        <strong class="text-secondary">Thiết bị:</strong> 
+                        <span class="fw-bold text-primary">{{ deviceInfo?.qrCode || deviceInfo?.deviceCode || '---' }}; {{ deviceInfo?.deviceName || '---' }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bảng dữ liệu 9 cột chuẩn BM08 -->
+            <div class="table-responsive">
+                <p-table 
+                    #dt 
+                    [value]="data" 
+                    [paginator]="true" 
+                    [rows]="size"
+                    [totalRecords]="totalRecords" 
+                    [lazy]="true" 
+                    [loading]="loading" 
+                    (onLazyLoad)="onPageChange($event)"
                     [showCurrentPageReport]="true"
                     currentPageReportTemplate="Từ {first} đến {last} trong {totalRecords} bản ghi"
-                    [rowsPerPageOptions]="[5, 10, 20, 50]" dataKey="id" [tableStyle]="{ 'min-width': '60rem' }"
-                    [responsiveLayout]="'scroll'" [scrollable]="true" class="p-datatable-gridlines text-sm">
+                    [rowsPerPageOptions]="[5, 10, 20, 50]" 
+                    [responsiveLayout]="'scroll'" 
+                    class="p-datatable-gridlines text-sm">
+                    
                     <ng-template pTemplate="header">
-                        <tr>
-                            <th colspan="2">
-                                <img src="/assets/imgs/logo-rang-dong.png" style="width:150px;" />
-                            </th>
-                            <th colspan="6" class="text-center">
-                                <div>
-                                    <div><strong>Sổ theo dõi bảo dưỡng thiết bị</strong></div>
-                                    <div><span id="SpanPlanYear">{{ filter.startDate | date:'dd/MM/yyyy' }} - {{ filter.endDate | date:'dd/MM/yyyy' }}</span></div>
-                                </div>
-                            </th>
-                            <th colspan="1" style="max-width: 180px !important;">
-                                <label class="font-semibold">Đơn vị:&nbsp; Đơn vị: LED; Xưởng LED - Điện tử &
-                                    TBCS</label>
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>STT</th>
-                            <th>Ngành</th>
-                            <th>Mã thiết bị</th>
-                            <th>Tên thiết bị</th>
-                            <th>Mã KH</th>
-                            <th>Các đợt bảo trì bảo dưỡng</th>
-                            <th>Nội dung thực hiện</th>
-                            <th>Người kiểm tra</th>
-                            <th>Trạng thái</th>
+                        <tr class="table-light text-center">
+                            <th style="width: 60px;">STT</th>
+                            <th style="width: 110px;">Ngày tháng</th>
+                            <th style="min-width: 180px;">Thiết bị</th>
+                            <th style="width: 130px;">Dây chuyền</th>
+                            <th style="min-width: 280px;">Nội dung sửa chữa / bảo dưỡng</th>
+                            <th style="width: 130px;">Thời gian dừng máy (h)</th>
+                            <th style="min-width: 140px;">Người thực hiện</th>
+                            <th style="min-width: 140px;">Vật tư sử dụng</th>
+                            <th style="min-width: 100px;">Ghi chú</th>
                         </tr>
                     </ng-template>
-                    <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+
+                    <ng-template pTemplate="body" let-item>
                         <tr>
-                            <td *ngIf="item._isFirst" [attr.rowspan]="item._rowspan">
-                                {{ rowIndex + 1 }}
+                            <!-- STT: Hiển thị [*] cho đợt bảo dưỡng định kỳ -->
+                            <td class="text-center fw-bold">
+                                {{ item.stt }}{{ item.isMaintenance ? '[*]' : '' }}
                             </td>
-                            <td *ngIf="item._isFirst" [attr.rowspan]="item._rowspan">
-                                {{ item.branchName }}
+                            <!-- Ngày tháng -->
+                            <td class="text-center">
+                                {{ item.date }}
                             </td>
-                            <td *ngIf="item._isFirst" [attr.rowspan]="item._rowspan">
-                                {{ item.deviceCode }}
-                            </td>
-                            <td *ngIf="item._isFirst" [attr.rowspan]="item._rowspan">
+                            <!-- Thiết bị -->
+                            <td>
                                 {{ item.deviceName }}
                             </td>
-                            <td *ngIf="item._isFirst" [attr.rowspan]="item._rowspan">
-                                {{ item.planCode }}
+                            <!-- Dây chuyền -->
+                            <td class="text-center">
+                                {{ item.lineName || '---' }}
                             </td>
-                            <td *ngIf="item._isFirst" [attr.rowspan]="item._rowspan">
-                                {{ item.dateTest | date:'dd-MM-yyyy' }}
+                            <!-- Nội dung -->
+                            <td style="white-space: pre-line; line-height: 1.4;">
+                                {{ item.content }}
                             </td>
+                            <!-- Thời gian dừng máy (h) -->
+                            <td class="text-center fw-semibold">
+                                {{ item.downtimeStr || '---' }}
+                            </td>
+                            <!-- Người thực hiện -->
                             <td>
-                                {{ item.criticalName }}
+                                {{ item.performer || '---' }}
                             </td>
+                            <!-- Vật tư sử dụng -->
                             <td>
-                                {{ item.committee }}
+                                {{ item.supplies || '---' }}
                             </td>
+                            <!-- Ghi chú -->
                             <td>
-                                {{ item.result }}
+                                {{ item.note || '---' }}
                             </td>
                         </tr>
                     </ng-template>
+
                     <ng-template pTemplate="emptymessage">
                         <tr>
-                            <td colspan="99" class="text-center">Không có dữ liệu</td>
+                            <td colspan="9" class="text-center py-4 text-muted">
+                                <i class="pi pi-info-circle me-1"></i> Chưa có dữ liệu sửa chữa hoặc bảo dưỡng nào cho thiết bị trong năm {{ selectedYear }}.
+                            </td>
                         </tr>
                     </ng-template>
                 </p-table>
             </div>
         </div>
-        <span>RĐ.QT15.BM02a. Ban hành lần 2</span>
+
+        <!-- Chân trang biểu mẫu BM08 chuẩn -->
+        <div class="mt-3 pt-2 d-flex justify-content-between align-items-center">
+            <span class="fst-italic text-secondary" style="font-size: 13px;">
+                RĐ.QT15.BM08 Ban hành lần 1
+            </span>
+        </div>
     </div>
 
-    <div class="d-flex justify-content-end mt-3">
-        <p-button label="Quay lại" severity="info" (click)="onBack()" icon="pi pi-arrow-left" class="me-2"></p-button>
-        <p-button label="Export" severity="success" (click)="export()" icon="pi pi-file-export" class="me-2"></p-button>
+    <!-- Thanh nút hành động -->
+    <div class="d-flex justify-content-end gap-2 mt-3">
+        <p-button label="Quay lại" severity="secondary" (click)="onBack()" icon="pi pi-arrow-left"></p-button>
+        <p-button label="Xuất dữ liệu / In" severity="success" (click)="export()" icon="pi pi-file-export"></p-button>
     </div>
 </div>

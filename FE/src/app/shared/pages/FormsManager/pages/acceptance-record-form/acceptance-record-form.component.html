@@ -1,0 +1,24 @@
+<app-base-table 
+  [apiService]="apiService"
+  [columns]="columns"
+  [title]="'Biểu mẫu: Biên bản nghiệm thu thiết bị (RD.QT15.BM07)'"
+  [showAddButton]="false"
+  [showEditButton]="false"
+  [showViewButton]="false"
+  [showDeleteButton]="false"
+  [actionTemplate]="customActions">
+  <ng-template appColumnTemplate="createdAt" let-rowData>
+    {{ rowData | date: 'dd/MM/yyyy HH:mm' }}
+  </ng-template>
+  <ng-template appColumnTemplate="updatedAt" let-rowData>
+    {{ rowData | date: 'dd/MM/yyyy HH:mm' }}
+  </ng-template>
+</app-base-table>
+
+<ng-template #customActions let-row>
+  <p-button icon="pi pi-file-pdf" title="Xem & In biên bản nghiệm thu"
+    styleClass="p-button-sm p-button-rounded p-button-info m-1" (onClick)="viewAcceptance(row)"></p-button>
+  <p-button icon="pi pi-external-link" title="Đến màn hình quản lý gốc"
+    styleClass="p-button-sm p-button-rounded p-button-secondary m-1" (onClick)="goToOriginal(row)"></p-button>
+</ng-template>
+

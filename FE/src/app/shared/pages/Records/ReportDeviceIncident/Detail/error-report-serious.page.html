@@ -1,111 +1,229 @@
-<div class="p-1">
-
-  <div class="card-body">
-    <table id="nghemthu-details-table" class="table table-bordered table-hover">
+<div class="p-2">
+  <div id="print-section-incident" class="incident-report-container">
+    <table id="nghemthu-details-table" class="table table-bordered incident-table" style="width: 100%; margin: 0; border: 1px solid #000; border-collapse: collapse;">
       <thead>
+        <!-- Hàng 1: Header 3 cột chuẩn ISO -->
         <tr>
-          <td><img src="/assets/imgs/logo-rang-dong.png" style="width:150px;" /></td>
-          <td colspan="2" style="text-align:center;">
-            <b>BIÊN BẢN SỰ CỐ THIẾT BỊ</b>
+          <td style="width: 25%; text-align: center; vertical-align: middle; border: 1px solid #000; padding: 10px;">
+            <img src="/assets/imgs/logo-rang-dong.png" class="brand-logo" style="width: 120px !important; max-width: 120px !important; height: auto !important; display: block; margin: 0 auto;" />
           </td>
-          <td>
-            Số: <span id="spanBienBanPlanNumber">{{ model.docNumber }}</span><br />
-            <br />
-            Ngày: <span id="spanBienBanNgayBB">{{ model.createdAt | date: 'dd/MM/yyyy' }}</span> 
+          <td colspan="2" style="width: 50%; text-align: center; vertical-align: middle; border: 1px solid #000; padding: 10px;">
+            <div style="font-size: 15px; font-weight: bold; margin-bottom: 6px;">BIÊN BẢN SỰ CỐ THIẾT BỊ</div>
+            <div style="font-size: 14px; font-weight: bold; text-transform: uppercase;">{{ model.device?.name }}</div>
+          </td>
+          <td style="width: 25%; vertical-align: middle; border: 1px solid #000; padding: 10px; font-weight: 500;">
+            <b>Số:</b> <span id="spanBienBanPlanNumber">{{ model.docNumber }}</span>
           </td>
         </tr>
+
+        <!-- Hàng 2: 4 ô chia đều 25% -->
         <tr>
-          <td>Thời gian xảy ra sự cố: <span id="spanBienBanDepartmentAct">{{ isAddMode ? (data.timeReported | date: 'dd/MM/yyyy') : (model.errorReport?.timeReported | date: 'dd/MM/yyyy') }}</span></td>
-          <td>Địa điểm: <span id="spanBienBanDepartmentAct">{{ model.device?.branch?.name }}</span></td>
-          <td>Ngành, ban: <span id="spanBienBanDepartmentAct">{{ model.device?.branch?.name }}</span></td>
-          <td>Xưởng: <span id="spanBienBanDeviceName">LED; Xưởng LED - Điện tử & TBCS</span></td>
+          <td style="width: 25%; border: 1px solid #000; padding: 6px 8px; vertical-align: top;">
+            <b>Thời gian xảy ra sự cố:</b><br />
+            {{ isAddMode ? (data?.timeReported ? (data.timeReported | date: 'HH\'h ngày\' dd/MM/yyyy') : (model.createdAt | date: 'HH\'h ngày\' dd/MM/yyyy')) : ((model.errorReport?.timeReported || model.createdAt) ? ((model.errorReport?.timeReported || model.createdAt) | date: 'HH\'h ngày\' dd/MM/yyyy') : '') }}
+          </td>
+          <td style="width: 25%; border: 1px solid #000; padding: 6px 8px; vertical-align: top;">
+            <b>Địa điểm:</b><br />
+            {{ getLocationDisplay() }}
+          </td>
+          <td style="width: 25%; border: 1px solid #000; padding: 6px 8px; vertical-align: top;">
+            <b>Ngành, ban:</b><br />
+            {{ model.device?.branch?.name || '' }}
+          </td>
+          <td style="width: 25%; border: 1px solid #000; padding: 6px 8px; vertical-align: top;">
+            <b>Xưởng:</b><br />
+            {{ model.device?.branch?.factory?.name || model.device?.workshop?.name || 'Xưởng LED - Điện tử & TBCS' }}
+          </td>
         </tr>
+
+        <!-- Hàng 3: Mô tả sự cố -->
         <tr>
-          <td colspan="4">
-            Mô tả sự cố:
-            <div class="mt-3">
-              <textarea pTextarea  class="form-control" rows="3" placeholder="Enter ..." id="errorDescription"
-                name="errorDescription" [(ngModel)]="model.errorDescription" [disabled]="!isAddMode"></textarea>
+          <td colspan="4" style="border: 1px solid #000; padding: 6px 8px;">
+            <b>Mô tả sự cố:</b>
+            <div class="mt-2" *ngIf="isAddMode">
+              <textarea pTextarea class="form-control" rows="3" placeholder="Nhập mô tả sự cố..." id="errorDescription"
+                name="errorDescription" [(ngModel)]="model.errorDescription"></textarea>
+            </div>
+            <div class="mt-1" *ngIf="!isAddMode">
+              {{ model.errorDescription }}
+            </div>
+          </td>
+        </tr>
+
+        <!-- Hàng 4: Nguyên nhân -->
+        <tr>
+          <td colspan="4" style="border: 1px solid #000; padding: 6px 8px;">
+            <b>Nguyên nhân:</b>
+            <div class="mt-2" *ngIf="isAddMode">
+              <textarea pTextarea class="form-control" rows="3" placeholder="Nhập từng nguyên nhân theo dòng..." id="WorkArising"
+                name="WorkArising" [(ngModel)]="model.reason"></textarea>
+            </div>
+            <div class="mt-1" *ngIf="!isAddMode && model.reason">
+              <ul class="pl-3 m-0" style="list-style-type: disc;">
+                <li *ngFor="let line of textForList(model.reason)">
+                  {{ line }}
+                </li>
+              </ul>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Hàng 5 & 6: Biện pháp xử lý & Người thực hiện / Thời gian hoàn thành -->
+        <tr>
+          <td colspan="3" rowspan="2" style="border: 1px solid #000; padding: 6px 8px; vertical-align: top; width: 70%;">
+            <b>Biện pháp xử lý:</b>
+            <div class="mt-2" *ngIf="isAddMode">
+              <textarea pTextarea class="form-control" rows="6" placeholder="Nhập từng biện pháp xử lý..." id="treatmentMeasure"
+                name="treatmentMeasure" [(ngModel)]="model.treatmentMeasure"></textarea>
+            </div>
+            <div class="mt-1" *ngIf="!isAddMode && model.treatmentMeasure">
+              <ul class="pl-3 m-0" style="list-style-type: disc;">
+                <li *ngFor="let line of textForList(model.treatmentMeasure)">
+                  {{ line }}
+                </li>
+              </ul>
+            </div>
+          </td>
+          <td style="border: 1px solid #000; padding: 6px 8px; vertical-align: top; width: 30%;">
+            <b>Người thực hiện:</b>
+            <div class="mt-2" *ngIf="isAddMode">
+              <p-multiselect [options]="listUsers" optionLabel="name" optionValue="username" [fluid]="true" [(ngModel)]="model.performer"
+                [showClear]="true" [filter]="true" [appendTo]="'body'" id="performer" name="performer"
+                dataKey="username" [maxSelectedLabels]="2" placeholder="Chọn người thực hiện"/>
+            </div>
+            <div class="mt-1" *ngIf="!isAddMode">
+              <div *ngFor="let p of getPerformerDisplayList()" style="margin-bottom: 3px;">
+                - {{ p }}
+              </div>
             </div>
           </td>
         </tr>
         <tr>
-          <td colspan="4">
-            Nguyên nhân:
-            <div class="mt-3">
-              <textarea pTextarea  class="form-control" rows="3" placeholder="Enter ..." id="WorkArising"
-                name="WorkArising" [(ngModel)]="model.reason" [disabled]="!isAddMode"></textarea>
+          <td style="border: 1px solid #000; padding: 6px 8px; vertical-align: top; width: 30%;">
+            <b>Thời gian hoàn thành dự kiến:</b>
+            <div class="mt-2" *ngIf="isAddMode">
+              <p-datepicker appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="timeComplete"
+                    inputId="timeComplete" [dateFormat]="'dd-mm-yy'" appendTo="body" [fluid]="true" [(ngModel)]="model.timeComplete"/>
+            </div>
+            <div class="mt-1" *ngIf="!isAddMode">
+              {{ model.timeComplete | date: 'dd/MM/yyyy' }}
             </div>
           </td>
         </tr>
+
+        <!-- Hàng 7: Thành phần tham gia lập biên bản -->
         <tr>
-          <td colspan="3" rowspan="3">
-            Biện pháp xử lý:
-            <div class="mt-3">
-              <textarea pTextarea  class="form-control" rows="9" placeholder="Enter ..." id="treatmentMeasure"
-                name="treatmentMeasure" [(ngModel)]="model.treatmentMeasure" [disabled]="!isAddMode"></textarea>
+          <td colspan="4" style="border: 1px solid #000; padding: 6px 8px; font-weight: bold; background-color: #fafafa;">
+            Thành phần tham gia lập biên bản
+          </td>
+        </tr>
+        <tr *ngIf="isAddMode">
+          <td colspan="2" style="border: 1px solid #000; padding: 6px 8px; width: 50%;">
+            <b>Họ và tên:</b>
+            <div class="mt-2">
+              <p-multiselect [options]="listUsers" [(ngModel)]="model.listUser" optionValue="username" [fluid]="true" [maxSelectedLabels]="2" optionLabel="name" appendTo="body" dataKey="username" placeholder="Chọn thành viên"/>
             </div>
           </td>
-          <td style="width: 200px;">
-            Người thực hiện
-            <p-multiselect [options]="listUsers" optionLabel="name" optionValue="username" [fluid]="true" [ngClass]="'mt-3'" [(ngModel)]="model.performer"
-              [showClear]="true" [filter]="true" [appendTo]="'body'" id="performer" name="performer" [disabled]="!isAddMode"
-              dataKey="username" [maxSelectedLabels]="2"/>
+          <td colspan="2" style="border: 1px solid #000; padding: 6px 8px; width: 50%;">
+            <b>Đơn vị:</b>
+            <div class="mt-2">
+              <p-multiselect [options]="listBranches" [(ngModel)]="model.division" optionValue="name" [fluid]="true" [maxSelectedLabels]="2" optionLabel="name" appendTo="body" placeholder="Chọn đơn vị"/>
+            </div>
           </td>
         </tr>
-        <tr style="width: 200px;">
-          <td>
-            Bộ phận thực hiện
-            <p-multiselect [options]="listBranches" optionLabel="name" optionValue="name" [fluid]="true" [ngClass]="'mt-3'" [(ngModel)]="model.executingDepartment"
-              [showClear]="true" [filter]="true" [appendTo]="'body'" id="executingDepartment" name="executingDepartment" [disabled]="!isAddMode"
-              dataKey="name" [maxSelectedLabels]="2"/>
-          </td>
-        </tr>
-        <tr style="width: 200px;">
-          <td>
-            Thời gian hoàn thành dự kiến
-            <p-datepicker appDateConvert [iconDisplay]="'input'" [showIcon]="true" name="installationDate" [ngClass]="'mt-3'" [disabled]="!isAddMode"
-                  inputId="icondisplay" [dateFormat]="'dd-mm-yy'" appendTo="body" [inputSize]="100" [autofocus]="false" [(ngModel)]="model.timeComplete"/>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">Thành phần tham gia lập biên bản</td>
-        </tr>
-        <tr>
-          <td colspan="2">
-            Họ và tên
-            <p-multiselect [options]="listUsers" [(ngModel)]="model.listUser" optionValue="username" [fluid]="true" [ngClass]="'mt-3'" [maxSelectedLabels]="2" optionLabel="name" appendTo="body" dataKey="username" [disabled]="!isAddMode"/>
-          </td>
-          <td colspan="2">
-            Đơn vị
-            <p-multiselect [options]="listBranches" [(ngModel)]="model.division" optionValue="name" [fluid]="true" [ngClass]="'mt-3'" [maxSelectedLabels]="2" optionLabel="name" appendTo="body" [disabled]="!isAddMode"/>
-          </td>
-        </tr>
+        <ng-container *ngIf="!isAddMode">
+          <tr style="background-color: #f5f5f5;">
+            <td colspan="2" style="border: 1px solid #000; padding: 5px 8px; font-weight: bold; width: 50%;">Họ và tên</td>
+            <td colspan="2" style="border: 1px solid #000; padding: 5px 8px; font-weight: bold; width: 50%;">Đơn vị</td>
+          </tr>
+          <tr>
+            <td colspan="2" style="border: 1px solid #000; padding: 8px 12px; vertical-align: top; width: 50%;">
+              <div *ngFor="let name of getMemberNameList()" style="line-height: 1.9; font-size: 13px;">
+                - {{ name }}
+              </div>
+              <div *ngIf="getMemberNameList().length === 0" style="line-height: 1.9; font-size: 13px;">
+                {{ model.listUser?.join(', ') || '' }}
+              </div>
+            </td>
+            <td colspan="2" style="border: 1px solid #000; padding: 8px 12px; vertical-align: top; width: 50%;">
+              <div *ngFor="let div of getMemberDivisionList()" style="line-height: 1.9; font-size: 13px;">
+                - {{ div }}
+              </div>
+              <div *ngIf="getMemberDivisionList().length === 0" style="line-height: 1.9; font-size: 13px;">
+                {{ model.division?.join(', ') || '' }}
+              </div>
+            </td>
+          </tr>
+        </ng-container>
       </thead>
     </table>
+
+    <!-- Bảng Chữ Ký Phê Duyệt (Hiển thị khi ở chế độ xem / duyệt) -->
+    <table *ngIf="!isAddMode && listUserApproval.length > 0" class="table table-bordered signature-table" style="width: 100%; margin-top: -1px; border: 1px solid #000; border-collapse: collapse;">
+      <thead>
+        <tr>
+          <th *ngFor="let g of listUserApproval" class="text-center font-bold" style="border: 1px solid #000; padding: 8px 6px; font-size: 13px;">
+            {{ g.groupName }}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td *ngFor="let g of listUserApproval" class="text-center" style="border: 1px solid #000; height: 95px; vertical-align: middle;">
+            <ng-container *ngIf="g.signatures && g.signatures.length > 0">
+              <div *ngFor="let sig of g.signatures" class="d-flex justify-content-center align-items-center">
+                <img *ngIf="sig" [src]="sig" style="max-height: 60px; max-width: 120px; object-fit: contain;" />
+                <span *ngIf="!sig" style="font-style: italic; color: #555;">Đã ký</span>
+              </div>
+            </ng-container>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Footer biểu mẫu ISO -->
+    <div class="footer-bm06 mt-2" *ngIf="!isAddMode" style="font-size: 11px; font-weight: bold; font-style: italic;">
+      {{ model.formCode || 'RĐ.QT15.BM06' }} &nbsp;&nbsp;&nbsp;&nbsp; Ban hành lần {{ model.numberOfIssuances || 1 }}
+    </div>
   </div>
 
-  <div class="row" *ngIf="isAddMode">
-    <div class="col-12">
-        <p-floatlabel variant="on">
-          <p-select [options]="listApprovalWorkflow" optionLabel="name" [(ngModel)]="model.workflow"
-            [fluid]="true" [showClear]="true" [appendTo]="'body'" id="approvalWorkflow"
-            name="approvalWorkflow" dataKey="id">
-          </p-select>
-          <label for="approvalWorkflow">Kịch bản phê duyệt</label>
-        </p-floatlabel>
+  <!-- Phần nhập mã biểu mẫu & lần ban hành khi tạo mới hoặc sửa -->
+  <div class="card p-3 mt-3 no-print" *ngIf="isAddMode || isEditMode">
+    <div class="row">
+      <div class="col-12 col-md-6 mb-2">
+        <label class="form-label mb-1 font-bold">Mã số biểu mẫu:</label>
+        <input pInputText type="text" [(ngModel)]="model.formCode" class="w-100" placeholder="VD: RĐ.QT15.BM06" />
       </div>
+      <div class="col-12 col-md-6 mb-2">
+        <label class="form-label mb-1 font-bold">Lần ban hành:</label>
+        <p-inputnumber [(ngModel)]="model.numberOfIssuances" [min]="1" class="w-100" styleClass="w-100" placeholder="1"></p-inputnumber>
+      </div>
+    </div>
   </div>
 
-  <div class="row my-3" *ngIf="isApprovalMode">
+  <!-- Chọn kịch bản phê duyệt khi tạo mới -->
+  <div class="row mt-3 no-print" *ngIf="isAddMode">
+    <div class="col-12">
+      <p-floatlabel variant="on">
+        <p-select [options]="listApprovalWorkflow" optionLabel="name" [(ngModel)]="model.workflow"
+          [fluid]="true" [showClear]="true" [appendTo]="'body'" id="approvalWorkflow"
+          name="approvalWorkflow" dataKey="id">
+        </p-select>
+        <label for="approvalWorkflow">Kịch bản phê duyệt</label>
+      </p-floatlabel>
+    </div>
+  </div>
+
+  <div class="row my-3 no-print" *ngIf="isApprovalMode">
     <app-base-approval [approvalModel]="approvalModel"></app-base-approval>
   </div>
 
-
-  <div class="d-flex justify-content-end gap-2 mt-4">
-    <p-button label="Quay lại" severity="info" (click)="onBack()" icon="pi pi-arrow-left" class="me-2"></p-button>
-    <p-button label="Lưu" severity="success" *ngIf="isAddMode" (onClick)="save()"></p-button>
-    <p-button *ngIf="isApprovalMode" label="Duyệt" icon="pi pi-save" severity="success"
+  <!-- Các nút thao tác -->
+  <div class="d-flex justify-content-end gap-2 mt-4 no-print">
+    <p-button label="Quay lại" severity="secondary" (click)="onBack()" icon="pi pi-arrow-left"></p-button>
+    <p-button *ngIf="!isAddMode" label="In biên bản" icon="pi pi-print" (click)="exportPDF()"></p-button>
+    <p-button label="Lưu" severity="success" *ngIf="isAddMode" (onClick)="save()" icon="pi pi-check"></p-button>
+    <p-button *ngIf="isApprovalMode" label="Duyệt" icon="pi pi-check-circle" severity="success"
         class="w-full max-w-[17.35rem]" (click)="Approval()" styleClass="w-full mx-auto" />
   </div>
 </div>

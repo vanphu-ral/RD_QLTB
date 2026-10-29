@@ -10,6 +10,7 @@ import { PlanResultService } from "../../Service/plan-result.service";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { PLANTYPE } from "../../../../../enums/plan-type.enum";
 import { DayOffCalendarService } from "../../../../Categories/DayOffCalendar/Service/day-off-calendar.service";
+import { AccountService } from "../../../../../core/auth/account/account.service";
 
 @Component({
     selector: 'app-check-list-device-dialog',
@@ -31,6 +32,7 @@ export class CheckListDeviceDialog {
         private comfirmService: ConfirmationService,
         private messageService: MessageService,
         private dayOffService: DayOffCalendarService,
+        private accountService: AccountService,
         private cdr: ChangeDetectorRef,
     ) {
         this.data = config.data.planDetail;
@@ -124,6 +126,30 @@ export class CheckListDeviceDialog {
                 this.loadDeviceCheckList();
             });
         }
+    }
+
+    get isKtvOrAdmin(): boolean {
+        return this.accountService.hasAnyAuthority([
+            'RD_QLTB_ADMIN',
+            'RD_QLTB_MANAGER',
+            'ROLE_ADMIN',
+            'RD_QLTB_APPROVE'
+        ]);
+    }
+
+    reopenCheckDate(row: any, event: any) {
+        Util.confirmAndExecute(
+            event,
+            'Bạn có chắc chắn muốn mở lại ngày kiểm tra này để tiếp tục cập nhật?',
+            () => {
+                return this.planResultService.updateStatus(row.id as number, 4);
+            },
+            'Mở lại ngày kiểm tra thành công',
+            'Lỗi khi mở lại ngày kiểm tra',
+            this.comfirmService,
+            this.messageService,
+            () => this.loadDeviceCheckList()
+        );
     }
 
     completeCheckDate(row: any, event: any) {

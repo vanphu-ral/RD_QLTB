@@ -2,10 +2,11 @@
 <app-base-table 
   [apiService]="reportDeviceIncidentService"
   [columns]="columns"
-  [title]="'Danh sách các biên bản nghiệm thu lỗi thiết bị'"
+  [title]="'Danh sách biên bản sự cố thiết bị'"
   [showAddButton]="false"
   [showEditButton]="false"
   [showViewButton]="false"
+  [headerActionTemplate]="headerActions"
   [actionTemplate]="customActions">
   <ng-template appColumnTemplate="createdAt" let-rowData>
     {{ rowData | date: 'dd/MM/yyyy' }}
@@ -14,6 +15,17 @@
     {{ rowData | date: 'dd/MM/yyyy' }}
   </ng-template>
 </app-base-table>
+
+<ng-template #headerActions>
+  <p-button
+    icon="pi pi-plus"
+    label="Khai báo biên bản"
+    styleClass="p-button-sm p-button-success"
+    (onClick)="openQuickSelect()"
+  ></p-button>
+</ng-template>
+
 <ng-template #customActions let-row>
-  <p-button icon="pi pi-eye" styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="viewReport(row)"></p-button>
+  <p-button icon="pi pi-eye" title="Xem biên bản" styleClass="p-button-sm p-button-rounded p-button-success m-1" (onClick)="viewReport(row)"></p-button>
+  <p-button icon="pi pi-pencil" title="Sửa biên bản" styleClass="p-button-sm p-button-rounded p-button-warn m-1" (onClick)="editReport(row)"></p-button>
 </ng-template>

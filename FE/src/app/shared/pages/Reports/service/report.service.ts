@@ -44,6 +44,14 @@ export class ReportService extends BaseApiService<any> {
         return this.http.post<any>(`${this['fullBaseUrl']}/maintenance`, payload, { params });
     }
 
+    // Report 2 - Sổ theo dõi sửa chữa, bảo dưỡng thiết bị (BM08)
+    getDeviceMaintenanceLog(deviceId: number, year?: number): Observable<any> {
+        let params = new HttpParams().set('deviceId', deviceId.toString());
+        if (year) {
+            params = params.set('year', year.toString());
+        }
+        return this.http.get<any>(`${this['fullBaseUrl']}/device-maintenance-log`, { params });
+    }
 
     //Report 3
     getErrorReportSummary(filter: any, page: number, size: number): Observable<any> {

@@ -4,43 +4,40 @@
             <p-table [value]="model.planDetails" dataKey="id" class="p-datatable-gridlines text-sm">
                 <ng-template pTemplate="header">
                     <tr>
-                        <th colspan="2">
+                        <th colspan="2" style="vertical-align: middle;">
                             <img src="/assets/imgs/logo-rang-dong.png" style="width:150px;" />
                         </th>
-                        <th colspan="12" class="text-center">
+                        <th colspan="12" class="text-center" style="vertical-align: middle;">
                             <div>
-                                <div><strong>LỊCH BẢO DƯỠNG, SỬA CHỮA THIẾT BỊ ĐỊNH KỲ</strong></div>
-                                <div><span id="SpanPlanYear"></span></div>
+                                <div style="font-size: 16px; font-weight: bold;">LỊCH BẢO DƯỠNG, SỬA CHỮA THIẾT BỊ ĐỊNH KỲ</div>
+                                <div><span id="SpanPlanYear" style="font-size: 14px; font-weight: bold;">Năm {{ model.year ? (model.year | date:'yyyy') : (model.createdAt | date:'yyyy') }}</span></div>
                             </div>
                         </th>
-                        <th colspan="2">
+                        <th colspan="2" style="vertical-align: middle; text-align: right;">
                             <div class="flex flex-col">
-                                <div class="flex items-center">
+                                <div class="flex items-center justify-end">
                                     <label class="font-semibold">Đơn vị:&nbsp; {{ model.branch?.name }}</label>
-                                    <span id="SpanPlanDonVi"></span>
                                 </div>
-                                <div class="flex items-center">
+                                <div class="flex items-center justify-end">
                                     <label class="font-semibold">Số:&nbsp; {{ model.code }}</label>
-                                    <span id="SpanSoKeHoach"></span>
-                                    <span id="SpanDieuChinh"></span>
                                 </div>
                             </div>
                         </th>
                     </tr>
                     <tr>
-                        <th rowspan="2">STT</th>
-                        <th rowspan="2">Tên thiết bị</th>
+                        <th rowspan="2" class="text-center" style="width: 45px;">STT</th>
+                        <th rowspan="2" style="min-width: 200px;">Tên thiết bị</th>
                         <th colspan="12" class="text-center">Tháng</th>
-                        <th rowspan="2">Bản kế hoạch BDSC thiết bị chi tiết kèm theo</th>
-                        <th rowspan="2">Ghi chú</th>
+                        <th rowspan="2" style="min-width: 200px;">Bản kế hoạch BDSC thiết bị chi tiết kèm theo</th>
+                        <th rowspan="2" style="min-width: 120px;">Ghi chú</th>
                     </tr>
                     <tr>
-                        <th *ngFor="let month of months">{{ month }}</th>
+                        <th *ngFor="let month of months" class="text-center" style="width: 38px;">{{ month }}</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
-                    <tr class="table-hover" (click)="onRowClick(item)">
-                        <td>{{ rowIndex + 1 }}</td>
+                    <tr class="table-hover cursor-pointer" (click)="onRowClick(item)">
+                        <td class="text-center">{{ rowIndex + 1 }}</td>
                         <td>{{ item.device?.name }}</td>
                         <td *ngFor="let month of months" class="text-center">
                             <span *ngIf="item.estimatedTime && (!item.planResults || item.planResults.length === 0)">
@@ -53,11 +50,11 @@
                                     <i *ngIf="dtMonth === month" class="fa-regular fa-circle-xmark fa-xl"></i>
                                     <ng-container *ngIf="dtMonth !== month">
                                         <ng-container [ngSwitch]="getArrowPosition(getEstimatedMonth(item), dtMonth)">
-                                            <span *ngSwitchCase="'before'" class="d-flex">
+                                            <span *ngSwitchCase="'before'" class="d-flex justify-content-center align-items-center">
                                                 <i class="fa-solid fa-arrow-left"></i>
                                                 <i class="fa-solid fa-xmark"></i>
                                             </span>
-                                            <span *ngSwitchCase="'after'" class="d-flex">
+                                            <span *ngSwitchCase="'after'" class="d-flex justify-content-center align-items-center">
                                                 <i class="fa-solid fa-xmark"></i>
                                                 <i class="fa-solid fa-arrow-right"></i>
                                             </span>
@@ -74,28 +71,35 @@
                     </tr>
                 </ng-template>
             </p-table>
-            <table id="nghemthu-details-table" class="table table-bordered table-hover" style="width: 100%;">
-                <thead>
-                    <tr>
-                        <th *ngFor="let g of listUserApproval" class="text-center">
-                            <div class="only-print italic"
-                                style="display: none; font-weight: normal; font-size: 11px; margin-bottom: 5px;">
-                                Ngày ...... tháng ...... năm 20....
-                            </div>
-                            {{ g.groupName }}
-                        </th>
-                    </tr>
-                    <tr>
-                        <td *ngFor="let g of listUserApproval" class="">
-                            <div *ngFor="let sig of g.signatures" style="margin-bottom: 10px;text-align: center;">
-                                <img *ngIf="sig" [src]="sig"
-                                    style="width: 120px; height: 60px; display: block; margin: 0 auto;">
-                                <span *ngIf="!sig" style="font-weight: bold;">Đã ký</span>
-                            </div>
-                        </td>
-                    </tr>
-                </thead>
-            </table>
+            <div class="signature-section mt-4">
+                <table id="nghemthu-details-table" style="width: 100%; border: none !important; border-collapse: collapse !important;">
+                    <tbody>
+                        <tr>
+                            <td *ngFor="let g of listUserApproval" class="text-center" style="border: none !important; vertical-align: top; padding: 6px 12px !important;">
+                                <div class="italic mb-1" style="font-weight: normal; font-size: 12px;">
+                                    Ngày {{ (model.createdAt || model.updatedAt) | date: 'dd' }} tháng {{ (model.createdAt || model.updatedAt) | date: 'MM' }} năm {{ (model.createdAt || model.updatedAt) | date: 'yyyy' }}
+                                </div>
+                                <div style="font-size: 13px; font-weight: bold; margin-bottom: 8px;">
+                                    {{ g.groupName }}
+                                </div>
+                                <div *ngFor="let sig of g.signatures" style="text-align: center; min-height: 50px;">
+                                    <img *ngIf="sig" [src]="sig"
+                                        style="width: 110px; height: 55px; display: block; margin: 0 auto;">
+                                    <span *ngIf="!sig" style="font-weight: bold; display: block; margin-top: 15px;">Đã ký</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-3 d-flex flex-column no-print">
+                <span style="font-size: 12px; font-style: italic;">
+                    (*) Ghi chú: Các đơn vị có thể bổ sung nội dung tùy theo đặc điểm máy móc công nghệ.
+                </span>
+                <span style="font-size: 12px; font-style: italic; font-weight: bold; margin-top: 2px;">
+                    RĐ.QT15.BM04a  Ban hành lần 1
+                </span>
+            </div>
         </div>
     </div>
 

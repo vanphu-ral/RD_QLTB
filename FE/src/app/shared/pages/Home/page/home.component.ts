@@ -11,6 +11,9 @@ import { ApplicationConfigService } from '../../../core/config/application-confi
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ListDeviceMaintanceDialog } from '../Dialogs/list-device-maintance-dialog/list-device-maintance.dialog';
+import { Router } from '@angular/router';
+import { PlanResultService } from '../../PlanManager/Plan/Service/plan-result.service';
+import { Util } from '../../../core/utils/utils-function';
 
 @Component({
     selector: 'app-home',
@@ -25,6 +28,7 @@ export class HomeComponent {
     filter: any = {};
     listBranchs: any[] = [];
     listTeams: any[] = [];
+    checkedDevicesToday: any[] = [];
 
     mixedData: any;
     barData: any;
@@ -34,11 +38,38 @@ export class HomeComponent {
     chartPlugins = [ChartDataLabels];
     pieOptions: any;
 
-    constructor(private accountService: AccountService, private cdr: ChangeDetectorRef, private dialogService: DialogService, public loginService: LoginService) { }
+    constructor(private accountService: AccountService, private cdr: ChangeDetectorRef, private dialogService: DialogService, public loginService: LoginService, private planResultService: PlanResultService, private router: Router) { }
 
     ngOnInit(): void {
         this.accountService.identity().subscribe(account => this.account.set(account));
-        this.initChart()
+        this.initChart();
+        this.loadCheckedDevicesToday();
+    }
+
+    loadCheckedDevicesToday() {
+        this.planResultService.getMyCheckedToday().subscribe({
+            next: (res) => {
+                this.checkedDevicesToday = res || [];
+                this.cdr.detectChanges();
+            },
+            error: (err) => {
+                console.error('Error loading checked devices today:', err);
+            }
+        });
+    }
+
+    goToDeviceCheck(item: any) {
+        if (item?.qrCode) {
+            this.router.navigate(['/qr-code'], { queryParams: { qrCode: item.qrCode } });
+        }
+    }
+
+    statusToString(status: number) {
+        return Util.statusToString(status);
+    }
+
+    getSeverity(status: number): string {
+        return Util.statusToSeverity(status);
     }
 
     search() {

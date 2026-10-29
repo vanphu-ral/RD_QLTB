@@ -5,6 +5,7 @@ import { DialogService, DynamicDialogConfig, DynamicDialogRef } from "primeng/dy
 import _, { result } from "lodash";
 import { Util } from "../../../../../core/utils/utils-function";
 import { PlanTargetResultService } from "../../Service/plan-target-result.service";
+import { PlanTargetService } from "../../Service/plan-target.service";
 import { PlanTargetResult } from "../../../../../models/PlanTarget/plan-target-result.model";
 import { ExportTypeDialog } from "../../../../Reports/dialog/select-export-type/select-export-type.dialog";
 import * as ExcelJS from 'exceljs';
@@ -30,31 +31,55 @@ export class PerformPlanDialog {
         public config: DynamicDialogConfig,
         private dialogService: DialogService,
         private planTargetResultService: PlanTargetResultService,
+        private planTargetService: PlanTargetService,
         private cdr: ChangeDetectorRef,
     ) {
         this.data = config.data.data;
-        this.plan = config.data.plan;
+        this.plan = config.data.plan || this.data?.planTargetDevice;
         this.isViewMode = config.data.IsView || false;
     }
 
     ngOnInit() {
-        if(Util.isEmptyString(this.data.result)){
-            this.data.result = JSON.parse(this.plan.listItems).map((item: any) => {
-                return {
-                    code: item.code,
-                    measurement: item.measurement,
-                    target: item.target,
-                    result: '',
-                    evaluate: 0,
-                    nextTarget: 'Duy trì/Dừng',
-                    note: '',
-                };
+        const planId = this.plan?.id || this.data.planTargetDevice?.id;
+        if (planId && (!this.plan?.branch || !this.plan?.branch?.name)) {
+            this.planTargetService.getById(planId).subscribe((p: any) => {
+                if (p) {
+                    this.plan = { ...this.plan, ...p };
+                    if (this.data.planTargetDevice) {
+                        this.data.planTargetDevice.branch = p.branch;
+                    }
+                    this.cdr.detectChanges();
+                }
             });
+        }
+
+        if (Util.isEmptyString(this.data.result)) {
+            if (this.plan?.listItems) {
+                try {
+                    this.data.result = JSON.parse(this.plan.listItems).map((item: any) => {
+                        return {
+                            code: item.code,
+                            measurement: item.measurement,
+                            target: item.target,
+                            result: '',
+                            evaluate: 0,
+                            nextTarget: 'Duy trì/Dừng',
+                            note: '',
+                        };
+                    });
+                } catch (e) {
+                    this.data.result = [];
+                }
+            } else {
+                this.data.result = [];
+            }
             this.cdr.detectChanges();
-            console.log(this.data.result);
-            
-        }else {
-            this.data.result = JSON.parse(this.data.result);
+        } else if (typeof this.data.result === 'string') {
+            try {
+                this.data.result = JSON.parse(this.data.result);
+            } catch (e) {
+                this.data.result = [];
+            }
         }
     }
 
@@ -63,8 +88,6 @@ export class PerformPlanDialog {
         return evalItem ? evalItem.name : 'Không đánh giá';
     }
 
-    
-    
     deleteRow(index: number) {
         this.data.result!.splice(index, 1);
     }
@@ -112,7 +135,26 @@ export class PerformPlanDialog {
             { width: 15 }, { width: 30 }, { width: 20 }
         ];
 
-        // 2. Header bảng
+        // 2. Header thông tin trên bảng
+        worksheet.mergeCells('A2:G2');
+        const titleCell = worksheet.getCell('A2');
+        titleCell.value = 'BÁO CÁO KẾT QUẢ THỰC HIỆN MỤC TIÊU QUẢN LÝ THIẾT BỊ';
+        titleCell.font = { bold: true, size: 16 };
+        titleCell.alignment = { horizontal: 'center' };
+
+        worksheet.mergeCells('A3:G3');
+        const monthCell = worksheet.getCell('A3');
+        const monthDate = this.data.executionTime ? new Date(this.data.executionTime) : new Date();
+        const monthStr = ('0' + (monthDate.getMonth() + 1)).slice(-2) + '/' + monthDate.getFullYear();
+        monthCell.value = `Tháng ${monthStr}`;
+        monthCell.alignment = { horizontal: 'center' };
+
+        const branchName = this.plan?.branch?.name || this.data.planTargetDevice?.branch?.name || '';
+        const branchCell = worksheet.getCell('A4');
+        branchCell.value = 'Đơn vị: Ngành ' + branchName;
+        branchCell.font = { italic: true, bold: true };
+
+        // 3. Header bảng
         const headerRow = worksheet.addRow([
             'TT', 'Nội dung', 'Mục tiêu', 'Kết quả thực hiện', 'Đánh giá', 'Kế hoạch tiếp theo', 'Ghi chú'
         ]);
@@ -123,7 +165,7 @@ export class PerformPlanDialog {
             cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE0E0E0' } };
         });
 
-        // 3. Đổ dữ liệu
+        // 4. Đổ dữ liệu
         this.data.result!.forEach((item: any, index: number) => {
             const row = worksheet.addRow([
                 index + 1,
@@ -140,9 +182,37 @@ export class PerformPlanDialog {
             });
         });
 
-        // 4. Xuất file
+        // 5. Chữ ký phía dưới
+        const lastRow = worksheet.lastRow!.number + 2;
+        const sigDateRow = worksheet.getRow(lastRow);
+        const sigNameRow = worksheet.getRow(lastRow + 1);
+
+        const dateStr = this.data.updatedAt || this.data.createdAt;
+        const d = dateStr ? new Date(dateStr) : new Date();
+        const fullDateStr = `Ngày ${('0' + d.getDate()).slice(-2)} tháng ${('0' + (d.getMonth() + 1)).slice(-2)} năm ${d.getFullYear()}`;
+
+        sigDateRow.getCell(2).value = fullDateStr;
+        sigDateRow.getCell(2).alignment = { horizontal: 'center' };
+        sigDateRow.getCell(4).value = fullDateStr;
+        sigDateRow.getCell(4).alignment = { horizontal: 'center' };
+        sigDateRow.getCell(6).value = fullDateStr;
+        sigDateRow.getCell(6).alignment = { horizontal: 'center' };
+
+        sigNameRow.getCell(2).value = 'Trưởng đơn vị';
+        sigNameRow.getCell(2).font = { bold: true };
+        sigNameRow.getCell(2).alignment = { horizontal: 'center' };
+
+        sigNameRow.getCell(4).value = 'Ngành sản xuất';
+        sigNameRow.getCell(4).font = { bold: true };
+        sigNameRow.getCell(4).alignment = { horizontal: 'center' };
+
+        sigNameRow.getCell(6).value = 'Người lập biểu';
+        sigNameRow.getCell(6).font = { bold: true };
+        sigNameRow.getCell(6).alignment = { horizontal: 'center' };
+
+        // 6. Xuất file
         const buffer = await workbook.xlsx.writeBuffer();
-        saveAs(new Blob([buffer]), `KetQuaMucTieu_${this.data.executionTime}.xlsx`);
+        saveAs(new Blob([buffer]), `BaoCaoKetQuaMucTieu_Thang_${monthStr.replace('/', '_')}.xlsx`);
     }
 
     exportPDF() {
@@ -152,29 +222,144 @@ export class PerformPlanDialog {
         const popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
         if (!popupWin) return;
 
+        const monthDate = this.data.executionTime ? new Date(this.data.executionTime) : new Date();
+        const monthStr = ('0' + (monthDate.getMonth() + 1)).slice(-2) + '/' + monthDate.getFullYear();
+
         popupWin.document.open();
         popupWin.document.write(`
+          <!DOCTYPE html>
           <html>
             <head>
-              <title>In kết quả thực hiện mục tiêu</title>
+              <title>BÁO CÁO KẾT QUẢ THỰC HIỆN MỤC TIÊU - Tháng ${monthStr}</title>
               <style>
-                @media print {
-                  @page { size: landscape; margin: 10mm; }
-                  body { -webkit-print-color-adjust: exact; font-family: 'Times New Roman', serif; }
-                  .no-print, .p-button, p-button, .d-flex.justify-content-end { display: none !important; }
+                @page {
+                  size: landscape;
+                  margin: 8mm 10mm 14mm 10mm;
                 }
-                table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-                th, td { border: 1px solid #000 !important; padding: 8px; font-size: 12px; }
-                .text-center { text-align: center; }
-                .font-semibold { font-weight: bold; }
-                img { max-width: 150px; }
-                /* Ẩn các cột thao tác và nút bấm khi in */
-                th:last-child, td:last-child { display: ${this.isViewMode ? 'table-cell' : 'none'}; }
+                * {
+                  box-sizing: border-box;
+                }
+                body {
+                  font-family: 'Times New Roman', Times, serif;
+                  color: #000;
+                  background: #fff;
+                  margin: 0;
+                  padding: 0;
+                  padding-bottom: 10mm;
+                  -webkit-print-color-adjust: exact;
+                  print-color-adjust: exact;
+                }
+                .card, .table-responsive, .p-datatable-wrapper, .p-datatable, .p-datatable-table, .row, .container-fluid {
+                  border: none !important;
+                  box-shadow: none !important;
+                  padding: 0 !important;
+                  margin: 0 !important;
+                  overflow: visible !important;
+                  width: 100% !important;
+                  max-width: 100% !important;
+                }
+                table {
+                  width: 100% !important;
+                  table-layout: fixed !important;
+                  border-collapse: collapse !important;
+                  margin-bottom: 15px;
+                }
+                thead {
+                  display: table-header-group !important;
+                }
+                tr {
+                  page-break-inside: avoid !important;
+                  break-inside: avoid !important;
+                }
+                th, td {
+                  border: 1px solid #000 !important;
+                  padding: 6px 5px !important;
+                  font-size: 12px !important;
+                  line-height: 1.35 !important;
+                  vertical-align: middle !important;
+                  min-width: unset !important;
+                  max-width: unset !important;
+                  word-wrap: break-word !important;
+                  word-break: break-word !important;
+                  white-space: normal !important;
+                  overflow: hidden !important;
+                }
+                /* Phân bổ tỷ lệ cột header hàng 1 */
+                table:first-of-type thead tr:first-child th:nth-child(1) { width: 24% !important; }
+                table:first-of-type thead tr:first-child th:nth-child(2) { width: 51% !important; }
+                table:first-of-type thead tr:first-child th:nth-child(3) { width: 25% !important; }
+
+                /* Phân bổ tỷ lệ % chuẩn 7 cột dữ liệu bảng BM02b */
+                table:first-of-type thead tr:nth-child(2) th:nth-child(1),
+                table:first-of-type tbody td:nth-child(1) { width: 4% !important; text-align: center !important; }
+                table:first-of-type thead tr:nth-child(2) th:nth-child(2),
+                table:first-of-type tbody td:nth-child(2) { width: 20% !important; }
+                table:first-of-type thead tr:nth-child(2) th:nth-child(3),
+                table:first-of-type tbody td:nth-child(3) { width: 18% !important; }
+                table:first-of-type thead tr:nth-child(2) th:nth-child(4),
+                table:first-of-type tbody td:nth-child(4) { width: 20% !important; }
+                table:first-of-type thead tr:nth-child(2) th:nth-child(5),
+                table:first-of-type tbody td:nth-child(5) { width: 9% !important; text-align: center !important; }
+                table:first-of-type thead tr:nth-child(2) th:nth-child(6),
+                table:first-of-type tbody td:nth-child(6) { width: 18% !important; }
+                table:first-of-type thead tr:nth-child(2) th:nth-child(7),
+                table:first-of-type tbody td:nth-child(7) { width: 11% !important; }
+
+                .text-center { text-align: center !important; }
+                .text-right { text-align: right !important; }
+                .font-semibold { font-weight: bold !important; }
+                img { max-width: 140px; }
+
+                /* Định dạng tag đánh giá khi in ra giấy */
+                .p-tag {
+                  background: transparent !important;
+                  color: #000 !important;
+                  border: none !important;
+                  font-weight: normal !important;
+                  font-size: 12px !important;
+                  padding: 0 !important;
+                }
+
+                /* Ẩn cột thao tác xóa dòng nếu có */
+                th:last-child, td:last-child {
+                  display: ${this.isViewMode ? 'table-cell' : 'none'};
+                }
+
+                /* Bảng chữ ký 3 bên */
+                #signature-table {
+                  margin-top: 25px !important;
+                  border: none !important;
+                  page-break-inside: avoid !important;
+                  break-inside: avoid !important;
+                }
+                #signature-table th, #signature-table td {
+                  border: none !important;
+                  padding: 4px !important;
+                  vertical-align: top !important;
+                }
+
+                /* Footer lặp lại ở cuối mỗi trang in */
+                .print-page-footer {
+                  position: fixed !important;
+                  bottom: 0 !important;
+                  left: 0 !important;
+                  width: 100% !important;
+                  font-size: 11px !important;
+                  font-style: italic !important;
+                  font-family: 'Times New Roman', serif !important;
+                  background: transparent !important;
+                }
+                .no-print, .p-button, p-button, .d-flex.justify-content-end {
+                  display: none !important;
+                }
               </style>
             </head>
             <body onload="window.print();window.close()">
-              <div class="container-fluid">
+              <div class="print-container">
                 ${printContents}
+              </div>
+              <div class="print-page-footer">
+                RĐ.QT15.BM02b Ban hành lần 1
               </div>
             </body>
           </html>

@@ -58,6 +58,9 @@ export class PlanTargetDetailComponent extends BasePageComponent<PlanTarget> {
     if(Util.isEmptyArray(this.model.listItems)){
       this.model.listItems = [];
     }
+    if (this.isAddMode && !this.model.numberOfIssuances) {
+      this.model.numberOfIssuances = 1;
+    }
     this.factory = 1;
     forkJoin({
       branchs: this.branchService.getAll(),

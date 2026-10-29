@@ -99,6 +99,9 @@ public class AcceptanceService {
         acceptanceDTO.setDocNumber(acceptance.getDocNumber());
         acceptanceDTO.setImplementingUnit(acceptance.getImplementingUnit());
         acceptanceDTO.setDateRecord(acceptance.getDateRecord());
+        acceptanceDTO.setFormCode(acceptance.getFormCode());
+        acceptanceDTO.setNumberOfIssuances(acceptance.getNumberOfIssuances());
+        acceptanceDTO.setIncurredWork(acceptance.getIncurredWork());
         if (acceptance.getDevice() != null) {
             Device deviceCopy = new Device();
             deviceCopy.setId(acceptance.getDevice().getId());
@@ -110,7 +113,7 @@ public class AcceptanceService {
             deviceCopy.setCreatedAt(acceptance.getDevice().getCreatedAt());
             deviceCopy.setUpdatedAt(acceptance.getDevice().getUpdatedAt());
 
-            // Xóa các quan hệ con
+            // XÃ³a cÃ¡c quan há»‡ con
             deviceCopy.setGroup(acceptance.getDevice().getGroup());
             deviceCopy.getGroup().setGroupDevices(null);
             deviceCopy.getGroup().setDeviceGroupSampleReports(null);
@@ -142,7 +145,7 @@ public class AcceptanceService {
         } else {
             acceptanceDTO.setDevice(null);
         }
-        // Sao chép PlanResult có kiểm soát
+        // Sao chÃ©p PlanResult cÃ³ kiá»ƒm soÃ¡t
         if (acceptance.getPlanResult() != null) {
             PlanResult planResultCopy = new PlanResult();
             planResultCopy.setId(acceptance.getPlanResult().getId());
@@ -152,7 +155,7 @@ public class AcceptanceService {
             planResultCopy.setCreatedBy(acceptance.getPlanResult().getCreatedBy());
             planResultCopy.setUpdatedBy(acceptance.getPlanResult().getUpdatedBy());
 
-            // Xóa các quan hệ con để tránh vòng lặp
+            // XÃ³a cÃ¡c quan há»‡ con Ä‘á»ƒ trÃ¡nh vÃ²ng láº·p
             planResultCopy.setPlanResultSupplyReplacements(null);
             planResultCopy.setPlanResultErrorReports(null);
             planResultCopy.setPlanResultAcceptances(null);
@@ -163,7 +166,7 @@ public class AcceptanceService {
             acceptanceDTO.setPlanResult(null);
         }
 
-        // Sao chép ErrorReport có kiểm soát
+        // Sao chÃ©p ErrorReport cÃ³ kiá»ƒm soÃ¡t
         if (acceptance.getErrorReport() != null) {
             ErrorReport errorReportCopy = new ErrorReport();
             errorReportCopy.setId(acceptance.getErrorReport().getId());
@@ -174,7 +177,7 @@ public class AcceptanceService {
             errorReportCopy.setCreatedBy(acceptance.getErrorReport().getCreatedBy());
             errorReportCopy.setUpdatedBy(acceptance.getErrorReport().getUpdatedBy());
 
-            // Xóa các quan hệ con để tránh vòng lặp
+            // XÃ³a cÃ¡c quan há»‡ con Ä‘á»ƒ trÃ¡nh vÃ²ng láº·p
             errorReportCopy.setPlanResult(null);
             errorReportCopy.setErrorReportAcceptances(null);
 
@@ -222,6 +225,9 @@ public class AcceptanceService {
         acceptance.setDevice(acceptanceDTO.getDevice());
         acceptance.setImplementingUnit(acceptanceDTO.getImplementingUnit());
         acceptance.setDateRecord(acceptanceDTO.getDateRecord());
+        acceptance.setFormCode(acceptanceDTO.getFormCode());
+        acceptance.setNumberOfIssuances(acceptanceDTO.getNumberOfIssuances());
+        acceptance.setIncurredWork(acceptanceDTO.getIncurredWork());
         final PlanResult planResult = acceptanceDTO.getPlanResult() == null ? null : planResultRepository.findById(acceptanceDTO.getPlanResult().getId())
                 .orElseThrow(() -> new NotFoundException("planResult not found"));
         acceptance.setPlanResult(planResult);
@@ -253,4 +259,87 @@ public class AcceptanceService {
         }
     }
 
+
+    public java.util.Map<String, Object> getLatestApprovedFormConfig() {
+        java.util.Map<String, Object> result = new java.util.HashMap<>();
+        java.util.Optional<Acceptance> latest = acceptanceRepository.findFirstByStatusAndFormCodeIsNotNullOrderByIdDesc(io.rd.qltb.config.ConstantStatusGlobal.APPROVED);
+        if (latest.isPresent() && latest.get().getFormCode() != null && !latest.get().getFormCode().trim().isEmpty()) {
+            result.put("formCode", latest.get().getFormCode().trim());
+            result.put("numberOfIssuances", latest.get().getNumberOfIssuances() != null ? latest.get().getNumberOfIssuances() : 1);
+        } else {
+            result.put("formCode", "RĐ.QT15.BM07");
+            result.put("numberOfIssuances", 1);
+        }
+        return result;
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    private io.rd.qltb.repos.PlanDetailRepository planDetailRepository;
+
+    public List<java.util.Map<String, Object>> getUnrecordedCompletedPlanDetails(String branch) {
+        String filterBranch = (branch != null && !branch.trim().isEmpty()) ? branch.trim() : null;
+        List<PlanDetail> list = planDetailRepository.findUnrecordedCompletedPlanDetails(filterBranch);
+        return list.stream().map(pd -> {
+            java.util.Map<String, Object> map = new java.util.HashMap<>();
+            map.put("id", pd.getId());
+            map.put("status", pd.getStatus());
+            map.put("updatedAt", pd.getUpdatedAt());
+            map.put("createdAt", pd.getCreatedAt());
+            map.put("nameDetail", pd.getNameDetail());
+            map.put("manager", pd.getManager());
+
+            if (pd.getDevice() != null) {
+                Device dev = pd.getDevice();
+                java.util.Map<String, Object> devMap = new java.util.HashMap<>();
+                devMap.put("id", dev.getId());
+                devMap.put("code", dev.getCode());
+                devMap.put("name", dev.getName());
+                if (dev.getBranch() != null) {
+                    java.util.Map<String, Object> bMap = new java.util.HashMap<>();
+                    bMap.put("id", dev.getBranch().getId());
+                    bMap.put("name", dev.getBranch().getName());
+                    devMap.put("branch", bMap);
+                }
+                if (dev.getLine() != null) {
+                    java.util.Map<String, Object> lMap = new java.util.HashMap<>();
+                    lMap.put("id", dev.getLine().getId());
+                    lMap.put("name", dev.getLine().getName());
+                    devMap.put("line", lMap);
+                }
+                if (dev.getTeam() != null) {
+                    java.util.Map<String, Object> tMap = new java.util.HashMap<>();
+                    tMap.put("id", dev.getTeam().getId());
+                    tMap.put("name", dev.getTeam().getName());
+                    devMap.put("team", tMap);
+                }
+                map.put("device", devMap);
+            }
+            if (pd.getSampleReport() != null) {
+                SampleReport sr = pd.getSampleReport();
+                java.util.Map<String, Object> srMap = new java.util.HashMap<>();
+                srMap.put("id", sr.getId());
+                srMap.put("code", sr.getCode());
+                srMap.put("name", sr.getName());
+                map.put("sampleReport", srMap);
+            }
+            if (pd.getPlan() != null) {
+                Plan p = pd.getPlan();
+                java.util.Map<String, Object> pMap = new java.util.HashMap<>();
+                pMap.put("id", p.getId());
+                pMap.put("code", p.getCode());
+                pMap.put("name", p.getName());
+                pMap.put("fromDate", p.getFromDate());
+                pMap.put("toDate", p.getToDate());
+                if (p.getPlanType() != null) {
+                    java.util.Map<String, Object> ptMap = new java.util.HashMap<>();
+                    ptMap.put("id", p.getPlanType().getId());
+                    ptMap.put("code", p.getPlanType().getCode());
+                    ptMap.put("name", p.getPlanType().getName());
+                    pMap.put("planType", ptMap);
+                }
+                map.put("plan", pMap);
+            }
+            return map;
+        }).toList();
+    }
 }
