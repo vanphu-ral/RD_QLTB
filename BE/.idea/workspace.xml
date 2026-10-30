@@ -5,8 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e8d6258d-cefc-43eb-929f-1892939e08b3" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/qltb/src/main/java/io/rd/qltb/model/DashboardDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/qltb/src/main/java/io/rd/qltb/rest/DashboardResource.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/qltb/src/main/java/io/rd/qltb/service/DashboardService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/qltb (2).zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/qltb/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/qltb/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/qltb/src/main/java/io/rd/qltb/config/GlobalConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/qltb/src/main/java/io/rd/qltb/config/GlobalConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/qltb/src/main/java/io/rd/qltb/repos/DeviceRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/qltb/src/main/java/io/rd/qltb/repos/DeviceRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/qltb/src/main/java/io/rd/qltb/rest/PlanResultResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/qltb/src/main/java/io/rd/qltb/rest/PlanResultResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/qltb/src/main/java/io/rd/qltb/service/DeviceService.java" beforeDir="false" afterPath="$PROJECT_DIR$/qltb/src/main/java/io/rd/qltb/service/DeviceService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/qltb/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/qltb/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../FE/src/environments/environment.prod.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../FE/src/environments/environment.prod.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../FE/src/environments/environment.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../FE/src/environments/environment.ts" afterDir="false" />

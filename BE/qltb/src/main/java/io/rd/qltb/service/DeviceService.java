@@ -334,9 +334,10 @@ public class DeviceService {
             final Device device = new Device();
             mapToEntity(deviceDTO, device);
             Device savedDevice = deviceRepository.save(device);
-            Long count = deviceRepository.countByGroupIdAndStatusNot(savedDevice.getGroup().getId(),DELETED);
+            Long count = deviceRepository.countByGroupId(savedDevice.getGroup().getId());
             savedDevice.setCode(deviceDTO.getCode()+"-"+globalConfig.createNumberPrefix(count,6)); // Tạo mã thiết bị theo định dạng
             savedDevice.setQrCode(deviceDTO.getCode()+"-"+globalConfig.createNumberPrefix(count,6)); // Tạo mã thiết bị theo định dạng
+            savedDevice.setName(deviceDTO.getName()+" - " +deviceDTO.getCode()+"-"+globalConfig.createNumberPrefix(count,6));
             System.out.println("Generated Code: " + savedDevice.getQrCode());
             return deviceRepository.save(savedDevice).getId();
         }
@@ -352,7 +353,7 @@ public class DeviceService {
             }
             mapToEntity(dto, entity);
             Device saved = deviceRepository.save(entity);
-            Long count = deviceRepository.countByGroupIdAndStatusNot(saved.getGroup().getId(),DELETED);
+            Long count = deviceRepository.countByGroupId(saved.getGroup().getId());
             saved.setCode(dto.getCode()+"-"+globalConfig.createNumberPrefix(count,6)); // Tạo mã thiết bị theo định dạng
 
             deviceRepository.save(saved);

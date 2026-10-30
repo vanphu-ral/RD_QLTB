@@ -6,7 +6,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class GlobalConfig {
-    public static String  IP_ADDRESS_FRONTEND = "http://192.168.18.124:4200";
+    public static String  IP_ADDRESS_FRONTEND = "http://192.168.68.86:9050";
+//    public static String  IP_ADDRESS_FRONTEND = "http://192.168.68.77:9050";
+//    public static String  IP_ADDRESS_FRONTEND = "http://192.168.18.44:4200";
 
     public String createNumberPrefix(Long number, int minLength) {
         String numberStr = String.valueOf(number);
