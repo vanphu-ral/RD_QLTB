@@ -22,6 +22,7 @@ export class CheckListDeviceDialog {
 
     data: any;
     plan: any;
+    isReportView: boolean = false;
     checkList: PlanResult[] = [];
 
     constructor(
@@ -37,6 +38,7 @@ export class CheckListDeviceDialog {
     ) {
         this.data = config.data.planDetail;
         this.plan = config.data.plan;
+        this.isReportView = !!config.data.isReportView;
     }
 
     ngOnInit() {
@@ -67,8 +69,11 @@ export class CheckListDeviceDialog {
     }
 
     checkDayOff() {
-        this.dayOffService.getByTeam(this.plan.team.id).subscribe((res) => {
-            console.log(res);
+        const teamId = this.plan?.team?.id || this.data?.device?.team?.id || this.data?.team?.id;
+        if (!teamId) {
+            return;
+        }
+        this.dayOffService.getByTeam(teamId).subscribe((res) => {
             const planResults = this.checkList || []; 
             const dayOffList = res || [];
 
@@ -91,15 +96,44 @@ export class CheckListDeviceDialog {
         });
     }
 
-
+    dayOffCheckDate(row: any, event: any) {
+        Util.confirmAndExecute(
+            event,
+            'Bạn có chắc chắn muốn chuyển ngày này sang ngày nghỉ?',
+            () => {
+                return this.planResultService.updateStatus(row.id as number, 15);
+            },
+            'Đã chuyển ngày kiểm tra sang ngày nghỉ thành công',
+            'Lỗi khi chuyển ngày kiểm tra sang ngày nghỉ',
+            this.comfirmService,
+            this.messageService,
+            () => this.loadDeviceCheckList()
+        );
+    }
 
     addNewRow() {
         this.checkList.push({ userTest: this.data.manager, status: 1, planDetail: this.data, dateTest: new Date(), statusRepair: 1 });
     }
 
-    deleteRow(index: number) {
-        if (this.checkList[index].id) {
-            this.planResultService.delete(this.checkList[index].id).subscribe(() => { this.loadDeviceCheckList(); });
+    deleteRow(index: number, event?: any) {
+        const item = this.checkList[index];
+        if (item && item.id) {
+            if (event) {
+                Util.confirmAndExecute(
+                    event,
+                    'Bạn có chắc chắn muốn xóa ngày kiểm tra này?',
+                    () => {
+                        return this.planResultService.delete(item.id as number);
+                    },
+                    'Đã xóa ngày kiểm tra thành công',
+                    'Lỗi khi xóa ngày kiểm tra',
+                    this.comfirmService,
+                    this.messageService,
+                    () => this.loadDeviceCheckList()
+                );
+            } else {
+                this.planResultService.delete(item.id).subscribe(() => { this.loadDeviceCheckList(); });
+            }
         } else {
             this.checkList.splice(index, 1);
         }

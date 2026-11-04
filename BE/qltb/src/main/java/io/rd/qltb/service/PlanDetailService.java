@@ -247,6 +247,7 @@ public class PlanDetailService {
                 "JOIN prd.planResult pr " +
                 "WHERE pr.planDetail.device.id IN :ids " +
                 "AND pr.dateTest >= :startDate AND pr.dateTest <= :endDate " +
+                "AND (pr.status IS NULL OR pr.status != 15) " +
                 "AND (prd.result = 'OK' OR prd.result = 'Đã điều chỉnh' OR prd.result = 'Có bất thường') " +
                 "GROUP BY pr.planDetail.device.id, prd.result";
 

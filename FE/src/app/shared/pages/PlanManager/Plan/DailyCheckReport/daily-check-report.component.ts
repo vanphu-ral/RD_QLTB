@@ -181,7 +181,14 @@ export class DailyCheckReportComponent {
       closable: true,
       data: {
         planDetail: row,
-        plan: row.plan
+        plan: row.plan,
+        isReportView: true
+      }
+    });
+
+    this.ref.onClose.subscribe(() => {
+      if (this.baseTable) {
+        this.baseTable.loadDataLazy({ first: 0, rows: 10 });
       }
     });
   }

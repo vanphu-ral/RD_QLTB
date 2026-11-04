@@ -77,7 +77,8 @@ public interface PlanResultDetailRepository extends JpaRepository<PlanResultDeta
             " INNER JOIN plan_details c ON c.id = b.plan_detail_id" +
             " WHERE c.id = ?1" +
             " AND MONTH(b.date_test) = ?2" +
-            " AND YEAR(b.date_test) = ?3", nativeQuery = true)
+            " AND YEAR(b.date_test) = ?3" +
+            " AND (b.status IS NULL OR b.status != 15)", nativeQuery = true)
     List<PlanResultDetail> getByPlanDetailIdAndMonth(Long planDetailId, int month, int year);
 
     @Query(value = "SELECT a.* FROM plan_result_details a" +
@@ -85,7 +86,8 @@ public interface PlanResultDetailRepository extends JpaRepository<PlanResultDeta
             " INNER JOIN plan_details c ON c.id = b.plan_detail_id" +
             " WHERE c.device_id = ?1" +
             " AND MONTH(b.date_test) = ?2" +
-            " AND YEAR(b.date_test) = ?3", nativeQuery = true)
+            " AND YEAR(b.date_test) = ?3" +
+            " AND (b.status IS NULL OR b.status != 15)", nativeQuery = true)
     List<PlanResultDetail> getByDeviceIdAndMonth(Long deviceId, int month, int year);
 
 }
