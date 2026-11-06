@@ -42,9 +42,12 @@ public class ReportResource {
     /** * API lấy Sổ theo dõi sửa chữa, bảo dưỡng thiết bị (Biểu mẫu chuẩn BM08) */
     @GetMapping("/device-maintenance-log")
     public ResponseEntity<DeviceMaintenanceLogDTO> getDeviceMaintenanceLog(
-            @RequestParam(name = "deviceId") Long deviceId,
-            @RequestParam(name = "year", required = false) Integer year) {
-        return ResponseEntity.ok(reportService.getDeviceMaintenanceLog(deviceId, year));
+            @RequestParam(name = "deviceId", required = false) Long deviceId,
+            @RequestParam(name = "branchId", required = false) Long branchId,
+            @RequestParam(name = "factoryId", required = false) Long factoryId,
+            @RequestParam(name = "year", required = false) Integer year,
+            @RequestParam(name = "month", required = false) Integer month) {
+        return ResponseEntity.ok(reportService.getDeviceMaintenanceLog(deviceId, branchId, factoryId, year, month));
     }
 
     @GetMapping("/error-summary")

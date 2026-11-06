@@ -45,10 +45,22 @@ export class ReportService extends BaseApiService<any> {
     }
 
     // Report 2 - Sổ theo dõi sửa chữa, bảo dưỡng thiết bị (BM08)
-    getDeviceMaintenanceLog(deviceId: number, year?: number): Observable<any> {
-        let params = new HttpParams().set('deviceId', deviceId.toString());
+    getDeviceMaintenanceLog(deviceId?: number, year?: number, branchId?: number, factoryId?: number, month?: number): Observable<any> {
+        let params = new HttpParams();
+        if (deviceId) {
+            params = params.set('deviceId', deviceId.toString());
+        }
         if (year) {
             params = params.set('year', year.toString());
+        }
+        if (branchId) {
+            params = params.set('branchId', branchId.toString());
+        }
+        if (factoryId) {
+            params = params.set('factoryId', factoryId.toString());
+        }
+        if (month) {
+            params = params.set('month', month.toString());
         }
         return this.http.get<any>(`${this['fullBaseUrl']}/device-maintenance-log`, { params });
     }

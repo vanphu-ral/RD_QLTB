@@ -151,7 +151,7 @@ export class AcceptancePage extends BasePageComponent<Acceptance> {
         this.model.timeAcceptance = new Date();
         this.model.planDetailId = this.planResult?.id;
         this.model.status = 1;
-        this.model = Util.simplifyMany(this.model, ['device']);
+        this.model = Util.simplifyMany(this.model, ['device', 'approvalWorkflow']);
         this.apiService.create(this.model).subscribe(res => {
             if (this.model.approvalWorkflow?.id) {
                 this.apiService.createApprovalEntity({ entityId: res, workflowId: this.model.approvalWorkflow.id }, 'acceptances').subscribe({

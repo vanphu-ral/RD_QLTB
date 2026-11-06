@@ -36,7 +36,7 @@
                         </th>
                         <th colspan="1" style="vertical-align: top;">
                             <div class="flex flex-col text-right">
-                                <label class="font-semibold">Số:&nbsp; {{ model.planNumber }}</label>
+                                <label class="font-semibold">Số:&nbsp; {{ model.code }}</label>
                             </div>
                         </th>
                     </tr>
@@ -106,9 +106,14 @@
             </div>
         </div>
         <div class="mt-2">
-            <span style="font-size: 11px; font-style: italic;">
+            <div style="font-size: 11px; font-style: italic;">
                 (*) Ghi chú: các đơn vị có thể bổ sung nội dung tùy theo đặc điểm máy móc công nghệ.
-            </span>
+            </div>
+            <div class="mt-1">
+                <span class="font-semibold" style="font-size: 12px;">
+                    {{ model.planNumber || 'RĐ.QT15.BM05' }}&nbsp;&nbsp;&nbsp;Ban hành lần {{ model.numberOfIssuances || 1 }}
+                </span>
+            </div>
         </div>
     </div>
 

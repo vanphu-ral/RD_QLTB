@@ -5,6 +5,7 @@ import io.rd.qltb.events.BeforeDeleteErrorReport;
 import io.rd.qltb.events.BeforeDeletePlanResult;
 import io.rd.qltb.model.AcceptanceDTO;
 import io.rd.qltb.repos.AcceptanceRepository;
+import io.rd.qltb.repos.ApprovalWorkflowRepository;
 import io.rd.qltb.repos.ErrorReportRepository;
 import io.rd.qltb.repos.PlanResultRepository;
 import io.rd.qltb.util.NotFoundException;
@@ -23,13 +24,16 @@ public class AcceptanceService {
     private final AcceptanceRepository acceptanceRepository;
     private final PlanResultRepository planResultRepository;
     private final ErrorReportRepository errorReportRepository;
+    private final ApprovalWorkflowRepository approvalWorkflowRepository;
 
     public AcceptanceService(final AcceptanceRepository acceptanceRepository,
             final PlanResultRepository planResultRepository,
-            final ErrorReportRepository errorReportRepository) {
+            final ErrorReportRepository errorReportRepository,
+            final ApprovalWorkflowRepository approvalWorkflowRepository) {
         this.acceptanceRepository = acceptanceRepository;
         this.planResultRepository = planResultRepository;
         this.errorReportRepository = errorReportRepository;
+        this.approvalWorkflowRepository = approvalWorkflowRepository;
     }
     public Integer checkIfExistByIdPlanDetail(Long id) {
         return acceptanceRepository.countByPlanDetailId(id);
@@ -185,12 +189,17 @@ public class AcceptanceService {
         } else {
             acceptanceDTO.setErrorReport(null);
         }
-        if(acceptance.getApprovalWorkflow() != null) {
+        if (acceptance.getApprovalWorkflow() != null) {
             ApprovalWorkflow approvalWorkflowCopy = new ApprovalWorkflow();
             approvalWorkflowCopy.setId(acceptance.getApprovalWorkflow().getId());
             approvalWorkflowCopy.setCode(acceptance.getApprovalWorkflow().getCode());
             approvalWorkflowCopy.setName(acceptance.getApprovalWorkflow().getName());
             approvalWorkflowCopy.setStatus(acceptance.getApprovalWorkflow().getStatus());
+            approvalWorkflowCopy.setWorkflowApprovalGroups(null);
+            approvalWorkflowCopy.setWorkflowSampleReports(null);
+            acceptanceDTO.setApprovalWorkflow(approvalWorkflowCopy);
+        } else {
+            acceptanceDTO.setApprovalWorkflow(null);
         }
 
         return acceptanceDTO;
@@ -234,6 +243,11 @@ public class AcceptanceService {
         final ErrorReport errorReport = acceptanceDTO.getErrorReport() == null ? null : errorReportRepository.findById(acceptanceDTO.getErrorReport().getId())
                 .orElseThrow(() -> new NotFoundException("errorReport not found"));
         acceptance.setErrorReport(errorReport);
+        if (acceptanceDTO.getApprovalWorkflow() != null && acceptanceDTO.getApprovalWorkflow().getId() != null) {
+            final ApprovalWorkflow approvalWorkflow = approvalWorkflowRepository.findById(acceptanceDTO.getApprovalWorkflow().getId())
+                    .orElse(null);
+            acceptance.setApprovalWorkflow(approvalWorkflow);
+        }
         return acceptance;
     }
 

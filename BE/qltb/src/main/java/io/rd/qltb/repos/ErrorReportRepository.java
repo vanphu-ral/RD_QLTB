@@ -64,4 +64,24 @@ public interface ErrorReportRepository extends JpaRepository<ErrorReport, Long> 
     List<ErrorReport> findRepairsByDeviceAndYear(
             @Param("deviceId") Long deviceId,
             @Param("year") Integer year);
+
+    @Query("SELECT er FROM ErrorReport er " +
+            "JOIN FETCH er.planResult pr " +
+            "JOIN FETCH pr.planDetail pd " +
+            "JOIN FETCH pd.device d " +
+            "LEFT JOIN FETCH d.line " +
+            "LEFT JOIN FETCH d.branch b " +
+            "LEFT JOIN FETCH b.factory f " +
+            "WHERE (:deviceId IS NULL OR d.id = :deviceId) " +
+            "AND (:branchId IS NULL OR b.id = :branchId) " +
+            "AND (:factoryId IS NULL OR f.id = :factoryId) " +
+            "AND er.isRepaired = true " +
+            "AND (er.status IS NULL OR er.status != 10) " +
+            "AND (:year IS NULL OR YEAR(er.timeRepaired) = :year OR (er.timeRepaired IS NULL AND YEAR(er.timeReported) = :year)) " +
+            "ORDER BY er.timeRepaired ASC, er.timeReported ASC")
+    List<ErrorReport> findRepairsByFilter(
+            @Param("deviceId") Long deviceId,
+            @Param("branchId") Long branchId,
+            @Param("factoryId") Long factoryId,
+            @Param("year") Integer year);
 }

@@ -65,9 +65,32 @@ public interface PlanDetailRepository extends JpaRepository<PlanDetail, Long> {
            "WHERE d.id = :deviceId " +
            "AND pt.code = 'MAINTENANCE' " +
            "AND pd.status IN (4, 5) " +
+           "AND (p.status IS NULL OR p.status != 10) " +
            "AND (:year IS NULL OR YEAR(pd.updatedAt) = :year OR YEAR(p.fromDate) = :year OR YEAR(pd.estimatedTime) = :year) " +
            "ORDER BY pd.updatedAt ASC")
     List<PlanDetail> findMaintenanceDetailsByDeviceAndYear(
            @Param("deviceId") Long deviceId,
+           @Param("year") Integer year);
+
+    @Query("SELECT DISTINCT pd FROM PlanDetail pd " +
+           "JOIN FETCH pd.plan p " +
+           "JOIN FETCH p.planType pt " +
+           "LEFT JOIN FETCH pd.device d " +
+           "LEFT JOIN FETCH d.line " +
+           "LEFT JOIN FETCH d.branch b " +
+           "LEFT JOIN FETCH b.factory f " +
+           "LEFT JOIN FETCH pd.planResults pr " +
+           "WHERE (:deviceId IS NULL OR d.id = :deviceId) " +
+           "AND (:branchId IS NULL OR b.id = :branchId) " +
+           "AND (:factoryId IS NULL OR f.id = :factoryId) " +
+           "AND pt.code = 'MAINTENANCE' " +
+           "AND pd.status IN (4, 5) " +
+           "AND (p.status IS NULL OR p.status != 10) " +
+           "AND (:year IS NULL OR YEAR(pd.updatedAt) = :year OR YEAR(p.fromDate) = :year OR YEAR(pd.estimatedTime) = :year) " +
+           "ORDER BY pd.updatedAt ASC")
+    List<PlanDetail> findMaintenanceDetailsByFilter(
+           @Param("deviceId") Long deviceId,
+           @Param("branchId") Long branchId,
+           @Param("factoryId") Long factoryId,
            @Param("year") Integer year);
 }

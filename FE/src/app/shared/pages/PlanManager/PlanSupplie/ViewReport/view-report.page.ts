@@ -162,7 +162,7 @@ export class ViewReportPage extends BasePageComponent<any> {
 
     // Căn lề phải cho Số
     const numberCell = worksheet.getCell('I3');
-    numberCell.value = 'Số: ' + (this.model.planNumber || '');
+    numberCell.value = 'Số: ' + (this.model.code || '');
     numberCell.font = { bold: true };
     numberCell.alignment = { horizontal: 'right' };
 
@@ -240,9 +240,19 @@ export class ViewReportPage extends BasePageComponent<any> {
       }
     });
 
-    // 6. Xuất file
+    // 6. Chân trang mã hiệu biểu mẫu
+    const footerRowNum = lastRowNumber + 4;
+    const noteCell = worksheet.getCell(footerRowNum, 1);
+    noteCell.value = '(*) Ghi chú: các đơn vị có thể bổ sung nội dung tùy theo đặc điểm máy móc công nghệ.';
+    noteCell.font = { italic: true, size: 10 };
+
+    const formCodeCell = worksheet.getCell(footerRowNum + 1, 1);
+    formCodeCell.value = `${this.model.planNumber || 'RĐ.QT15.BM05'}   Ban hành lần ${this.model.numberOfIssuances || 1}`;
+    formCodeCell.font = { bold: true, size: 11 };
+
+    // 7. Xuất file
     const buffer = await workbook.xlsx.writeBuffer();
-    saveAs(new Blob([buffer]), `KeHoachVatTu_${this.model.planNumber || ''}.xlsx`);
+    saveAs(new Blob([buffer]), `KeHoachVatTu_${this.model.code || ''}.xlsx`);
   }
 
   exportPDF() {
@@ -256,7 +266,7 @@ export class ViewReportPage extends BasePageComponent<any> {
     popupWin.document.write(`
       <html>
         <head>
-          <title>In kế hoạch vật tư - ${this.model.planNumber || ''}</title>
+          <title>In kế hoạch vật tư - ${this.model.code || ''}</title>
           <style>
             @media print {
               @page { size: landscape; margin: 10mm; }

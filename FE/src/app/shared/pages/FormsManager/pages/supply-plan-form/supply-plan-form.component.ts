@@ -19,7 +19,8 @@ import { Router } from '@angular/router';
 export class SupplyPlanFormComponent implements OnInit {
   columns: Column[] = [
     { Field: 'id', Header: 'ID', IsHide: true },
-    { Field: 'planNumber', Header: 'Số kế hoạch', IsSearch: true, TypeSearch: 'text' },
+    { Field: 'code', Header: 'Mã kế hoạch', IsSearch: true, TypeSearch: 'text' },
+    { Field: 'planNumber', Header: 'Mã biểu mẫu', IsSearch: true, TypeSearch: 'text' },
     { Field: 'name', Header: 'Tên kế hoạch vật tư', IsSearch: true, TypeSearch: 'text' },
     { Field: 'factory.name', Header: 'Xưởng', IsSearch: true, TypeSearch: 'select', Options: [], style: { 'min-width': '180px' } },
     { Field: 'branch.name', Header: 'Ngành', IsSearch: true, TypeSearch: 'select', Options: [], style: { 'min-width': '180px' } },

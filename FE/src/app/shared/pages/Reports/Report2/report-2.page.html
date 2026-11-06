@@ -2,8 +2,27 @@
     <!-- Thanh bộ lọc Tra cứu -->
     <div class="card mt-2 mb-3 p-3">
         <div class="row g-3 align-items-center">
+            <!-- Chọn Xưởng (chỉ hiện ở Báo cáo) -->
+            <div *ngIf="!isFormMode" class="col-12 col-md-4">
+                <p-floatlabel variant="on">
+                    <p-select 
+                        [options]="listFactories" 
+                        [(ngModel)]="selectedFactoryId" 
+                        (onChange)="onFactoryChange()"
+                        optionValue="id" 
+                        optionLabel="name" 
+                        [showClear]="true"
+                        [filter]="true"
+                        [fluid]="true" 
+                        styleClass="w-100"
+                        appendTo="body" 
+                        inputId="factorySelect" />
+                    <label for="factorySelect">Xưởng</label>
+                </p-floatlabel>
+            </div>
+
             <!-- Chọn Ngành -->
-            <div class="col-12 col-md-3">
+            <div [ngClass]="isFormMode ? 'col-12 col-md-3' : 'col-12 col-md-4'">
                 <p-floatlabel variant="on">
                     <p-select 
                         [options]="listBranchs" 
@@ -22,13 +41,14 @@
             </div>
 
             <!-- Chọn Thiết bị -->
-            <div class="col-12 col-md-5">
+            <div [ngClass]="isFormMode ? 'col-12 col-md-5' : 'col-12 col-md-4'">
                 <p-floatlabel variant="on">
                     <p-select 
                         [options]="listDevices" 
                         [(ngModel)]="selectedDeviceId" 
                         (onChange)="search()"
                         optionValue="id" 
+                        [showClear]="!isFormMode"
                         [filter]="true"
                         filterBy="code,name"
                         [fluid]="true" 
@@ -42,12 +62,12 @@
                             <span>{{ item.code }} - {{ item.name }}</span>
                         </ng-template>
                     </p-select>
-                    <label for="deviceSelect">Thiết bị (*)</label>
+                    <label for="deviceSelect">{{ isFormMode ? 'Thiết bị (*)' : 'Thiết bị (Tất cả)' }}</label>
                 </p-floatlabel>
             </div>
 
             <!-- Chọn Năm theo dõi -->
-            <div class="col-12 col-md-2">
+            <div [ngClass]="isFormMode ? 'col-12 col-md-2' : 'col-12 col-md-4'">
                 <p-floatlabel variant="on">
                     <p-select 
                         [options]="years" 
@@ -61,8 +81,26 @@
                 </p-floatlabel>
             </div>
 
+            <!-- Chọn Tháng (chỉ hiện ở Báo cáo) -->
+            <div *ngIf="!isFormMode" class="col-12 col-md-4">
+                <p-floatlabel variant="on">
+                    <p-select 
+                        [options]="months" 
+                        [(ngModel)]="selectedMonth" 
+                        (onChange)="search()"
+                        optionLabel="label"
+                        optionValue="value"
+                        [showClear]="true"
+                        [fluid]="true" 
+                        styleClass="w-100"
+                        appendTo="body" 
+                        inputId="monthSelect" />
+                    <label for="monthSelect">Chọn tháng</label>
+                </p-floatlabel>
+            </div>
+
             <!-- Nút Tra cứu -->
-            <div class="col-12 col-md-2 d-flex gap-2">
+            <div [ngClass]="isFormMode ? 'col-12 col-md-2 d-flex gap-2' : 'col-12 col-md-4 d-flex gap-2'">
                 <p-button icon="pi pi-search" label="Tra cứu" (click)="search()"></p-button>
             </div>
         </div>
@@ -88,16 +126,16 @@
                 <div class="col-12 col-md-4 text-end" style="font-size: 13px; line-height: 1.5;">
                     <div>
                         <strong class="text-secondary">Đơn vị:</strong> 
-                        <span>{{ deviceInfo?.branchName ? 'LED; Xưởng LED - Điện tử & TBCS; ' + deviceInfo?.branchName : '---' }}</span>
+                        <span>{{ deviceInfo?.branchName ? 'LED; ' + (deviceInfo?.factoryName ? deviceInfo?.factoryName + '; ' : 'Xưởng LED - Điện tử & TBCS; ') + deviceInfo?.branchName : '---' }}</span>
                     </div>
                     <div class="mt-1">
                         <strong class="text-secondary">Thiết bị:</strong> 
-                        <span class="fw-bold text-primary">{{ deviceInfo?.qrCode || deviceInfo?.deviceCode || '---' }}; {{ deviceInfo?.deviceName || '---' }}</span>
+                        <span class="fw-bold text-primary">{{ deviceInfo?.qrCode || deviceInfo?.deviceCode ? (deviceInfo?.qrCode || deviceInfo?.deviceCode) + '; ' + (deviceInfo?.deviceName || '---') : (deviceInfo?.deviceName || '---') }}</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Bảng dữ liệu 9 cột chuẩn BM08 -->
+            <!-- Bảng dữ liệu chuẩn BM08 (6 cột ở Biểu mẫu / 9 cột ở Báo cáo) -->
             <div class="table-responsive">
                 <p-table 
                     #dt 
@@ -118,10 +156,10 @@
                         <tr class="table-light text-center">
                             <th style="width: 60px;">STT</th>
                             <th style="width: 110px;">Ngày tháng</th>
-                            <th style="min-width: 180px;">Thiết bị</th>
-                            <th style="width: 130px;">Dây chuyền</th>
+                            <th *ngIf="!isFormMode" style="min-width: 180px;">Thiết bị</th>
+                            <th *ngIf="!isFormMode" style="width: 130px;">Dây chuyền</th>
                             <th style="min-width: 280px;">Nội dung sửa chữa / bảo dưỡng</th>
-                            <th style="width: 130px;">Thời gian dừng máy (h)</th>
+                            <th *ngIf="!isFormMode" style="width: 130px;">Thời gian dừng máy (h)</th>
                             <th style="min-width: 140px;">Người thực hiện</th>
                             <th style="min-width: 140px;">Vật tư sử dụng</th>
                             <th style="min-width: 100px;">Ghi chú</th>
@@ -138,21 +176,21 @@
                             <td class="text-center">
                                 {{ item.date }}
                             </td>
-                            <!-- Thiết bị -->
-                            <td>
+                            <!-- Thiết bị (chỉ hiện ở Báo cáo) -->
+                            <td *ngIf="!isFormMode" class="fw-medium">
                                 {{ item.deviceName }}
                             </td>
-                            <!-- Dây chuyền -->
-                            <td class="text-center">
-                                {{ item.lineName || '---' }}
+                            <!-- Dây chuyền (chỉ hiện ở Báo cáo) -->
+                            <td *ngIf="!isFormMode" class="text-center">
+                                {{ item.lineName || item.lineCode || '---' }}
                             </td>
                             <!-- Nội dung -->
                             <td style="white-space: pre-line; line-height: 1.4;">
                                 {{ item.content }}
                             </td>
-                            <!-- Thời gian dừng máy (h) -->
-                            <td class="text-center fw-semibold">
-                                {{ item.downtimeStr || '---' }}
+                            <!-- Thời gian dừng máy (chỉ hiện ở Báo cáo) -->
+                            <td *ngIf="!isFormMode" class="text-center fw-bold">
+                                {{ item.downtimeStr || (item.downtime !== null && item.downtime !== undefined ? item.downtime + ' h' : '---') }}
                             </td>
                             <!-- Người thực hiện -->
                             <td>
@@ -171,8 +209,8 @@
 
                     <ng-template pTemplate="emptymessage">
                         <tr>
-                            <td colspan="9" class="text-center py-4 text-muted">
-                                <i class="pi pi-info-circle me-1"></i> Chưa có dữ liệu sửa chữa hoặc bảo dưỡng nào cho thiết bị trong năm {{ selectedYear }}.
+                            <td [attr.colspan]="isFormMode ? 6 : 9" class="text-center py-4 text-muted">
+                                <i class="pi pi-info-circle me-1"></i> Chưa có dữ liệu sửa chữa hoặc bảo dưỡng nào trong năm {{ selectedYear }}.
                             </td>
                         </tr>
                     </ng-template>
@@ -183,7 +221,7 @@
         <!-- Chân trang biểu mẫu BM08 chuẩn -->
         <div class="mt-3 pt-2 d-flex justify-content-between align-items-center">
             <span class="fst-italic text-secondary" style="font-size: 13px;">
-                RĐ.QT15.BM08 Ban hành lần 1
+                {{ isFormMode ? 'RĐ.QT15.BM08 Ban hành lần 1' : 'RĐ.QT15.BM08a. Ban hành lần 1' }}
             </span>
         </div>
     </div>
