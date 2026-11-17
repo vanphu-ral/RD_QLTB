@@ -187,17 +187,30 @@ public class DeviceService {
             String lineName,
             String filterType,
             Pageable pageable) {
+        return getMaintenanceReport(deviceName, null, branchName, groupName, teamName, lineName, filterType, pageable);
+    }
+
+    public Page<DeviceMaintenanceDTO> getMaintenanceReport(
+            String deviceName,
+            java.util.List<Long> branchIds,
+            String branchName,
+            String groupName,
+            String teamName,
+            String lineName,
+            String filterType,
+            Pageable pageable) {
 
         // 1. Chuẩn hóa tham số (Chuyển chuỗi rỗng thành null để SQL xử lý :param IS NULL)
         String d = cleanParam(deviceName);
-        String b = cleanParam(branchName);
+        String b = branchIds == null || branchIds.isEmpty() ? cleanParam(branchName) : null;
         String g = cleanParam(groupName);
         String t = cleanParam(teamName);
         String l = cleanParam(lineName);
         String type = (filterType == null) ? "ALL" : filterType.toUpperCase();
 
         // 2. Gọi Repository với đầy đủ 6 tham số lọc
-        Page<Object[]> rawResults = deviceRepository.findMaintenanceData(d, b, g, t, l, type, pageable);
+        Page<Object[]> rawResults = deviceRepository.findMaintenanceData(
+                d, emptyToNull(branchIds), b, g, t, l, type, pageable);
 
         // 3. Mapping dữ liệu từ Object[] sang DTO
         return rawResults.map(row -> {
@@ -238,6 +251,10 @@ public class DeviceService {
 
     private String cleanParam(String s) {
         return (s != null && !s.trim().isEmpty()) ? s : null;
+    }
+
+    private static java.util.List<Long> emptyToNull(final java.util.List<Long> ids) {
+        return ids == null || ids.isEmpty() ? null : ids;
     }
     private Predicate[] buildPredicates(Map<String, Object> filters, CriteriaBuilder cb, Root<Device> root) {
         List<Predicate> predicates = new ArrayList<>();
