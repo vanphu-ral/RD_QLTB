@@ -1,0 +1,28 @@
+.dashboard-detail-dialog {
+  .btn-teal {
+    background-color: #17a2b7;
+    border-color: #17a2b7;
+
+    &:hover {
+      background-color: #138496;
+      border-color: #117a8b;
+    }
+  }
+
+  ::ng-deep .p-datatable {
+    .p-datatable-thead > tr > th {
+      background-color: #f8fafc;
+      font-weight: 600;
+      color: #334155;
+      font-size: 0.875rem;
+      border-color: #e2e8f0;
+      padding: 0.65rem 0.75rem;
+    }
+
+    .p-datatable-tbody > tr > td {
+      font-size: 0.875rem;
+      padding: 0.65rem 0.75rem;
+      border-color: #f1f5f9;
+    }
+  }
+}

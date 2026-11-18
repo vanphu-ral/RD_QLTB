@@ -1,11 +1,12 @@
 package io.rd.qltb.model.response;
 
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.time.LocalDate;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class DeviceMaintenanceDTO {
     private Long deviceId;

@@ -1,0 +1,272 @@
+<div class="dashboard-detail-dialog p-2">
+  <!-- Toolbar: Tìm kiếm + Lọc nhanh (nếu là đến hạn bảo dưỡng) + Nút làm mới -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div class="d-flex align-items-center gap-2 flex-grow-1" style="max-width: 480px;">
+      <p-inputgroup>
+        <p-inputgroup-addon>
+          <i class="pi pi-search text-muted"></i>
+        </p-inputgroup-addon>
+        <input
+          pInputText
+          type="text"
+          placeholder="Tìm theo tên thiết bị..."
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearchChange($event)"
+        />
+        <p-inputgroup-addon *ngIf="searchTerm" [style]="{ cursor: 'pointer' }" (click)="onSearchChange('')">
+          <i class="pi pi-times text-muted"></i>
+        </p-inputgroup-addon>
+      </p-inputgroup>
+    </div>
+
+    <!-- Toggle trạng thái cho mục Đến hạn bảo dưỡng -->
+    <div *ngIf="type === 'DUE_MAINTENANCE'" class="d-flex align-items-center gap-1">
+      <span class="text-sm font-semibold text-secondary me-2">Lọc trạng thái:</span>
+      <div class="btn-group btn-group-sm" role="group">
+        <button
+          *ngFor="let opt of dueTypeOptions"
+          type="button"
+          class="btn"
+          [ngClass]="selectedDueType === opt.value ? 'btn-teal text-white' : 'btn-outline-secondary'"
+          (click)="onDueTypeChange(opt.value)"
+        >
+          {{ opt.label }}
+        </button>
+      </div>
+    </div>
+
+    <div class="d-flex align-items-center gap-2">
+      <button pButton icon="pi pi-refresh" class="p-button-outlined p-button-sm" (click)="loadData()" [loading]="loading"></button>
+    </div>
+  </div>
+
+  <!-- Bảng dữ liệu chi tiết -->
+  <div class="table-responsive">
+    <p-table
+      [value]="data"
+      [loading]="loading"
+      [lazy]="true"
+      [paginator]="true"
+      [rows]="size"
+      [totalRecords]="totalRecords"
+      [rowsPerPageOptions]="[5, 10, 20, 50]"
+      (onLazyLoad)="onPageChange($event)"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Hiển thị {first} đến {last} trong {totalRecords} bản ghi"
+      [tableStyle]="{ 'min-width': '65rem' }"
+      [scrollable]="true"
+      scrollHeight="460px"
+      styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines"
+    >
+      <ng-template pTemplate="header">
+        <!-- 1. THIẾT BỊ HOẠT ĐỘNG (MỤC 1 & 2) -->
+        <tr *ngIf="type === 'WORKING_DEVICES' || type === 'WORKING_PERCENT'">
+          <th style="width: 60px;" class="text-center">STT</th>
+          <th style="width: 140px;">Mã thiết bị</th>
+          <th style="min-width: 200px;">Tên thiết bị</th>
+          <th style="width: 140px;">Ngành</th>
+          <th style="width: 140px;">Tổ</th>
+          <th style="width: 140px;">Dây chuyền</th>
+          <th style="width: 150px;">Nhóm thiết bị</th>
+          <th style="width: 140px;" class="text-center">Trạng thái</th>
+        </tr>
+
+        <!-- 2. KẾ HOẠCH BẢO TRÌ (THÁNG / NĂM / ĐÃ HOÀN THÀNH) -->
+        <tr *ngIf="type === 'MONTHLY_PLAN' || type === 'YEARLY_PLAN' || type === 'MAINTAINED_DEVICES'">
+          <th style="width: 60px;" class="text-center">STT</th>
+          <th style="width: 130px;">Mã thiết bị</th>
+          <th style="min-width: 180px;">Tên thiết bị</th>
+          <th style="min-width: 180px;">Kế hoạch bảo trì</th>
+          <th style="width: 130px;" class="text-center">Ngày dự kiến</th>
+          <th style="width: 130px;">Ngành</th>
+          <th style="width: 130px;">Tổ</th>
+          <th style="width: 130px;">Dây chuyền</th>
+          <th style="width: 140px;" class="text-center">Trạng thái dòng</th>
+        </tr>
+
+        <!-- 3. LƯỢT THỰC HIỆN BẢO TRÌ (MỤC 3) -->
+        <tr *ngIf="type === 'MAINTENANCE_EXECUTIONS'">
+          <th style="width: 60px;" class="text-center">STT</th>
+          <th style="width: 130px;">Mã thiết bị</th>
+          <th style="min-width: 180px;">Tên thiết bị</th>
+          <th style="min-width: 180px;">Kế hoạch bảo trì</th>
+          <th style="width: 140px;" class="text-center">Ngày thực hiện</th>
+          <th style="width: 130px;">Ngành</th>
+          <th style="width: 130px;">Tổ</th>
+          <th style="width: 130px;">Dây chuyền</th>
+          <th style="width: 130px;" class="text-center">Kết quả</th>
+        </tr>
+
+        <!-- 4. BIÊN BẢN NGHIỆM THU (MỤC 5) -->
+        <tr *ngIf="type === 'ACCEPTED_MAINTENANCE'">
+          <th style="width: 60px;" class="text-center">STT</th>
+          <th style="width: 150px;">Mã biên bản</th>
+          <th style="min-width: 220px;">Tên biên bản</th>
+          <th style="min-width: 180px;">Thiết bị</th>
+          <th style="width: 160px;" class="text-center">Thời điểm nghiệm thu</th>
+          <th style="width: 140px;" class="text-center">Trạng thái</th>
+        </tr>
+
+        <!-- 5. ĐẾN HẠN / QUÁ HẠN BẢO DƯỠNG (MỤC 5) -->
+        <tr *ngIf="type === 'DUE_MAINTENANCE'">
+          <th style="width: 60px;" class="text-center">STT</th>
+          <th style="min-width: 200px;">Tên thiết bị</th>
+          <th style="width: 140px;">Ngành</th>
+          <th style="width: 140px;">Tổ</th>
+          <th style="width: 140px;" class="text-center">Ngày bảo trì gần nhất</th>
+          <th style="width: 140px;" class="text-center">Ngày đến hạn</th>
+          <th style="width: 120px;" class="text-center">Chu kỳ</th>
+          <th style="width: 120px;" class="text-center">Chênh lệch</th>
+          <th style="width: 130px;" class="text-center">Tình trạng</th>
+        </tr>
+
+        <!-- 6. THIẾT BỊ LỖI / HỎNG (MỤC 6) -->
+        <tr *ngIf="type === 'FAULTY_DEVICES'">
+          <th style="width: 60px;" class="text-center">STT</th>
+          <th style="width: 140px;">Mã thiết bị</th>
+          <th style="min-width: 200px;">Tên thiết bị</th>
+          <th style="width: 140px;">Ngành</th>
+          <th style="width: 140px;">Tổ</th>
+          <th style="width: 140px;">Dây chuyền</th>
+          <th style="width: 140px;" class="text-center">Trạng thái</th>
+        </tr>
+
+        <!-- 7. SỰ CỐ NGHIÊM TRỌNG (MỤC 7) -->
+        <tr *ngIf="type === 'CRITICAL_INCIDENTS'">
+          <th style="width: 60px;" class="text-center">STT</th>
+          <th style="width: 150px;">Mã biên bản</th>
+          <th style="min-width: 220px;">Tên biên bản</th>
+          <th style="min-width: 180px;">Thiết bị liên quan</th>
+          <th style="width: 160px;" class="text-center">Thời gian lập</th>
+          <th style="width: 140px;" class="text-center">Trạng thái</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-row let-i="rowIndex">
+        <!-- 1. BODY: THIẾT BỊ HOẠT ĐỘNG -->
+        <tr *ngIf="type === 'WORKING_DEVICES' || type === 'WORKING_PERCENT'">
+          <td class="text-center">{{ i + 1 + page * size }}</td>
+          <td><span class="font-semibold text-primary">{{ row.code }}</span></td>
+          <td>{{ row.name }}</td>
+          <td>{{ row.branch?.name || row.branchName || '--' }}</td>
+          <td>{{ row.team?.name || row.teamName || '--' }}</td>
+          <td>{{ row.line?.name || row.lineName || '--' }}</td>
+          <td>{{ row.group?.name || row.groupName || '--' }}</td>
+          <td class="text-center">
+            <p-tag severity="success" value="Đang sử dụng"></p-tag>
+          </td>
+        </tr>
+
+        <!-- 2. BODY: KẾ HOẠCH BẢO TRÌ -->
+        <tr *ngIf="type === 'MONTHLY_PLAN' || type === 'YEARLY_PLAN' || type === 'MAINTAINED_DEVICES'">
+          <td class="text-center">{{ i + 1 + page * size }}</td>
+          <td><span class="font-semibold text-primary">{{ row.deviceCode || '--' }}</span></td>
+          <td>{{ row.deviceName || '--' }}</td>
+          <td>{{ row.planName || '--' }}</td>
+          <td class="text-center">{{ formatDate(row.estimatedTime) }}</td>
+          <td>{{ row.branchName || '--' }}</td>
+          <td>{{ row.teamName || '--' }}</td>
+          <td>{{ row.lineName || '--' }}</td>
+          <td class="text-center">
+            <p-tag
+              [severity]="row.planDetailStatus === 5 ? 'success' : 'info'"
+              [value]="row.planDetailStatus === 5 ? 'Đã hoàn thành' : 'Trong kế hoạch'"
+            ></p-tag>
+          </td>
+        </tr>
+
+        <!-- 3. BODY: LƯỢT THỰC HIỆN BẢO TRÌ -->
+        <tr *ngIf="type === 'MAINTENANCE_EXECUTIONS'">
+          <td class="text-center">{{ i + 1 + page * size }}</td>
+          <td><span class="font-semibold text-primary">{{ row.deviceCode || '--' }}</span></td>
+          <td>{{ row.deviceName || '--' }}</td>
+          <td>{{ row.planName || '--' }}</td>
+          <td class="text-center">{{ formatDate(row.dateTest, 'DD/MM/YYYY HH:mm') }}</td>
+          <td>{{ row.branchName || '--' }}</td>
+          <td>{{ row.teamName || '--' }}</td>
+          <td>{{ row.lineName || '--' }}</td>
+          <td class="text-center">
+            <p-tag
+              [severity]="row.resultStatus === 1 || row.resultStatus === 2 ? 'success' : 'warn'"
+              [value]="row.resultStatus === 1 ? 'Đạt' : (row.resultStatus === 2 ? 'Đã sửa chữa' : 'Chưa đạt')"
+            ></p-tag>
+          </td>
+        </tr>
+
+        <!-- 4. BODY: BIÊN BẢN NGHIỆM THU -->
+        <tr *ngIf="type === 'ACCEPTED_MAINTENANCE'">
+          <td class="text-center">{{ i + 1 + page * size }}</td>
+          <td><span class="font-semibold text-primary">{{ row.code }}</span></td>
+          <td>{{ row.name }}</td>
+          <td>{{ row.device?.name || row.device || '--' }}</td>
+          <td class="text-center">{{ formatDate(row.timeAcceptance, 'DD/MM/YYYY HH:mm') }}</td>
+          <td class="text-center">
+            <p-tag [severity]="getSeverity(row.status)" [value]="statusToString(row.status)"></p-tag>
+          </td>
+        </tr>
+
+        <!-- 5. BODY: ĐẾN HẠN BẢO DƯỠNG -->
+        <tr *ngIf="type === 'DUE_MAINTENANCE'">
+          <td class="text-center">{{ i + 1 + page * size }}</td>
+          <td><span class="font-semibold">{{ row.deviceName || '--' }}</span></td>
+          <td>{{ row.branchName || '--' }}</td>
+          <td>{{ row.teamName || '--' }}</td>
+          <td class="text-center">{{ formatDate(row.dateTest) }}</td>
+          <td class="text-center">{{ formatDate(row.nextTest) }}</td>
+          <td class="text-center">{{ row.maintenanceTime ? row.maintenanceTime + ' tháng' : '--' }}</td>
+          <td class="text-center">
+            <span *ngIf="row.daysDiff !== undefined && row.daysDiff !== null" [class.text-danger]="row.daysDiff < 0" [class.text-success]="row.daysDiff >= 0" class="font-semibold">
+              {{ row.daysDiff < 0 ? (row.daysDiff * -1) + ' ngày (quá)' : row.daysDiff + ' ngày' }}
+            </span>
+            <span *ngIf="row.daysDiff === undefined || row.daysDiff === null">--</span>
+          </td>
+          <td class="text-center">
+            <p-tag
+              [severity]="row.status === 'OVERDUE' ? 'danger' : (row.status === 'UPCOMING' ? 'info' : 'secondary')"
+              [value]="row.status === 'OVERDUE' ? 'Quá hạn' : (row.status === 'UPCOMING' ? 'Sắp tới' : 'Chưa có LS')"
+            ></p-tag>
+          </td>
+        </tr>
+
+        <!-- 6. BODY: THIẾT BỊ LỖI / HỎNG -->
+        <tr *ngIf="type === 'FAULTY_DEVICES'">
+          <td class="text-center">{{ i + 1 + page * size }}</td>
+          <td><span class="font-semibold text-danger">{{ row.code }}</span></td>
+          <td>{{ row.name }}</td>
+          <td>{{ row.branch?.name || row.branchName || '--' }}</td>
+          <td>{{ row.team?.name || row.teamName || '--' }}</td>
+          <td>{{ row.line?.name || row.lineName || '--' }}</td>
+          <td class="text-center">
+            <p-tag severity="danger" value="Hỏng / Dừng"></p-tag>
+          </td>
+        </tr>
+
+        <!-- 7. BODY: SỰ CỐ NGHIÊM TRỌNG -->
+        <tr *ngIf="type === 'CRITICAL_INCIDENTS'">
+          <td class="text-center">{{ i + 1 + page * size }}</td>
+          <td><span class="font-semibold text-danger">{{ row.code }}</span></td>
+          <td>{{ row.name }}</td>
+          <td>{{ row.device?.name || row.device || '--' }}</td>
+          <td class="text-center">{{ formatDate(row.createdAt || row.timeReported, 'DD/MM/YYYY HH:mm') }}</td>
+          <td class="text-center">
+            <p-tag [severity]="getSeverity(row.status)" [value]="statusToString(row.status)"></p-tag>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="99" class="text-center py-4 text-muted">
+            <i class="pi pi-inbox fs-3 d-block mb-2"></i>
+            Không có dữ liệu phù hợp
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Footer đóng dialog -->
+  <div class="d-flex justify-content-end mt-3 pt-2 border-top">
+    <button pButton label="Đóng" icon="pi pi-times" class="p-button-secondary p-button-outlined" (click)="close()"></button>
+  </div>
+</div>
