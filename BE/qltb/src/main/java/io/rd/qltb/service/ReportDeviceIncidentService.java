@@ -190,7 +190,16 @@ public class ReportDeviceIncidentService {
     }
 
     public List<ReportDeviceIncidentDTO> findAll() {
-        List<ReportDeviceIncident> reportDeviceIncidents = reportDeviceIncidentRepository.findAllByStatusNotOrderByIdDesc(DELETED);
+        return findAll(null);
+    }
+
+    public List<ReportDeviceIncidentDTO> findAll(final String branch) {
+        final List<ReportDeviceIncident> reportDeviceIncidents;
+        if (branch != null && !branch.trim().isEmpty()) {
+            reportDeviceIncidents = reportDeviceIncidentRepository.findAllByStatusNotAndBranch(DELETED, branch.trim());
+        } else {
+            reportDeviceIncidents = reportDeviceIncidentRepository.findAllByStatusNotOrderByIdDesc(DELETED);
+        }
         return reportDeviceIncidents.stream().map(reportDeviceIncident -> mapToDTO(reportDeviceIncident, new ReportDeviceIncidentDTO())).toList();
     }
 

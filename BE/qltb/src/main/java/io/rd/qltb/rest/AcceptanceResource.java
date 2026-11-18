@@ -34,8 +34,9 @@ public class AcceptanceResource {
     }
 
     @GetMapping
-    public ResponseEntity<List<AcceptanceDTO>> getAllAcceptances() {
-        return ResponseEntity.ok(acceptanceService.findAll());
+    public ResponseEntity<List<AcceptanceDTO>> getAllAcceptances(
+            @RequestParam(name = "branch", required = false) final String branch) {
+        return ResponseEntity.ok(acceptanceService.findAll(branch));
     }
 
     @GetMapping("/{id}")

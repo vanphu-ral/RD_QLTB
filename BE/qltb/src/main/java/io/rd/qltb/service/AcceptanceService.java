@@ -43,7 +43,16 @@ public class AcceptanceService {
         return acceptanceRepository.countByErrorReportId(id);
     }
     public List<AcceptanceDTO> findAll() {
-        final List<Acceptance> acceptances = acceptanceRepository.findAllByStatusNotOrderByIdDesc(DELETED);
+        return findAll(null);
+    }
+
+    public List<AcceptanceDTO> findAll(final String branch) {
+        final List<Acceptance> acceptances;
+        if (branch != null && !branch.trim().isEmpty()) {
+            acceptances = acceptanceRepository.findAllByStatusNotAndBranch(DELETED, branch.trim());
+        } else {
+            acceptances = acceptanceRepository.findAllByStatusNotOrderByIdDesc(DELETED);
+        }
         return acceptances.stream()
                 .map(acceptance -> mapToDTO(acceptance, new AcceptanceDTO()))
                 .toList();

@@ -18,8 +18,9 @@ public class ReportDeviceIncidentResource {
     private ReportDeviceIncidentService reportDeviceIncidentService;
 
     @GetMapping
-    public List<ReportDeviceIncidentDTO> getAllReportDeviceIncidents() {
-        return reportDeviceIncidentService.findAll();
+    public List<ReportDeviceIncidentDTO> getAllReportDeviceIncidents(
+            @RequestParam(name = "branch", required = false) final String branch) {
+        return reportDeviceIncidentService.findAll(branch);
     }
 
     @GetMapping("/{id}")

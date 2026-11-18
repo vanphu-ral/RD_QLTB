@@ -100,7 +100,7 @@ export const MENU_ITEMS: MenuItem[] = [
                 ]
             },
             {
-                label: 'Biểu mẫu',
+                label: 'Báo cáo theo biểu mẫu',
                 icon: 'fa-solid fa-file-lines',
                 roles: ['RD_QLTB_ADMIN', 'RD_QLTB_MANAGER', 'RD_QLTB_APPROVE', 'RD_QLTB_SYSTEM'],
                 items: [

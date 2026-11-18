@@ -10,6 +10,22 @@ export class AcceptanceService extends BaseApiService<Acceptance> {
     super(http, 'api/acceptances');
   }
 
+  override getAll(params?: any): Observable<Acceptance[]> {
+    let httpParams: any = params;
+    if (!httpParams) {
+      let branch: any = this.accountService.getBranch();
+      if (Array.isArray(branch)) {
+        branch = branch.length > 0 ? branch[0] : '';
+      }
+      const isAdmin = this.accountService.hasAnyAuthority(['RD_QLTB_ADMIN', 'ADMIN']);
+      if (!isAdmin && branch && typeof branch === 'string' && branch.trim()) {
+        httpParams = { branch: branch.trim() };
+      }
+    }
+    const options = httpParams ? { params: httpParams } : {};
+    return this.http.get<Acceptance[]>(this.fullBaseUrl, options);
+  }
+
   checkExistByPlanDetailId(id: number): Observable<any> {
     return this.http.get<any>(`${this['fullBaseUrl']}/exist/plan-detail/${id}`);
   }

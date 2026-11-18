@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { BaseTableComponent } from '../../../../base/base-table-component/base-table.component';
 import { SharedModule } from '../../../../../share.module';
 import { FormsModule } from '@angular/forms';
@@ -7,6 +7,7 @@ import { ReportDeviceIncidentService } from '../service/report-device-incident.s
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ErrorReportSeriousDialog } from '../Dialogs/error-report-serious-dialog/error-report-serious.dialog';
 import { QuickSelectIncidentDialog } from '../Dialogs/quick-select-incident-dialog/quick-select-incident.dialog';
+import { AccountService } from '../../../../core/auth/account/account.service';
 import _ from 'lodash';
 
 @Component({
@@ -16,9 +17,10 @@ import _ from 'lodash';
   templateUrl: './report-device-incident-list.component.html',
   styleUrls: ['./report-device-incident-list.component.scss'],
 })
-export class ReportDeviceIncidentListComponent {
+export class ReportDeviceIncidentListComponent implements OnInit {
   @ViewChild(BaseTableComponent) baseTable!: BaseTableComponent<any>;
   selectedStatus: string | null = null;
+  defaultFilters: any = {};
 
   ref?: DynamicDialogRef;
 
@@ -26,12 +28,28 @@ export class ReportDeviceIncidentListComponent {
     { Field: 'id', Header: 'ID', IsHide: true },
     { Field: 'code', Header: 'Mã biên bản', IsSearch: true, TypeSearch: 'text' },
     { Field: 'name', Header: 'Tên biên bản', IsSearch: true, TypeSearch: 'text' },
+    { Field: 'device.branch.name', Header: 'Ngành', IsSearch: true, TypeSearch: 'text' },
     { Field: 'createdBy', Header: 'Người tạo', IsSearch: true, TypeSearch: 'text' },
     { Field: 'createdAt', Header: 'Ngày tạo', IsSearch: true, TypeSearch: 'date' },
     { Field: 'updatedAt', Header: 'Ngày cập nhật', IsSearch: true, TypeSearch: 'date', style: { 'min-width': '150px' } },
   ];
 
-  constructor(public reportDeviceIncidentService: ReportDeviceIncidentService, private dialogService: DialogService) {}
+  constructor(
+    public reportDeviceIncidentService: ReportDeviceIncidentService, 
+    private dialogService: DialogService,
+    private accountService: AccountService
+  ) {}
+
+  ngOnInit(): void {
+    let branch: any = this.accountService.getBranch();
+    if (Array.isArray(branch)) {
+      branch = branch.length > 0 ? branch[0] : '';
+    }
+    const isAdmin = this.accountService.hasAnyAuthority(['RD_QLTB_ADMIN', 'ADMIN']);
+    if (!isAdmin && branch && typeof branch === 'string' && branch.trim()) {
+      this.defaultFilters = { 'device.branch.name': branch.trim() };
+    }
+  }
 
   openQuickSelect() {
     this.dialogService.open(QuickSelectIncidentDialog, {

@@ -1,12 +1,16 @@
 <app-base-table 
   [apiService]="apiService"
   [columns]="columns"
-  [title]="'Biểu mẫu: Biên bản sự cố thiết bị'"
+  [defaultFilters]="defaultFilters"
+  [title]="'Biên bản sự cố thiết bị'"
   [showAddButton]="false"
   [showEditButton]="false"
   [showViewButton]="false"
   [showDeleteButton]="false"
   [actionTemplate]="customActions">
+  <ng-template appColumnTemplate="device.branch.name" let-rowData>
+    {{ rowData || 'Chưa phân ngành' }}
+  </ng-template>
   <ng-template appColumnTemplate="createdAt" let-rowData>
     {{ rowData | date: 'dd/MM/yyyy HH:mm' }}
   </ng-template>
@@ -17,8 +21,7 @@
 
 <ng-template #customActions let-row>
   <p-button icon="pi pi-file-pdf" title="Xem & In biên bản sự cố"
-    styleClass="p-button-sm p-button-rounded p-button-info m-1" (onClick)="viewReport(row)"></p-button>
+    styleClass="p-button-sm p-button-rounded p-button-info m-1" (onClick)="viewReport(row)" [rounded]="true"></p-button>
   <p-button icon="pi pi-external-link" title="Đến màn hình quản lý gốc"
-    styleClass="p-button-sm p-button-rounded p-button-secondary m-1" (onClick)="goToOriginal(row)"></p-button>
+    styleClass="p-button-sm p-button-rounded p-button-secondary m-1" (onClick)="goToOriginal(row)" [rounded]="true"></p-button>
 </ng-template>
-

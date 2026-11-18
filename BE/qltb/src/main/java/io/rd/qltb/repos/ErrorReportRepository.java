@@ -48,7 +48,7 @@ public interface ErrorReportRepository extends JpaRepository<ErrorReport, Long> 
             "WHERE er.severity = 0 " +
             "AND er.isRepaired = true " +
             "AND (er.status IS NULL OR er.status != 10) " +
-            "AND (:branch IS NULL OR :branch = '' OR LOWER(b.name) = LOWER(:branch)) " +
+            "AND (:branch IS NULL OR :branch = '' OR LOWER(b.name) = LOWER(:branch) OR LOWER(b.code) = LOWER(:branch)) " +
             "AND NOT EXISTS (SELECT 1 FROM ReportDeviceIncident r WHERE r.errorReport.id = er.id AND (r.status IS NULL OR r.status != 10)) " +
             "ORDER BY er.timeRepaired DESC, er.id DESC")
     List<ErrorReport> findUnrecordedSeriousErrors(@Param("branch") String branch);

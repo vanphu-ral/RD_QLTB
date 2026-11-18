@@ -10,6 +10,22 @@ export class ReportDeviceIncidentService extends BaseApiService<ReportDeviceInci
     super(http, 'api/reportDeviceIncident');
   }
 
+  override getAll(params?: any): Observable<ReportDeviceIncident[]> {
+    let httpParams: any = params;
+    if (!httpParams) {
+      let branch: any = this.accountService.getBranch();
+      if (Array.isArray(branch)) {
+        branch = branch.length > 0 ? branch[0] : '';
+      }
+      const isAdmin = this.accountService.hasAnyAuthority(['RD_QLTB_ADMIN', 'ADMIN']);
+      if (!isAdmin && branch && typeof branch === 'string' && branch.trim()) {
+        httpParams = { branch: branch.trim() };
+      }
+    }
+    const options = httpParams ? { params: httpParams } : {};
+    return this.http.get<ReportDeviceIncident[]>(this.fullBaseUrl, options);
+  }
+
   checkExistByErrorReportId(id: number): Observable<any> {
     return this.http.get<any>(`${this['fullBaseUrl']}/exist/error-report/${id}`);
   }

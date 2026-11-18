@@ -33,13 +33,30 @@ export class QuickSelectAcceptanceDialog implements OnInit {
 
   loadData(): void {
     this.loading = true;
-    let branch = this.accountService.getBranch();
+    let branch: any = this.accountService.getBranch();
     if (Array.isArray(branch)) {
-      branch = branch[0];
+      branch = branch.length > 0 ? branch[0] : '';
     }
-    this.acceptanceService.getUnrecordedPlans(branch).subscribe({
+    const isAdmin = this.accountService.hasAnyAuthority(['RD_QLTB_ADMIN', 'ADMIN']);
+    const filterBranch: string | undefined = (!isAdmin && branch && typeof branch === 'string' && branch.trim()) ? branch.trim() : undefined;
+    this.acceptanceService.getUnrecordedPlans(filterBranch).subscribe({
       next: (res) => {
-        this.listPlans = res || [];
+        let data = res || [];
+        if (filterBranch) {
+          const lowerFilter = filterBranch.toLowerCase();
+          data = data.filter((item: any) => {
+            const devBranchName = (item.device?.branch?.name || '').toLowerCase();
+            const devBranchCode = (item.device?.branch?.code || '').toLowerCase();
+            const planBranchName = (item.plan?.branch?.name || '').toLowerCase();
+            const planBranchCode = (item.plan?.branch?.code || '').toLowerCase();
+            return (!devBranchName && !planBranchName)
+              || devBranchName.includes(lowerFilter)
+              || devBranchCode.includes(lowerFilter)
+              || planBranchName.includes(lowerFilter)
+              || planBranchCode.includes(lowerFilter);
+          });
+        }
+        this.listPlans = data;
         this.loading = false;
       },
       error: (err) => {
@@ -64,4 +81,3 @@ export class QuickSelectAcceptanceDialog implements OnInit {
     this.ref.close();
   }
 }
-

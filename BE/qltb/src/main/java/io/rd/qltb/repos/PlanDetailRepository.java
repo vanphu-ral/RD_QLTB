@@ -42,6 +42,7 @@ public interface PlanDetailRepository extends JpaRepository<PlanDetail, Long> {
     @Query("SELECT pd FROM PlanDetail pd " +
            "JOIN FETCH pd.plan p " +
            "JOIN FETCH p.planType pt " +
+           "LEFT JOIN FETCH p.branch pb " +
            "LEFT JOIN FETCH pd.device d " +
            "LEFT JOIN FETCH d.branch b " +
            "LEFT JOIN FETCH d.team " +
@@ -50,7 +51,7 @@ public interface PlanDetailRepository extends JpaRepository<PlanDetail, Long> {
            "LEFT JOIN FETCH pd.sampleReport " +
            "WHERE pd.status = 5 " +
            "AND pt.code IN ('MAINTENANCE', 'REPAIR') " +
-           "AND (:branch IS NULL OR :branch = '' OR LOWER(b.name) = LOWER(:branch)) " +
+           "AND (:branch IS NULL OR :branch = '' OR LOWER(b.name) = LOWER(:branch) OR LOWER(b.code) = LOWER(:branch) OR (pb IS NOT NULL AND (LOWER(pb.name) = LOWER(:branch) OR LOWER(pb.code) = LOWER(:branch)))) " +
            "AND (p.status IS NULL OR p.status != 10) " +
            "AND NOT EXISTS (SELECT 1 FROM Acceptance a WHERE a.planDetailId = pd.id AND (a.status IS NULL OR a.status != 10)) " +
            "ORDER BY pd.updatedAt DESC, pd.id DESC")

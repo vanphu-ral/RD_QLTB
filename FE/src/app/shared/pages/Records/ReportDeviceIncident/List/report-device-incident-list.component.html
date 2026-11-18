@@ -2,12 +2,16 @@
 <app-base-table 
   [apiService]="reportDeviceIncidentService"
   [columns]="columns"
+  [defaultFilters]="defaultFilters"
   [title]="'Danh sách biên bản sự cố thiết bị'"
   [showAddButton]="false"
   [showEditButton]="false"
   [showViewButton]="false"
   [headerActionTemplate]="headerActions"
   [actionTemplate]="customActions">
+  <ng-template appColumnTemplate="device.branch.name" let-rowData>
+    {{ rowData || 'Chưa phân ngành' }}
+  </ng-template>
   <ng-template appColumnTemplate="createdAt" let-rowData>
     {{ rowData | date: 'dd/MM/yyyy' }}
   </ng-template>
