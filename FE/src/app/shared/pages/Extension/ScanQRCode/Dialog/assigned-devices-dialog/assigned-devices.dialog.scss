@@ -1,0 +1,77 @@
+:host {
+  display: block;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+:host ::ng-deep .row-hover:hover {
+  background-color: var(--surface-hover, #f3f4f6) !important;
+  transition: background-color 0.2s;
+}
+
+.badge {
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.35em 0.65em;
+}
+
+/* Responsive Table to Cards on Mobile */
+@media screen and (max-width: 768px) {
+  :host ::ng-deep .p-datatable {
+    .p-datatable-thead > tr > th {
+      display: none !important;
+    }
+
+    .p-datatable-tbody > tr {
+      display: block;
+      width: 100%;
+      margin-bottom: 1rem;
+      border: 1px solid var(--surface-border, #e2e8f0);
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      padding: 8px 12px;
+      background-color: var(--surface-card, #ffffff);
+    }
+
+    .p-datatable-tbody > tr > td {
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      width: 100%;
+      padding: 8px 4px !important;
+      border: none !important;
+      border-bottom: 1px dashed var(--surface-border, #e2e8f0) !important;
+      text-align: right !important;
+      font-size: 0.875rem;
+    }
+
+    .p-datatable-tbody > tr > td:last-child {
+      border-bottom: none !important;
+      justify-content: center !important;
+      padding-top: 10px !important;
+    }
+
+    .p-datatable-tbody > tr > td:first-child {
+      display: none !important; /* Ẩn cột STT trên mobile */
+    }
+
+    .p-datatable-tbody > tr > td::before {
+      content: attr(data-label);
+      font-weight: 600;
+      display: inline-block;
+      width: 40%;
+      text-align: left;
+      color: var(--text-color-secondary, #64748b);
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .text-end-on-mobile {
+      text-align: right;
+      max-width: 60%;
+      word-break: break-word;
+    }
+  }
+}

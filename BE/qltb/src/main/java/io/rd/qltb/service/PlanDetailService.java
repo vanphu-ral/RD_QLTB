@@ -874,4 +874,56 @@ public class PlanDetailService {
         }
     }
 
+
+    public List<io.rd.qltb.model.response.AssignedDeviceDTO> getMyAssignedDevices(String username, String planType) {
+        String today = java.time.LocalDate.now().toString();
+        List<Object[]> rows = planDetailRepository.findMyAssignedDevices(username, planType, today);
+        List<io.rd.qltb.model.response.AssignedDeviceDTO> result = new ArrayList<>();
+        if (rows == null || rows.isEmpty()) {
+            return result;
+        }
+
+        for (Object[] row : rows) {
+            Long deviceId = row[0] != null ? ((Number) row[0]).longValue() : null;
+            String deviceCode = row[1] != null ? row[1].toString() : "";
+            String deviceName = row[2] != null ? row[2].toString() : "";
+            String qrCode = row[3] != null ? row[3].toString() : "";
+            String branchName = row[4] != null ? row[4].toString() : "";
+            String teamName = row[5] != null ? row[5].toString() : "";
+            String lineName = row[6] != null ? row[6].toString() : "";
+            Long planId = row[7] != null ? ((Number) row[7]).longValue() : null;
+            String planCode = row[8] != null ? row[8].toString() : "";
+            String planName = row[9] != null ? row[9].toString() : "";
+            String planTypeCode = row[10] != null ? row[10].toString() : "";
+            Long planDetailId = row[11] != null ? ((Number) row[11]).longValue() : null;
+            Boolean todayChecked = row[12] != null && ((Number) row[12]).intValue() == 1;
+            Integer todayStatus = row[13] != null ? ((Number) row[13]).intValue() : null;
+
+            java.time.LocalDateTime lastCheckedTime = null;
+            if (row[14] instanceof java.sql.Timestamp) {
+                lastCheckedTime = ((java.sql.Timestamp) row[14]).toLocalDateTime();
+            } else if (row[14] instanceof java.time.LocalDateTime) {
+                lastCheckedTime = (java.time.LocalDateTime) row[14];
+            }
+
+            result.add(io.rd.qltb.model.response.AssignedDeviceDTO.builder()
+                    .deviceId(deviceId)
+                    .deviceCode(deviceCode)
+                    .deviceName(deviceName)
+                    .qrCode(qrCode)
+                    .branchName(branchName)
+                    .teamName(teamName)
+                    .lineName(lineName)
+                    .planId(planId)
+                    .planCode(planCode)
+                    .planName(planName)
+                    .planTypeCode(planTypeCode)
+                    .planDetailId(planDetailId)
+                    .todayChecked(todayChecked)
+                    .todayStatus(todayStatus)
+                    .lastCheckedTime(lastCheckedTime)
+                    .build());
+        }
+        return result;
+    }
 }

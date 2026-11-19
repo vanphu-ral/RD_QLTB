@@ -8,6 +8,7 @@ import { DeviceService } from '../../../DeviceManager/Device/Service/device.serv
 import { Device } from '../../../../models/DeviceManager/device.model';
 import { DialogService } from 'primeng/dynamicdialog';
 import { SearchDeviceDialog } from '../Dialog/search-device-dialog/search-device.dialog';
+import { AssignedDevicesDialog } from '../Dialog/assigned-devices-dialog/assigned-devices.dialog';
 import { Util } from '../../../../core/utils/utils-function';
 import { ActivatedRoute } from '@angular/router';
 import { PlanResultService } from '../../../PlanManager/Plan/Service/plan-result.service';
@@ -178,6 +179,35 @@ export class ScanQrCodeComponent {
         this.device.DateUseAndInstall = this.formatManufactureInstallLabel(this.device);
         this.device.displayLocation = device.line?.name || device.team?.name || device.branch?.name || '';
         this.cdr.detectChanges();
+      }
+    });
+  }
+
+  openAssignedDevicesDialog() {
+    const ref = this.dialogService.open(AssignedDevicesDialog, {
+      header: 'Danh sách thiết bị được ủy quyền kiểm tra',
+      width: '85%',
+      modal: true,
+      closable: true,
+      breakpoints: {
+        '960px': '90vw',
+        '640px': '98vw'
+      }
+    });
+    ref.onClose.subscribe((device: any) => {
+      if (device) {
+        if (device.qrCode) {
+          this.getDeviceInfo(device.qrCode);
+        } else if (device.deviceId) {
+          this.deviceService.getById(device.deviceId).subscribe({
+            next: (d: any) => {
+              this.device = d;
+              this.device.DateUseAndInstall = this.formatManufactureInstallLabel(this.device);
+              this.device.displayLocation = d?.line?.name || d?.team?.name || d?.branch?.name || '';
+              this.cdr.detectChanges();
+            }
+          });
+        }
       }
     });
   }

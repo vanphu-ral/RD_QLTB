@@ -2,7 +2,9 @@ package io.rd.qltb.rest;
 
 import io.rd.qltb.domain.Plan;
 import io.rd.qltb.model.*;
+import io.rd.qltb.model.response.AssignedDeviceDTO;
 import io.rd.qltb.service.PlanDetailService;
+import io.rd.qltb.util.CurrentUser;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import java.util.HashMap;
@@ -59,6 +61,26 @@ public class PlanDetailResource {
 
         List<PlanDetailDTO> result = planDetailService.findDailyCheckDevicesAll(filters);
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/my-assigned-devices")
+    public ResponseEntity<List<AssignedDeviceDTO>> getMyAssignedDevices(
+            @AuthenticationPrincipal OidcUser oidcUser,
+            @RequestParam(name = "planType", required = false) String planType) {
+        String username = "";
+        if (oidcUser != null) {
+            username = oidcUser.getPreferredUsername();
+            if (username == null || username.trim().isEmpty()) {
+                username = oidcUser.getName();
+            }
+        }
+        if (username == null || username.trim().isEmpty()) {
+            try {
+                username = CurrentUser.name();
+            } catch (Exception ignored) {
+            }
+        }
+        return ResponseEntity.ok(planDetailService.getMyAssignedDevices(username, planType));
     }
 
     @GetMapping("/summary/{id}/monthly")

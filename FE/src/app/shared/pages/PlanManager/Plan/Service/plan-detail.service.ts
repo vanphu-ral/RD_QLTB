@@ -38,6 +38,14 @@ export class PlanDetailService extends BaseApiService<PlanDetail> {
     return this.http.get<any>(`${this['fullBaseUrl']}/summary/device/${deviceId}`, { params });
   }
 
+  getMyAssignedDevices(planType?: string): Observable<any[]> {
+    let params = new HttpParams();
+    if (planType && planType.trim() !== '') {
+      params = params.set('planType', planType.trim());
+    }
+    return this.http.get<any[]>(`${this['fullBaseUrl']}/my-assigned-devices`, { params });
+  }
+
   getDailyCheckDevices(filters: any = {}): Observable<any[]> {
     let params = new HttpParams();
     Object.keys(filters).forEach(key => {

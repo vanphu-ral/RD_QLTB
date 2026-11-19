@@ -1,0 +1,117 @@
+<div class="assigned-devices-dialog p-1">
+  <!-- Thống kê nhanh & Bộ lọc -->
+  <div class="d-flex flex-wrap gap-2 mb-3 align-items-center">
+    <p-tag [value]="'Tổng: ' + totalCount + ' máy'" severity="secondary" [rounded]="true" />
+    <p-tag [value]="'Chưa kiểm tra: ' + uncheckedCount" severity="warn" [rounded]="true" />
+    <p-tag [value]="'Đã kiểm tra hôm nay: ' + checkedCount" severity="success" [rounded]="true" />
+  </div>
+
+  <div class="row my-2 g-2">
+    <!-- Tìm kiếm từ khóa -->
+    <div class="col-12 col-md-4 mb-2">
+      <p-floatlabel variant="on">
+        <input pInputText id="searchBox" [(ngModel)]="searchText" (ngModelChange)="onSearchChange()"
+               class="w-full" [fluid]="true" />
+        <label for="searchBox"><i class="pi pi-search me-1"></i>Tìm kiếm nhanh</label>
+      </p-floatlabel>
+    </div>
+
+    <!-- Lọc loại kế hoạch -->
+    <div class="col-12 col-sm-6 col-md-4 mb-2">
+      <p-floatlabel variant="on">
+        <p-select [options]="planTypeOptions" [(ngModel)]="selectedPlanType" optionLabel="label" optionValue="value"
+                  [showClear]="true"
+                  (onChange)="onPlanTypeChange()" class="w-full" id="planTypeSelect" [fluid]="true" appendTo="body" />
+        <label for="planTypeSelect">Loại kế hoạch</label>
+      </p-floatlabel>
+    </div>
+
+    <!-- Lọc tiến độ hôm nay -->
+    <div class="col-12 col-sm-6 col-md-4 mb-2">
+      <p-floatlabel variant="on">
+        <p-select [options]="checkStatusOptions" [(ngModel)]="selectedCheckStatus" optionLabel="label" optionValue="value"
+                  [showClear]="true"
+                  (onChange)="onCheckStatusChange()" class="w-full" id="statusSelect" [fluid]="true" appendTo="body" />
+        <label for="statusSelect">Tiến độ hôm nay</label>
+      </p-floatlabel>
+    </div>
+  </div>
+
+  <!-- Bảng danh sách thiết bị -->
+  <div class="table-responsive mt-2">
+    <p-table [value]="filteredDevices" responsiveLayout="scroll" [paginator]="true" [rows]="10"
+             [rowsPerPageOptions]="[5, 10, 20, 50]" [loading]="loading"
+             currentPageReportTemplate="Từ {first} đến {last} trong {totalRecords} bản ghi"
+             [showCurrentPageReport]="true" paginatorDropdownAppendTo="body"
+             styleClass="p-datatable-sm">
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 50px;">STT</th>
+          <th>Mã thiết bị</th>
+          <th>Tên thiết bị</th>
+          <th>Mã QR</th>
+          <th>Vị trí</th>
+          <th>Kế hoạch</th>
+          <th>Tiến độ hôm nay</th>
+          <th style="width: 80px; text-align: center;">Chọn</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-row let-i="rowIndex">
+        <tr (click)="selectDevice(row)" class="cursor-pointer row-hover">
+          <td data-label="STT">{{ i + 1 }}</td>
+          <td data-label="Mã thiết bị">
+            <span class="fw-bold">{{ row.deviceCode }}</span>
+          </td>
+          <td data-label="Tên thiết bị">
+            <span class="text-primary fw-semibold">{{ row.deviceName }}</span>
+          </td>
+          <td data-label="Mã QR">
+            <span class="badge bg-light text-dark border">{{ row.qrCode }}</span>
+          </td>
+          <td data-label="Vị trí">
+            <div class="text-end-on-mobile">
+              <span *ngIf="row.lineName"><i class="pi pi-map-marker text-danger me-1"></i>{{ row.lineName }}</span>
+              <span *ngIf="row.lineName && (row.teamName || row.branchName)"> • </span>
+              <small class="text-muted" *ngIf="row.teamName || row.branchName">{{ row.teamName }} {{ row.branchName ? '(' + row.branchName + ')' : '' }}</small>
+            </div>
+          </td>
+          <td data-label="Kế hoạch">
+            <div class="text-end-on-mobile">
+              <div class="small fw-semibold">{{ row.planName }}</div>
+              <p-tag [value]="getPlanTypeLabel(row.planTypeCode)" [severity]="getPlanTypeSeverity(row.planTypeCode)" styleClass="text-xs mt-1" />
+            </div>
+          </td>
+          <td data-label="Tiến độ hôm nay">
+            <div class="text-end-on-mobile">
+              <div *ngIf="row.todayChecked">
+                <p-tag value="Đã kiểm tra" severity="success" icon="pi pi-check" styleClass="text-xs" />
+                <span class="text-xs text-muted ms-1" *ngIf="row.lastCheckedTime">({{ row.lastCheckedTime | date:'HH:mm' }})</span>
+              </div>
+              <div *ngIf="!row.todayChecked">
+                <p-tag value="Chưa kiểm tra" severity="warn" icon="pi pi-clock" styleClass="text-xs" />
+              </div>
+            </div>
+          </td>
+          <td data-label="Thao tác" class="text-center">
+            <p-button icon="pi pi-check" severity="success" [rounded]="true" [text]="true"
+                      (onClick)="selectDevice(row); $event.stopPropagation();" title="Chọn thiết bị này"></p-button>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="8" class="text-center py-4 text-muted">
+            <i class="pi pi-inbox fs-2 d-block mb-2 text-gray-300"></i>
+            <div>Không tìm thấy thiết bị nào được ủy quyền phù hợp.</div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <div class="d-flex justify-content-end gap-2 mt-3">
+    <p-button label="Đóng" (onClick)="close()" severity="secondary"></p-button>
+  </div>
+</div>
